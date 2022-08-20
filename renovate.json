@@ -3,6 +3,7 @@
   "baseBranches": [
     "main"
   ],
+  "dependencyDashboard": true,
   "extends": [
     "config:base"
   ],
@@ -12,9 +13,18 @@
   "packageRules": [
     {
       "automerge": true,
+      "enabled": true,
       "matchManagers": [
-        "patch",
         "pre-commit"
+      ]
+    },
+    {
+      "automerge": true,
+      "major": {
+        "automerge": false
+      },
+      "packagePatterns": [
+        "^@types/"
       ]
     }
   ],
