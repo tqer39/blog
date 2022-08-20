@@ -15,6 +15,7 @@
       "automerge": true,
       "enabled": true,
       "matchManagers": [
+        "github-actions",
         "pre-commit"
       ]
     },
@@ -39,6 +40,9 @@
       ],
       "minor": {
         "automerge": false
+      },
+      "patch": {
+        "automerge": true
       }
     },
     {
@@ -51,8 +55,5 @@
       ]
     }
   ],
-  "patch": {
-    "automerge": true
-  },
   "timezone": "Asia/Tokyo"
 }
