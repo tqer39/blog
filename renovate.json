@@ -1,7 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "baseBranches": [
+    "main"
+  ],
   "extends": [
-    "config:base",
-    ":timezone(Asia/Tokyo)"
-  ]
+    "config:base"
+  ],
+  "packageRules": [
+    {
+      "automerge": true,
+      "matchManagers": [
+        "pre-commit"
+      ]
+    }
+  ],
+  "timezone": "Asia/Tokyo"
 }
