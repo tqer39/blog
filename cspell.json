@@ -16,6 +16,7 @@
     "codeql",
     "kentaro",
     "markdownlint",
+    "nodenv",
     "ooyama",
     "rinchsan",
     "shellcheck",
