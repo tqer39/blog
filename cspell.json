@@ -1,0 +1,12 @@
+{
+  "files": [
+    "**",
+    ".*/**"
+  ],
+  "ignorePaths": [
+    ".git",
+    ".gitignore"
+  ],
+  "words": [
+  ]
+}
