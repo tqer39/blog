@@ -18,6 +18,7 @@
     "markdownlint",
     "nodenv",
     "ooyama",
+    "pyenv",
     "rinchsan",
     "shellcheck",
     "textlint",
