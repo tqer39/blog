@@ -30,6 +30,19 @@
     },
     {
       "automerge": true,
+      "enabled": true,
+      "major": {
+        "automerge": false
+      },
+      "matchManagers": [
+        "pyenv"
+      ],
+      "minor": {
+        "automerge": false
+      }
+    },
+    {
+      "automerge": true,
       "major": {
         "automerge": false
       },
