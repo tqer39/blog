@@ -1,0 +1,21 @@
+{
+  "files": [
+    "**",
+    ".*/**"
+  ],
+  "ignorePaths": [
+    ".git",
+    ".gitignore"
+  ],
+  "words": [
+    "autofix",
+    "kentaro",
+    "markdownlint",
+    "ooyama",
+    "rinchsan",
+    "shellcheck",
+    "textlint",
+    "textlintcache",
+    "tqer"
+  ]
+}
