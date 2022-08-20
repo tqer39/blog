@@ -8,8 +8,12 @@
     ".gitignore"
   ],
   "words": [
+    "autobuild",
+    "Autobuild",
     "autofix",
     "automerge",
+    "buildscript",
+    "codeql",
     "kentaro",
     "markdownlint",
     "ooyama",
