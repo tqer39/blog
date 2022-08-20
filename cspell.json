@@ -8,6 +8,9 @@
     ".gitignore"
   ],
   "words": [
-    "rinchsan"
+    "markdownlint",
+    "rinchsan",
+    "textlint",
+    "textlintcache"
   ]
 }
