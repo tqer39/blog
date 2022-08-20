@@ -20,6 +20,16 @@
     },
     {
       "automerge": true,
+      "enabled": true,
+      "major": {
+        "automerge": false
+      },
+      "matchManagers": [
+        "node"
+      ]
+    },
+    {
+      "automerge": true,
       "major": {
         "automerge": false
       },
@@ -28,5 +38,8 @@
       ]
     }
   ],
+  "patch": {
+    "automerge": true
+  },
   "timezone": "Asia/Tokyo"
 }
