@@ -10,9 +10,6 @@
   "labels": [
     "renovate"
   ],
-  "minor": {
-    "automerge": false
-  },
   "packageRules": [
     {
       "automerge": true,
@@ -23,24 +20,30 @@
     },
     {
       "automerge": true,
+      "major": {
+        "automerge": false
+      },
       "matchManagers": [
         "nodenv"
       ]
     },
     {
       "automerge": true,
+      "major": {
+        "automerge": false
+      },
       "matchManagers": [
         "pyenv"
       ],
       "minor": {
         "automerge": false
-      },
-      "patch": {
-        "automerge": true
       }
     },
     {
       "automerge": true,
+      "major": {
+        "automerge": false
+      },
       "packagePatterns": [
         "^@types/"
       ]
