@@ -2,5 +2,9 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "github>tqer39/renovate-config"
+  ],
+  "schedule": [
+    "after 2:00",
+    "before 3:00"
   ]
 }
