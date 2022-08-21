@@ -10,6 +10,9 @@
   "labels": [
     "renovate"
   ],
+  "minor": {
+    "automerge": false
+  },
   "packageRules": [
     {
       "automerge": true,
@@ -41,9 +44,6 @@
     },
     {
       "automerge": true,
-      "major": {
-        "automerge": false
-      },
       "packagePatterns": [
         "^@types/"
       ]
