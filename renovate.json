@@ -23,20 +23,23 @@
     },
     {
       "automerge": true,
+      "major": {
+        "automerge": false
+      },
       "matchManagers": [
         "nodenv"
       ]
     },
     {
       "automerge": true,
+      "major": {
+        "automerge": false
+      },
       "matchManagers": [
         "pyenv"
       ],
       "minor": {
         "automerge": false
-      },
-      "patch": {
-        "automerge": true
       }
     },
     {
