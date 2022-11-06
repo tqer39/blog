@@ -1,28 +1,30 @@
 {
-  "files": [
-    "**",
-    ".*/**"
-  ],
-  "ignorePaths": [
-    ".git",
-    ".gitignore"
-  ],
+  "files": ["**", ".*/**"],
+  "ignorePaths": [".git", ".gitignore"],
   "words": [
     "autobuild",
     "Autobuild",
     "autofix",
     "automerge",
+    "Bitstream",
     "buildscript",
     "codeql",
+    "dbaeumer",
+    "errorlens",
+    "esbenp",
     "kentaro",
     "markdownlint",
     "nodenv",
+    "noopener",
+    "noreferrer",
     "ooyama",
     "pyenv",
+    "rarr",
     "rinchsan",
     "shellcheck",
     "textlint",
     "textlintcache",
-    "tqer"
+    "tqer",
+    "usernamehw"
   ]
 }

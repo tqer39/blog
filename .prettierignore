@@ -1,0 +1,5 @@
+.vscode
+.next/
+./*.json
+./*.js
+node_modules/
