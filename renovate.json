@@ -1,6 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "local>tqer39/renovate-config"
-  ]
+    "github>tqer39/renovate-config"
+  ],
+  "automergeStrategy": "squash"
 }

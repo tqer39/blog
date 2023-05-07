@@ -13,6 +13,7 @@
     "autofix",
     "automerge",
     "buildscript",
+    "CODEOWNERS",
     "codeql",
     "kentaro",
     "markdownlint",
@@ -21,6 +22,7 @@
     "pyenv",
     "rinchsan",
     "shellcheck",
+    "SSIA",
     "textlint",
     "textlintcache",
     "tqer"
