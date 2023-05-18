@@ -13,11 +13,14 @@
     "autofix",
     "automerge",
     "buildscript",
+    "callout",
     "CODEOWNERS",
     "codeql",
     "kentaro",
     "markdownlint",
     "nodenv",
+    "noopener",
+    "noreferrer",
     "ooyama",
     "pyenv",
     "rinchsan",
@@ -25,6 +28,7 @@
     "SSIA",
     "textlint",
     "textlintcache",
-    "tqer"
+    "tqer",
+    "vercel"
   ]
 }
