@@ -77,3 +77,23 @@ npm install --save-dev eslint-config-prettier
   "extends": ["prettier"]
 }
 ```
+
+### `eslint-plugin-simple-import-sort`
+
+`import` や `require` の文法、使われていない変数、依存関係の問題など、モジュールの `import`/`export` に関連する問題を検出します。
+
+```bash
+npm install --save-dev eslint-plugin-simple-import-sort
+```
+
+ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
+
+```json
+{
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
+  }
+}
+```
