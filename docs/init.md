@@ -238,6 +238,22 @@ npm install @tailwindcss/typography
 
 ```js
 module.exports = {
-  plugins: [require("@tailwindcss/typography")],
+  plugins: [require('@tailwindcss/typography')],
+};
+```
+
+### `@tailwindcss/forms`
+
+フォームコントロール（ボタン、チェックボックス、ラジオボタン、セレクトボックスなど）のデザインとスタイリングを手助けします。デフォルトのブラウザスタイリングは一貫性がないため、このプラグインはそれらをリセットし、自由にカスタマイズできるようにします。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
+
+```bash
+npm install @tailwindcss/forms
+```
+
+`Tailwind CSS` の設定ファイル（`tailwind.config.js`）を開き、`plugins` に `forms` プラグインを追加します。
+
+```js
+module.exports = {
+  plugins: [require('@tailwindcss/forms')],
 };
 ```
