@@ -1,12 +1,6 @@
 {
-  "files": [
-    "**",
-    ".*/**"
-  ],
-  "ignorePaths": [
-    ".git",
-    ".gitignore"
-  ],
+  "files": ["**", ".*/**"],
+  "ignorePaths": [".git", ".gitignore"],
   "words": [
     "autobuild",
     "Autobuild",
@@ -14,6 +8,7 @@
     "automerge",
     "buildscript",
     "callout",
+    "classname",
     "CODEOWNERS",
     "codeql",
     "esbenp",
@@ -24,6 +19,7 @@
     "noreferrer",
     "ooyama",
     "pyenv",
+    "reshim",
     "rinchsan",
     "shellcheck",
     "SSIA",

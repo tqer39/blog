@@ -22,6 +22,7 @@
 - [Vercel](https://vercel.com/)
 - [GitHub](https://github.com)
 - [renovate](https://www.mend.io/renovate/)
+- [Notion](https://www.notion.so/)
 
 ## Editor
 
@@ -31,3 +32,9 @@
 ## Operation
 
 - `package.json` から `^` を削除すればバージョンは固定される。
+
+## Package Manager
+
+- `npm` を採用します。
+- `yarn` ... が出た当初｀｀と比較して `yarn` の優位性はなさそう
+- `pnpm` ... 学習コストを考慮すると小規模なプロダクトに採用するメリットはなさそう。
