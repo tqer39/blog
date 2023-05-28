@@ -6,7 +6,8 @@
     "eslint:recommended",
     "plugin:import/errors",
     "plugin:import/warnings",
-    "unused-imports"
+    "unused-imports",
+    "plugin:react/recommended"
   ],
   "rules": {
     "prettier/prettier": "error",

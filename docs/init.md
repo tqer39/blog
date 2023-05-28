@@ -136,3 +136,20 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
   }
 }
 ```
+
+### `eslint-plugin-react`
+
+`React` に関するルールを提供します。
+
+```bash
+npm install --save-dev eslint-plugin-react
+```
+
+ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
+
+```json
+{
+  "plugins": ["react"],
+  "extends": ["plugin:react/recommended"]
+}
+```
