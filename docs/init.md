@@ -35,3 +35,27 @@ Creating a new Next.js app in ${ローカルのパス}/tqer39/blog/my-app.
 README.md
 .gitignore
 ```
+
+## plugin
+
+### `eslint-plugin-prettier`
+
+`ESLint` と `Prettier` を共存させるには、以下の手順を実行します。
+
+```bash
+npm install --save-dev eslint-plugin-prettier
+```
+
+`ESLint` の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、`rules` セクションに `"prettier/prettier": "error"` を追加します。これにより `Prettier` と競合する `ESLint` ルールを無効にし、`Prettier` がフォーマットしたコードが `ESLint` でエラーを引き起こさないようにします。
+
+例えば、`.eslintrc.json` の場合:
+
+```json
+{
+  "rules": {
+    "prettier/prettier": "error"
+  }
+}
+```
+
+`ESLint` と `Prettier` が同時にフォーマットすると問題が発生する可能性があるため、`Prettier` が `ESLint` ルールと競合しないように、次に `eslint-config-prettier` をインストールします：

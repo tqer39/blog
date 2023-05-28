@@ -24,6 +24,7 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "eslint-plugin-prettier": "4.2.1",
     "prettier": "2.8.8"
   }
 }
