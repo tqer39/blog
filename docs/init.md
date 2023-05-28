@@ -169,3 +169,19 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
   "extends": ["plugin:react-hooks/recommended"]
 }
 ```
+
+### `@typescript-eslint/eslint-plugin`
+
+`ESLint` と一緒に使うことで `TypeScript` コードに対するリントを提供するプラグインです。このプラグインは、`TypeScript` 特有のパターンを認識し、その結果、`JavaScript` 向けの `ESLint` だけでは検出できないエラーや問題を見つけることができます。
+
+```bash
+npm install --save-dev @typescript-eslint/eslint-plugin
+```
+
+ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
+
+```json
+{
+  "plugins": ["plugin:@typescript-eslint/recommended"]
+}
+```
