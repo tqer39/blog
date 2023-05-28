@@ -5,11 +5,13 @@
     "simple-import-sort",
     "eslint:recommended",
     "plugin:import/errors",
-    "plugin:import/warnings"
+    "plugin:import/warnings",
+    "unused-imports"
   ],
   "rules": {
     "prettier/prettier": "error",
     "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error"
+    "simple-import-sort/exports": "error",
+    "unused-imports/no-unused-imports": "error"
   }
 }

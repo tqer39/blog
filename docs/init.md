@@ -117,3 +117,22 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
   ]
 }
 ```
+
+### `eslint-plugin-unused-imports`
+
+`import` や `require` の文法、使われていない変数、依存関係の問題など、モジュールの `import`/`export` に関連する問題を検出します。
+
+```bash
+npm install --save-dev eslint-plugin-unused-imports
+```
+
+ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
+
+```json
+{
+  "plugins": ["unused-imports"],
+  "rules": {
+    "unused-imports/no-unused-imports": "error"
+  }
+}
+```
