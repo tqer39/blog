@@ -36,6 +36,21 @@ README.md
 .gitignore
 ```
 
+## Tailwind CSS
+
+Tailwind CSS の設定ファイルを生成します。
+
+```bash
+npx tailwindcss init -p
+```
+
+ただ `create-next-app` を実行したときに Tailwind CSS を使うかどうか聞かれているので、そのときに Yes を選択していれば、必要なファイルはすでに生成されているため、以下のようなメッセージが表示されます。
+
+```txt
+tailwind.config.js already exists.
+postcss.config.js already exist
+```
+
 ## plugin
 
 ### `eslint-plugin-prettier`
