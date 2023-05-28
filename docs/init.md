@@ -59,3 +59,21 @@ npm install --save-dev eslint-plugin-prettier
 ```
 
 `ESLint` と `Prettier` が同時にフォーマットすると問題が発生する可能性があるため、`Prettier` が `ESLint` ルールと競合しないように、次に `eslint-config-prettier` をインストールします：
+
+### `eslint-config-prettier`
+
+`JavaScript` および `TypeScript` の `import` 文の並び順を整理するための `ESLint` プラグインです。以下の手順でインストールして設定することができます。
+
+```bash
+npm install --save-dev eslint-config-prettier
+```
+
+`extends` セクションに `"prettier"` を追加します。これにより、`Prettier` と競合する `ESLint` ルールを無効にします。
+
+例えば、`.eslintrc.json` の場合:
+
+```json
+{
+  "extends": ["prettier"]
+}
+```
