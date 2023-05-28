@@ -185,3 +185,22 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
   "plugins": ["plugin:@typescript-eslint/recommended"]
 }
 ```
+
+### `@typescript-eslint/parser`
+
+`ESLint` が `TypeScript` コードを解析できるようにするパーサーです。これにより、`TypeScript` を使用したプロジェクトで `ESLint` を使うことが可能になります。
+
+```bash
+npm install --save-dev @typescript-eslint/parser
+```
+
+ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、パーサーを追加します。
+
+```json
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  }
+}
+```
