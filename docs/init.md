@@ -289,3 +289,39 @@ module.exports = {
   plugins: [require('@tailwindcss/aspect-ratio')],
 };
 ```
+
+### `eslint-plugin-sort-keys-custom-order`
+
+オブジェクトのキーの並び順をカスタマイズするための `ESLint` プラグインです。このプラグインを導入することで、開発時に様々なミスを早期に検出することが可能となります。
+
+```bash
+npm install --save-dev eslint-plugin-sort-keys-custom-order
+```
+
+`ESLint` の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
+
+```json
+{
+  "plugins": ["sort-keys-custom-order"],
+  "rules": {
+    // For JS objects sorting
+    "sort-keys-custom-order/object-keys": [
+      "error",
+      { "orderedKeys": ["id", "name", "title"] }
+    ],
+    // For TS types sorting
+    "sort-keys-custom-order/type-keys": [
+      "error",
+      { "orderedKeys": ["id", "name", "title"] }
+    ]
+  }
+}
+```
+
+`.vscode/settings.json` に以下を追加します。
+
+```json
+{
+  "editor.codeActionsOnSave": ["source.fixAll.eslint"]
+}
+```
