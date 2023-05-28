@@ -204,3 +204,24 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
   }
 }
 ```
+
+### `eslint-plugin-tailwindcss`
+
+`Tailwind CSS` を用いたプロジェクトにおいて、不適切なクラス名の使用や不適切なクラス名の順序等を検出するための `ESLint` プラグインです。このプラグインを導入することで、開発時に様々なミスを早期に検出することが可能となります。
+
+```bash
+npm install --save-dev eslint-plugin-tailwindcss
+```
+
+ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
+
+```json
+{
+  "plugins": ["tailwindcss"],
+  "rules": {
+    "tailwindcss/classnames-order": "warn",
+    "tailwindcss/no-custom-classname": "warn",
+    "tailwindcss/no-contradicting-classname": "error"
+  }
+}
+```

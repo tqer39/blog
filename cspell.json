@@ -8,6 +8,7 @@
     "automerge",
     "buildscript",
     "callout",
+    "classname",
     "CODEOWNERS",
     "codeql",
     "esbenp",

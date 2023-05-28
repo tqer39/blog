@@ -9,13 +9,17 @@
     "unused-imports",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "tailwindcss"
   ],
   "rules": {
     "prettier/prettier": "error",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
-    "unused-imports/no-unused-imports": "error"
+    "unused-imports/no-unused-imports": "error",
+    "tailwindcss/classnames-order": "warn",
+    "tailwindcss/no-custom-classname": "warn",
+    "tailwindcss/no-contradicting-classname": "error"
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
