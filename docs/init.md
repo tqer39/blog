@@ -51,7 +51,7 @@ tailwind.config.js already exists.
 postcss.config.js already exist
 ```
 
-## plugin
+## install package
 
 ### `eslint-plugin-prettier`
 
