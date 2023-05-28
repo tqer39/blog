@@ -153,3 +153,19 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
   "extends": ["plugin:react/recommended"]
 }
 ```
+
+### `eslint-plugin-react-hooks`
+
+`React Hooks` のルールを強制するための `ESLint` のプラグインです。`React Hooks` は、関数コンポーネント内で `state` やその他の `React` の機能を使用するためのものですが、正しく使用しないとバグを引き起こす可能性があります。このプラグインはそのような問題を防ぎます。
+
+```bash
+npm install --save-dev eslint-plugin-react-hooks
+```
+
+ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
+
+```json
+{
+  "extends": ["plugin:react-hooks/recommended"]
+}
+```
