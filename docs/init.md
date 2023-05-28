@@ -228,7 +228,7 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
 
 ### `@tailwindcss/typography`
 
-`Tailwind CSS` で提供されている `typography` プラグインを導入するためのパッケージです。このパッケージを導入することで、`Tailwind CSS` で提供されている `typography` プラグインを使用することが可能となります。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
+`Tailwind CSS` に `Markdown` で作成されたコンテンツや一般的なタイポグラフィパターンのスタイリングを効率的に適用するためのユーティリティを追加します。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
 
 ```bash
 npm install @tailwindcss/typography
