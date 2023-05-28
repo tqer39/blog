@@ -97,3 +97,23 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
   }
 }
 ```
+
+### `eslint-plugin-import`
+
+`import` や `require` の文法、使われていない変数、依存関係の問題など、モジュールの `import`/`export` に関連する問題を検出します。
+
+```bash
+npm install --save-dev eslint-plugin-import
+```
+
+ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
+
+```json
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings"
+  ]
+}
+```
