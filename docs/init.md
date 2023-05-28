@@ -273,3 +273,19 @@ module.exports = {
   plugins: [require('@tailwindcss/line-clamp')],
 };
 ```
+
+### `@tailwindcss/aspect-ratio`
+
+要素のアスペクト比（幅と高さの比率）を制御するユーティリティクラスを提供します。これは、画像やビデオなど、特定のアスペクト比を維持することが重要なコンテンツにとって有用です。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
+
+```bash
+npm install @tailwindcss/aspect-ratio
+```
+
+`Tailwind CSS` の設定ファイル（`tailwind.config.js`）を開き、`plugins` に `aspect-ratio` プラグインを追加します。
+
+```js
+module.exports = {
+  plugins: [require('@tailwindcss/aspect-ratio')],
+};
+```
