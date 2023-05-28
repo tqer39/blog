@@ -22,6 +22,7 @@
 - [Vercel](https://vercel.com/)
 - [GitHub](https://github.com)
 - [renovate](https://www.mend.io/renovate/)
+- [Notion](https://www.notion.so/)
 
 ## Editor
 
