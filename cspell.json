@@ -1,6 +1,12 @@
 {
-  "files": ["**", ".*/**"],
-  "ignorePaths": [".git", ".gitignore"],
+  "files": [
+    "**",
+    ".*/**"
+  ],
+  "ignorePaths": [
+    ".git",
+    ".gitignore"
+  ],
   "words": [
     "autobuild",
     "Autobuild",
@@ -17,6 +23,7 @@
     "nodenv",
     "noopener",
     "noreferrer",
+    "notionhq",
     "ooyama",
     "pyenv",
     "reshim",

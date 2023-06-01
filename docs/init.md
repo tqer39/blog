@@ -340,3 +340,11 @@ npm install --save-dev eslint-plugin-sort-keys-custom-order
   "editor.codeActionsOnSave": ["source.fixAll.eslint"]
 }
 ```
+
+### `@notionhq/client`
+
+`Notion API` を使用するための `JavaScript` クライアントです。
+
+```bash
+npm install @notionhq/client
+```
