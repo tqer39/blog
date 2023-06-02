@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, Flex, Text } from '@chakra-ui/react';
 
 const Header = () => {
