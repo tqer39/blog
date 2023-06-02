@@ -364,3 +364,11 @@ npm install recoil
 ```bash
 npm install @chakra-ui/react
 ```
+
+### `@emotion/react`
+
+`Emotion` は、`CSS` を `JavaScript` で書くためのライブラリです。`Emotion` は、`CSS` を `JavaScript` で書くためのライブラリです。
+
+```bash
+npm install @emotion/react
+```
