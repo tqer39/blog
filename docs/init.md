@@ -380,3 +380,11 @@ npm install @emotion/react
 ```bash
 npm install @emotion/styled
 ```
+
+### `framer-motion`
+
+`React` アプリケーションのアニメーションとインタラクションを簡単に作成できるライブラリです。これをインストールするには、以下のコマンドを実行します。
+
+```bash
+npm install framer-motion
+```
