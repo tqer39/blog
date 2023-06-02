@@ -396,5 +396,3 @@ npm install framer-motion
 ```bash
 npm install react-markdown
 ```
-
-
