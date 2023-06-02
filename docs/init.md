@@ -356,3 +356,11 @@ npm install @notionhq/client
 ```bash
 npm install recoil
 ```
+
+### `@chakra-ui/react`
+
+`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。
+
+```bash
+npm install @chakra-ui/react
+```
