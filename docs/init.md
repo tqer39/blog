@@ -372,3 +372,11 @@ npm install @chakra-ui/react
 ```bash
 npm install @emotion/react
 ```
+
+### `@emotion/styled`
+
+`Emotion` の一部で、`CSS-in-JS` のライブラリです。
+
+```bash
+npm install @emotion/styled
+```
