@@ -396,3 +396,11 @@ npm install framer-motion
 ```bash
 npm install react-markdown
 ```
+
+### `@chakra-ui/next-js`
+
+`Next.js 13` 用の `Chakra UI` の統合パッケージです。このパッケージを使用すると、`Next.js 13` のプロジェクトで `Chakra UI` を簡単に使用することができます。
+
+```bash
+npm install @chakra-ui/next-js
+```
