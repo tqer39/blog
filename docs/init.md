@@ -348,3 +348,11 @@ npm install --save-dev eslint-plugin-sort-keys-custom-order
 ```bash
 npm install @notionhq/client
 ```
+
+### 'recoil`
+
+`Recoil` は、`React` アプリケーションのための状態管理ライブラリです。`Recoil` は、`React` のコンポーネントツリーの中で状態を表現するための `atom` と呼ばれる単位を提供します。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。
+
+```bash
+npm install recoil
+```
