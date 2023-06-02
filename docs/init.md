@@ -388,3 +388,13 @@ npm install @emotion/styled
 ```bash
 npm install framer-motion
 ```
+
+### `react-markdown`
+
+`React` アプリケーションで `Markdown` をレンダリングするためのライブラリです。
+
+```bash
+npm install react-markdown
+```
+
+
