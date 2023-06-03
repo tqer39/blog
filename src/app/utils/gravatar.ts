@@ -1,6 +1,6 @@
 import gravatar from 'gravatar';
 
-export const getGravatarUrl = (email: string): string => {
+export const getGravatarUrl = async (email: string) => {
   const options = {
     s: '200',
     r: 'pg',
