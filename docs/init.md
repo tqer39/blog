@@ -412,3 +412,11 @@ npm install @chakra-ui/next-js
 ```bash
 npm install gravatar
 ```
+
+### `@types/gravatar`
+
+`TypeScript` で `gravatar` を使用するための型定義です。
+
+```bash
+npm install @types/gravatar
+```
