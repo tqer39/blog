@@ -1,15 +1,23 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { getGravatarUrl } from '../utils/gravatar';
 import Image from 'next/image';
 
-interface AvatarProps {
-  src: string;
-  alt: string;
-}
+const Avatar: FC = () => {
+  const email = process.env.NEXT_PUBLIC_GRAVATAR_EMAIL_ADDRESS || '';
+  const [src, setSrc] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchGravatarUrl = async () => {
+      const gravatarUrl = await getGravatarUrl(email); // getGravatarUrlはGravatarのURLを生成する非同期関数
+      setSrc(gravatarUrl);
+    };
+    fetchGravatarUrl();
+  }, [email]);
 
-const Avatar: FC<AvatarProps> = ({ src, alt }) => {
   return (
     <div className="rounded-full overflow-hidden w-20 h-20">
-      <Image src={src} alt={alt} width={80} height={80} />
+      {src && (
+        <Image src={src} alt={'avatar'} width={80} height={80} priority />
+      )}
     </div>
   );
 };
