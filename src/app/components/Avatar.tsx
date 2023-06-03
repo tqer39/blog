@@ -8,7 +8,7 @@ interface AvatarProps {
 
 const Avatar: FC<AvatarProps> = ({ src, alt }) => {
   return (
-    <div>
+    <div className="rounded-full overflow-hidden w-20 h-20">
       <Image src={src} alt={alt} width={80} height={80} />
     </div>
   );
