@@ -1,17 +1,13 @@
-import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
+import RightPane from './RightPane';
 
-const Layout: React.FC = () => {
+export default function Layout() {
   return (
-    <div>
+    <>
       <Header />
-      <main>
-        Contents
-      </main>
+      <RightPane />
       <Footer />
-    </div>
+    </>
   );
-};
-
-export default Layout;
+}
