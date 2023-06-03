@@ -1,13 +1,16 @@
+import { FC } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import RightPane from './RightPane';
 
-export default function Layout() {
+const Layout: FC = () => {
   return (
     <>
-      <Header />
+      <Header blogTitle={'engineering logs'} />
       <RightPane />
       <Footer />
     </>
   );
 }
+
+export default Layout;
