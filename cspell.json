@@ -1,6 +1,12 @@
 {
-  "files": ["**", ".*/**"],
-  "ignorePaths": [".git", ".gitignore"],
+  "files": [
+    "**",
+    ".*/**"
+  ],
+  "ignorePaths": [
+    ".git",
+    ".gitignore"
+  ],
   "words": [
     "autobuild",
     "Autobuild",
@@ -8,6 +14,7 @@
     "automerge",
     "buildscript",
     "callout",
+    "chakra",
     "classname",
     "CODEOWNERS",
     "codeql",
@@ -17,6 +24,7 @@
     "nodenv",
     "noopener",
     "noreferrer",
+    "notionhq",
     "ooyama",
     "pyenv",
     "reshim",

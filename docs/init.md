@@ -340,3 +340,83 @@ npm install --save-dev eslint-plugin-sort-keys-custom-order
   "editor.codeActionsOnSave": ["source.fixAll.eslint"]
 }
 ```
+
+### `@notionhq/client`
+
+`Notion API` を使用するための `JavaScript` クライアントです。
+
+```bash
+npm install @notionhq/client
+```
+
+### 'recoil`
+
+`Recoil` は、`React` アプリケーションのための状態管理ライブラリです。`Recoil` は、`React` のコンポーネントツリーの中で状態を表現するための `atom` と呼ばれる単位を提供します。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。
+
+```bash
+npm install recoil
+```
+
+### `@chakra-ui/react`
+
+`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。
+
+```bash
+npm install @chakra-ui/react
+```
+
+### `@emotion/react`
+
+`Emotion` は、`CSS` を `JavaScript` で書くためのライブラリです。`Emotion` は、`CSS` を `JavaScript` で書くためのライブラリです。
+
+```bash
+npm install @emotion/react
+```
+
+### `@emotion/styled`
+
+`Emotion` の一部で、`CSS-in-JS` のライブラリです。
+
+```bash
+npm install @emotion/styled
+```
+
+### `framer-motion`
+
+`React` アプリケーションのアニメーションとインタラクションを簡単に作成できるライブラリです。これをインストールするには、以下のコマンドを実行します。
+
+```bash
+npm install framer-motion
+```
+
+### `react-markdown`
+
+`React` アプリケーションで `Markdown` をレンダリングするためのライブラリです。
+
+```bash
+npm install react-markdown
+```
+
+### `@chakra-ui/next-js`
+
+`Next.js 13` 用の `Chakra UI` の統合パッケージです。このパッケージを使用すると、`Next.js 13` のプロジェクトで `Chakra UI` を簡単に使用することができます。
+
+```bash
+npm install @chakra-ui/next-js
+```
+
+### `gravatar`
+
+`Globally Recognized Avatars` の略で、`WordPress` の共同創設者である `Tom Preston-Werner` によって作成された画像のプロファイルサービスです。
+
+```bash
+npm install gravatar
+```
+
+### `@types/gravatar`
+
+`TypeScript` で `gravatar` を使用するための型定義です。
+
+```bash
+npm install @types/gravatar
+```
