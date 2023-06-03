@@ -404,3 +404,11 @@ npm install react-markdown
 ```bash
 npm install @chakra-ui/next-js
 ```
+
+### `gravatar`
+
+`Globally Recognized Avatars` の略で、`WordPress` の共同創設者である `Tom Preston-Werner` によって作成された画像のプロファイルサービスです。
+
+```bash
+npm install gravatar
+```
