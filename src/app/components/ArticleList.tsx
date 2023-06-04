@@ -1,46 +1,35 @@
 import { useEffect, useState } from 'react';
-// import { Database } from '@notionhq/client';
-import { getFirstRowFromDatabase } from '../utils/notion';
-import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
-
-interface ArticleType {
-  title: string;
-  // 他のプロパティ...
-}
+import { PartialBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 const ArticleList = () => {
-  const [article, setArticle] = useState<ArticleType | null>(null);
-  const databaseId = process.env.NOTION_DATABASE_ID || ''; // replace with your Database ID
+  const [articles, setArticles] = useState<PartialBlockObjectResponse[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getFirstRowFromDatabase(databaseId); // あなたのデータベースIDに置き換えてください
-        if ("properties" in data) {
-          // setArticle({ title: data });
-          // data is of type PageObjectResponse
-          const pageData = data as PageObjectResponse;
-          if (pageData.properties.Name.type === 'rich_text') {
-            const richTextProperty = pageData.properties.Name;
-            setArticle({ title: richTextProperty.rich_text[0].plain_text });
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      }
+    const fetchArticles = async () => {
+      const res = await fetch('/api/articles');
+      const data = await res.json();
+      setArticles(data.results);
     };
 
-    fetchData();
+    fetchArticles();
   }, []);
 
-  if (!article) {
+  if (!articles) {
     return <div>Loading...</div>;
   }
 
   return (
     <>
-      <h2>{article.title}</h2>
-      {/* 他の記事の詳細を表示する */}
+      {articles && articles.length > 0 ? (
+        articles.map((article) => (
+          <div key={article.id}>
+            <h2>{article.id}</h2>
+            {/* 他の記事の詳細を表示する */}
+          </div>
+        ))
+      ) : (
+        <p>No articles found</p>
+      )}
     </>
   );
 };
