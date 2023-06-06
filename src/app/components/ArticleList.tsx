@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PartialBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import { Spinner } from '@chakra-ui/react';
 
 const ArticleList = () => {
   const [articles, setArticles] = useState<PartialBlockObjectResponse[]>([]);
@@ -15,7 +16,7 @@ const ArticleList = () => {
   }, []);
 
   if (!articles) {
-    return <div>Loading...</div>;
+    return <Spinner/>;
   }
 
   return (
@@ -28,7 +29,7 @@ const ArticleList = () => {
           </div>
         ))
       ) : (
-        <p>No articles found</p>
+        <Spinner/>
       )}
     </>
   );
