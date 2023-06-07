@@ -3,9 +3,9 @@ import Avatar from './Avatar';
 import Profile from './Profile';
 import getGravatarUrl from '../utils/gravatar';
 
-const RightPane: FC = async () => {
-  const email = process.env.GRAVATAR_EMAIL_ADDRESS || '';
-  const avatarUrl = await getGravatarUrl(email);
+const RightPane: FC = () => {
+  const email = process.env.NEXT_PUBLIC_GRAVATAR_EMAIL_ADDRESS || '';
+  const avatarUrl = getGravatarUrl(email);
 
   return (
     <div className="right-pane">
