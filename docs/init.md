@@ -420,3 +420,11 @@ npm install gravatar
 ```bash
 npm install @types/gravatar
 ```
+
+### `dayjs`
+
+`JavaScript` の日付と時刻の操作をシンプルにするためのライブラリです。
+
+```bash
+npm install dayjs
+```
