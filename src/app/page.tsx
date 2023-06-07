@@ -1,14 +1,17 @@
 'use client';
 
 import { FC } from 'react';
-import Layout from './components/Layout';
+import { CacheProvider } from '@chakra-ui/next-js';
 import { ChakraProvider } from '@chakra-ui/react';
+import Layout from './components/Layout';
 
 const Page: FC = () => {
   return (
-    <ChakraProvider>
-      <Layout />
-    </ChakraProvider>
+    <CacheProvider>
+      <ChakraProvider>
+        <Layout />
+      </ChakraProvider>
+    </CacheProvider>
   );
 };
 

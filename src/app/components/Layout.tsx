@@ -13,6 +13,6 @@ const Layout: FC = () => {
       <Footer />
     </>
   );
-}
+};
 
 export default Layout;
