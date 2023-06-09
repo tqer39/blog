@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { Grid, GridItem } from '@chakra-ui/react';
 import Header from './Header';
 import Footer from './Footer';
 import RightPane from './RightPane';
@@ -6,12 +7,24 @@ import ArticleList from './ArticleList';
 
 const Layout: FC = () => {
   return (
-    <>
-      <Header blogTitle={'engineering logs'} />
-      <ArticleList />
-      <RightPane />
-      <Footer />
-    </>
+    <Grid
+      templateAreas={`"header header"
+                  "article-list right-pane"
+                  "footer footer"`}
+    >
+      <GridItem area={'header'}>
+        <Header blogTitle={'engineering logs'} />
+      </GridItem>
+      <GridItem pl={2} area={'article-list'}>
+        <ArticleList />
+      </GridItem>
+      <GridItem pl={2} area={'right-pane'}>
+        <RightPane />
+      </GridItem>
+      <GridItem area={'footer'}>
+        <Footer />
+      </GridItem>
+    </Grid>
   );
 };
 
