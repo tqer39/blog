@@ -13,7 +13,7 @@ const Layout: FC = () => {
                   "footer footer"`}
     >
       <GridItem area={'header'}>
-        <Header blogTitle={'engineering logs'} />
+        <Header blogTitle={'tqer39\'s blog'} />
       </GridItem>
       <GridItem pl={2} area={'article-list'}>
         <ArticleList />
