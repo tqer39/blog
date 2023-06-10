@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { PartialBlockObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+import { DatabaseObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { Spinner } from '@chakra-ui/react';
 
 const ArticleList = () => {
-  const [articles, setArticles] = useState<PartialBlockObjectResponse[]>([]);
+  const [articles, setArticles] = useState<DatabaseObjectResponse[]>([]);
 
   useEffect(() => {
     const fetchArticles = async () => {
