@@ -6,7 +6,9 @@ import {
   Text,
   useColorModeValue,
   useBreakpointValue,
+  Spacer,
 } from '@chakra-ui/react';
+import ColorModeToggle from './ColorModeToggle';
 
 interface HeaderProps {
   blogTitle: string;
@@ -36,6 +38,10 @@ const Header: FC<HeaderProps> = ({ blogTitle }) => {
               {blogTitle}
             </NextLink>
           </Text>
+        </Flex>
+        <Spacer />
+        <Flex>
+          <ColorModeToggle />
         </Flex>
       </Flex>
     </Box>
