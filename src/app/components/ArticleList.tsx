@@ -16,7 +16,7 @@ const ArticleList = () => {
   }, []);
 
   if (!articles) {
-    return <Spinner/>;
+    return <Spinner />;
   }
 
   return (
