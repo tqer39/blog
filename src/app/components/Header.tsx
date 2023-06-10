@@ -1,6 +1,12 @@
-import { FC } from 'react';
 import NextLink from 'next/link';
-import { Box, Container, Flex, Heading, Link } from '@chakra-ui/react';
+import { FC } from 'react';
+import {
+  Box,
+  Flex,
+  Text,
+  useColorModeValue,
+  useBreakpointValue,
+} from '@chakra-ui/react';
 
 interface HeaderProps {
   blogTitle: string;
@@ -8,21 +14,30 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = ({ blogTitle }) => {
   return (
-    <Box px={4} bgColor="gray.100">
-      <Container maxW="container.lg">
-        <Flex
-          as="header"
-          py="4"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <NextLink href="/" passHref>
-            <Heading as="h1" fontSize="2xl" cursor="pointer">
+    <Box>
+      <Flex
+        bg={useColorModeValue('white', 'gray.800')}
+        color={useColorModeValue('gray.600', 'white')}
+        minH={'60px'}
+        py={{ base: 2 }}
+        px={{ base: 4 }}
+        borderBottom={1}
+        borderStyle={'solid'}
+        borderColor={useColorModeValue('gray.200', 'gray.900')}
+        align={'center'}
+      >
+        <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
+          <Text
+            textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
+            fontFamily={'heading'}
+            color={useColorModeValue('gray.800', 'white')}
+          >
+            <NextLink href={'/'} passHref>
               {blogTitle}
-            </Heading>
-          </NextLink>
+            </NextLink>
+          </Text>
         </Flex>
-      </Container>
+      </Flex>
     </Box>
   );
 };
