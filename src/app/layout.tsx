@@ -5,7 +5,7 @@ import Page from './page';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'engineering logs',
+  title: 'tqer39\'s blog',
   description: 'Created by tqer39',
 };
 
