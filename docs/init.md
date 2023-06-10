@@ -436,3 +436,11 @@ npm install --save-exact dayjs
 ```bash
 npm install --save-exact react-icons
 ```
+
+### `@chakra-ui/icons`
+
+`Chakra UI` で使用できるアイコンのセットです。
+
+```bash
+npm install --save-exact @chakra-ui/icons
+```
