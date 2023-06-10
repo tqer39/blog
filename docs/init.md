@@ -428,3 +428,11 @@ npm install --save-exact @types/gravatar
 ```bash
 npm install --save-exact dayjs
 ```
+
+### `react-icons`
+
+`React` アプリケーションで使用できるアイコンのセットです。
+
+```bash
+npm install --save-exact react-icons
+```
