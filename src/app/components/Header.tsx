@@ -10,9 +10,9 @@ import {
 } from '@chakra-ui/react';
 import ColorModeToggle from './ColorModeToggle';
 
-interface HeaderProps {
+type HeaderProps = {
   blogTitle: string;
-}
+};
 
 const Header: FC<HeaderProps> = ({ blogTitle }) => {
   return (
