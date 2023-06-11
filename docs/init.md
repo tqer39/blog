@@ -444,3 +444,11 @@ npm install --save-exact react-icons
 ```bash
 npm install --save-exact @chakra-ui/icons
 ```
+
+### `notion-to-md`
+
+`Notion` のページを `Markdown` に変換するためのライブラリです。
+
+```bash
+npm install --save-exact notion-to-md
+```
