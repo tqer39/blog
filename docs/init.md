@@ -357,14 +357,6 @@ npm install --save-exact @notionhq/client
 npm install --save-exact recoil
 ```
 
-### `@chakra-ui/react`
-
-`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。
-
-```bash
-npm install --save-exact @chakra-ui/react
-```
-
 ### `@emotion/react`
 
 `Emotion` は、`CSS` を `JavaScript` で書くためのライブラリです。`Emotion` は、`CSS` を `JavaScript` で書くためのライブラリです。
@@ -397,14 +389,6 @@ npm install --save-exact framer-motion
 npm install --save-exact react-markdown
 ```
 
-### `@chakra-ui/next-js`
-
-`Next.js 13` 用の `Chakra UI` の統合パッケージです。このパッケージを使用すると、`Next.js 13` のプロジェクトで `Chakra UI` を簡単に使用することができます。
-
-```bash
-npm install --save-exact @chakra-ui/next-js
-```
-
 ### `gravatar`
 
 `Globally Recognized Avatars` の略で、`WordPress` の共同創設者である `Tom Preston-Werner` によって作成された画像のプロファイルサービスです。
@@ -435,20 +419,4 @@ npm install --save-exact dayjs
 
 ```bash
 npm install --save-exact react-icons
-```
-
-### `@chakra-ui/icons`
-
-`Chakra UI` で使用できるアイコンのセットです。
-
-```bash
-npm install --save-exact @chakra-ui/icons
-```
-
-### `notion-to-md`
-
-`Notion` のページを `Markdown` に変換するためのライブラリです。
-
-```bash
-npm install --save-exact notion-to-md
 ```

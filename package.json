@@ -10,9 +10,6 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@chakra-ui/icons": "2.0.19",
-    "@chakra-ui/next-js": "2.1.4",
-    "@chakra-ui/react": "2.7.0",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@notionhq/client": "2.2.5",
@@ -22,6 +19,7 @@
     "@tailwindcss/typography": "0.5.9",
     "autoprefixer": "10.4.14",
     "dayjs": "^1.11.8",
+    "fast-glob": "^3.2.12",
     "framer-motion": "10.12.16",
     "gravatar": "1.8.2",
     "next": "13.4.4",
