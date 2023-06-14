@@ -420,3 +420,11 @@ npm install --save-exact dayjs
 ```bash
 npm install --save-exact react-icons
 ```
+
+### `encoding`
+
+`JavaScript` で文字列をバイト配列に変換するためのライブラリです。
+
+```bash
+npm install --save-exact encoding
+```
