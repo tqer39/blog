@@ -1,5 +1,3 @@
-'use client';
-
 import { FC } from 'react';
 import { CacheProvider } from '@chakra-ui/next-js';
 import { ChakraProvider } from '@chakra-ui/react';
