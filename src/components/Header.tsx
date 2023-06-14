@@ -10,7 +10,7 @@ const Header: FC = () => {
             className="text-black-800 inline-flex items-center gap-2.5 text-2xl font-bold md:text-3xl"
             aria-label="logo"
           >
-            Flowrift
+            tqer39's blog
           </a>
           <nav className="hidden gap-12 lg:flex">
             <a
