@@ -1,8 +1,5 @@
-import { FC } from 'react';
-import Articles from './articles/page';
+import Articles from '@/components/Articles';
 
-const Page: FC = () => {
+export default function Page() {
   return <Articles />;
-};
-
-export default Page;
+}
