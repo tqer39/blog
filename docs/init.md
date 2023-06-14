@@ -428,3 +428,11 @@ npm install --save-exact react-icons
 ```bash
 npm install --save-exact encoding
 ```
+
+### `next-themes`
+
+`Next.js` アプリケーションでダークモードを実装するためのライブラリです。
+
+```bash
+npm install --save-exact next-themes
+```
