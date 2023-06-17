@@ -32,8 +32,8 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
       const tags = (
         post.properties.tags as { multi_select: { name: string }[] }
       ).multi_select.map((tag) => tag.name);
-      const status = (post.properties.status as { select: { name: string } })
-        .select.name;
+      const status = (post.properties.status as { status: { name: string } })
+        .status.name;
       const update_date = (
         post.properties.update_date as { date: { start: string } }
       ).date.start;
