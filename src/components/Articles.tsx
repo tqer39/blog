@@ -16,8 +16,8 @@ const Articles = async () => {
           articles.map((article) => {
             return (
               <div key={article.id}>
-                <Link href={`/article/${article.id}`} passHref>
-                  {article.id}
+                <Link href={`/article/${article.article_id}`} passHref>
+                  {article.title}
                 </Link>
               </div>
             );
