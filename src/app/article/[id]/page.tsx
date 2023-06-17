@@ -4,7 +4,6 @@ import Layout from '@/components/Layout';
 type ArticleProps = {
   params: {
     id: string;
-
   };
 };
 
