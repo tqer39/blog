@@ -5,13 +5,12 @@ const notion = new Client({ auth: process.env.NOTION_API_KEY });
 
 type BlogPost = {
   id: string;
-  lastEditedTime: string;
-  create_date: string;
+  title: string;
+  createDate: string;
+  updateDate: string;
   tags: string[];
   status: string;
-  update_date: string;
   article_id: string;
-  title: string;
 }[];
 
 export const getArticleMetadata = async (): Promise<BlogPost> => {
@@ -26,6 +25,9 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
     response.results.map(async (post) => {
       if (!('properties' in post)) return null;
 
+      const title = (
+        post.properties.title as { rich_text: { plain_text: string }[] }
+      ).rich_text[0].plain_text;
       const createDate = (
         post.properties.create_date as { date: { start: string } }
       ).date.start;
@@ -34,25 +36,18 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
       ).multi_select.map((tag) => tag.name);
       const status = (post.properties.status as { status: { name: string } })
         .status.name;
-      const update_date = (
-        post.properties.update_date as { last_edited_time: string }
-      ).last_edited_time;
       const article_id = (
         post.properties.article_id as { title: { plain_text: string }[] }
       ).title[0].plain_text;
-      const title = (
-        post.properties.title as { rich_text: { plain_text: string }[] }
-      ).rich_text[0].plain_text;
 
       const postInfo = {
         id: post.id || '',
-        lastEditedTime: post.last_edited_time || '',
-        create_date: createDate || '',
+        title: title || '',
+        createDate: createDate || '',
+        updateDate: post.last_edited_time || '',
         tags: tags || [],
         status: status || '',
-        update_date: update_date || '',
         article_id: article_id || '',
-        title: title || '',
       };
 
       return postInfo;
