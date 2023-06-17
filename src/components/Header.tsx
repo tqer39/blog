@@ -5,7 +5,7 @@ import Brand from './Brand';
 
 const Header: FC = () => {
   return (
-    <div className="bg-white lg:pb-12">
+    <div className="bg-white dark:bg-black lg:pb-12">
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
         <header className="flex items-center justify-between py-4 md:py-8">
           {/*
@@ -19,7 +19,8 @@ const Header: FC = () => {
             mt-8: 上側のマージンを8にする
           */}
           <div className="inline-flex text-2xl md:text-4xl font-bold tracking-tight md:tracking-tighter leading-tight mb-20 mt-8 text-black-800 dark:text-white-800">
-          <Brand brand={"tqer39's blog"} />
+            <Brand brand={"tqer39's blog"} />
+          </div>
           <nav className="hidden gap-12 lg:flex">
             <Link
               href={'https://bento.me/tqer39'}
