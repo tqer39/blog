@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getArticleMetadata } from '../lib/notion';
 import Layout from './Layout';
 
@@ -11,7 +12,15 @@ const Articles = async () => {
     <Layout>
       <div>
         {articles ? (
-          articles.map((article) => <div key={article.id}>{article.id}</div>)
+          articles.map((article) => {
+            return (
+              <div key={article.id}>
+                <Link href={`/article/${article.id}`} passHref>
+                  {article.id}
+                </Link>
+              </div>
+            );
+          })
         ) : (
           <div>no data</div>
         )}
