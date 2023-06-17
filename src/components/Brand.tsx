@@ -14,9 +14,9 @@ const Brand: FC<BrandProps> = ({ brand }) => {
     // leading-tight: 行間を詰める
     // mb-20: 下側のマージンを20にする
     // mt-8: 上側のマージンを8にする
-    <div className="text-2xl md:text-4xl font-bold tracking-tight md:tracking-tighter leading-tight mb-20 mt-8">
+    <h2 className="text-2xl md:text-4xl font-bold tracking-tight md:tracking-tighter leading-tight mb-20 mt-8">
       {brand}
-    </div>
+    </h2>
   );
 };
 
