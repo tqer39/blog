@@ -10,6 +10,7 @@ type BlogPost = {
   tags: string[];
   status: string;
   update_date: string;
+  article_id: string;
 }[];
 
 export const getArticleMetadata = async (): Promise<BlogPost> => {
@@ -31,12 +32,14 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
       const tags = (
         post.properties.tags as { multi_select: { name: string }[] }
       ).multi_select.map((tag) => tag.name);
-      const status = (
-        post.properties.status as { select: { name: string } }
-      ).select.name;
+      const status = (post.properties.status as { select: { name: string } })
+        .select.name;
       const update_date = (
         post.properties.update_date as { date: { start: string } }
       ).date.start;
+      const article_id = (
+        post.properties.article_id as { rich_text: { plain_text: string }[] }
+      ).rich_text[0].plain_text;
 
       // 必要となるPropertiesの取得
       const postInfo = {
@@ -46,6 +49,7 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
         tags: tags || [],
         status: status || '',
         update_date: update_date || '',
+        article_id: article_id || '',
       };
 
       return postInfo;
