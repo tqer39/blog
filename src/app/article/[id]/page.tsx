@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import Layout from '@/components/Layout';
 
 type ArticleProps = {
   params: {
@@ -10,7 +11,9 @@ type ArticleProps = {
 const Article: FC<ArticleProps> = ({ params }) => {
   return (
     <>
-      <div className="m-4 font-bold">Blog ID: {params.id}</div>
+      <Layout>
+        <div className="m-4 font-bold">Blog ID: {params.id}</div>
+      </Layout>
     </>
   );
 };
