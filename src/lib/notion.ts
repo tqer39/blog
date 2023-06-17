@@ -7,6 +7,7 @@ type BlogPost = {
   id: string;
   lastEditedTime: string;
   create_date: string;
+  tags: string[];
 }[];
 
 export const getArticleMetadata = async (): Promise<BlogPost> => {
@@ -25,12 +26,16 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
       const createDate = (
         post.properties.create_date as { date: { start: string } }
       ).date.start;
+      const tags = (
+        post.properties.tags as { multi_select: { name: string }[] }
+      ).multi_select.map((tag) => tag.name);
 
       // 必要となるPropertiesの取得
       const postInfo = {
         id: pageId || '',
         lastEditedTime: post.last_edited_time || '',
         create_date: createDate || '',
+        tags: tags || [],
       };
 
       return postInfo;
