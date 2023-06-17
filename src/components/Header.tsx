@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import { FC } from 'react';
 import ThemeSwitcher from './ThemeSwitcher';
 import Brand from './Brand';
+import Bio from './Bio';
 
 const Header: FC = () => {
   return (
@@ -22,14 +22,8 @@ const Header: FC = () => {
             <div className="inline-flex text-2xl md:text-4xl font-bold tracking-tight md:tracking-tighter leading-tight mb-20 mt-8 text-black-800 dark:text-white-800">
               <Brand brand={"tqer39's blog"} />
             </div>
-            <nav className="hidden gap-12 lg:flex">
-              <Link
-                href={'https://bento.me/tqer39'}
-                target="_blank"
-                className="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700"
-              >
-                Bio
-              </Link>
+            <nav className="hidden gap-12 lg:flex text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700">
+              <Bio />
             </nav>
             <div className="-ml-8 hidden flex-col gap-2.5 sm:flex-row sm:justify-center lg:flex lg:justify-start">
               <ThemeSwitcher />
