@@ -1,19 +1,21 @@
-import { FC } from 'react';
 import Layout from '@/components/Layout';
+import { getPostData } from '@/lib/getArticle';
 
-type ArticleProps = {
-  params: {
-    id: string;
-  };
-};
+const Article = ({ params }: { params: { id: string } }) => {
+  const data: { content: string } = getPostData(params.id);
 
-const Article: FC<ArticleProps> = ({ params }) => {
   return (
-    <>
-      <Layout>
-        <div className="m-4 font-bold">Blog ID: {params.id}</div>
-      </Layout>
-    </>
+    <Layout>
+      {data.content && data.content !== '' ? (
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-xl">{JSON.stringify(data)}</p>
+        </div>
+      ) : (
+        <p>
+          <div>no data</div>
+        </p>
+      )}
+    </Layout>
   );
 };
 
