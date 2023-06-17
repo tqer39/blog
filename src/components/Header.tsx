@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { FC } from 'react';
+import Brand from './Brand';
 
 const Header: FC = () => {
   return (
@@ -11,7 +12,7 @@ const Header: FC = () => {
             className="text-black-800 inline-flex items-center gap-2.5 text-2xl font-bold md:text-3xl"
             aria-label="logo"
           >
-            tqer39's blog
+            <Brand brand={'tqer39\'s blog'} />
           </Link>
           <nav className="hidden gap-12 lg:flex">
             <Link
