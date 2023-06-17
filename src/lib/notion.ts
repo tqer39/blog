@@ -5,6 +5,7 @@ const notion = new Client({ auth: process.env.NOTION_API_KEY });
 
 type BlogPost = {
   id: string;
+  lastEditedTime: string;
 }[];
 
 export const getArticleMetadata = async (): Promise<BlogPost> => {
@@ -24,6 +25,7 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
       // 必要となるPropertiesの取得
       const postInfo = {
         id: pageId || '',
+        lastEditedTime: post.last_edited_time || '',
       };
 
       return postInfo;
