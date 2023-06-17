@@ -1,14 +1,34 @@
 import { Client } from '@notionhq/client';
+import { QueryDatabaseResponse } from '@notionhq/client/build/src/api-endpoints';
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
 
-export const getArticleMetadata = async () => {
-  const response = await notion.databases.query({
+type BlogPost = {
+  id: string;
+}[];
+
+export const getArticleMetadata = async (): Promise<BlogPost> => {
+  const response: QueryDatabaseResponse = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID as string,
   });
 
   // [DEBUG]
   // console.log(`response: ${JSON.stringify(response)}`)
 
-  return response.results;
-}
+  const responseWithProperties = await Promise.all(
+    response.results.map(async (post) => {
+      if (!('properties' in post)) return null;
+
+      const pageId = post.id;
+
+      // 必要となるPropertiesの取得
+      const postInfo = {
+        id: pageId || '',
+      };
+
+      return postInfo;
+    }),
+  );
+
+  return responseWithProperties.filter((post) => post !== null) as BlogPost;
+};
