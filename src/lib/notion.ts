@@ -38,8 +38,8 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
         post.properties.update_date as { last_edited_time: string }
       ).last_edited_time;
       const article_id = (
-        post.properties.article_id as { rich_text: { plain_text: string }[] }
-      ).rich_text[0].plain_text;
+        post.properties.article_id as { title: { plain_text: string }[] }
+      ).title[0].plain_text;
 
       // 必要となるPropertiesの取得
       const postInfo = {
