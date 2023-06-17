@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { FC } from 'react';
 
 type BrandProps = {
@@ -14,8 +15,10 @@ const Brand: FC<BrandProps> = ({ brand }) => {
     // leading-tight: 行間を詰める
     // mb-20: 下側のマージンを20にする
     // mt-8: 上側のマージンを8にする
-    <h2 className="text-2xl md:text-4xl font-bold tracking-tight md:tracking-tighter leading-tight mb-20 mt-8">
-      {brand}
+    <h2 className="text-2xl md:text-4xl font-bold tracking-tight md:tracking-tighter leading-tight mb-20 mt-8 text-black-800 dark:text-white-800">
+      <Link href="/" className="inline-flex" aria-label="logo">
+        {brand}
+      </Link>
     </h2>
   );
 };

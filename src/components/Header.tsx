@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { FC } from 'react';
+import ThemeSwitcher from './ThemeSwitcher';
 import Brand from './Brand';
 
 const Header: FC = () => {
@@ -7,13 +8,7 @@ const Header: FC = () => {
     <div className="bg-white lg:pb-12">
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
         <header className="flex items-center justify-between py-4 md:py-8">
-          <Link
-            href="/"
-            className="text-black-800 inline-flex items-center gap-2.5 text-2xl font-bold md:text-3xl"
-            aria-label="logo"
-          >
-            <Brand brand={'tqer39\'s blog'} />
-          </Link>
+          <Brand brand={"tqer39's blog"} />
           <nav className="hidden gap-12 lg:flex">
             <Link
               href={'https://bento.me/tqer39'}
@@ -23,6 +18,9 @@ const Header: FC = () => {
               Bio
             </Link>
           </nav>
+          <div className="-ml-8 hidden flex-col gap-2.5 sm:flex-row sm:justify-center lg:flex lg:justify-start">
+            <ThemeSwitcher />
+          </div>
         </header>
       </div>
     </div>
