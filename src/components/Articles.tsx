@@ -12,7 +12,7 @@ const Articles = async () => {
   return (
     <Layout>
       <div>
-        {articles ? (
+        {articles && articles.length > 0 ? (
           articles.map((article) => {
             return (
               <div key={article.id}>
