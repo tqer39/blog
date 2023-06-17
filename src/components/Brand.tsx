@@ -8,7 +8,7 @@ type BrandProps = {
 const Brand: FC<BrandProps> = ({ brand }) => {
   return (
     <>
-      <Link href="/" aria-label="logo">
+      <Link href="/" aria-label="logo" className={'hover:underline'}>
         {brand}
       </Link>
       .
