@@ -26,7 +26,6 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
     response.results.map(async (post) => {
       if (!('properties' in post)) return null;
 
-      const pageId = post.id;
       const createDate = (
         post.properties.create_date as { date: { start: string } }
       ).date.start;
@@ -46,7 +45,7 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
       ).rich_text[0].plain_text;
 
       const postInfo = {
-        id: pageId || '',
+        id: post.id || '',
         lastEditedTime: post.last_edited_time || '',
         create_date: createDate || '',
         tags: tags || [],
