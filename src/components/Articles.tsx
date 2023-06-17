@@ -8,6 +8,7 @@ const Articles = async () => {
   if (!articles) {
     return <div>Loading...</div>;
   }
+
   return (
     <Layout>
       <div>
