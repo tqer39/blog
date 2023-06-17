@@ -58,7 +58,7 @@ postcss.config.js already exist
 `ESLint` と `Prettier` を共存させるには、以下の手順を実行します。
 
 ```bash
-npm install --save-dev eslint-plugin-prettier
+npm install --save-exact --save-dev eslint-plugin-prettier
 ```
 
 `ESLint` の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、`rules` セクションに `"prettier/prettier": "error"` を追加します。これにより `Prettier` と競合する `ESLint` ルールを無効にし、`Prettier` がフォーマットしたコードが `ESLint` でエラーを引き起こさないようにします。
@@ -80,7 +80,7 @@ npm install --save-dev eslint-plugin-prettier
 `JavaScript` および `TypeScript` の `import` 文の並び順を整理するための `ESLint` プラグインです。以下の手順でインストールして設定することができます。
 
 ```bash
-npm install --save-dev eslint-config-prettier
+npm install --save-exact --save-dev eslint-config-prettier
 ```
 
 `extends` セクションに `"prettier"` を追加します。これにより、`Prettier` と競合する `ESLint` ルールを無効にします。
@@ -98,7 +98,7 @@ npm install --save-dev eslint-config-prettier
 `import` や `require` の文法、使われていない変数、依存関係の問題など、モジュールの `import`/`export` に関連する問題を検出します。
 
 ```bash
-npm install --save-dev eslint-plugin-simple-import-sort
+npm install --save-exact --save-dev eslint-plugin-simple-import-sort
 ```
 
 ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
@@ -118,7 +118,7 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
 `import` や `require` の文法、使われていない変数、依存関係の問題など、モジュールの `import`/`export` に関連する問題を検出します。
 
 ```bash
-npm install --save-dev eslint-plugin-import
+npm install --save-exact --save-dev eslint-plugin-import
 ```
 
 ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
@@ -138,7 +138,7 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
 `import` や `require` の文法、使われていない変数、依存関係の問題など、モジュールの `import`/`export` に関連する問題を検出します。
 
 ```bash
-npm install --save-dev eslint-plugin-unused-imports
+npm install --save-exact --save-dev eslint-plugin-unused-imports
 ```
 
 ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
@@ -157,7 +157,7 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
 `React` に関するルールを提供します。
 
 ```bash
-npm install --save-dev eslint-plugin-react
+npm install --save-exact --save-dev eslint-plugin-react
 ```
 
 ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
@@ -174,7 +174,7 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
 `React Hooks` のルールを強制するための `ESLint` のプラグインです。`React Hooks` は、関数コンポーネント内で `state` やその他の `React` の機能を使用するためのものですが、正しく使用しないとバグを引き起こす可能性があります。このプラグインはそのような問題を防ぎます。
 
 ```bash
-npm install --save-dev eslint-plugin-react-hooks
+npm install --save-exact --save-dev eslint-plugin-react-hooks
 ```
 
 ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
@@ -190,7 +190,7 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
 `ESLint` と一緒に使うことで `TypeScript` コードに対するリントを提供するプラグインです。このプラグインは、`TypeScript` 特有のパターンを認識し、その結果、`JavaScript` 向けの `ESLint` だけでは検出できないエラーや問題を見つけることができます。
 
 ```bash
-npm install --save-dev @typescript-eslint/eslint-plugin
+npm install --save-exact --save-dev @typescript-eslint/eslint-plugin
 ```
 
 ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
@@ -206,7 +206,7 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
 `ESLint` が `TypeScript` コードを解析できるようにするパーサーです。これにより、`TypeScript` を使用したプロジェクトで `ESLint` を使うことが可能になります。
 
 ```bash
-npm install --save-dev @typescript-eslint/parser
+npm install --save-exact --save-dev @typescript-eslint/parser
 ```
 
 ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、パーサーを追加します。
@@ -225,7 +225,7 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
 `Tailwind CSS` を用いたプロジェクトにおいて、不適切なクラス名の使用や不適切なクラス名の順序等を検出するための `ESLint` プラグインです。このプラグインを導入することで、開発時に様々なミスを早期に検出することが可能となります。
 
 ```bash
-npm install --save-dev eslint-plugin-tailwindcss
+npm install --save-exact --save-dev eslint-plugin-tailwindcss
 ```
 
 ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
@@ -246,7 +246,7 @@ ESLint の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開�
 `Tailwind CSS` に `Markdown` で作成されたコンテンツや一般的なタイポグラフィパターンのスタイリングを効率的に適用するためのユーティリティを追加します。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
 
 ```bash
-npm install @tailwindcss/typography
+npm install --save-exact @tailwindcss/typography
 ```
 
 `Tailwind CSS` の設定ファイル（`tailwind.config.js`）を開き、`plugins` に `typography` プラグインを追加します。
@@ -262,7 +262,7 @@ module.exports = {
 フォームコントロール（ボタン、チェックボックス、ラジオボタン、セレクトボックスなど）のデザインとスタイリングを手助けします。デフォルトのブラウザスタイリングは一貫性がないため、このプラグインはそれらをリセットし、自由にカスタマイズできるようにします。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
 
 ```bash
-npm install @tailwindcss/forms
+npm install --save-exact @tailwindcss/forms
 ```
 
 `Tailwind CSS` の設定ファイル（`tailwind.config.js`）を開き、`plugins` に `forms` プラグインを追加します。
@@ -278,7 +278,7 @@ module.exports = {
 テキストの行数を制限し、それ以上の行は省略記号（...）で切り捨てるスタイリングを提供します。これはブログの投稿サマリーや商品説明など、テキストの長さを制限したい場合に便利です。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
 
 ```bash
-npm install @tailwindcss/line-clamp
+npm install --save-exact @tailwindcss/line-clamp
 ```
 
 `Tailwind CSS` の設定ファイル（`tailwind.config.js`）を開き、`plugins` に `line-clamp` プラグインを追加します。
@@ -294,7 +294,7 @@ module.exports = {
 要素のアスペクト比（幅と高さの比率）を制御するユーティリティクラスを提供します。これは、画像やビデオなど、特定のアスペクト比を維持することが重要なコンテンツにとって有用です。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
 
 ```bash
-npm install @tailwindcss/aspect-ratio
+npm install --save-exact @tailwindcss/aspect-ratio
 ```
 
 `Tailwind CSS` の設定ファイル（`tailwind.config.js`）を開き、`plugins` に `aspect-ratio` プラグインを追加します。
@@ -310,7 +310,7 @@ module.exports = {
 オブジェクトのキーの並び順をカスタマイズするための `ESLint` プラグインです。このプラグインを導入することで、開発時に様々なミスを早期に検出することが可能となります。
 
 ```bash
-npm install --save-dev eslint-plugin-sort-keys-custom-order
+npm install --save-exact --save-dev eslint-plugin-sort-keys-custom-order
 ```
 
 `ESLint` の設定ファイル（`.eslintrc.json`や`.eslintrc.js`など）を開き、プラグインを追加します。
@@ -346,7 +346,7 @@ npm install --save-dev eslint-plugin-sort-keys-custom-order
 `Notion API` を使用するための `JavaScript` クライアントです。
 
 ```bash
-npm install @notionhq/client
+npm install --save-exact @notionhq/client
 ```
 
 ### 'recoil`
@@ -354,15 +354,7 @@ npm install @notionhq/client
 `Recoil` は、`React` アプリケーションのための状態管理ライブラリです。`Recoil` は、`React` のコンポーネントツリーの中で状態を表現するための `atom` と呼ばれる単位を提供します。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。`atom` は、`React` のコンポーネントツリーの中で状態を表現するための単位です。
 
 ```bash
-npm install recoil
-```
-
-### `@chakra-ui/react`
-
-`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。`Chakra UI` は、`React` アプリケーションのためのシンプルでモダンなコンポーネントライブラリです。
-
-```bash
-npm install @chakra-ui/react
+npm install --save-exact recoil
 ```
 
 ### `@emotion/react`
@@ -370,7 +362,7 @@ npm install @chakra-ui/react
 `Emotion` は、`CSS` を `JavaScript` で書くためのライブラリです。`Emotion` は、`CSS` を `JavaScript` で書くためのライブラリです。
 
 ```bash
-npm install @emotion/react
+npm install --save-exact @emotion/react
 ```
 
 ### `@emotion/styled`
@@ -378,7 +370,7 @@ npm install @emotion/react
 `Emotion` の一部で、`CSS-in-JS` のライブラリです。
 
 ```bash
-npm install @emotion/styled
+npm install --save-exact @emotion/styled
 ```
 
 ### `framer-motion`
@@ -386,7 +378,7 @@ npm install @emotion/styled
 `React` アプリケーションのアニメーションとインタラクションを簡単に作成できるライブラリです。これをインストールするには、以下のコマンドを実行します。
 
 ```bash
-npm install framer-motion
+npm install --save-exact framer-motion
 ```
 
 ### `react-markdown`
@@ -394,15 +386,7 @@ npm install framer-motion
 `React` アプリケーションで `Markdown` をレンダリングするためのライブラリです。
 
 ```bash
-npm install react-markdown
-```
-
-### `@chakra-ui/next-js`
-
-`Next.js 13` 用の `Chakra UI` の統合パッケージです。このパッケージを使用すると、`Next.js 13` のプロジェクトで `Chakra UI` を簡単に使用することができます。
-
-```bash
-npm install @chakra-ui/next-js
+npm install --save-exact react-markdown
 ```
 
 ### `gravatar`
@@ -410,7 +394,7 @@ npm install @chakra-ui/next-js
 `Globally Recognized Avatars` の略で、`WordPress` の共同創設者である `Tom Preston-Werner` によって作成された画像のプロファイルサービスです。
 
 ```bash
-npm install gravatar
+npm install --save-exact gravatar
 ```
 
 ### `@types/gravatar`
@@ -418,5 +402,37 @@ npm install gravatar
 `TypeScript` で `gravatar` を使用するための型定義です。
 
 ```bash
-npm install @types/gravatar
+npm install --save-exact @types/gravatar
+```
+
+### `dayjs`
+
+`JavaScript` の日付と時刻の操作をシンプルにするためのライブラリです。
+
+```bash
+npm install --save-exact dayjs
+```
+
+### `react-icons`
+
+`React` アプリケーションで使用できるアイコンのセットです。
+
+```bash
+npm install --save-exact react-icons
+```
+
+### `encoding`
+
+`JavaScript` で文字列をバイト配列に変換するためのライブラリです。
+
+```bash
+npm install --save-exact encoding
+```
+
+### `next-themes`
+
+`Next.js` アプリケーションでダークモードを実装するためのライブラリです。
+
+```bash
+npm install --save-exact next-themes
 ```

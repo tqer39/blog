@@ -1,18 +1,9 @@
-'use client';
+import Articles from '@/components/Articles';
 
-import { FC } from 'react';
-import { CacheProvider } from '@chakra-ui/next-js';
-import { ChakraProvider } from '@chakra-ui/react';
-import Layout from './components/Layout';
-
-const Page: FC = () => {
+export default function Page() {
   return (
-    <CacheProvider>
-      <ChakraProvider>
-        <Layout />
-      </ChakraProvider>
-    </CacheProvider>
+    <>
+      <Articles />
+    </>
   );
-};
-
-export default Page;
+}

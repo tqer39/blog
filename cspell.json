@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "files": [
     "**",
     ".*/**"
@@ -19,8 +20,11 @@
     "CODEOWNERS",
     "codeql",
     "esbenp",
+    "Fakurian",
+    "Flowrift",
     "kentaro",
     "markdownlint",
+    "mdblocks",
     "nodenv",
     "noopener",
     "noreferrer",
