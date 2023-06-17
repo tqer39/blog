@@ -11,6 +11,7 @@ const Brand: FC<BrandProps> = ({ brand }) => {
       <Link href="/" aria-label="logo">
         {brand}
       </Link>
+      .
     </>
   );
 };
