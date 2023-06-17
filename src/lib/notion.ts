@@ -11,7 +11,7 @@ type BlogPost = {
   status: string;
   update_date: string;
   article_id: string;
-  article_title: string;
+  title: string;
 }[];
 
 export const getArticleMetadata = async (): Promise<BlogPost> => {
@@ -41,8 +41,8 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
       const article_id = (
         post.properties.article_id as { title: { plain_text: string }[] }
       ).title[0].plain_text;
-      const article_title = (
-        post.properties.article_title as { rich_text: { plain_text: string }[] }
+      const title = (
+        post.properties.title as { rich_text: { plain_text: string }[] }
       ).rich_text[0].plain_text;
 
       const postInfo = {
@@ -53,7 +53,7 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
         status: status || '',
         update_date: update_date || '',
         article_id: article_id || '',
-        article_title: article_title || '',
+        title: title || '',
       };
 
       return postInfo;
