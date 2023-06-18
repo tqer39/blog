@@ -452,3 +452,11 @@ npm install --save-exact gray-matter
 ```bash
 npm install --save-exact unified
 ```
+
+### `remark`
+
+`JavaScript` で `Markdown` を処理するためのライブラリです。
+
+```bash
+npm install --save-exact remark
+```
