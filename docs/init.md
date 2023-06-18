@@ -460,3 +460,11 @@ npm install --save-exact unified
 ```bash
 npm install --save-exact remark
 ```
+
+### `remark-html`
+
+`JavaScript` で `Markdown` を `HTML` に変換するためのライブラリです。
+
+```bash
+npm install --save-exact remark-html
+```
