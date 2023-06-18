@@ -436,3 +436,11 @@ npm install --save-exact encoding
 ```bash
 npm install --save-exact next-themes
 ```
+
+### `gray-matter`
+
+`JavaScript` で `Markdown` ファイルのフロントマターを解析するためのライブラリです。
+
+```bash
+npm install --save-exact gray-matter
+```
