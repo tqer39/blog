@@ -468,3 +468,11 @@ npm install --save-exact remark
 ```bash
 npm install --save-exact remark-html
 ```
+
+### `rehype-stringify`
+
+`JavaScript` で `HTML` を文字列に変換するためのライブラリです。
+
+```bash
+npm install --save-exact rehype-stringify
+```
