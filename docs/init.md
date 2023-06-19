@@ -445,14 +445,6 @@ npm install --save-exact next-themes
 npm install --save-exact gray-matter
 ```
 
-### `unified`
-
-`JavaScript` で `Markdown` をパースするためのライブラリです。
-
-```bash
-npm install --save-exact unified
-```
-
 ### `remark`
 
 `JavaScript` で `Markdown` を処理するためのライブラリです。
