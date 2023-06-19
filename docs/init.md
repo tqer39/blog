@@ -492,3 +492,11 @@ npm install --save-exact rehype-parse
 ```bash
 npm install --save-exact remark-rehype
 ```
+
+### `remark-gfm`
+
+`JavaScript` で `Markdown` を `GitHub Flavored Markdown` に変換するためのライブラリです。
+
+```bash
+npm install --save-exact remark-gfm
+```
