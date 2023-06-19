@@ -540,3 +540,11 @@ npm install --save-exact react-syntax-highlighter
 ```bash
 npm install --save-exact --save-dev @types/react-syntax-highlighter
 ```
+
+### `rehype-raw`
+
+`JavaScript` で `HTML` をパースするためのライブラリです。
+
+```bash
+npm install --save-exact rehype-raw
+```
