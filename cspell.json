@@ -22,14 +22,18 @@
     "esbenp",
     "Fakurian",
     "Flowrift",
+    "fuga",
+    "hoge",
     "kentaro",
     "markdownlint",
     "mdblocks",
+    "nextjs",
     "nodenv",
     "noopener",
     "noreferrer",
     "notionhq",
     "ooyama",
+    "piyo",
     "pyenv",
     "rehype",
     "reshim",
@@ -40,6 +44,7 @@
     "textlint",
     "textlintcache",
     "tqer",
-    "vercel"
+    "vercel",
+    "vfile"
   ]
 }
