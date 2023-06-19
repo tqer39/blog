@@ -18,7 +18,7 @@
     "@tailwindcss/line-clamp": "0.4.4",
     "@tailwindcss/typography": "0.5.9",
     "autoprefixer": "10.4.14",
-    "dayjs": "^1.11.8",
+    "dayjs": "1.11.8",
     "encoding": "0.1.13",
     "fast-glob": "^3.2.12",
     "framer-motion": "10.12.16",
