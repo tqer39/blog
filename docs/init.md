@@ -508,3 +508,11 @@ npm install --save-exact remark-gfm
 ```bash
 npm install --save-exact remark-breaks
 ```
+
+### `remark-prism`
+
+`JavaScript` で `Markdown` のコードブロックをシンタックスハイライトするためのライブラリです。
+
+```bash
+npm install --save-exact remark-prism
+```
