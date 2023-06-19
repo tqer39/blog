@@ -484,3 +484,11 @@ npm install --save-exact rehype-stringify
 ```bash
 npm install --save-exact rehype-parse
 ```
+
+### `remark-rehype`
+
+`JavaScript` で `Markdown` を `HTML` に変換するためのライブラリです。
+
+```bash
+npm install --save-exact remark-rehype
+```
