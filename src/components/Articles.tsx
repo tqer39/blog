@@ -17,7 +17,7 @@ const Articles = async () => {
             articles.map((article) => {
               return (
                 <div key={article.id}>
-                  <BlogCard article={article} />;
+                  <BlogCard article={article} />
                 </div>
               );
             })
