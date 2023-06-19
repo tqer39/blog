@@ -500,3 +500,11 @@ npm install --save-exact remark-rehype
 ```bash
 npm install --save-exact remark-gfm
 ```
+
+### `remark-breaks`
+
+`JavaScript` で `Markdown` の改行を `<br>` に変換するためのライブラリです。
+
+```bash
+npm install --save-exact remark-breaks
+```
