@@ -11,23 +11,20 @@ const Articles = async () => {
 
   return (
     <Layout>
-      <div>
-        {articles && articles.length > 0 ? (
-          articles.map((article) => {
-            return (
-              <div
-                key={article.id}
-                className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
-              >
-                <div className="grid lg:grid-cols-2 lg:gap-y-16 gap-10">
-                  <BlogCard article={article} />
+      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+        <div className="grid lg:grid-cols-2 lg:gap-y-16 gap-10">
+          {articles && articles.length > 0 ? (
+            articles.map((article) => {
+              return (
+                <div key={article.id}>
+                  <BlogCard article={article} />;
                 </div>
-              </div>
-            );
-          })
-        ) : (
-          <div>no data</div>
-        )}
+              );
+            })
+          ) : (
+            <div>no data</div>
+          )}
+        </div>
       </div>
     </Layout>
   );
