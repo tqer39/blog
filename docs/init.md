@@ -516,3 +516,11 @@ npm install --save-exact remark-breaks
 ```bash
 npm install --save-exact remark-prism
 ```
+
+### `@types/remark-prism`
+
+`TypeScript` で `remark-prism` を使用するための型定義です。
+
+```bash
+npm install --save-exact --save-dev @types/remark-prism
+```
