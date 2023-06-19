@@ -273,22 +273,6 @@ module.exports = {
 };
 ```
 
-### `@tailwindcss/line-clamp`
-
-テキストの行数を制限し、それ以上の行は省略記号（...）で切り捨てるスタイリングを提供します。これはブログの投稿サマリーや商品説明など、テキストの長さを制限したい場合に便利です。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
-
-```bash
-npm install --save-exact @tailwindcss/line-clamp
-```
-
-`Tailwind CSS` の設定ファイル（`tailwind.config.js`）を開き、`plugins` に `line-clamp` プラグインを追加します。
-
-```js
-module.exports = {
-  plugins: [require('@tailwindcss/line-clamp')],
-};
-```
-
 ### `@tailwindcss/aspect-ratio`
 
 要素のアスペクト比（幅と高さの比率）を制御するユーティリティクラスを提供します。これは、画像やビデオなど、特定のアスペクト比を維持することが重要なコンテンツにとって有用です。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
