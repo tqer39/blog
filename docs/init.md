@@ -524,3 +524,11 @@ npm install --save-exact remark-prism
 ```bash
 npm install --save-exact --save-dev @types/remark-prism
 ```
+
+### `react-syntax-highlighter`
+
+`React` アプリケーションでシンタックスハイライトを実装するためのライブラリです。
+
+```bash
+npm install --save-exact react-syntax-highlighter
+```
