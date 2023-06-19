@@ -476,3 +476,11 @@ npm install --save-exact remark-html
 ```bash
 npm install --save-exact rehype-stringify
 ```
+
+### `rehype-parse`
+
+`JavaScript` で `HTML` をパースするためのライブラリです。
+
+```bash
+npm install --save-exact rehype-parse
+```
