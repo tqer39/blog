@@ -1,9 +1,9 @@
-import Link from 'next/link';
-import { getArticleMetadata } from '../lib/notion';
+import { BlogPost, getArticleMetadata } from '../lib/notion';
 import Layout from './Layout';
+import BlogCard from './BlogCard';
 
 const Articles = async () => {
-  const articles = await getArticleMetadata();
+  const articles: BlogPost = await getArticleMetadata();
 
   if (!articles) {
     return <div>Loading...</div>;
@@ -15,10 +15,13 @@ const Articles = async () => {
         {articles && articles.length > 0 ? (
           articles.map((article) => {
             return (
-              <div key={article.id}>
-                <Link href={`/article/${article.article_id}`} passHref>
-                  {article.title}
-                </Link>
+              <div
+                key={article.id}
+                className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto"
+              >
+                <div className="grid lg:grid-cols-2 lg:gap-y-16 gap-10">
+                  <BlogCard article={article} />
+                </div>
               </div>
             );
           })
