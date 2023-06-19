@@ -14,6 +14,6 @@ export function getPostData(id: string) {
     console.log(`error: ${JSON.stringify(error)}`);
     return {
       content: '',
-    }
+    };
   }
 }
