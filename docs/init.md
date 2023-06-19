@@ -532,3 +532,11 @@ npm install --save-exact --save-dev @types/remark-prism
 ```bash
 npm install --save-exact react-syntax-highlighter
 ```
+
+### `@types/react-syntax-highlighter`
+
+`TypeScript` で `react-syntax-highlighter` を使用するための型定義です。
+
+```bash
+npm install --save-exact --save-dev @types/react-syntax-highlighter
+```
