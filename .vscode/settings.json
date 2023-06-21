@@ -2,5 +2,6 @@
   "javascript.preferences.importModuleSpecifier": "non-relative",
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": ["source.fixAll.eslint"]
+  "editor.codeActionsOnSave": ["source.fixAll.eslint"],
+  "eslint.packageManager": "npm"
 }
