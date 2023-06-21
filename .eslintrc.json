@@ -2,7 +2,6 @@
   "extends": [
     "next/core-web-vitals",
     "prettier",
-    "simple-import-sort",
     "import",
     "eslint:recommended",
     "plugin:import/errors",
@@ -33,7 +32,7 @@
       { "orderedKeys": ["id", "name", "title"] }
     ]
   },
-  "plugins": ["sort-keys-custom-order"],
+  "plugins": ["sort-keys-custom-order", "simple-import-sort"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json"
