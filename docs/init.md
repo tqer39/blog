@@ -53,6 +53,9 @@ postcss.config.js already exist
 
 ## install package
 
+<!--
+非推奨になった。
+
 ### `eslint-plugin-prettier`
 
 `ESLint` と `Prettier` を共存させるには、以下の手順を実行します。
@@ -74,6 +77,7 @@ npm install --save-exact --save-dev eslint-plugin-prettier
 ```
 
 `ESLint` と `Prettier` が同時にフォーマットすると問題が発生する可能性があるため、`Prettier` が `ESLint` ルールと競合しないように、次に `eslint-config-prettier` をインストールします：
+-->
 
 ### `eslint-config-prettier`
 
