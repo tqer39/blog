@@ -1,8 +1,9 @@
 import ReactMarkdown from 'react-markdown';
-import gfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import Layout from '@/components/Layout';
+import gfm from 'remark-gfm';
+
 import { CodeBlock } from '@/components/CodeBlock';
+import Layout from '@/components/Layout';
 import { getMarkdown, markdownToHtml } from '@/lib/markdown';
 
 async function getArticle(id: string) {
@@ -21,7 +22,7 @@ const Article = async ({ params }: { params: { id: string } }) => {
           rehypePlugins={[rehypeRaw]}
           components={CodeBlock}
           remarkPlugins={[gfm]}
-          className="prose prose-stone mt-5 max-w-4xl m-auto"
+          className="prose prose-stone m-auto mt-5 max-w-4xl"
         >
           {content}
         </ReactMarkdown>
