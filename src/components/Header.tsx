@@ -1,7 +1,8 @@
 import { FC } from 'react';
-import ThemeSwitcher from './ThemeSwitcher';
-import Brand from './Brand';
+
 import Bio from './Bio';
+import Brand from './Brand';
+import ThemeSwitcher from './ThemeSwitcher';
 
 const Header: FC = () => {
   return (
@@ -19,10 +20,10 @@ const Header: FC = () => {
             mb-20: 下側のマージンを20にする
             mt-8: 上側のマージンを8にする
           */}
-            <div className="inline-flex text-2xl md:text-4xl font-bold tracking-tight md:tracking-tighter leading-tight mb-20 mt-8 text-black-800 dark:text-white-800">
+            <div className="mb-20 mt-8 inline-flex text-2xl font-bold leading-tight tracking-tight md:text-4xl md:tracking-tighter">
               <Brand brand={"tqer39's blog"} />
             </div>
-            <nav className="hidden lg:flex text-lg mb-8 font-semibold text-gray-600 dark:text-gray-50 transition duration-100 hover:text-indigo-500 active:text-indigo-700">
+            <nav className="mb-8 hidden text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700 dark:text-gray-50 lg:flex">
               <Bio />
             </nav>
             <div className="-ml-8 hidden flex-col gap-2.5 sm:flex-row sm:justify-center lg:flex lg:justify-start">
