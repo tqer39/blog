@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, FC } from 'react';
 import { useTheme } from 'next-themes';
-import { BsFillSunFill, BsFillMoonFill } from 'react-icons/bs';
+import React, { FC, useEffect, useState } from 'react';
+import { BsFillMoonFill, BsFillSunFill } from 'react-icons/bs';
 
 export const ChangeThemeButton: FC = () => {
-  const { theme, setTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
   const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => setMounted(true), []);
