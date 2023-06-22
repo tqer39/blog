@@ -6,11 +6,11 @@ const notion = new Client({ auth: process.env.NOTION_API_KEY });
 export type BlogPost = {
   id: string;
   title: string;
-  createDate: string;
-  updateDate: string;
-  tags: string[];
-  status: string;
   article_id: string;
+  createDate: string;
+  status: string;
+  tags: string[];
+  updateDate: string;
 }[];
 
 export const getArticleMetadata = async (): Promise<BlogPost> => {
@@ -43,11 +43,11 @@ export const getArticleMetadata = async (): Promise<BlogPost> => {
       const postInfo = {
         id: post.id || '',
         title: title || '',
-        createDate: createDate || '',
-        updateDate: post.last_edited_time || '',
-        tags: tags || [],
-        status: status || '',
         article_id: article_id || '',
+        createDate: createDate || '',
+        status: status || '',
+        tags: tags || [],
+        updateDate: post.last_edited_time || '',
       };
 
       return postInfo;
