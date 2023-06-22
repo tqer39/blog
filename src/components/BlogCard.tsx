@@ -1,8 +1,10 @@
 'use client';
 
-import { BlogPost } from '@/lib/notion';
+import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
+
+import { BlogPost } from '@/lib/notion';
 
 type Props = {
   article: BlogPost[0];
@@ -14,17 +16,17 @@ const BlogCard: FC<Props> = ({ article }) => {
       <Link
         href={`/article/${article.article_id}`}
         passHref
-        className="group rounded-xl overflow-hidden"
+        className="group overflow-hidden rounded-xl"
       >
         <div className="sm:flex">
-          <div className="flex-shrink-0 relative rounded-xl overflow-hidden w-full sm:w-56 h-44">
-            <img
-              className="group-hover:scale-105 transition-transform duration-500 ease-in-out w-full h-full absolute top-0 left-0 object-cover rounded-xl"
+          <div className="relative h-44 w-full flex-shrink-0 overflow-hidden rounded-xl sm:w-56">
+            <Image
+              className="absolute left-0 top-0 h-full w-full rounded-xl object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
               src="https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
               alt="Image Description"
             />
           </div>
-          <div className="grow mt-4 sm:mt-0 sm:ml-6 px-4 sm:px-0">
+          <div className="mt-4 grow px-4 sm:ml-6 sm:mt-0 sm:px-0">
             <h3 className="text-xl font-semibold text-gray-800 group-hover:text-gray-600 dark:text-gray-300 dark:group-hover:text-white">
               {article.title}
             </h3>
@@ -32,10 +34,10 @@ const BlogCard: FC<Props> = ({ article }) => {
               Produce professional, reliable streams easily leveraging
               innovative broadcast studio
             </p>
-            <p className="mt-4 inline-flex items-center gap-x-1.5 text-blue-600 decoration-2 hover:underline font-medium">
+            <p className="mt-4 inline-flex items-center gap-x-1.5 font-medium text-blue-600 decoration-2 hover:underline">
               Read more
               <svg
-                className="w-2.5 h-2.5"
+                className="h-2.5 w-2.5"
                 width="16"
                 height="16"
                 viewBox="0 0 16 16"
