@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { readFileSync } from 'fs';
 import path from 'path';
 
 export function getPostData(id: string) {
@@ -8,12 +8,12 @@ export function getPostData(id: string) {
   const postDirectory = path.join(process.cwd(), 'src/contents', `${id}.md`);
   try {
     return {
-      content: fs.readFileSync(postDirectory, 'utf8'),
+      content: readFileSync(postDirectory, 'utf8'),
     };
   } catch (error) {
     console.log(`error: ${JSON.stringify(error)}`);
     return {
       content: '',
-    }
+    };
   }
 }

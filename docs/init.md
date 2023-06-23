@@ -53,6 +53,9 @@ postcss.config.js already exist
 
 ## install package
 
+<!--
+非推奨になった。
+
 ### `eslint-plugin-prettier`
 
 `ESLint` と `Prettier` を共存させるには、以下の手順を実行します。
@@ -74,6 +77,7 @@ npm install --save-exact --save-dev eslint-plugin-prettier
 ```
 
 `ESLint` と `Prettier` が同時にフォーマットすると問題が発生する可能性があるため、`Prettier` が `ESLint` ルールと競合しないように、次に `eslint-config-prettier` をインストールします：
+-->
 
 ### `eslint-config-prettier`
 
@@ -273,22 +277,6 @@ module.exports = {
 };
 ```
 
-### `@tailwindcss/line-clamp`
-
-テキストの行数を制限し、それ以上の行は省略記号（...）で切り捨てるスタイリングを提供します。これはブログの投稿サマリーや商品説明など、テキストの長さを制限したい場合に便利です。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
-
-```bash
-npm install --save-exact @tailwindcss/line-clamp
-```
-
-`Tailwind CSS` の設定ファイル（`tailwind.config.js`）を開き、`plugins` に `line-clamp` プラグインを追加します。
-
-```js
-module.exports = {
-  plugins: [require('@tailwindcss/line-clamp')],
-};
-```
-
 ### `@tailwindcss/aspect-ratio`
 
 要素のアスペクト比（幅と高さの比率）を制御するユーティリティクラスを提供します。これは、画像やビデオなど、特定のアスペクト比を維持することが重要なコンテンツにとって有用です。実際にビルドされた `CSS` に影響を与えるため、プロダクション環境でも必要です。そのため、`--save-devフラグ` は不要です。
@@ -435,4 +423,116 @@ npm install --save-exact encoding
 
 ```bash
 npm install --save-exact next-themes
+```
+
+### `gray-matter`
+
+`JavaScript` で `Markdown` ファイルのフロントマターを解析するためのライブラリです。
+
+```bash
+npm install --save-exact gray-matter
+```
+
+### `unified`
+
+`JavaScript` で `Markdown` をパースするためのライブラリです。
+
+```bash
+npm install --save-exact unified
+```
+
+### `remark`
+
+`JavaScript` で `Markdown` を処理するためのライブラリです。
+
+```bash
+npm install --save-exact remark
+```
+
+### `remark-html`
+
+`JavaScript` で `Markdown` を `HTML` に変換するためのライブラリです。
+
+```bash
+npm install --save-exact remark-html
+```
+
+### `rehype-stringify`
+
+`JavaScript` で `HTML` を文字列に変換するためのライブラリです。
+
+```bash
+npm install --save-exact rehype-stringify
+```
+
+### `rehype-parse`
+
+`JavaScript` で `HTML` をパースするためのライブラリです。
+
+```bash
+npm install --save-exact rehype-parse
+```
+
+### `remark-rehype`
+
+`JavaScript` で `Markdown` を `HTML` に変換するためのライブラリです。
+
+```bash
+npm install --save-exact remark-rehype
+```
+
+### `remark-gfm`
+
+`JavaScript` で `Markdown` を `GitHub Flavored Markdown` に変換するためのライブラリです。
+
+```bash
+npm install --save-exact remark-gfm
+```
+
+### `remark-breaks`
+
+`JavaScript` で `Markdown` の改行を `<br>` に変換するためのライブラリです。
+
+```bash
+npm install --save-exact remark-breaks
+```
+
+### `remark-prism`
+
+`JavaScript` で `Markdown` のコードブロックをシンタックスハイライトするためのライブラリです。
+
+```bash
+npm install --save-exact remark-prism
+```
+
+### `@types/remark-prism`
+
+`TypeScript` で `remark-prism` を使用するための型定義です。
+
+```bash
+npm install --save-exact --save-dev @types/remark-prism
+```
+
+### `react-syntax-highlighter`
+
+`React` アプリケーションでシンタックスハイライトを実装するためのライブラリです。
+
+```bash
+npm install --save-exact react-syntax-highlighter
+```
+
+### `@types/react-syntax-highlighter`
+
+`TypeScript` で `react-syntax-highlighter` を使用するための型定義です。
+
+```bash
+npm install --save-exact --save-dev @types/react-syntax-highlighter
+```
+
+### `rehype-raw`
+
+`JavaScript` で `HTML` をパースするためのライブラリです。
+
+```bash
+npm install --save-exact rehype-raw
 ```
