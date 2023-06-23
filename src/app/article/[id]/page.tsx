@@ -1,19 +1,30 @@
+import { readdirSync } from 'fs';
+import path from 'path';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import gfm from 'remark-gfm';
 
 import { CodeBlock } from '@/components/CodeBlock';
 import Layout from '@/components/Layout';
-import { getMarkdown, markdownToHtml } from '@/lib/markdown';
+import { getMarkdown } from '@/lib/markdown';
 
-async function getArticle(id: string) {
-  const content = await getMarkdown(id);
-  const html = await markdownToHtml(content);
-  return html;
+type Params = {
+  params: {
+    id: string;
+    content?: string;
+  };
+};
+
+export async function generateStaticParams() {
+  const postDirectory = path.join(process.cwd(), 'src/contents');
+  const filenames = readdirSync(postDirectory);
+  return filenames.map((filename) => ({
+    id: filename.replace(/\.md$/, ''),
+  }));
 }
 
-const Article = async ({ params }: { params: { id: string } }) => {
-  const content: string = await getArticle(params.id);
+const Article = async ({ params }: Params) => {
+  const content: string = await getMarkdown(params.id);
 
   return (
     <Layout>
