@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -20,7 +20,7 @@ const BlogCard: FC<Props> = ({ article }) => {
       >
         <div className="sm:flex">
           <div className="relative h-44 w-full flex-shrink-0 overflow-hidden rounded-xl sm:w-56">
-            <Image
+            <img
               className="absolute left-0 top-0 h-full w-full rounded-xl object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
               src="https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80"
               alt="Image Description"
