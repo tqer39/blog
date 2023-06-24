@@ -425,6 +425,9 @@ npm install --save-exact encoding
 npm install --save-exact next-themes
 ```
 
+<!--
+metadata は Markdown file 内ではなく Notion のデータベースから取得してくるため、以下のライブラリは不要です。
+
 ### `gray-matter`
 
 `JavaScript` で `Markdown` ファイルのフロントマターを解析するためのライブラリです。
@@ -432,6 +435,7 @@ npm install --save-exact next-themes
 ```bash
 npm install --save-exact gray-matter
 ```
+-->
 
 ### `unified`
 
