@@ -1,6 +1,7 @@
 import { BlogPost, getArticleMetadata } from '../lib/notion';
 import BlogCard from './BlogCard';
 import Layout from './Layout';
+import PageNation from './PageNation';
 
 const Articles = async () => {
   const articles: BlogPost = await getArticleMetadata();
@@ -26,6 +27,7 @@ const Articles = async () => {
           )}
         </div>
       </div>
+      <PageNation currentPage={1} maxPage={2} />
     </Layout>
   );
 };
