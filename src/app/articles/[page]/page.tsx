@@ -3,8 +3,16 @@ import Layout from '../../../components/Layout';
 import PageNation from '../../../components/PageNation';
 import { BlogPost, getArticleMetadata } from '../../../lib/notion';
 
-const Articles = async () => {
+type ArticlesProps = {
+  params?: {
+    page: number;
+  };
+};
+
+const Articles = async ({ params = { page: 1 } }: ArticlesProps) => {
+  const { page } = params;
   const articles: BlogPost = await getArticleMetadata();
+  const PER_PAGE = 10;
 
   if (!articles) {
     return <div>Loading...</div>;
@@ -27,7 +35,12 @@ const Articles = async () => {
           )}
         </div>
       </div>
-      <PageNation currentPage={1} maxPage={2} />
+      <PageNation
+        current={page}
+        last={Math.ceil(articles.length / PER_PAGE)}
+        articles={articles.length}
+        perPage={PER_PAGE}
+      />
     </Layout>
   );
 };

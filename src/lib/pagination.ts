@@ -1,5 +1,7 @@
-const pagination = (current: number, max: number): (number | string)[] => {
-  const result: (number | string)[] = [];
+export type PageInfo = (number | string)[];
+
+const pagination = (current: number, max: number): PageInfo => {
+  const result: PageInfo = [];
 
   if (max <= 7) {
     for (let i = 1; i <= max; i++) {
