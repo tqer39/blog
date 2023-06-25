@@ -540,3 +540,11 @@ npm install --save-exact --save-dev @types/react-syntax-highlighter
 ```bash
 npm install --save-exact rehype-raw
 ```
+
+### `next-themes`
+
+`Next.js` アプリケーションでダークモードを実装するためのライブラリです。
+
+```bash
+npm install --save-exact next-themes
+```
