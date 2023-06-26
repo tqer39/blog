@@ -14,7 +14,7 @@ const SnsLink: FC<SnsLinkProps> = ({ icon, url }) => {
         passHref
         target="_blank"
         rel="noopener noreferrer"
-        className="text-stone-400 transition duration-300 hover:text-stone-500 active:text-stone-600 dark:text-stone-500 dark:duration-300 hover:dark:text-stone-400"
+        className="text-stone-400 transition duration-300 hover:text-stone-500 active:text-stone-600 dark:text-stone-400 dark:duration-300 hover:dark:text-stone-200"
       >
         {icon}
       </Link>
