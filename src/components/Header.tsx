@@ -1,6 +1,5 @@
 import { FC } from 'react';
 
-import Bio from './Bio';
 import Brand from './Brand';
 import ThemeSwitcher from './ThemeSwitcher';
 
