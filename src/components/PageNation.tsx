@@ -20,7 +20,7 @@ const Pagination: FC<PaginationProps> = ({
   const pageInfo: PageInfo = pagination(current, last);
 
   return (
-    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+    <div className="flex items-center justify-between border-t bg-stone-50 px-4 py-3 text-stone-900 dark:bg-stone-900 dark:text-stone-50 sm:px-6">
       <div className="flex flex-1 justify-between sm:hidden">
         <a
           href="#"
@@ -63,16 +63,26 @@ const Pagination: FC<PaginationProps> = ({
             </a>
             {pageInfo.length > 0 ? (
               pageInfo.map((page) => {
-                return (
-                  <Link
-                    key={page}
-                    href={`/articles/${page}`}
-                    aria-current="page"
-                    className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                  >
-                    {page}
-                  </Link>
-                );
+                if (page === '...') {
+                  return (
+                    <div
+                      key={page}
+                      className="relative z-10 inline-flex cursor-pointer items-center px-4 py-2 text-sm font-semibold text-white focus:z-20 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                    >
+                      {page}
+                    </div>
+                  );
+                } else {
+                  return (
+                    <Link
+                      key={page}
+                      href={`/articles/${page}`}
+                      className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                      {page}
+                    </Link>
+                  );
+                }
               })
             ) : (
               <div>no data</div>

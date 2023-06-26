@@ -25,7 +25,7 @@ const Articles = async ({ params = { page: 1 } }: ArticlesProps) => {
 
   return (
     <Layout>
-      <div className="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+      <div className="mx-auto max-w-[85rem] bg-stone-50 px-4 py-10 text-stone-900 dark:bg-stone-900 dark:text-stone-50 sm:px-6 lg:px-8 lg:py-14">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-y-16">
           {articlesForPage && articlesForPage.length > 0 ? (
             articlesForPage.map((article) => {

@@ -19,7 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className={inter.className}>
+      <body
+        className={`${inter.className}  bg-stone-50 px-4 py-3 text-stone-900 dark:bg-stone-900 dark:text-stone-50 `}
+      >
         <Providers attribute="class" defaultTheme="system" enableSystem>
           {children}
         </Providers>

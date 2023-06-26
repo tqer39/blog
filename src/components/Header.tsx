@@ -7,7 +7,7 @@ import ThemeSwitcher from './ThemeSwitcher';
 const Header: FC = () => {
   return (
     <>
-      <div className="bg-white dark:bg-black lg:pb-12">
+      <div className=" bg-stone-50 text-stone-900 dark:bg-stone-900 dark:text-stone-50 lg:pb-12">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="flex items-center justify-between py-4 md:py-8">
             {/*

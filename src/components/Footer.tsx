@@ -4,7 +4,7 @@ import { Copyright } from './Copyright';
 
 const Header: FC = () => {
   return (
-    <div className="bg-white pt-4 sm:pt-10 lg:pt-12">
+    <div className="bg-stone-50 pt-4 text-stone-900 dark:bg-stone-900 dark:text-stone-50 sm:pt-10 lg:pt-12">
       <footer className="mx-auto max-w-screen-2xl px-4 md:px-8">
         <div className="flex flex-col items-center border-t pt-6">
           <nav className="mb-4 flex flex-wrap justify-center gap-x-4 gap-y-2 md:justify-start md:gap-6">
