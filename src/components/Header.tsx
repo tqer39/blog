@@ -23,9 +23,6 @@ const Header: FC = () => {
             <div className="mb-20 mt-8 inline-flex text-2xl font-bold leading-tight tracking-tight md:text-4xl md:tracking-tighter">
               <Brand brand={"tqer39's blog"} />
             </div>
-            <nav className="mb-8 hidden text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700 dark:text-gray-50 lg:flex">
-              <Bio />
-            </nav>
             <div className="-ml-8 hidden flex-col gap-2.5 sm:flex-row sm:justify-center lg:flex lg:justify-start">
               <ThemeSwitcher />
             </div>
