@@ -5,7 +5,7 @@ import { SiBiolink } from 'react-icons/si';
 import { Copyright } from './Copyright';
 import SnsLink from './SnsButton';
 
-const Header: FC = () => {
+const Footer: FC = () => {
   return (
     <div className="bg-stone-50 pt-4 text-stone-900 dark:bg-stone-900 dark:text-stone-50 sm:pt-10 lg:pt-12">
       <footer className="mx-auto max-w-screen-2xl px-4 md:px-8">
@@ -33,4 +33,4 @@ const Header: FC = () => {
   );
 };
 
-export default Header;
+export default Footer;
