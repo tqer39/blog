@@ -7,9 +7,9 @@ import SnsLink from './SnsButton';
 
 const Footer: FC = () => {
   return (
-    <div className="bg-stone-50 pt-4 text-stone-900 dark:bg-stone-900 dark:text-stone-50 sm:pt-10 lg:pt-12">
-      <footer className="mx-auto max-w-screen-2xl px-4 md:px-8">
-        <div className="flex flex-col items-center border-t pt-6">
+    <div className="border-stone-200  bg-stone-50 pt-4 text-stone-900 dark:border-stone-500 dark:bg-stone-900 dark:text-stone-50 sm:pt-10 lg:pt-12">
+      <footer className="">
+        <div className="flex flex-col items-center border-t  border-stone-200 pt-6  dark:border-stone-500">
           <div className="flex gap-4">
             <SnsLink
               url={'https://twitter.com/tqer39'}
@@ -25,7 +25,7 @@ const Footer: FC = () => {
             />
           </div>
         </div>
-        <div className="py-8 text-center text-sm text-gray-400">
+        <div className="py-8 text-center text-sm text-stone-400">
           <Copyright />
         </div>
       </footer>
