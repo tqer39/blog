@@ -1,5 +1,4 @@
 import { readFileSync } from 'fs';
-import matter from 'gray-matter';
 import path from 'path';
 import { remark } from 'remark';
 import html from 'remark-html';
@@ -11,7 +10,6 @@ export const getMarkdown = async (id: string) => {
 };
 
 export const markdownToHtml = async (markdownContent: string) => {
-  const matterData = matter(markdownContent);
-  const result = await remark().use(html).process(matterData.content);
+  const result = await remark().use(html).process(markdownContent);
   return result.toString();
 };

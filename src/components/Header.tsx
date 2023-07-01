@@ -1,13 +1,12 @@
 import { FC } from 'react';
 
-import Bio from './Bio';
 import Brand from './Brand';
 import ThemeSwitcher from './ThemeSwitcher';
 
 const Header: FC = () => {
   return (
     <>
-      <div className="bg-white dark:bg-black lg:pb-12">
+      <div className=" bg-stone-50 text-stone-900 dark:bg-stone-900 dark:text-stone-50 lg:pb-12">
         <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
           <header className="flex items-center justify-between py-4 md:py-8">
             {/*
@@ -23,9 +22,6 @@ const Header: FC = () => {
             <div className="mb-20 mt-8 inline-flex text-2xl font-bold leading-tight tracking-tight md:text-4xl md:tracking-tighter">
               <Brand brand={"tqer39's blog"} />
             </div>
-            <nav className="mb-8 hidden text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700 dark:text-gray-50 lg:flex">
-              <Bio />
-            </nav>
             <div className="-ml-8 hidden flex-col gap-2.5 sm:flex-row sm:justify-center lg:flex lg:justify-start">
               <ThemeSwitcher />
             </div>
