@@ -1,0 +1,46 @@
+---
+name: 'Bug Report (jp)'
+description: 'File a bug report (jp)'
+labels: ['bug']
+body:
+  - type: 'markdown'
+    attributes:
+      value: |
+        問題を作成していただきありがとうございます 😄!
+        送信する前に、未解決/終了済みの問題を検索してください。誰か
+        前にも同じことを質問したかもしれません 😉!
+
+  - type: 'textarea'
+    id: 'description'
+    attributes:
+      label: '詳細'
+      description: '問題の簡単な説明。'
+      placeholder: |
+        \_**\_ を実行したとき、\_\_**が起こることを期待していましたが、代わりに \_\_\_\_ が起こりました。
+    validations:
+      required: true
+
+  - type: 'input'
+    id: 'browser'
+    attributes:
+      label: 'ブラウザ'
+      description: 'この問題が発生したブラウザ。'
+      placeholder: 'Google Chrome 93'
+
+  - type: 'checkboxes'
+    id: 'operating-system'
+    attributes:
+      label: 'Operating System'
+      description: 'この問題が発生したオペレーティング システム。'
+      options:
+        - label: 'macOS'
+        - label: 'Windows'
+        - label: 'Linux'
+
+  - type: 'textarea'
+    id: 'additional-information'
+    attributes:
+      label: '追加情報'
+      description: |
+        このセクションを使用して追加情報を提供してください
+        スクリーンショット、メモ、アイデアへのリンクなど。
