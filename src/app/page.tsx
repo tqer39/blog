@@ -1,4 +1,4 @@
-import Articles from "./articles/[page]/page";
+import Articles from './articles/[page]/page';
 
 export default function Page() {
   return (
