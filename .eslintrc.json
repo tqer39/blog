@@ -29,7 +29,13 @@
       { "orderedKeys": ["id", "name", "title"] }
     ]
   },
-  "plugins": ["sort-keys-custom-order", "simple-import-sort", "import", "unused-imports", "tailwindcss"],
+  "plugins": [
+    "sort-keys-custom-order",
+    "simple-import-sort",
+    "import",
+    "unused-imports",
+    "tailwindcss"
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json"

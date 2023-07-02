@@ -1,13 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
-  "files": [
-    "**",
-    ".*/**"
-  ],
-  "ignorePaths": [
-    ".git",
-    ".gitignore"
-  ],
+  "files": ["**", ".*/**"],
+  "ignorePaths": [".git", ".gitignore"],
   "words": [
     "autobuild",
     "Autobuild",
