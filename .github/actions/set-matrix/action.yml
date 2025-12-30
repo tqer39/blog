@@ -45,6 +45,7 @@ runs:
       shell: bash
 
     - name: push or manual
+      # yamllint disable-line rule:line-length
       if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch'
       env:
         AWS_ENV_NAME: ${{ inputs.AWS_ENV_NAME }}
