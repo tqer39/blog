@@ -1,6 +1,7 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with
+code in this repository.
 
 ## Project Overview
 
@@ -33,7 +34,7 @@ just tf -chdir=dev/main plan         # Terraform plan for main infra
 
 ### Directory Structure
 
-```
+```text
 /
 ├── src/
 │   ├── app/                    # Next.js App Router
