@@ -1,8 +1,0 @@
-**/node_modules/
-**/public/
-**/.git/
-**/.next/
-package.json
-package-lock.json
-**/tmp/
-**/out/
