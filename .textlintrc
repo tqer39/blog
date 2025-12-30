@@ -33,7 +33,7 @@
       "ja-no-mixed-period": false
     },
     "prh": {
-      "rulePaths": ["./dict/prh-xtrade.yml"]
+      "rulePaths": ["./dict/prh-blog.yml"]
     }
   }
 }
