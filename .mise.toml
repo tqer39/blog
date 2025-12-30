@@ -1,0 +1,6 @@
+[tools]
+node = "25"
+terraform = "latest"
+
+[settings]
+experimental = true
