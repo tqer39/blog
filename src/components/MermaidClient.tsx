@@ -84,7 +84,9 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   if (!svg) {
     return (
       <div className="my-4 rounded bg-stone-100 p-4 dark:bg-stone-800">
-        <pre className="text-sm text-stone-600 dark:text-stone-400">{chart}</pre>
+        <pre className="text-sm text-stone-600 dark:text-stone-400">
+          {chart}
+        </pre>
       </div>
     );
   }

@@ -15,6 +15,7 @@ export function ThemeSwitcher() {
   if (!mounted) {
     return (
       <button
+        type="button"
         aria-label="Toggle theme"
         className="rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700"
       >
@@ -25,6 +26,7 @@ export function ThemeSwitcher() {
 
   return (
     <button
+      type="button"
       aria-label="Toggle theme"
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
       className="rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700"

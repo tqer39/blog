@@ -6,7 +6,7 @@ import { getAllArticles } from '@/lib/articles';
 import { ARTICLES_PER_PAGE } from '@/lib/pagination';
 
 interface ArticlesPageProps {
-  params: { page: string };
+  params: Promise<{ page: string }>;
 }
 
 export function generateStaticParams() {
@@ -18,8 +18,9 @@ export function generateStaticParams() {
   }));
 }
 
-export default function ArticlesPage({ params }: ArticlesPageProps) {
-  const page = parseInt(params.page, 10);
+export default async function ArticlesPage({ params }: ArticlesPageProps) {
+  const { page: pageParam } = await params;
+  const page = parseInt(pageParam, 10);
 
   if (isNaN(page) || page < 1) {
     notFound();
@@ -33,7 +34,10 @@ export default function ArticlesPage({ params }: ArticlesPageProps) {
   }
 
   const startIndex = (page - 1) * ARTICLES_PER_PAGE;
-  const articles = allArticles.slice(startIndex, startIndex + ARTICLES_PER_PAGE);
+  const articles = allArticles.slice(
+    startIndex,
+    startIndex + ARTICLES_PER_PAGE
+  );
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
