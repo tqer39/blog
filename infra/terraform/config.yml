@@ -1,0 +1,23 @@
+project:
+  name: blog
+  organization: tqer39
+  repository: blog
+  domain: tqer39.dev
+
+aws:
+  account_id: "072693953877"
+  region: ap-northeast-1
+
+environments:
+  dev:
+    subdomain: blog
+    vercel:
+      framework: nextjs
+      build_command: npm run build
+      output_directory: out
+
+tags:
+  common:
+    Project: blog
+    ManagedBy: terraform
+    Repository: github.com/tqer39/blog

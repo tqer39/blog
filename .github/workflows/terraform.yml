@@ -1,0 +1,134 @@
+name: Terraform
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'infra/terraform/**'
+      - '.github/workflows/terraform.yml'
+      - '.github/actions/set-matrix/**'
+      - '.github/scripts/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'infra/terraform/**'
+      - '.github/workflows/terraform.yml'
+      - '.github/actions/set-matrix/**'
+      - '.github/scripts/**'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+env:
+  AWS_REGION: ap-northeast-1
+  TF_VERSION: '1.6.0'
+  AWS_ENV_NAME: dev
+
+jobs:
+  set-matrix:
+    name: Set Matrix
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set Matrix
+        id: set-matrix
+        uses: ./.github/actions/set-matrix
+        with:
+          AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
+
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    needs: set-matrix
+    if: ${{ needs.set-matrix.outputs.matrix != '["_empty"]' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        pipeline: ${{ fromJson(needs.set-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dev-blog-deploy-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Init
+        working-directory: infra/terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.pipeline }}
+        run: terraform init
+
+      - name: Terraform Validate
+        working-directory: infra/terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.pipeline }}
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: infra/terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.pipeline }}
+        run: terraform plan -no-color -out=tfplan
+        env:
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_vercel_api_token: ${{ secrets.VERCEL_API_TOKEN }}
+          TF_VAR_vercel_team_id: ${{ secrets.VERCEL_TEAM_ID }}
+
+      - name: Upload Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ env.AWS_ENV_NAME }}-${{ matrix.pipeline }}
+          path: infra/terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.pipeline }}/tfplan
+
+  apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    needs: [set-matrix, plan]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.set-matrix.outputs.matrix != '["_empty"]'
+    strategy:
+      fail-fast: false
+      matrix:
+        pipeline: ${{ fromJson(needs.set-matrix.outputs.matrix) }}
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dev-blog-deploy-role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Download Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-${{ env.AWS_ENV_NAME }}-${{ matrix.pipeline }}
+          path: infra/terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.pipeline }}
+
+      - name: Terraform Init
+        working-directory: infra/terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.pipeline }}
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: infra/terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.pipeline }}
+        run: terraform apply -auto-approve tfplan
+        env:
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_vercel_api_token: ${{ secrets.VERCEL_API_TOKEN }}
+          TF_VAR_vercel_team_id: ${{ secrets.VERCEL_TEAM_ID }}
