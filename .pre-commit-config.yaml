@@ -2,7 +2,8 @@
 # see https://pre-commit.com
 exclude: |
   (?x)^(
-    .+/package.*.json
+    .+/package.*.json|
+    \.turbo/.*
   )$
 
 repos:
@@ -44,6 +45,7 @@ repos:
           - 'textlint-filter-rule-comments@1.2.2'
           - 'textlint-rule-preset-smarthr@1.36.1'
           - 'textlint-rule-preset-ja-technical-writing@12.0.2'
+          - 'textlint-rule-prh@6.1.0'
 
   - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.11.0

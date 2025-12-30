@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "files": ["**", ".*/**"],
-  "ignorePaths": [".git", ".gitignore", ".claude"],
+  "ignorePaths": [".git", ".gitignore", ".claude", "pnpm-lock.yaml", ".turbo"],
   "words": [
     "aahl",
     "albert",

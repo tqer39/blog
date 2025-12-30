@@ -24,13 +24,13 @@ setup-hooks:
 
 # Development
 dev:
-    @npm run dev
+    @pnpm dev
 
 build:
-    @npm run build
+    @pnpm build
 
 start:
-    @npm run start
+    @pnpm --filter @blog/web start
 
 # Code quality
 lint:
@@ -50,10 +50,10 @@ lint-all:
 
 # E2E tests
 e2e:
-    @npx playwright test
+    @pnpm e2e
 
 e2e-ui:
-    @npx playwright test --ui
+    @pnpm --filter @blog/web e2e:ui
 
 # Wrap terraform with convenient -chdir handling
 # Usage examples:

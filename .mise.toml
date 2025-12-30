@@ -1,5 +1,6 @@
 [tools]
 node = "25"
+pnpm = "9.15.0"
 terraform = "latest"
 
 [settings]
