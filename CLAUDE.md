@@ -5,7 +5,7 @@ code in this repository.
 
 ## Project Overview
 
-個人ブログサービス。Next.js 14による静的ブログアプリケーション。Markdownファイルでコンテンツを管理し、Vercelでホスティング。
+個人ブログサービスの monorepo。Turborepo + pnpm workspaces で管理。
 
 ## Development Commands
 
@@ -15,44 +15,57 @@ make bootstrap          # Install Homebrew and Brewfile packages
 just setup              # Setup mise, direnv, hooks
 
 # Development
-just dev                # Run development server
-just build              # Build for production
-just lint               # Run biome lint
-just format             # Run biome format
-just check              # Run biome check (lint + format)
+pnpm dev                # Run all dev servers
+pnpm build              # Build all packages
+pnpm check              # Run biome check
+
+# Filter by package
+pnpm --filter @blog/web dev    # blog のみ起動
+pnpm --filter @blog/web build  # blog のみビルド
 
 # Testing
-just e2e                # Run Playwright E2E tests
-just e2e-ui             # Run Playwright with UI
+pnpm e2e                # Run Playwright E2E tests
 
 # Infrastructure
-just tf -chdir=dev/bootstrap plan    # Terraform plan for bootstrap
-just tf -chdir=dev/main plan         # Terraform plan for main infra
+just tf -chdir=dev/bootstrap plan
+just tf -chdir=dev/main plan
 ```
 
 ## Architecture
 
-### Directory Structure
+### Monorepo Structure
 
 ```text
 /
-├── src/
-│   ├── app/                    # Next.js App Router
-│   ├── components/             # React components
-│   ├── contents/               # Markdown articles
-│   ├── lib/                    # Utility functions
-│   └── types/                  # TypeScript definitions
+├── apps/
+│   └── blog/                   # Next.js ブログアプリ (@blog/web)
+│       ├── src/
+│       │   ├── app/            # App Router
+│       │   ├── components/     # React components
+│       │   ├── contents/       # Markdown articles
+│       │   └── lib/            # Utility functions
+│       ├── e2e/                # Playwright tests
+│       └── package.json
+├── packages/
+│   ├── ui/                     # 共通 UI コンポーネント (@blog/ui)
+│   ├── config/                 # 共通設定 (@blog/config)
+│   └── utils/                  # 共通ユーティリティ (@blog/utils)
 ├── infra/terraform/
-│   ├── config.yml              # Shared configuration
-│   ├── modules/                # Reusable modules
-│   │   ├── deploy-role/        # GitHub OIDC IAM Role
-│   │   ├── cloudflare-dns/     # DNS records
-│   │   └── vercel-project/     # Vercel project
-│   └── envs/dev/
-│       ├── bootstrap/          # Deploy role (manual apply)
-│       └── main/               # CloudFlare + Vercel
-└── e2e/                        # Playwright tests
+│   ├── modules/                # Terraform modules
+│   └── envs/dev/               # Environment configs
+├── turbo.json                  # Turborepo 設定
+├── pnpm-workspace.yaml         # pnpm workspace 設定
+└── package.json                # Root package.json
 ```
+
+### Package Names
+
+| Directory       | Package Name | Description            |
+| --------------- | ------------ | ---------------------- |
+| apps/blog       | @blog/web    | Next.js ブログアプリ   |
+| packages/ui     | @blog/ui     | 共通 UI コンポーネント |
+| packages/config | @blog/config | 共通設定               |
+| packages/utils  | @blog/utils  | 共通ユーティリティ     |
 
 ### Markdown Front-matter
 
@@ -68,8 +81,9 @@ description: "Article description for SEO"
 
 ### Key Technical Decisions
 
-- **Static Export**: `output: 'export'` in next.config.js for Vercel
-- **Content**: Markdown files with gray-matter for front-matter parsing
+- **Monorepo**: Turborepo + pnpm workspaces
+- **Static Export**: `output: 'export'` in next.config.js
+- **Content**: Markdown files with gray-matter
 - **Dark Mode**: next-themes with class-based switching
 - **Styling**: Tailwind CSS with typography plugin
 - **Code Highlighting**: react-syntax-highlighter (oneDark theme)
@@ -80,19 +94,19 @@ description: "Article description for SEO"
 
 ### Path Aliases
 
-TypeScript path alias `@/*` maps to `src/*`.
+TypeScript path alias `@/*` maps to `./src/*` in each app.
 
 ## Deployment
 
 - **Hosting**: Vercel with static export
 - **Domain**: blog.tqer39.dev (CloudFlare DNS CNAME to Vercel)
 - **CI/CD**: GitHub Actions
-  - CI: lint, build, e2e tests
+  - CI: lint, build, e2e tests (pnpm)
   - Terraform: plan on PR, apply on main
 
 ## Tool Management
 
 - **Homebrew**: System packages (see Brewfile)
-- **mise**: Node.js, Terraform versions (see .mise.toml)
+- **mise**: Node.js, pnpm, Terraform (see .mise.toml)
 - **just**: Task runner (see justfile)
 - **prek**: Pre-commit hooks
