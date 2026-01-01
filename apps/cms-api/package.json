@@ -1,0 +1,24 @@
+{
+  "name": "@blog/cms-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 execute blog-cms --local --file=./migrations/001_init.sql",
+    "db:migrate:remote": "wrangler d1 execute blog-cms --remote --file=./migrations/001_init.sql",
+    "lint": "biome lint --write .",
+    "check": "biome check --write .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@blog/cms-types": "workspace:*",
+    "hono": "^4.6.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241205.0",
+    "wrangler": "^3.99.0",
+    "typescript": "^5.1.6"
+  }
+}
