@@ -4,7 +4,9 @@ import { logger } from "hono/logger";
 
 import { articlesHandler } from "./handlers/articles";
 import { imagesHandler } from "./handlers/images";
+import { importExportHandler } from "./handlers/import-export";
 import { tagsHandler } from "./handlers/tags";
+import { webhookHandler } from "./handlers/webhook";
 import { authMiddleware } from "./middleware/auth";
 
 export interface Env {
@@ -13,6 +15,8 @@ export interface Env {
   API_KEY: string;
   ENVIRONMENT: string;
   R2_PUBLIC_URL?: string;
+  VERCEL_DEPLOY_HOOK_URL?: string;
+  WEBHOOK_SECRET?: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();
@@ -37,6 +41,9 @@ v1.use("*", authMiddleware);
 v1.route("/articles", articlesHandler);
 v1.route("/tags", tagsHandler);
 v1.route("/images", imagesHandler);
+v1.route("/import", importExportHandler);
+v1.route("/export", importExportHandler);
+v1.route("/webhook", webhookHandler);
 
 app.route("/v1", v1);
 

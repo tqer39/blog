@@ -17,6 +17,9 @@ bucket_name = "blog-images"
 
 [env.production]
 vars = { ENVIRONMENT = "production" }
+# Set these secrets via: wrangler secret put API_KEY --env production
+# wrangler secret put VERCEL_DEPLOY_HOOK_URL --env production
+# wrangler secret put WEBHOOK_SECRET --env production
 
 [[env.production.d1_databases]]
 binding = "DB"
