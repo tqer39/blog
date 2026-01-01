@@ -12,6 +12,7 @@
     "e2e:ui": "playwright test --ui"
   },
   "dependencies": {
+    "@blog/cms-types": "workspace:*",
     "dayjs": "1.11.9",
     "gray-matter": "4.0.3",
     "next": "15",
