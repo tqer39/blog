@@ -1,13 +1,15 @@
-import dayjs from 'dayjs';
-import Link from 'next/link';
+import dayjs from "dayjs";
+import Link from "next/link";
 
-import type { Article } from '@/types/article';
+import type { Article } from "@/types/article";
 
 interface ArticleCardProps {
   article: Article;
 }
 
 export function ArticleCard({ article }: ArticleCardProps) {
+  const displayDate = article.publishedAt || article.createdAt;
+
   return (
     <article className="group">
       <Link href={`/article/${article.slug}`} className="block">
@@ -19,10 +21,10 @@ export function ArticleCard({ article }: ArticleCardProps) {
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <time
-            dateTime={article.date}
+            dateTime={displayDate}
             className="text-sm text-stone-500 dark:text-stone-500"
           >
-            {dayjs(article.date).format('YYYY/MM/DD')}
+            {dayjs(displayDate).format("YYYY/MM/DD")}
           </time>
           <div className="flex flex-wrap gap-1">
             {article.tags.map((tag) => (

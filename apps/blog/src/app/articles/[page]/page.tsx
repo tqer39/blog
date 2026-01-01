@@ -1,16 +1,16 @@
-import { notFound } from 'next/navigation';
+import { notFound } from "next/navigation";
 
-import { ArticleCard } from '@/components/ArticleCard';
-import { Pagination } from '@/components/Pagination';
-import { getAllArticles } from '@/lib/articles';
-import { ARTICLES_PER_PAGE } from '@/lib/pagination';
+import { ArticleCard } from "@/components/ArticleCard";
+import { Pagination } from "@/components/Pagination";
+import { getAllArticles } from "@/lib/articles";
+import { ARTICLES_PER_PAGE } from "@/lib/pagination";
 
 interface ArticlesPageProps {
   params: Promise<{ page: string }>;
 }
 
-export function generateStaticParams() {
-  const articles = getAllArticles();
+export async function generateStaticParams() {
+  const articles = await getAllArticles();
   const totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE);
 
   return Array.from({ length: totalPages }, (_, i) => ({
@@ -20,13 +20,13 @@ export function generateStaticParams() {
 
 export default async function ArticlesPage({ params }: ArticlesPageProps) {
   const { page: pageParam } = await params;
-  const page = parseInt(pageParam, 10);
+  const page = Number.parseInt(pageParam, 10);
 
-  if (isNaN(page) || page < 1) {
+  if (Number.isNaN(page) || page < 1) {
     notFound();
   }
 
-  const allArticles = getAllArticles();
+  const allArticles = await getAllArticles();
   const totalPages = Math.ceil(allArticles.length / ARTICLES_PER_PAGE);
 
   if (page > totalPages && totalPages > 0) {
@@ -34,10 +34,7 @@ export default async function ArticlesPage({ params }: ArticlesPageProps) {
   }
 
   const startIndex = (page - 1) * ARTICLES_PER_PAGE;
-  const articles = allArticles.slice(
-    startIndex,
-    startIndex + ARTICLES_PER_PAGE
-  );
+  const articles = allArticles.slice(startIndex, startIndex + ARTICLES_PER_PAGE);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">

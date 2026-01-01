@@ -1,16 +1,16 @@
-import dayjs from 'dayjs';
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import dayjs from "dayjs";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-import { ArticleContent } from '@/components/ArticleContent';
-import { getAllArticles, getArticleBySlug } from '@/lib/articles';
+import { ArticleContent } from "@/components/ArticleContent";
+import { getAllArticles, getArticleBySlug } from "@/lib/articles";
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  const articles = getAllArticles();
+export async function generateStaticParams() {
+  const articles = await getAllArticles();
   return articles.map((article) => ({
     slug: article.slug,
   }));
@@ -20,10 +20,10 @@ export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) {
-    return { title: 'Article not found' };
+    return { title: "Article not found" };
   }
 
   return {
@@ -34,11 +34,13 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) {
     notFound();
   }
+
+  const displayDate = article.publishedAt || article.createdAt;
 
   return (
     <article className="mx-auto max-w-4xl px-4 py-8">
@@ -46,10 +48,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <h1 className="text-3xl font-bold">{article.title}</h1>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <time
-            dateTime={article.date}
+            dateTime={displayDate}
             className="text-stone-600 dark:text-stone-400"
           >
-            {dayjs(article.date).format('YYYY/MM/DD')}
+            {dayjs(displayDate).format("YYYY/MM/DD")}
           </time>
           <div className="flex flex-wrap gap-2">
             {article.tags.map((tag) => (

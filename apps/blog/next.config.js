@@ -1,8 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "9000",
+        pathname: "/blog-images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.tqer39.dev",
+        pathname: "/images/**",
+      },
+    ],
   },
 };
 

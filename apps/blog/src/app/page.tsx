@@ -1,10 +1,11 @@
-import Link from 'next/link';
+import Link from "next/link";
 
-import { ArticleCard } from '@/components/ArticleCard';
-import { getAllArticles } from '@/lib/articles';
+import { ArticleCard } from "@/components/ArticleCard";
+import { getAllArticles } from "@/lib/articles";
 
-export default function HomePage() {
-  const articles = getAllArticles().slice(0, 5);
+export default async function HomePage() {
+  const allArticles = await getAllArticles();
+  const articles = allArticles.slice(0, 5);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">

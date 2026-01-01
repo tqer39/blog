@@ -1,10 +1,10 @@
-import { ArticleCard } from '@/components/ArticleCard';
-import { Pagination } from '@/components/Pagination';
-import { getAllArticles } from '@/lib/articles';
-import { ARTICLES_PER_PAGE } from '@/lib/pagination';
+import { ArticleCard } from "@/components/ArticleCard";
+import { Pagination } from "@/components/Pagination";
+import { getAllArticles } from "@/lib/articles";
+import { ARTICLES_PER_PAGE } from "@/lib/pagination";
 
-export default function ArticlesPage() {
-  const allArticles = getAllArticles();
+export default async function ArticlesPage() {
+  const allArticles = await getAllArticles();
   const articles = allArticles.slice(0, ARTICLES_PER_PAGE);
   const totalPages = Math.ceil(allArticles.length / ARTICLES_PER_PAGE);
 
