@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Article } from "@blog/cms-types";
 import { deleteArticle, getArticles, publishArticle, unpublishArticle } from "@/lib/api/client";
 
@@ -11,7 +11,7 @@ export default function ArticleListPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "published" | "draft">("all");
 
-  async function loadArticles() {
+  const loadArticles = useCallback(async () => {
     try {
       setLoading(true);
       const status = filter === "all" ? undefined : filter;
@@ -23,11 +23,11 @@ export default function ArticleListPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [filter]);
 
   useEffect(() => {
     loadArticles();
-  }, [filter]);
+  }, [loadArticles]);
 
   async function handleTogglePublish(article: Article) {
     try {

@@ -10,9 +10,9 @@
  *   - D1 database initialized (just db-migrate-local)
  */
 
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
 import matter from "gray-matter";
-import path from "path";
 
 const API_URL = process.env.CMS_API_URL || "http://localhost:8787/v1";
 const API_KEY = process.env.CMS_API_KEY || "dev-api-key";
@@ -107,7 +107,9 @@ async function migrate(): Promise<void> {
     const frontmatter = data as OldFrontmatter;
 
     if (frontmatter.tags) {
-      frontmatter.tags.forEach((tag) => allTags.add(tag));
+      for (const tag of frontmatter.tags) {
+        allTags.add(tag);
+      }
     }
   }
 

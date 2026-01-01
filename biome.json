@@ -21,7 +21,8 @@
         "noDangerouslySetInnerHtml": "off"
       },
       "a11y": {
-        "useButtonType": "warn"
+        "useButtonType": "warn",
+        "noLabelWithoutControl": "off"
       }
     }
   },
@@ -45,7 +46,8 @@
       "!**/.next",
       "!**/out",
       "!**/dist",
-      "!**/*.min.js"
+      "!**/*.min.js",
+      "!**/.wrangler"
     ]
   }
 }
