@@ -4,6 +4,7 @@
   "ignorePaths": [".git", ".gitignore", ".claude", "pnpm-lock.yaml", ".turbo"],
   "words": [
     "aahl",
+    "apos",
     "albert",
     "amazonhq",
     "anyenv",
@@ -92,6 +93,7 @@
     "Lucida",
     "manuelschneid3r",
     "markdownlint",
+    "maxage",
     "Menlo",
     "minioadmin",
     "minio",
