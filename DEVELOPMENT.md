@@ -33,9 +33,10 @@ open http://localhost:3100
 
 ### データベース
 
-| コマンド                | 説明                |
-| ----------------------- | ------------------- |
-| `just db-migrate-local` | D1 migration (local)|
+| コマンド                | 説明                   |
+| ----------------------- | ---------------------- |
+| `just db-migrate-local` | D1 migration (local)   |
+| `just seed`             | サンプルデータ投入     |
 
 ### コード品質
 
@@ -73,12 +74,11 @@ open http://localhost:3100
 
 ## 初期データ投入
 
-既存の Markdown ファイルを CMS に移行:
+サンプルデータを CMS に投入:
 
 ```bash
 # CMS API が起動している状態で
-cd apps/blog
-pnpm migrate
+just seed
 ```
 
 ## ローカル R2 (Wrangler)

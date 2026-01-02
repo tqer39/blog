@@ -72,6 +72,11 @@ db-migrate-local:
     @cd apps/cms-api && pnpm db:migrate:local
     @echo "✅ D1 local migration completed"
 
+seed:
+    @echo "→ Seeding sample data..."
+    @cd apps/blog && pnpm migrate
+    @echo "✅ Sample data imported"
+
 # E2E tests
 e2e:
     @pnpm e2e
