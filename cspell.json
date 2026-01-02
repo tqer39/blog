@@ -132,6 +132,7 @@
     "setf",
     "setopt",
     "shellcheck",
+    "shiki",
     "shellenv",
     "shlvl",
     "softprops",
