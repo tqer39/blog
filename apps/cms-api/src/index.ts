@@ -8,6 +8,7 @@ import { importExportHandler } from "./handlers/import-export";
 import { tagsHandler } from "./handlers/tags";
 import { webhookHandler } from "./handlers/webhook";
 import { authMiddleware } from "./middleware/auth";
+import { rateLimitMiddleware } from "./middleware/rateLimit";
 
 export interface Env {
   DB: D1Database;
@@ -23,6 +24,7 @@ const app = new Hono<{ Bindings: Env }>();
 
 // Middleware
 app.use("*", logger());
+app.use("*", rateLimitMiddleware);
 app.use(
   "*",
   cors({
@@ -53,7 +55,11 @@ app.notFound((c) => c.json({ error: "Not Found" }, 404));
 // Error handler
 app.onError((err, c) => {
   console.error("Error:", err);
-  return c.json({ error: err.message || "Internal Server Error" }, 500);
+  const message =
+    c.env.ENVIRONMENT === "production"
+      ? "Internal Server Error"
+      : err.message || "Internal Server Error";
+  return c.json({ error: message }, 500);
 });
 
 export default app;
