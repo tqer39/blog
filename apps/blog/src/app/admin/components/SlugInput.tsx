@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface SlugInputProps {
   value: string;
@@ -34,29 +37,24 @@ export function SlugInput({ value, onChange, generateFrom }: SlugInputProps) {
   };
 
   return (
-    <div className="space-y-1">
-      <label className="block text-sm font-medium text-stone-700 dark:text-stone-300">
-        Slug
-      </label>
+    <div className="space-y-2">
+      <Label htmlFor="slug">Slug</Label>
       <div className="flex gap-2">
-        <input
+        <Input
+          id="slug"
           type="text"
           value={value}
           onChange={(e) => handleChange(e.target.value)}
           placeholder="article-slug"
-          className="flex-1 rounded-lg border border-stone-300 px-3 py-2 font-mono text-sm focus:border-blue-500 focus:outline-none dark:border-stone-600 dark:bg-stone-800"
+          className="flex-1 font-mono text-sm"
         />
         {isManual && generateFrom && (
-          <button
-            type="button"
-            onClick={handleGenerateClick}
-            className="rounded-lg border border-stone-300 px-3 py-2 text-sm hover:bg-stone-100 dark:border-stone-600 dark:hover:bg-stone-700"
-          >
+          <Button type="button" variant="outline" onClick={handleGenerateClick}>
             Auto
-          </button>
+          </Button>
         )}
       </div>
-      <p className="text-xs text-stone-500">
+      <p className="text-xs text-muted-foreground">
         URL: /article/{value || "..."}
       </p>
     </div>

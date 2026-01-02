@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 import { createTag, getTags } from "@/lib/api/client";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface TagSelectorProps {
   value: string[];
@@ -66,50 +71,49 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-stone-700 dark:text-stone-300">
-        Tags
-      </label>
+      <Label>Tags</Label>
 
       {/* Selected tags */}
-      <div className="flex flex-wrap gap-2">
-        {value.map((tag) => (
-          <span
-            key={tag}
-            className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-          >
-            {tag}
-            <button
-              type="button"
-              onClick={() => handleRemoveTag(tag)}
-              className="ml-1 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-200"
-            >
-              ×
-            </button>
-          </span>
-        ))}
-      </div>
+      {value.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {value.map((tag) => (
+            <Badge key={tag} variant="secondary" className="gap-1 pr-1">
+              {tag}
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-4 w-4 p-0 hover:bg-transparent"
+                onClick={() => handleRemoveTag(tag)}
+              >
+                <X className="h-3 w-3" />
+                <span className="sr-only">Remove {tag}</span>
+              </Button>
+            </Badge>
+          ))}
+        </div>
+      )}
 
       {/* Input */}
       <div className="relative">
-        <input
+        <Input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={isLoading ? "Loading tags..." : "Add tags (press Enter)"}
           disabled={isLoading}
-          className="w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-blue-500 focus:outline-none dark:border-stone-600 dark:bg-stone-800"
         />
 
         {/* Suggestions dropdown */}
         {inputValue && suggestions.length > 0 && (
-          <div className="absolute z-10 mt-1 w-full rounded-lg border border-stone-200 bg-white shadow-lg dark:border-stone-700 dark:bg-stone-800">
+          <div className="absolute z-10 mt-1 w-full rounded-md border bg-popover p-1 shadow-md">
             {suggestions.slice(0, 5).map((tag) => (
               <button
                 key={tag}
                 type="button"
                 onClick={() => handleAddTag(tag)}
-                className="block w-full px-3 py-2 text-left hover:bg-stone-100 dark:hover:bg-stone-700"
+                className="w-full rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent hover:text-accent-foreground"
               >
                 {tag}
               </button>
