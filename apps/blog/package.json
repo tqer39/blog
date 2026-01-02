@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "biome lint --write .",
     "check": "biome check --write .",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
     "migrate": "tsx scripts/migrate-to-cms.ts"
@@ -49,10 +51,12 @@
     "@types/node": "20.4.2",
     "@types/react": "18.2.15",
     "@types/react-dom": "18.2.7",
+    "@vitest/coverage-v8": "^4.0.16",
     "autoprefixer": "10.4.14",
     "postcss": "8.4.31",
     "tailwindcss": "3.3.2",
     "tsx": "^4.19.0",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "vitest": "^4.0.16"
   }
 }
