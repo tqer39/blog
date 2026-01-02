@@ -10,7 +10,9 @@
     "db:migrate:remote": "wrangler d1 execute blog-cms --remote --file=./migrations/001_init.sql",
     "lint": "biome lint --write .",
     "check": "biome check --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@blog/cms-types": "workspace:*",

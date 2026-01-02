@@ -48,6 +48,13 @@ lint-hook hook:
 lint-all:
     @prek run -a
 
+# Testing
+test:
+    @pnpm test
+
+test-coverage:
+    @pnpm test -- --coverage
+
 # CMS Local Development
 dev-all:
     #!/usr/bin/env bash

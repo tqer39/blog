@@ -47,7 +47,8 @@
       "!**/out",
       "!**/dist",
       "!**/*.min.js",
-      "!**/.wrangler"
+      "!**/.wrangler",
+      "!**/coverage"
     ]
   }
 }
