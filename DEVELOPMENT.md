@@ -2,13 +2,11 @@
 
 ## サービス一覧
 
-| サービス       | ポート | URL                           | 説明              |
-| -------------- | ------ | ----------------------------- | ----------------- |
-| Blog (Next.js) | 3100   | <http://localhost:3100>       | フロントエンド    |
-| Admin UI       | 3100   | <http://localhost:3100/admin> | 記事管理画面      |
-| CMS API        | 8787   | <http://localhost:8787>       | バックエンド API  |
-| MinIO (S3)     | 9000   | <http://localhost:9000>       | ローカル R2       |
-| MinIO Console  | 9001   | <http://localhost:9001>       | MinIO 管理画面    |
+| サービス       | ポート | URL                           | 説明             |
+| -------------- | ------ | ----------------------------- | ---------------- |
+| Blog (Next.js) | 3100   | <http://localhost:3100>       | フロントエンド   |
+| Admin UI       | 3100   | <http://localhost:3100/admin> | 記事管理画面     |
+| CMS API        | 8787   | <http://localhost:8787>       | バックエンド API |
 
 ## クイックスタート
 
@@ -32,13 +30,6 @@ open http://localhost:3100
 | `just dev-all`  | 全サービス起動               |
 | `just dev-blog` | ブログのみ起動               |
 | `just dev-api`  | CMS API のみ起動             |
-
-### Docker (MinIO)
-
-| コマンド           | 説明       |
-| ------------------ | ---------- |
-| `just docker-up`   | MinIO 起動 |
-| `just docker-down` | MinIO 停止 |
 
 ### データベース
 
@@ -90,21 +81,22 @@ cd apps/blog
 pnpm migrate
 ```
 
-## MinIO (ローカル R2)
+## ローカル R2 (Wrangler)
 
-### アクセス情報
+Wrangler が R2 をローカルでエミュレートします。Docker 不要。
 
-- **Console URL**: <http://localhost:9001>
-- **Username**: `minioadmin`
-- **Password**: `minioadmin`
-- **Bucket**: `blog-images`
+### データ保存場所
+
+```text
+apps/cms-api/.wrangler/state/
+```
 
 ### 画像 URL
 
 ローカル環境での画像 URL:
 
 ```text
-http://localhost:9000/blog-images/{path}
+http://localhost:8787/v1/images/file/{path}
 ```
 
 ## トラブルシューティング
@@ -115,22 +107,14 @@ http://localhost:9000/blog-images/{path}
 # 使用中のポートを確認
 lsof -i :3100
 lsof -i :8787
-lsof -i :9000
 
 # プロセスを終了
 kill -9 <PID>
 ```
 
-### D1 データベースをリセット
+### D1/R2 データをリセット
 
 ```bash
 rm -rf apps/cms-api/.wrangler
 just db-migrate-local
-```
-
-### MinIO データをリセット
-
-```bash
-docker-compose down -v
-just docker-up
 ```

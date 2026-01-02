@@ -63,6 +63,23 @@ imagesHandler.post("/", async (c) => {
   return c.json(response, 201);
 });
 
+// Serve image file (for local development)
+imagesHandler.get("/file/*", async (c) => {
+  const r2Key = c.req.path.replace("/v1/images/file/", "");
+
+  const object = await c.env.R2_BUCKET.get(r2Key);
+
+  if (!object) {
+    return c.json({ error: "Image not found" }, 404);
+  }
+
+  const headers = new Headers();
+  headers.set("Content-Type", object.httpMetadata?.contentType || "application/octet-stream");
+  headers.set("Cache-Control", "public, max-age=31536000, immutable");
+
+  return new Response(object.body, { headers });
+});
+
 // Get image metadata
 imagesHandler.get("/:id", async (c) => {
   const id = c.req.param("id");
@@ -133,9 +150,9 @@ function getPublicUrl(env: Env, r2Key: string): string {
   if (env.R2_PUBLIC_URL) {
     return `${env.R2_PUBLIC_URL}/${r2Key}`;
   }
-  // Default to local development URL
+  // Local development: serve via CMS API
   if (env.ENVIRONMENT === "development") {
-    return `http://localhost:9000/blog-images/${r2Key}`;
+    return `http://localhost:8787/v1/images/file/${r2Key}`;
   }
   return `https://cdn.tqer39.dev/${r2Key}`;
 }

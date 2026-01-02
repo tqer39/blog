@@ -53,12 +53,9 @@ dev-all:
     #!/usr/bin/env bash
     set -euo pipefail
     echo "→ Starting all services..."
-    echo "  - MinIO (R2): http://localhost:9000 (console: http://localhost:9001)"
-    echo "  - CMS API:    http://localhost:8787"
-    echo "  - Blog:       http://localhost:3000"
+    echo "  - CMS API: http://localhost:8787"
+    echo "  - Blog:    http://localhost:3100"
     echo ""
-    docker-compose up -d
-    trap "docker-compose down" EXIT
     concurrently \
         --names "api,blog" \
         --prefix-colors "yellow,cyan" \
@@ -70,16 +67,6 @@ dev-blog:
 
 dev-api:
     @pnpm --filter @blog/cms-api dev
-
-docker-up:
-    @docker-compose up -d
-    @echo "✅ MinIO started"
-    @echo "   - S3 API:  http://localhost:9000"
-    @echo "   - Console: http://localhost:9001 (minioadmin/minioadmin)"
-
-docker-down:
-    @docker-compose down
-    @echo "✅ MinIO stopped"
 
 db-migrate-local:
     @cd apps/cms-api && pnpm db:migrate:local
