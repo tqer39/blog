@@ -39,6 +39,14 @@
       "semicolons": "always"
     }
   },
+  "css": {
+    "parser": {
+      "cssModules": true
+    },
+    "linter": {
+      "enabled": false
+    }
+  },
   "files": {
     "includes": [
       "**",

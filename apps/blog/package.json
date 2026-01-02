@@ -14,8 +14,12 @@
   },
   "dependencies": {
     "@blog/cms-types": "workspace:*",
+    "@radix-ui/react-slot": "^1.2.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "dayjs": "1.11.9",
     "gray-matter": "4.0.3",
+    "lucide-react": "^0.562.0",
     "next": "15",
     "next-themes": "0.2.1",
     "react": "18.2.0",
@@ -24,7 +28,9 @@
     "react-markdown": "8.0.7",
     "react-syntax-highlighter": "15.5.0",
     "rehype-raw": "6.1.1",
-    "remark-gfm": "3.0.1"
+    "remark-gfm": "3.0.1",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
