@@ -1,7 +1,27 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Bold,
+  Code,
+  Heading2,
+  Italic,
+  Link,
+  List,
+  Columns2,
+  Eye,
+  Pencil,
+} from "lucide-react";
 import { ArticleContent } from "@/components/ArticleContent";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MarkdownEditorProps {
   value: string;
@@ -9,49 +29,61 @@ interface MarkdownEditorProps {
   onImageUpload: (file: File) => Promise<string>;
 }
 
-export function MarkdownEditor({ value, onChange, onImageUpload }: MarkdownEditorProps) {
+export function MarkdownEditor({
+  value,
+  onChange,
+  onImageUpload,
+}: MarkdownEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [previewMode, setPreviewMode] = useState<"edit" | "preview" | "split">("split");
+  const [previewMode, setPreviewMode] = useState<"edit" | "preview" | "split">(
+    "split"
+  );
 
-  const insertTextAtCursor = useCallback((text: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
+  const insertTextAtCursor = useCallback(
+    (text: string) => {
+      const textarea = textareaRef.current;
+      if (!textarea) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const before = value.substring(0, start);
-    const after = value.substring(end);
-    const newValue = before + text + after;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const before = value.substring(0, start);
+      const after = value.substring(end);
+      const newValue = before + text + after;
 
-    onChange(newValue);
+      onChange(newValue);
 
-    // Set cursor position after inserted text
-    requestAnimationFrame(() => {
-      textarea.selectionStart = textarea.selectionEnd = start + text.length;
-      textarea.focus();
-    });
-  }, [value, onChange]);
+      // Set cursor position after inserted text
+      requestAnimationFrame(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + text.length;
+        textarea.focus();
+      });
+    },
+    [value, onChange]
+  );
 
-  const wrapSelection = useCallback((before: string, after: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
+  const wrapSelection = useCallback(
+    (before: string, after: string) => {
+      const textarea = textareaRef.current;
+      if (!textarea) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = value.substring(start, end);
-    const beforeText = value.substring(0, start);
-    const afterText = value.substring(end);
-    const newValue = beforeText + before + selectedText + after + afterText;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = value.substring(start, end);
+      const beforeText = value.substring(0, start);
+      const afterText = value.substring(end);
+      const newValue = beforeText + before + selectedText + after + afterText;
 
-    onChange(newValue);
+      onChange(newValue);
 
-    requestAnimationFrame(() => {
-      textarea.selectionStart = start + before.length;
-      textarea.selectionEnd = end + before.length;
-      textarea.focus();
-    });
-  }, [value, onChange]);
+      requestAnimationFrame(() => {
+        textarea.selectionStart = start + before.length;
+        textarea.selectionEnd = end + before.length;
+        textarea.focus();
+      });
+    },
+    [value, onChange]
+  );
 
   // Handle paste events for images
   useEffect(() => {
@@ -127,102 +159,145 @@ export function MarkdownEditor({ value, onChange, onImageUpload }: MarkdownEdito
   }, [onImageUpload, insertTextAtCursor]);
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-stone-200 dark:border-stone-700">
-      {/* Toolbar */}
-      <div className="flex items-center justify-between border-b border-stone-200 bg-stone-50 px-2 py-1 dark:border-stone-700 dark:bg-stone-800">
-        <div className="flex gap-1">
-          <ToolbarButton onClick={() => wrapSelection("**", "**")} title="Bold">
-            B
-          </ToolbarButton>
-          <ToolbarButton onClick={() => wrapSelection("_", "_")} title="Italic">
-            I
-          </ToolbarButton>
-          <ToolbarButton onClick={() => insertTextAtCursor("## ")} title="Heading">
-            H2
-          </ToolbarButton>
-          <ToolbarButton onClick={() => insertTextAtCursor("- ")} title="List">
-            •
-          </ToolbarButton>
-          <ToolbarButton onClick={() => insertTextAtCursor("```\n\n```")} title="Code Block">
-            {"</>"}
-          </ToolbarButton>
-          <ToolbarButton onClick={() => insertTextAtCursor("[](url)")} title="Link">
-            🔗
-          </ToolbarButton>
+    <TooltipProvider>
+      <div className="flex flex-col overflow-hidden rounded-md border">
+        {/* Toolbar */}
+        <div className="flex items-center justify-between border-b bg-muted/50 px-2 py-1">
+          <div className="flex items-center gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => wrapSelection("**", "**")}
+                >
+                  <Bold className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Bold</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => wrapSelection("_", "_")}
+                >
+                  <Italic className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Italic</TooltipContent>
+            </Tooltip>
+
+            <Separator orientation="vertical" className="mx-1 h-6" />
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => insertTextAtCursor("## ")}
+                >
+                  <Heading2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Heading</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => insertTextAtCursor("- ")}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>List</TooltipContent>
+            </Tooltip>
+
+            <Separator orientation="vertical" className="mx-1 h-6" />
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => insertTextAtCursor("```\n\n```")}
+                >
+                  <Code className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Code Block</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => insertTextAtCursor("[](url)")}
+                >
+                  <Link className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Link</TooltipContent>
+            </Tooltip>
+          </div>
+
+          <ToggleGroup
+            type="single"
+            value={previewMode}
+            onValueChange={(v) => v && setPreviewMode(v as typeof previewMode)}
+            size="sm"
+          >
+            <ToggleGroupItem value="edit" aria-label="Edit mode">
+              <Pencil className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="split" aria-label="Split mode">
+              <Columns2 className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="preview" aria-label="Preview mode">
+              <Eye className="h-4 w-4" />
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
-        <div className="flex gap-1">
-          <ToolbarButton
-            onClick={() => setPreviewMode("edit")}
-            active={previewMode === "edit"}
-          >
-            Edit
-          </ToolbarButton>
-          <ToolbarButton
-            onClick={() => setPreviewMode("split")}
-            active={previewMode === "split"}
-          >
-            Split
-          </ToolbarButton>
-          <ToolbarButton
-            onClick={() => setPreviewMode("preview")}
-            active={previewMode === "preview"}
-          >
-            Preview
-          </ToolbarButton>
+
+        {/* Editor Area */}
+        <div
+          className={`flex min-h-[500px] ${previewMode === "split" ? "divide-x" : ""}`}
+        >
+          {(previewMode === "edit" || previewMode === "split") && (
+            <div className="relative flex-1">
+              <textarea
+                ref={textareaRef}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                className="h-full w-full resize-none bg-background p-4 font-mono text-sm focus:outline-none"
+                placeholder="Write your article in Markdown... (Paste images from clipboard)"
+              />
+              {isUploading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-background/80">
+                  <div className="text-muted-foreground">Uploading image...</div>
+                </div>
+              )}
+            </div>
+          )}
+          {(previewMode === "preview" || previewMode === "split") && (
+            <div className="flex-1 overflow-auto bg-background p-4">
+              <ArticleContent content={value} />
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Editor Area */}
-      <div className={`flex min-h-[500px] ${previewMode === "split" ? "divide-x divide-stone-200 dark:divide-stone-700" : ""}`}>
-        {(previewMode === "edit" || previewMode === "split") && (
-          <div className="relative flex-1">
-            <textarea
-              ref={textareaRef}
-              value={value}
-              onChange={(e) => onChange(e.target.value)}
-              className="h-full w-full resize-none bg-white p-4 font-mono text-sm focus:outline-none dark:bg-stone-900"
-              placeholder="Write your article in Markdown... (Paste images from clipboard)"
-            />
-            {isUploading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-stone-900/80">
-                <div className="text-stone-500">Uploading image...</div>
-              </div>
-            )}
-          </div>
-        )}
-        {(previewMode === "preview" || previewMode === "split") && (
-          <div className="flex-1 overflow-auto bg-white p-4 dark:bg-stone-900">
-            <ArticleContent content={value} />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function ToolbarButton({
-  children,
-  onClick,
-  title,
-  active,
-}: {
-  children: React.ReactNode;
-  onClick: () => void;
-  title?: string;
-  active?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      title={title}
-      className={`rounded px-2 py-1 text-sm font-medium ${
-        active
-          ? "bg-stone-200 text-stone-900 dark:bg-stone-600 dark:text-white"
-          : "text-stone-600 hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-700"
-      }`}
-    >
-      {children}
-    </button>
+    </TooltipProvider>
   );
 }
