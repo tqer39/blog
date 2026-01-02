@@ -1,11 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { Article, ArticleInput } from "@blog/cms-types";
-import { uploadImage } from "@/lib/api/client";
-import { MarkdownEditor } from "./MarkdownEditor";
-import { SlugInput } from "./SlugInput";
-import { TagSelector } from "./TagSelector";
+import { useState } from 'react';
+import type { Article, ArticleInput } from '@blog/cms-types';
+import { uploadImage } from '@/lib/api/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { MarkdownEditor } from './MarkdownEditor';
+import { SlugInput } from './SlugInput';
+import { TagSelector } from './TagSelector';
 
 interface ArticleEditorProps {
   initialData?: Article;
@@ -13,14 +19,20 @@ interface ArticleEditorProps {
   onCancel?: () => void;
 }
 
-export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorProps) {
-  const [title, setTitle] = useState(initialData?.title ?? "");
-  const [slug, setSlug] = useState(initialData?.slug ?? "");
-  const [description, setDescription] = useState(initialData?.description ?? "");
-  const [content, setContent] = useState(initialData?.content ?? "");
+export function ArticleEditor({
+  initialData,
+  onSave,
+  onCancel,
+}: ArticleEditorProps) {
+  const [title, setTitle] = useState(initialData?.title ?? '');
+  const [slug, setSlug] = useState(initialData?.slug ?? '');
+  const [description, setDescription] = useState(
+    initialData?.description ?? ''
+  );
+  const [content, setContent] = useState(initialData?.content ?? '');
   const [tags, setTags] = useState<string[]>(initialData?.tags ?? []);
-  const [status, setStatus] = useState<"draft" | "published">(
-    initialData?.status ?? "draft",
+  const [status, setStatus] = useState<'draft' | 'published'>(
+    initialData?.status ?? 'draft'
   );
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,15 +44,15 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
 
   const handleSave = async () => {
     if (!title.trim()) {
-      setError("Title is required");
+      setError('Title is required');
       return;
     }
     if (!slug.trim()) {
-      setError("Slug is required");
+      setError('Slug is required');
       return;
     }
     if (!content.trim()) {
-      setError("Content is required");
+      setError('Content is required');
       return;
     }
 
@@ -57,7 +69,7 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
         status,
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save article");
+      setError(err instanceof Error ? err.message : 'Failed to save article');
     } finally {
       setIsSaving(false);
     }
@@ -68,65 +80,53 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">
-          {initialData ? "Edit Article" : "New Article"}
+          {initialData ? 'Edit Article' : 'New Article'}
         </h1>
         <div className="flex items-center gap-4">
           {/* Status toggle */}
           <div className="flex items-center gap-2">
-            <span className="text-sm text-stone-500">Status:</span>
-            <button
-              type="button"
-              onClick={() => setStatus(status === "draft" ? "published" : "draft")}
-              className={`rounded-full px-3 py-1 text-sm font-medium ${
-                status === "published"
-                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                  : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
-              }`}
+            <span className="text-sm text-muted-foreground">Status:</span>
+            <Badge
+              variant={status === 'published' ? 'default' : 'secondary'}
+              className="cursor-pointer"
+              onClick={() =>
+                setStatus(status === 'draft' ? 'published' : 'draft')
+              }
             >
-              {status === "published" ? "Published" : "Draft"}
-            </button>
+              {status === 'published' ? 'Published' : 'Draft'}
+            </Badge>
           </div>
 
           {onCancel && (
-            <button
-              type="button"
-              onClick={onCancel}
-              className="rounded-lg border border-stone-300 px-4 py-2 font-medium hover:bg-stone-100 dark:border-stone-600 dark:hover:bg-stone-800"
-            >
+            <Button type="button" variant="outline" onClick={onCancel}>
               Cancel
-            </button>
+            </Button>
           )}
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={isSaving}
-            className="rounded-lg bg-blue-600 px-6 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {isSaving ? "Saving..." : "Save"}
-          </button>
+          <Button type="button" onClick={handleSave} disabled={isSaving}>
+            {isSaving ? 'Saving...' : 'Save'}
+          </Button>
         </div>
       </div>
 
       {/* Error message */}
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
-          {error}
-        </div>
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       {/* Form */}
       <div className="space-y-4">
         {/* Title */}
-        <div>
-          <label className="mb-1 block text-sm font-medium text-stone-700 dark:text-stone-300">
-            Title
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="title">Title</Label>
+          <Input
+            id="title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Article title"
-            className="w-full rounded-lg border border-stone-300 px-4 py-3 text-xl font-semibold focus:border-blue-500 focus:outline-none dark:border-stone-600 dark:bg-stone-800"
+            className="text-xl font-semibold"
           />
         </div>
 
@@ -134,18 +134,16 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
         <SlugInput value={slug} onChange={setSlug} generateFrom={title} />
 
         {/* Description */}
-        <div>
-          <label className="mb-1 block text-sm font-medium text-stone-700 dark:text-stone-300">
-            Description (SEO)
-          </label>
-          <textarea
+        <div className="space-y-2">
+          <Label htmlFor="description">Description (SEO)</Label>
+          <Textarea
+            id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Brief description for SEO (100-160 characters)"
             rows={2}
-            className="w-full rounded-lg border border-stone-300 px-3 py-2 focus:border-blue-500 focus:outline-none dark:border-stone-600 dark:bg-stone-800"
           />
-          <p className="mt-1 text-xs text-stone-500">
+          <p className="text-xs text-muted-foreground">
             {description.length} / 160 characters
           </p>
         </div>
@@ -154,10 +152,8 @@ export function ArticleEditor({ initialData, onSave, onCancel }: ArticleEditorPr
         <TagSelector value={tags} onChange={setTags} />
 
         {/* Content */}
-        <div>
-          <label className="mb-1 block text-sm font-medium text-stone-700 dark:text-stone-300">
-            Content
-          </label>
+        <div className="space-y-2">
+          <Label>Content</Label>
           <MarkdownEditor
             value={content}
             onChange={setContent}

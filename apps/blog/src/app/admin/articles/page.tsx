@@ -3,7 +3,24 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { Article } from "@blog/cms-types";
-import { deleteArticle, getArticles, publishArticle, unpublishArticle } from "@/lib/api/client";
+import {
+  deleteArticle,
+  getArticles,
+  publishArticle,
+  unpublishArticle,
+} from "@/lib/api/client";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ArticleListPage() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -57,122 +74,115 @@ export default function ArticleListPage() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Articles</h1>
-        <Link
-          href="/admin/articles/new"
-          className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
-        >
-          New Article
-        </Link>
+        <Button asChild>
+          <Link href="/admin/articles/new">New Article</Link>
+        </Button>
       </div>
 
       {/* Filter tabs */}
-      <div className="mb-6 flex gap-2">
-        {(["all", "published", "draft"] as const).map((f) => (
-          <button
-            key={f}
-            type="button"
-            onClick={() => setFilter(f)}
-            className={`rounded-lg px-4 py-2 font-medium capitalize ${
-              filter === f
-                ? "bg-stone-900 text-white dark:bg-white dark:text-stone-900"
-                : "bg-stone-100 text-stone-700 hover:bg-stone-200 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700"
-            }`}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        value={filter}
+        onValueChange={(v) => setFilter(v as typeof filter)}
+        className="mb-6"
+      >
+        <TabsList>
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="published">Published</TabsTrigger>
+          <TabsTrigger value="draft">Draft</TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
-          {error}
-        </div>
+        <Alert variant="destructive" className="mb-6">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       {loading ? (
-        <div className="py-12 text-center text-stone-500">Loading...</div>
+        <div className="py-12 text-center text-muted-foreground">
+          Loading...
+        </div>
       ) : articles.length === 0 ? (
-        <div className="py-12 text-center text-stone-500">No articles found</div>
+        <div className="py-12 text-center text-muted-foreground">
+          No articles found
+        </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
-          <table className="w-full">
-            <thead className="border-b border-stone-200 bg-stone-50 dark:border-stone-700 dark:bg-stone-900">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-stone-500">Title</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-stone-500">Status</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-stone-500">Date</th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-stone-500">Tags</th>
-                <th className="px-6 py-3 text-right text-sm font-medium text-stone-500">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-stone-200 dark:divide-stone-700">
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Title</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Tags</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {articles.map((article) => (
-                <tr key={article.id} className="hover:bg-stone-50 dark:hover:bg-stone-700/50">
-                  <td className="px-6 py-4">
+                <TableRow key={article.id}>
+                  <TableCell>
                     <Link
                       href={`/admin/articles/${article.slug}/edit`}
-                      className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+                      className="font-medium text-primary hover:underline"
                     >
                       {article.title}
                     </Link>
-                    <div className="text-sm text-stone-500">{article.slug}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-                        article.status === "published"
-                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                          : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
-                      }`}
+                    <div className="text-sm text-muted-foreground">
+                      {article.slug}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        article.status === "published" ? "default" : "secondary"
+                      }
                     >
                       {article.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-stone-500">
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
                     {article.publishedAt
                       ? new Date(article.publishedAt).toLocaleDateString()
                       : new Date(article.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4">
+                  </TableCell>
+                  <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {article.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded bg-stone-100 px-2 py-0.5 text-xs dark:bg-stone-700"
-                        >
+                        <Badge key={tag} variant="outline">
                           {tag}
-                        </span>
+                        </Badge>
                       ))}
                     </div>
-                  </td>
-                  <td className="px-6 py-4 text-right">
+                  </TableCell>
+                  <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <button
-                        type="button"
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() => handleTogglePublish(article)}
-                        className="text-sm text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200"
                       >
                         {article.status === "published" ? "Unpublish" : "Publish"}
-                      </button>
-                      <Link
-                        href={`/admin/articles/${article.slug}/edit`}
-                        className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        type="button"
+                      </Button>
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link href={`/admin/articles/${article.slug}/edit`}>
+                          Edit
+                        </Link>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-destructive hover:text-destructive"
                         onClick={() => handleDelete(article)}
-                        className="text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
                       >
                         Delete
-                      </button>
+                      </Button>
                     </div>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       )}
     </div>
