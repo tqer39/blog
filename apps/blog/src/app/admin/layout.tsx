@@ -1,16 +1,26 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import type { ReactNode } from "react";
+import { LogoutButton } from "./components/LogoutButton";
 
 interface AdminLayoutProps {
   children: ReactNode;
 }
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
+export default async function AdminLayout({ children }: AdminLayoutProps) {
+  const headersList = await headers();
+  const pathname = headersList.get("x-pathname") || "";
+
+  // Login page uses minimal layout
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
+
   return (
-    <div className="flex min-h-screen bg-stone-50 dark:bg-stone-900">
+    <div className="flex min-h-screen bg-muted/30">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-stone-200 bg-white dark:border-stone-700 dark:bg-stone-800">
-        <div className="flex h-16 items-center border-b border-stone-200 px-6 dark:border-stone-700">
+      <aside className="relative w-64 border-r bg-background">
+        <div className="flex h-16 items-center justify-between border-b px-6">
           <Link href="/admin" className="text-xl font-bold">
             Admin
           </Link>
@@ -20,7 +30,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <li>
               <Link
                 href="/admin"
-                className="block rounded-lg px-4 py-2 text-stone-700 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-700"
+                className="block rounded-lg px-4 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 Dashboard
               </Link>
@@ -28,7 +38,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <li>
               <Link
                 href="/admin/articles"
-                className="block rounded-lg px-4 py-2 text-stone-700 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-700"
+                className="block rounded-lg px-4 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 Articles
               </Link>
@@ -36,17 +46,18 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <li>
               <Link
                 href="/admin/articles/new"
-                className="block rounded-lg px-4 py-2 text-stone-700 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-700"
+                className="block rounded-lg px-4 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 New Article
               </Link>
             </li>
           </ul>
         </nav>
-        <div className="absolute bottom-4 left-4">
+        <div className="absolute bottom-4 left-4 right-4 space-y-2">
+          <LogoutButton />
           <Link
             href="/"
-            className="text-sm text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200"
+            className="block text-sm text-muted-foreground hover:text-foreground"
           >
             ← Back to Blog
           </Link>
