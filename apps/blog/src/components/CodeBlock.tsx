@@ -33,6 +33,7 @@ const SUPPORTED_LANGUAGES: BundledLanguage[] = [
   "java",
   "c",
   "cpp",
+  "mermaid",
 ];
 
 let highlighterPromise: Promise<Highlighter> | null = null;
