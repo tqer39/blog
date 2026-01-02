@@ -16,6 +16,8 @@ export async function generateStaticParams() {
   }));
 }
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
+
 export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
@@ -26,9 +28,31 @@ export async function generateMetadata({
     return { title: "Article not found" };
   }
 
+  const description = article.description || article.title;
+  const url = `${BASE_URL}/article/${slug}`;
+
   return {
-    title: `${article.title} | tqer39's blog`,
-    description: article.description,
+    title: article.title,
+    description,
+    openGraph: {
+      title: article.title,
+      description,
+      url,
+      siteName: "tqer39's blog",
+      type: "article",
+      publishedTime: article.publishedAt || undefined,
+      modifiedTime: article.updatedAt,
+      authors: ["tqer39"],
+      tags: article.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description,
+    },
+    alternates: {
+      canonical: url,
+    },
   };
 }
 

@@ -10,9 +10,35 @@ import { Providers } from './Providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
+
 export const metadata: Metadata = {
-  title: "tqer39's blog",
-  description: 'Personal blog by tqer39',
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: "tqer39's blog",
+    template: "%s | tqer39's blog",
+  },
+  description: "Personal blog by tqer39",
+  openGraph: {
+    title: "tqer39's blog",
+    description: "Personal blog by tqer39",
+    url: BASE_URL,
+    siteName: "tqer39's blog",
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "tqer39's blog",
+    description: "Personal blog by tqer39",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: BASE_URL,
+  },
 };
 
 export default function RootLayout({
