@@ -92,6 +92,8 @@
     "libreadline",
     "libsqlite",
     "libxmlsec",
+    "linecap",
+    "linejoin",
     "linuxbrew",
     "Lucida",
     "manuelschneid3r",
