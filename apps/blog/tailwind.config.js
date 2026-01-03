@@ -8,6 +8,26 @@ module.exports = {
   darkMode: 'class',
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: [
+  				'var(--font-inter)',
+  				'-apple-system',
+  				'BlinkMacSystemFont',
+  				'Hiragino Sans',
+  				'Hiragino Kaku Gothic ProN',
+  				'Yu Gothic',
+  				'Meiryo',
+  				'sans-serif',
+  			],
+  			mono: [
+  				'ui-monospace',
+  				'SFMono-Regular',
+  				'Menlo',
+  				'Monaco',
+  				'Consolas',
+  				'monospace',
+  			],
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

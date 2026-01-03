@@ -62,7 +62,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
 
         window.mermaid.initialize({
           startOnLoad: false,
-          theme: resolvedTheme === 'dark' ? 'dark' : 'default',
+          theme: 'neutral',
         });
 
         const { svg } = await window.mermaid.render(idRef.current, chart);

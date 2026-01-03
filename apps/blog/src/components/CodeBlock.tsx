@@ -1,13 +1,14 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   createHighlighter,
   type Highlighter,
   type BundledLanguage,
 } from "shiki";
 import { Mermaid } from "./Mermaid";
+import { Check, Copy } from "lucide-react";
 
 interface CodeBlockProps {
   children: string;
@@ -52,12 +53,23 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const { resolvedTheme } = useTheme();
   const [highlightedHtml, setHighlightedHtml] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isCopied, setIsCopied] = useState(false);
 
   const match = /language-(\w+)(:?.+)?/.exec(className || "");
   const lang = match?.[1] || "";
   const filename = match?.[2]?.slice(1) || "";
 
   const code = String(children).replace(/\n$/, "");
+
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (error) {
+      console.error("Failed to copy code:", error);
+    }
+  }, [code]);
 
   useEffect(() => {
     if (inline || !match) {
@@ -161,11 +173,49 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const htmlWithLineNumbers = addLineNumbers(highlightedHtml);
 
   return (
-    <div className="my-4">
+    <div className="group relative my-4">
       {filename && (
-        <div className="rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
-          {filename}
+        <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+          <span>{filename}</span>
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="flex items-center gap-1 rounded px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
+            aria-label="Copy code"
+          >
+            {isCopied ? (
+              <>
+                <Check className="h-4 w-4" />
+                <span className="text-xs">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4" />
+                <span className="text-xs">Copy</span>
+              </>
+            )}
+          </button>
         </div>
+      )}
+      {!filename && (
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="absolute right-2 top-2 flex items-center gap-1 rounded bg-stone-700/80 px-2 py-1 text-stone-400 opacity-0 transition-all hover:bg-stone-600 hover:text-stone-200 group-hover:opacity-100"
+          aria-label="Copy code"
+        >
+          {isCopied ? (
+            <>
+              <Check className="h-4 w-4" />
+              <span className="text-xs">Copied!</span>
+            </>
+          ) : (
+            <>
+              <Copy className="h-4 w-4" />
+              <span className="text-xs">Copy</span>
+            </>
+          )}
+        </button>
       )}
       <div
         className={`shiki-wrapper overflow-x-auto ${

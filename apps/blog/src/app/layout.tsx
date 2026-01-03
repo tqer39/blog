@@ -8,7 +8,11 @@ import { Header } from '@/components/Header';
 
 import { Providers } from './Providers';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
 
@@ -52,7 +56,7 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body
-        className={`${inter.className} flex min-h-screen flex-col bg-stone-50 text-stone-900 dark:bg-stone-900 dark:text-stone-100`}
+        className={`${inter.variable} font-sans flex min-h-screen flex-col bg-stone-50 text-stone-900 dark:bg-stone-900 dark:text-stone-100`}
       >
         <Providers>
           <Header />
