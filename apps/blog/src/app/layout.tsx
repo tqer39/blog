@@ -1,16 +1,17 @@
 import './globals.css';
 
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { BIZ_UDGothic } from 'next/font/google';
 
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 
 import { Providers } from './Providers';
 
-const inter = Inter({
+const bizUDGothic = BIZ_UDGothic({
+  weight: '700',
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-biz-ud-gothic',
   display: 'swap',
 });
 
@@ -56,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body
-        className={`${inter.variable} font-sans flex min-h-screen flex-col bg-stone-50 text-stone-900 dark:bg-stone-900 dark:text-stone-100`}
+        className={`${bizUDGothic.variable} font-sans flex min-h-screen flex-col bg-stone-50 text-stone-900 dark:bg-stone-900 dark:text-stone-100`}
         suppressHydrationWarning
       >
         <Providers>

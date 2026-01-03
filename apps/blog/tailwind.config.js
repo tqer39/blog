@@ -10,13 +10,10 @@ module.exports = {
   	extend: {
   		fontFamily: {
   			sans: [
-  				'var(--font-inter)',
+  				'var(--font-biz-ud-gothic)',
+  				'BIZ UDGothic',
   				'-apple-system',
   				'BlinkMacSystemFont',
-  				'Hiragino Sans',
-  				'Hiragino Kaku Gothic ProN',
-  				'Yu Gothic',
-  				'Meiryo',
   				'sans-serif',
   			],
   			mono: [
