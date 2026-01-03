@@ -57,6 +57,7 @@ export default function RootLayout({
     <html lang="ja" suppressHydrationWarning>
       <body
         className={`${inter.variable} font-sans flex min-h-screen flex-col bg-stone-50 text-stone-900 dark:bg-stone-900 dark:text-stone-100`}
+        suppressHydrationWarning
       >
         <Providers>
           <Header />

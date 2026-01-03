@@ -173,7 +173,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const htmlWithLineNumbers = addLineNumbers(highlightedHtml);
 
   return (
-    <div className="group relative my-4">
+    <div className="group relative my-4 overflow-hidden rounded-lg">
       {filename && (
         <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
           <span>{filename}</span>
@@ -218,9 +218,9 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
         </button>
       )}
       <div
-        className={`shiki-wrapper overflow-x-auto ${
+        className={`shiki-wrapper not-prose ${
           filename ? "rounded-b-lg" : "rounded-lg"
-        } [&_pre]:!m-0 [&_pre]:!rounded-none [&_pre]:p-4 [&_code]:grid [&_code]:text-sm [&_.line]:before:mr-4 [&_.line]:before:inline-block [&_.line]:before:w-4 [&_.line]:before:text-right [&_.line]:before:text-stone-500 [&_.line]:before:content-[attr(data-line)]`}
+        } [&_pre]:!m-0 [&_pre]:!p-4 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_code]:grid [&_code]:text-sm [&_.line]:before:mr-4 [&_.line]:before:inline-block [&_.line]:before:w-4 [&_.line]:before:text-right [&_.line]:before:text-stone-500 [&_.line]:before:content-[attr(data-line)]`}
         dangerouslySetInnerHTML={{ __html: htmlWithLineNumbers }}
       />
     </div>

@@ -66,3 +66,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Override prose styles for code blocks - must be outside @layer to override Tailwind prose */
+.prose .shiki-wrapper pre,
+.prose pre.shiki {
+  margin: 0 !important;
+  padding: 1rem !important;
+}
+
+/* Remove prose margins from code block wrapper */
+.prose .group.relative.my-4 {
+  margin-top: -0.3rem !important;
+  margin-bottom: -0.2rem !important;
+  margin-left: -0.5rem !important;
+  margin-right: -0.5rem !important;
+}
