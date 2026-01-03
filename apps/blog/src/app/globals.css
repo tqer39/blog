@@ -81,3 +81,8 @@
   margin-left: -0.5rem !important;
   margin-right: -0.5rem !important;
 }
+
+/* Mermaid diagram styling - reduce padding */
+div:has(svg[id^="mermaid"]) {
+  margin: -0.2rem -0.5rem !important;
+}
