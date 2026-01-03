@@ -62,7 +62,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
 
         window.mermaid.initialize({
           startOnLoad: false,
-          theme: 'neutral',
+          theme: resolvedTheme === 'dark' ? 'dark' : 'neutral',
         });
 
         const { svg } = await window.mermaid.render(idRef.current, chart);
@@ -92,8 +92,11 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   }
 
   return (
-    <div className="my-4 flex justify-center rounded-lg bg-white p-4 dark:bg-stone-100">
-      <div dangerouslySetInnerHTML={{ __html: svg }} />
+    <div className="my-4 overflow-x-auto rounded-lg bg-stone-100 p-4 dark:bg-stone-800">
+      <div
+        className="[&_svg]:mx-auto [&_svg]:max-w-full"
+        dangerouslySetInnerHTML={{ __html: svg }}
+      />
     </div>
   );
 }
