@@ -11,6 +11,7 @@ import {
   Columns2,
   Eye,
   Pencil,
+  GripVertical,
 } from "lucide-react";
 import { ArticleContent } from "@/components/ArticleContent";
 import { Button } from "@/components/ui/button";
@@ -35,10 +36,13 @@ export function MarkdownEditor({
   onImageUpload,
 }: MarkdownEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [previewMode, setPreviewMode] = useState<"edit" | "preview" | "split">(
     "split"
   );
+  const [splitRatio, setSplitRatio] = useState(50); // percentage for editor width
+  const [isDragging, setIsDragging] = useState(false);
 
   const insertTextAtCursor = useCallback(
     (text: string) => {
@@ -158,6 +162,38 @@ export function MarkdownEditor({
     };
   }, [onImageUpload, insertTextAtCursor]);
 
+  // Handle resize drag
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const container = containerRef.current;
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      const newRatio = ((e.clientX - rect.left) / rect.width) * 100;
+      // Clamp between 20% and 80%
+      setSplitRatio(Math.max(20, Math.min(80, newRatio)));
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging]);
+
   return (
     <TooltipProvider>
       <div className="flex flex-col overflow-hidden rounded-md border">
@@ -273,10 +309,17 @@ export function MarkdownEditor({
 
         {/* Editor Area */}
         <div
-          className={`flex min-h-[500px] ${previewMode === "split" ? "divide-x" : ""}`}
+          ref={containerRef}
+          className={`flex min-h-[500px] ${isDragging ? "select-none" : ""}`}
         >
           {(previewMode === "edit" || previewMode === "split") && (
-            <div className="relative flex-1">
+            <div
+              className="relative"
+              style={{
+                width: previewMode === "split" ? `${splitRatio}%` : "100%",
+                flexShrink: 0,
+              }}
+            >
               <textarea
                 ref={textareaRef}
                 value={value}
@@ -291,8 +334,26 @@ export function MarkdownEditor({
               )}
             </div>
           )}
+          {/* Resizable Divider */}
+          {previewMode === "split" && (
+            <button
+              type="button"
+              aria-label="Resize editor and preview panels"
+              onMouseDown={handleMouseDown}
+              className={`group flex w-2 cursor-col-resize items-center justify-center border-x bg-muted/30 transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary ${isDragging ? "bg-primary/20" : ""}`}
+            >
+              <GripVertical className="h-6 w-4 text-muted-foreground/50 group-hover:text-muted-foreground" />
+            </button>
+          )}
           {(previewMode === "preview" || previewMode === "split") && (
-            <div className="flex-1 overflow-auto bg-background p-4">
+            <div
+              className="overflow-auto bg-background p-4"
+              style={{
+                width:
+                  previewMode === "split" ? `${100 - splitRatio}%` : "100%",
+                flexGrow: previewMode === "preview" ? 1 : 0,
+              }}
+            >
               <ArticleContent content={value} />
             </div>
           )}
