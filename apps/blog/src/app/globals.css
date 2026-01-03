@@ -85,6 +85,5 @@
 
 /* Mermaid diagram styling for code blocks */
 div:has(svg[id^="mermaid"]) {
-  margin: -0.65rem -0.9rem !important;
-  border-radius: 0.2rem !important;
+  margin: -0.65rem -0.8rem !important;
 }
