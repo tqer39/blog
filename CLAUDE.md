@@ -1,108 +1,166 @@
 # CLAUDE.md
 
+[🇯🇵 日本語版](docs/CLAUDE.ja.md)
+
 This file provides guidance to Claude Code (claude.ai/code) when working with
 code in this repository.
 
 ## Project Overview
 
-個人ブログサービスの monorepo。Turborepo + pnpm workspaces で管理。
+Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
 ## Development Commands
 
-```bash
-# Setup (first time)
-make bootstrap          # Install Homebrew and Brewfile packages
-just setup              # Setup mise, direnv, hooks
+### Setup
 
-# Development
-pnpm dev                # Run all dev servers
-pnpm build              # Build all packages
-pnpm check              # Run biome check
+| Command          | Description                                      |
+| ---------------- | ------------------------------------------------ |
+| `make bootstrap` | Install Homebrew and Brewfile packages           |
+| `just setup`     | Setup mise, direnv, and pre-commit hooks         |
+| `just deps`      | Install pnpm dependencies                        |
+| `just bootstrap` | Full local setup (deps + reset + migrate + seed) |
 
-# Filter by package
-pnpm --filter @blog/web dev    # blog のみ起動
-pnpm --filter @blog/web build  # blog のみビルド
+### Development
 
-# Testing
-pnpm e2e                # Run Playwright E2E tests
+| Command                 | Description                      |
+| ----------------------- | -------------------------------- |
+| `just dev-all`          | Start all services (API + Blog)  |
+| `just dev-api`          | Start CMS API server (port 8787) |
+| `just dev-blog`         | Start Blog app (port 3100)       |
+| `just kill-port <port>` | Kill process on specified port   |
 
-# Infrastructure
-just tf -chdir=dev/bootstrap plan
-just tf -chdir=dev/main plan
-```
+### Database
 
-## Architecture
+| Command           | Description              |
+| ----------------- | ------------------------ |
+| `just db-reset`   | Reset local D1 database  |
+| `just db-migrate` | Run all D1 migrations    |
+| `just db-seed`    | Seed sample data         |
 
-### Monorepo Structure
+### Code Quality
+
+| Command       | Description              |
+| ------------- | ------------------------ |
+| `just lint`   | Run Biome linter         |
+| `just format` | Run Biome formatter      |
+| `just check`  | Run Biome check          |
+| `prek run -a` | Run all pre-commit hooks |
+
+### Testing
+
+| Command       | Description              |
+| ------------- | ------------------------ |
+| `just test`   | Run unit tests           |
+| `just e2e`    | Run Playwright E2E tests |
+| `just e2e-ui` | Run E2E tests with UI    |
+
+### Build
+
+| Command      | Description        |
+| ------------ | ------------------ |
+| `pnpm build` | Build all packages |
+
+### Terraform
+
+| Command                             | Description                  |
+| ----------------------------------- | ---------------------------- |
+| `just tf -chdir=dev/bootstrap plan` | Terraform plan for bootstrap |
+| `just tf -chdir=dev/main plan`      | Terraform plan for main      |
+
+## Directory Structure
 
 ```text
 /
 ├── apps/
-│   └── blog/                   # Next.js ブログアプリ (@blog/web)
-│       ├── src/
-│       │   ├── app/            # App Router
-│       │   ├── components/     # React components
-│       │   ├── contents/       # Markdown articles
-│       │   └── lib/            # Utility functions
-│       ├── e2e/                # Playwright tests
-│       └── package.json
+│   ├── blog/                  # Next.js blog app (@blog/web)
+│   │   ├── src/app/           # App Router pages
+│   │   ├── src/components/    # React components
+│   │   └── e2e/               # Playwright tests
+│   └── cms-api/               # Hono CMS API (@blog/cms-api)
+│       ├── src/handlers/      # API handlers
+│       └── migrations/        # D1 migrations
 ├── packages/
-│   ├── ui/                     # 共通 UI コンポーネント (@blog/ui)
-│   ├── config/                 # 共通設定 (@blog/config)
-│   └── utils/                  # 共通ユーティリティ (@blog/utils)
-├── infra/terraform/
-│   ├── modules/                # Terraform modules
-│   └── envs/dev/               # Environment configs
-├── turbo.json                  # Turborepo 設定
-├── pnpm-workspace.yaml         # pnpm workspace 設定
-└── package.json                # Root package.json
+│   ├── cms-types/             # Shared TypeScript types
+│   ├── ui/                    # Shared UI components
+│   ├── config/                # Shared configurations
+│   └── utils/                 # Shared utilities
+├── infra/terraform/           # Terraform IaC
+│   ├── modules/               # Terraform modules
+│   └── envs/dev/              # Environment configs
+├── docs/                      # Documentation
+├── turbo.json                 # Turborepo config
+├── pnpm-workspace.yaml        # pnpm workspace config
+└── justfile                   # Task runner commands
 ```
 
-### Package Names
+## Package Names
 
-| Directory       | Package Name | Description            |
-| --------------- | ------------ | ---------------------- |
-| apps/blog       | @blog/web    | Next.js ブログアプリ   |
-| packages/ui     | @blog/ui     | 共通 UI コンポーネント |
-| packages/config | @blog/config | 共通設定               |
-| packages/utils  | @blog/utils  | 共通ユーティリティ     |
+| Directory            | Package Name       | Description             |
+| -------------------- | ------------------ | ----------------------- |
+| `apps/blog`          | `@blog/web`        | Next.js blog app        |
+| `apps/cms-api`       | `@blog/cms-api`    | Hono CMS API            |
+| `packages/cms-types` | `@blog/cms-types`  | Shared TypeScript types |
+| `packages/ui`        | `@blog/ui`         | Shared UI components    |
+| `packages/config`    | `@blog/config`     | Shared configurations   |
+| `packages/utils`     | `@blog/utils`      | Shared utilities        |
 
-### Markdown Front-matter
-
-```yaml
----
-title: "Article Title"
-date: "2025-12-30"
-published: true
-tags: ["Tag1", "Tag2"]
-description: "Article description for SEO"
----
-```
-
-### Key Technical Decisions
+## Key Technical Decisions
 
 - **Monorepo**: Turborepo + pnpm workspaces
-- **Static Export**: `output: 'export'` in next.config.js
-- **Content**: Markdown files with gray-matter
-- **Dark Mode**: next-themes with class-based switching
+- **Frontend**: Next.js 15 with App Router
+- **Backend**: Hono on Cloudflare Workers
+- **Database**: Cloudflare D1 (SQLite)
+- **Storage**: Cloudflare R2
 - **Styling**: Tailwind CSS with typography plugin
-- **Code Highlighting**: react-syntax-highlighter (oneDark theme)
-- **Diagrams**: Mermaid.js loaded from CDN
+- **Code Highlighting**: Shiki
+- **Diagrams**: Mermaid.js
 - **Formatter/Linter**: Biome (not ESLint/Prettier)
 - **E2E Testing**: Playwright
 - **IaC**: Terraform (AWS + CloudFlare + Vercel)
 
-### Path Aliases
-
-TypeScript path alias `@/*` maps to `./src/*` in each app.
-
 ## Deployment
 
-- **Hosting**: Vercel with static export
+- **Hosting**: Vercel
 - **Domain**: blog.tqer39.dev (CloudFlare DNS CNAME to Vercel)
 - **CI/CD**: GitHub Actions
-  - CI: lint, build, e2e tests (pnpm)
-  - Terraform: plan on PR, apply on main
+
+## GitHub Secrets Required
+
+### Infrastructure Secrets
+
+| Secret                  | Description             |
+| ----------------------- | ----------------------- |
+| `NEON_API_KEY`          | Neon Postgres API key   |
+| `VERCEL_API_TOKEN`      | Vercel deployment token |
+| `CLOUDFLARE_API_TOKEN`  | CloudFlare API token    |
+| `CLOUDFLARE_ACCOUNT_ID` | CloudFlare account ID   |
+| `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS zone ID  |
+
+### Authentication Secrets
+
+| Secret                       | Description                  |
+| ---------------------------- | ---------------------------- |
+| `BETTER_AUTH_SECRET_DEV`     | Auth library secret          |
+| `TWITTER_CLIENT_ID_DEV`      | Twitter OAuth client ID      |
+| `TWITTER_CLIENT_SECRET_DEV`  | Twitter OAuth client secret  |
+| `ADMIN_TWITTER_USERNAME_DEV` | Admin Twitter username       |
+
+### Third-party Service Secrets
+
+| Secret               | Description                  |
+| -------------------- | ---------------------------- |
+| `RESEND_API_KEY_DEV` | Resend email service API key |
+| `STRIPE_SECRET_KEY`  | Stripe payment secret key    |
+| `SLACK_WEBHOOK_DEV`  | Slack notification webhook   |
+| `CODECOV_TOKEN`      | Codecov coverage token       |
+| `OPENAI_API_KEY`     | OpenAI API key for PR desc   |
+
+### GitHub App Secrets
+
+| Secret                | Description            |
+| --------------------- | ---------------------- |
+| `GHA_APP_ID`          | GitHub App ID          |
+| `GHA_APP_PRIVATE_KEY` | GitHub App private key |
 
 ## Tool Management
 
