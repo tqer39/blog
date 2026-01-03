@@ -107,7 +107,7 @@ db-migrate:
     cd apps/cms-api
     for migration in migrations/*.sql; do
         echo "  Applying: $migration"
-        wrangler d1 execute blog-cms --local --file="$migration"
+        pnpm wrangler d1 execute blog-cms --local --file="$migration"
     done
     echo "✅ D1 local migrations completed"
 
