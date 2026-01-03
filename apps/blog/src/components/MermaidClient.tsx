@@ -92,9 +92,8 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   }
 
   return (
-    <div
-      className="my-4 flex justify-center"
-      dangerouslySetInnerHTML={{ __html: svg }}
-    />
+    <div className="my-4 flex justify-center rounded-lg bg-white p-4 dark:bg-stone-100">
+      <div dangerouslySetInnerHTML={{ __html: svg }} />
+    </div>
   );
 }
