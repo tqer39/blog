@@ -8,7 +8,7 @@ export function Header() {
           href="/"
           className="text-xl font-bold text-stone-900 dark:text-stone-100"
         >
-          tqer39&apos;s blog
+          うわむき
         </Link>
         <nav className="flex items-center gap-4">
           <Link
