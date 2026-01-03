@@ -126,6 +126,77 @@ lsof -i :8787
 
 # プロセスを終了
 kill -9 <PID>
+
+# または just コマンドで
+just kill-port 3100
+```
+
+### Next.js キャッシュクリア
+
+環境変数の変更が反映されない場合:
+
+```bash
+# キャッシュを削除して再起動
+rm -rf apps/blog/.next
+just dev-blog
+```
+
+### 環境変数の反映
+
+`.env.local` を変更した場合、サーバーの再起動が必要です:
+
+```bash
+# Ctrl+C でサーバーを停止してから再起動
+just dev-blog
+```
+
+### Admin ログインエラー
+
+#### "Authentication not configured" エラー
+
+`apps/blog/.env.local` に以下を設定:
+
+```bash
+AUTH_SECRET=your-secret-key-here
+ADMIN_PASSWORD_HASH="..."
+```
+
+#### "Invalid password" エラー
+
+bcrypt ハッシュに含まれる `$` は環境変数として展開されるため、
+エスケープが必要です:
+
+```bash
+# 誤った例
+ADMIN_PASSWORD_HASH=$2b$12$xxx...
+
+# 正しい例（$ をエスケープ）
+ADMIN_PASSWORD_HASH="\$2b\$12\$xxx..."
+```
+
+パスワードハッシュの生成:
+
+```bash
+cd apps/blog
+node -e "require('bcryptjs').hash('your-password', 12).then(console.log)"
+```
+
+### D1 データベースエラー
+
+dev-api 起動中に `just db-reset` を実行すると、古いDB接続が残りエラーになります。
+
+正しい手順:
+
+```bash
+# 1. dev-api を停止（Ctrl+C）
+# 2. リセット＆マイグレーション
+just db-reset && just db-migrate
+
+# 3. dev-api を再起動
+just dev-api
+
+# 4. シードデータ投入（別ターミナル）
+just db-seed
 ```
 
 ### D1/R2 データをリセット

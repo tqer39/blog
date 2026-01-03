@@ -126,6 +126,77 @@ lsof -i :8787
 
 # Kill process
 kill -9 <PID>
+
+# Or use just command
+just kill-port 3100
+```
+
+### Clear Next.js Cache
+
+If environment variable changes are not reflected:
+
+```bash
+# Delete cache and restart
+rm -rf apps/blog/.next
+just dev-blog
+```
+
+### Environment Variable Changes
+
+After modifying `.env.local`, server restart is required:
+
+```bash
+# Stop server with Ctrl+C, then restart
+just dev-blog
+```
+
+### Admin Login Errors
+
+#### "Authentication not configured" Error
+
+Set the following in `apps/blog/.env.local`:
+
+```bash
+AUTH_SECRET=your-secret-key-here
+ADMIN_PASSWORD_HASH="..."
+```
+
+#### "Invalid password" Error
+
+The `$` characters in bcrypt hashes are interpreted as environment variables.
+You need to escape them:
+
+```bash
+# Wrong
+ADMIN_PASSWORD_HASH=$2b$12$xxx...
+
+# Correct (escape $ characters)
+ADMIN_PASSWORD_HASH="\$2b\$12\$xxx..."
+```
+
+Generate password hash:
+
+```bash
+cd apps/blog
+node -e "require('bcryptjs').hash('your-password', 12).then(console.log)"
+```
+
+### D1 Database Errors
+
+Running `just db-reset` while dev-api is running causes stale DB connection errors.
+
+Correct procedure:
+
+```bash
+# 1. Stop dev-api (Ctrl+C)
+# 2. Reset and migrate
+just db-reset && just db-migrate
+
+# 3. Restart dev-api
+just dev-api
+
+# 4. Seed data (in another terminal)
+just db-seed
 ```
 
 ### Reset D1/R2 Data
