@@ -115,7 +115,8 @@ db-seed:
     #!/usr/bin/env bash
     set -euo pipefail
     echo "→ Seeding sample data..."
-    cd apps/blog && pnpm migrate
+    cd apps/cms-api && pnpm seed
+    echo ""
     echo "✅ Sample data seeded"
 
 # Legacy aliases
