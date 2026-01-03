@@ -33,10 +33,24 @@ open http://localhost:3100
 
 ### データベース
 
-| コマンド                | 説明                   |
-| ----------------------- | ---------------------- |
-| `just db-migrate-local` | D1 migration (local)   |
-| `just seed`             | サンプルデータ投入     |
+| コマンド          | 説明                                     |
+| ----------------- | ---------------------------------------- |
+| `just db-reset`   | ローカル D1 データベースをリセット       |
+| `just db-migrate` | 全マイグレーション実行                   |
+| `just db-seed`    | サンプルデータ投入                       |
+| `just bootstrap`  | deps + reset + migrate + seed を一括実行 |
+
+### 依存関係
+
+| コマンド    | 説明           |
+| ----------- | -------------- |
+| `just deps` | pnpm install   |
+
+### ユーティリティ
+
+| コマンド              | 説明                           |
+| --------------------- | ------------------------------ |
+| `just kill-port 3100` | 指定ポートのプロセスを終了     |
 
 ### コード品質
 
@@ -115,6 +129,100 @@ kill -9 <PID>
 ### D1/R2 データをリセット
 
 ```bash
-rm -rf apps/cms-api/.wrangler
-just db-migrate-local
+just db-reset
+just db-migrate
 ```
+
+## 記事の投稿・管理
+
+### Admin 画面へのアクセス
+
+1. 開発サーバーを起動
+
+   ```bash
+   # ターミナル1
+   just dev-api
+
+   # ターミナル2
+   just dev-blog
+   ```
+
+2. <http://localhost:3100/admin> にアクセス
+
+3. ログイン（開発環境）
+
+### 新規記事の作成
+
+1. Admin 画面で **New Article** をクリック
+2. 以下のフィールドを入力:
+
+   | フィールド   | 説明                                       |
+   | ------------ | ------------------------------------------ |
+   | Title        | 記事タイトル                               |
+   | Slug         | URL 用のスラッグ（タイトルから自動生成可） |
+   | Description  | SEO 用の説明文（100-160文字推奨）          |
+   | Tags         | タグを選択または新規追加                   |
+   | Header Image | ヘッダー画像をアップロード（任意）         |
+   | Content      | Markdown 形式で本文を記述                  |
+
+3. **Save** をクリックして下書き保存
+
+### 記事の公開
+
+1. Status バッジ（Draft/Published）をクリックして切り替え
+2. **Save** をクリック
+
+または、記事一覧から Publish/Unpublish ボタンで切り替えも可能です。
+
+### 記事の確認
+
+公開された記事は以下の URL で確認:
+
+```text
+http://localhost:3100/article/{slug}
+```
+
+### Admin 画面 URL 一覧
+
+| URL                                                | 説明           |
+| -------------------------------------------------- | -------------- |
+| <http://localhost:3100/admin>                      | ダッシュボード |
+| <http://localhost:3100/admin/articles>             | 記事一覧       |
+| <http://localhost:3100/admin/articles/new>         | 新規作成       |
+| <http://localhost:3100/admin/articles/{slug}/edit> | 記事編集       |
+
+### Markdown 記法
+
+Content フィールドでは以下の Markdown 記法が使用可能:
+
+| 記法                      | 説明                 |
+| ------------------------- | -------------------- |
+| `# 見出し1`               | 見出し（H1〜H6）     |
+| `**太字**`                | 太字                 |
+| `*斜体*`                  | 斜体                 |
+| `~~取り消し~~`            | 取り消し線           |
+| `- 項目`                  | 箇条書きリスト       |
+| `1. 項目`                 | 番号付きリスト       |
+| `> 引用`                  | 引用                 |
+| `` `コード` ``            | インラインコード     |
+| `![alt](url)`             | 画像                 |
+| `[text](url)`             | リンク               |
+
+コードブロック:
+
+````text
+```typescript
+const x = 1;
+```
+````
+
+対応言語: `typescript` `javascript` `python` `bash` `json` `yaml` `go` `rust` など。
+
+Mermaid ダイアグラム:
+
+````text
+```mermaid
+graph TD
+    A --> B
+```
+````
