@@ -8,7 +8,8 @@ import {
   type BundledLanguage,
 } from "shiki";
 import { Mermaid } from "./Mermaid";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Maximize2 } from "lucide-react";
+import { FullscreenModal } from "./FullscreenModal";
 
 interface CodeBlockProps {
   children: string;
@@ -54,6 +55,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const [highlightedHtml, setHighlightedHtml] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const match = /language-(\w+)(:?.+)?/.exec(className || "");
   const lang = match?.[1] || "";
@@ -172,57 +174,92 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
 
   const htmlWithLineNumbers = addLineNumbers(highlightedHtml);
 
+  const codeContent = (
+    <div
+      className={`shiki-wrapper not-prose ${
+        filename ? "rounded-b-lg" : "rounded-lg"
+      } [&_pre]:!m-0 [&_pre]:!p-4 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_code]:grid [&_code]:text-sm [&_.line]:before:mr-4 [&_.line]:before:inline-block [&_.line]:before:w-4 [&_.line]:before:text-right [&_.line]:before:text-stone-500 [&_.line]:before:content-[attr(data-line)]`}
+      dangerouslySetInnerHTML={{ __html: htmlWithLineNumbers }}
+    />
+  );
+
   return (
-    <div className="group relative my-4 overflow-hidden rounded-lg">
-      {filename && (
-        <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
-          <span>{filename}</span>
-          <button
-            type="button"
-            onClick={handleCopy}
-            className="flex items-center gap-1 rounded px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
-            aria-label="Copy code"
-          >
-            {isCopied ? (
-              <>
-                <Check className="h-4 w-4" />
-                <span className="text-xs">Copied!</span>
-              </>
-            ) : (
-              <>
-                <Copy className="h-4 w-4" />
-                <span className="text-xs">Copy</span>
-              </>
-            )}
-          </button>
+    <>
+      <div className="group relative my-4 overflow-hidden rounded-lg">
+        {filename && (
+          <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+            <span>{filename}</span>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setIsFullscreen(true)}
+                className="flex items-center gap-1 rounded px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
+                aria-label="Fullscreen"
+              >
+                <Maximize2 className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={handleCopy}
+                className="flex items-center gap-1 rounded px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
+                aria-label="Copy code"
+              >
+                {isCopied ? (
+                  <>
+                    <Check className="h-4 w-4" />
+                    <span className="text-xs">Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-4 w-4" />
+                    <span className="text-xs">Copy</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+        {!filename && (
+          <div className="absolute right-2 top-2 flex items-center gap-1 opacity-0 transition-all group-hover:opacity-100">
+            <button
+              type="button"
+              onClick={() => setIsFullscreen(true)}
+              className="flex items-center gap-1 rounded bg-stone-700/80 px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
+              aria-label="Fullscreen"
+            >
+              <Maximize2 className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="flex items-center gap-1 rounded bg-stone-700/80 px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
+              aria-label="Copy code"
+            >
+              {isCopied ? (
+                <>
+                  <Check className="h-4 w-4" />
+                  <span className="text-xs">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4" />
+                  <span className="text-xs">Copy</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
+        {codeContent}
+      </div>
+      <FullscreenModal
+        isOpen={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+        title={filename || lang}
+      >
+        <div className="h-full overflow-auto rounded-lg">
+          {codeContent}
         </div>
-      )}
-      {!filename && (
-        <button
-          type="button"
-          onClick={handleCopy}
-          className="absolute right-2 top-2 flex items-center gap-1 rounded bg-stone-700/80 px-2 py-1 text-stone-400 opacity-0 transition-all hover:bg-stone-600 hover:text-stone-200 group-hover:opacity-100"
-          aria-label="Copy code"
-        >
-          {isCopied ? (
-            <>
-              <Check className="h-4 w-4" />
-              <span className="text-xs">Copied!</span>
-            </>
-          ) : (
-            <>
-              <Copy className="h-4 w-4" />
-              <span className="text-xs">Copy</span>
-            </>
-          )}
-        </button>
-      )}
-      <div
-        className={`shiki-wrapper not-prose ${
-          filename ? "rounded-b-lg" : "rounded-lg"
-        } [&_pre]:!m-0 [&_pre]:!p-4 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_code]:grid [&_code]:text-sm [&_.line]:before:mr-4 [&_.line]:before:inline-block [&_.line]:before:w-4 [&_.line]:before:text-right [&_.line]:before:text-stone-500 [&_.line]:before:content-[attr(data-line)]`}
-        dangerouslySetInnerHTML={{ __html: htmlWithLineNumbers }}
-      />
-    </div>
+      </FullscreenModal>
+    </>
   );
 }

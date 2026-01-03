@@ -1,7 +1,9 @@
 'use client';
 
+import { Maximize2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
+import { FullscreenModal } from './FullscreenModal';
 
 interface MermaidClientProps {
   chart: string;
@@ -49,6 +51,7 @@ function loadMermaid(): Promise<void> {
 export function MermaidClient({ chart }: MermaidClientProps) {
   const { resolvedTheme } = useTheme();
   const [svg, setSvg] = useState<string>('');
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const instanceId = useRef(Math.random().toString(36).substring(2, 9));
   const renderCountRef = useRef(0);
 
@@ -94,12 +97,35 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     );
   }
 
+  const mermaidContent = (
+    <div
+      className="[&_svg]:mx-auto [&_svg]:max-w-full"
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
+  );
+
   return (
-    <div className="my-4 overflow-x-auto rounded-lg bg-white p-4 dark:bg-[#24292e]">
-      <div
-        className="[&_svg]:mx-auto [&_svg]:max-w-full"
-        dangerouslySetInnerHTML={{ __html: svg }}
-      />
-    </div>
+    <>
+      <div className="group relative my-4 overflow-x-auto rounded-lg bg-white p-4 dark:bg-[#24292e]">
+        <button
+          type="button"
+          onClick={() => setIsFullscreen(true)}
+          className="absolute right-2 top-2 flex items-center gap-1 rounded bg-stone-200/80 px-2 py-1 text-stone-600 opacity-0 transition-all hover:bg-stone-300 hover:text-stone-800 group-hover:opacity-100 dark:bg-stone-700/80 dark:text-stone-400 dark:hover:bg-stone-600 dark:hover:text-stone-200"
+          aria-label="Fullscreen"
+        >
+          <Maximize2 className="h-4 w-4" />
+        </button>
+        {mermaidContent}
+      </div>
+      <FullscreenModal
+        isOpen={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+        title="Mermaid Diagram"
+      >
+        <div className="flex h-full items-center justify-center overflow-auto rounded-lg bg-white p-8 dark:bg-[#24292e]">
+          {mermaidContent}
+        </div>
+      </FullscreenModal>
+    </>
   );
 }
