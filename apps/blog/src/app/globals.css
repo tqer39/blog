@@ -76,13 +76,15 @@
 
 /* Remove prose margins from code block wrapper */
 .prose .group.relative.my-4 {
-  margin-top: -0.3rem !important;
-  margin-bottom: -0.2rem !important;
-  margin-left: -0.5rem !important;
-  margin-right: -0.5rem !important;
+  margin-top: -0.75rem !important;
+  margin-bottom: -0.65rem !important;
+  margin-left: -0.9rem !important;
+  margin-right: -0.9rem !important;
+  border-radius: 0rem !important;
 }
 
 /* Mermaid diagram styling for code blocks */
 div:has(svg[id^="mermaid"]) {
-  margin: -0.2rem -0.5rem !important;
+  margin: -0.65rem -0.9rem !important;
+  border-radius: 0.2rem !important;
 }
