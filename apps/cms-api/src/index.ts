@@ -28,7 +28,11 @@ app.use("*", rateLimitMiddleware);
 app.use(
   "*",
   cors({
-    origin: ["http://localhost:3000", "https://blog.tqer39.dev"],
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3100",
+      "https://blog.tqer39.dev",
+    ],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowHeaders: ["Content-Type", "Authorization"],
   }),
