@@ -7,7 +7,7 @@ import { BsFillMoonFill, BsFillSunFill, BsDisplay } from 'react-icons/bs';
 const themes = ['light', 'dark', 'system'] as const;
 type Theme = (typeof themes)[number];
 
-export function ThemeSwitcher() {
+export function FloatingThemeSwitcher() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -45,25 +45,29 @@ export function ThemeSwitcher() {
 
   if (!mounted) {
     return (
-      <button
-        type="button"
-        aria-label="Toggle theme"
-        className="rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700"
-      >
-        <div className="h-5 w-5" />
-      </button>
+      <div className="fixed right-4 top-4 z-50">
+        <button
+          type="button"
+          aria-label="Toggle theme"
+          className="rounded-full bg-white p-3 shadow-lg dark:bg-stone-800"
+        >
+          <div className="h-5 w-5" />
+        </button>
+      </div>
     );
   }
 
   return (
-    <button
-      type="button"
-      aria-label={getLabel()}
-      title={getLabel()}
-      onClick={cycleTheme}
-      className="rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700"
-    >
-      {getIcon()}
-    </button>
+    <div className="fixed right-4 top-4 z-50">
+      <button
+        type="button"
+        aria-label={getLabel()}
+        title={getLabel()}
+        onClick={cycleTheme}
+        className="rounded-full bg-white p-3 shadow-lg transition-transform hover:scale-110 dark:bg-stone-800"
+      >
+        {getIcon()}
+      </button>
+    </div>
   );
 }

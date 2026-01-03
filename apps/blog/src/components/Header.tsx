@@ -1,7 +1,5 @@
 import Link from 'next/link';
 
-import { ThemeSwitcher } from './ThemeSwitcher';
-
 export function Header() {
   return (
     <header className="border-b border-stone-200 dark:border-stone-700">
@@ -19,7 +17,6 @@ export function Header() {
           >
             Articles
           </Link>
-          <ThemeSwitcher />
         </nav>
       </div>
     </header>

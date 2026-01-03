@@ -19,7 +19,6 @@ declare global {
   }
 }
 
-let mermaidCounter = 0;
 let mermaidLoaded = false;
 let mermaidLoadPromise: Promise<void> | null = null;
 
@@ -50,7 +49,8 @@ function loadMermaid(): Promise<void> {
 export function MermaidClient({ chart }: MermaidClientProps) {
   const { resolvedTheme } = useTheme();
   const [svg, setSvg] = useState<string>('');
-  const idRef = useRef(`mermaid-${++mermaidCounter}`);
+  const instanceId = useRef(Math.random().toString(36).substring(2, 9));
+  const renderCountRef = useRef(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,7 +65,10 @@ export function MermaidClient({ chart }: MermaidClientProps) {
           theme: resolvedTheme === 'dark' ? 'dark' : 'neutral',
         });
 
-        const { svg } = await window.mermaid.render(idRef.current, chart);
+        // Generate unique ID for each render to avoid Mermaid ID conflicts
+        renderCountRef.current += 1;
+        const uniqueId = `mermaid-${instanceId.current}-${renderCountRef.current}`;
+        const { svg } = await window.mermaid.render(uniqueId, chart);
         if (!cancelled) {
           setSvg(svg);
         }
@@ -83,7 +86,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
 
   if (!svg) {
     return (
-      <div className="my-4 rounded bg-stone-100 p-4 dark:bg-stone-800">
+      <div className="my-4 rounded bg-white p-4 dark:bg-[#24292e]">
         <pre className="text-sm text-stone-600 dark:text-stone-400">
           {chart}
         </pre>
@@ -92,7 +95,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   }
 
   return (
-    <div className="my-4 overflow-x-auto rounded-lg bg-stone-100 p-4 dark:bg-stone-800">
+    <div className="my-4 overflow-x-auto rounded-lg bg-white p-4 dark:bg-[#24292e]">
       <div
         className="[&_svg]:mx-auto [&_svg]:max-w-full"
         dangerouslySetInnerHTML={{ __html: svg }}

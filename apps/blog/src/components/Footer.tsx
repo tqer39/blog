@@ -1,4 +1,4 @@
-import { BsGithub, BsTwitter } from 'react-icons/bs';
+import { BsGithub, BsTwitter, BsLink45Deg } from 'react-icons/bs';
 
 export function Footer() {
   return (
@@ -23,6 +23,15 @@ export function Footer() {
               aria-label="Twitter"
             >
               <BsTwitter className="h-6 w-6" />
+            </a>
+            <a
+              href="https://bento.me/tqer39"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+              aria-label="Bento"
+            >
+              <BsLink45Deg className="h-6 w-6" />
             </a>
           </div>
           <p className="text-sm text-stone-500 dark:text-stone-400">
