@@ -7,6 +7,7 @@ import {
   type Highlighter,
   type BundledLanguage,
 } from "shiki";
+import { Mermaid } from "./Mermaid";
 
 interface CodeBlockProps {
   children: string;
@@ -33,7 +34,6 @@ const SUPPORTED_LANGUAGES: BundledLanguage[] = [
   "java",
   "c",
   "cpp",
-  "mermaid",
 ];
 
 let highlighterPromise: Promise<Highlighter> | null = null;
@@ -109,6 +109,11 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
         {children}
       </code>
     );
+  }
+
+  // Mermaid diagrams
+  if (lang === "mermaid") {
+    return <Mermaid chart={code} />;
   }
 
   // Loading state
