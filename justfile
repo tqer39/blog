@@ -70,19 +70,73 @@ dev-all:
         "pnpm --filter @blog/web dev"
 
 dev-blog:
-    @pnpm --filter @blog/web dev
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just kill-port 3100 || true
+    pnpm --filter @blog/web dev
 
 dev-api:
-    @pnpm --filter @blog/cms-api dev
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just kill-port 8787 || true
+    pnpm --filter @blog/cms-api dev
 
-db-migrate-local:
-    @cd apps/cms-api && pnpm db:migrate:local
-    @echo "✅ D1 local migration completed"
+# Kill process using a specific port
+kill-port port:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    pid=$(lsof -ti :{{port}} 2>/dev/null || true)
+    if [ -n "$pid" ]; then
+        echo "→ Killing process on port {{port}} (PID: $pid)"
+        kill -9 $pid
+        sleep 1
+    fi
 
-seed:
-    @echo "→ Seeding sample data..."
-    @cd apps/blog && pnpm migrate
-    @echo "✅ Sample data imported"
+# Database commands
+db-reset:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "→ Resetting local D1 database..."
+    rm -rf apps/cms-api/.wrangler/state/v3/d1
+    echo "✅ Local D1 database reset"
+
+db-migrate:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "→ Running D1 migrations..."
+    cd apps/cms-api
+    for migration in migrations/*.sql; do
+        echo "  Applying: $migration"
+        wrangler d1 execute blog-cms --local --file="$migration"
+    done
+    echo "✅ D1 local migrations completed"
+
+db-seed:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "→ Seeding sample data..."
+    cd apps/blog && pnpm migrate
+    echo "✅ Sample data seeded"
+
+# Legacy aliases
+db-migrate-local: db-migrate
+
+seed: db-seed
+
+# Dependencies
+deps:
+    @echo "→ Installing dependencies..."
+    @pnpm install
+    @echo "✅ Dependencies installed"
+
+# Bootstrap: Full local development setup
+bootstrap: deps db-reset db-migrate db-seed
+    @echo ""
+    @echo "✅ Bootstrap completed!"
+    @echo ""
+    @echo "To start development servers:"
+    @echo "  just dev-api   # Terminal 1: API server (http://localhost:8787)"
+    @echo "  just dev-blog  # Terminal 2: Blog app (http://localhost:3100)"
 
 # E2E tests
 e2e:
