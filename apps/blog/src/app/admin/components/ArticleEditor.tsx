@@ -200,6 +200,7 @@ export function ArticleEditor({
               <button
                 type="button"
                 onClick={handleRemoveHeaderImage}
+                aria-label="Remove header image"
                 className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90"
               >
                 <X className="h-4 w-4" />
@@ -227,6 +228,7 @@ export function ArticleEditor({
             type="file"
             accept="image/*"
             onChange={handleHeaderImageUpload}
+            aria-label="Upload header image"
             className="hidden"
           />
         </div>
