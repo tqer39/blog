@@ -11,7 +11,13 @@ interface ArticleContentProps {
   content: string;
 }
 
+// Remove the first h1 heading from markdown (since it's already shown in the page header)
+function removeFirstH1(content: string): string {
+  return content.replace(/^#\s+.+\n+/, '');
+}
+
 export function ArticleContent({ content }: ArticleContentProps) {
+  const processedContent = removeFirstH1(content);
   return (
     <ReactMarkdown
       rehypePlugins={[rehypeRaw]}
@@ -45,7 +51,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
         },
       }}
     >
-      {content}
+      {processedContent}
     </ReactMarkdown>
   );
 }
