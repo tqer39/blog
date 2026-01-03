@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { ArticleCard } from "@/components/ArticleCard";
+import { ArticleTagSelector } from "@/components/ArticleTagSelector";
 import { Pagination } from "@/components/Pagination";
-import { TagFilter } from "@/components/TagFilter";
 import { getAllArticles } from "@/lib/articles";
 import { ARTICLES_PER_PAGE } from "@/lib/pagination";
 
@@ -19,6 +19,9 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
 
   const allArticles = await getAllArticles();
 
+  // Extract all unique tags from articles
+  const allTags = [...new Set(allArticles.flatMap((article) => article.tags))].sort();
+
   // Filter by tags (AND condition)
   const filteredArticles = selectedTags.length > 0
     ? allArticles.filter((article) =>
@@ -34,7 +37,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
       <h1 className="mb-8 text-3xl font-bold">All Articles</h1>
 
       <Suspense fallback={null}>
-        <TagFilter />
+        <ArticleTagSelector allTags={allTags} />
       </Suspense>
 
       {articles.length === 0 ? (
