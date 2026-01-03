@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { ArticleContent } from "@/components/ArticleContent";
+import { TagLink } from "@/components/TagLink";
 import { getAllArticles, getArticleBySlug } from "@/lib/articles";
 
 interface ArticlePageProps {
@@ -98,12 +99,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </time>
           <div className="flex flex-wrap gap-2">
             {article.tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded bg-stone-200 px-2 py-1 text-sm dark:bg-stone-700"
-              >
-                {tag}
-              </span>
+              <TagLink key={tag} tag={tag} size="md" />
             ))}
           </div>
         </div>
