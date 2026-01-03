@@ -1,17 +1,21 @@
 import { Hono } from "hono";
 import type { Env } from "../index";
-import type { Tag, TagInput } from "@blog/cms-types";
+import type { Tag, TagInput, TagWithCount } from "@blog/cms-types";
 import { generateId, slugify } from "../lib/utils";
 
 export const tagsHandler = new Hono<{ Bindings: Env }>();
 
-// List all tags
+// List all tags with article count
 tagsHandler.get("/", async (c) => {
   const { results } = await c.env.DB.prepare(
-    "SELECT * FROM tags ORDER BY name ASC",
+    `SELECT t.*, COUNT(at.article_id) as article_count
+     FROM tags t
+     LEFT JOIN article_tags at ON t.id = at.tag_id
+     GROUP BY t.id
+     ORDER BY t.name ASC`,
   ).all();
 
-  const tags: Tag[] = (results || []).map(mapRowToTag);
+  const tags: TagWithCount[] = (results || []).map(mapRowToTagWithCount);
 
   return c.json({ tags });
 });
@@ -58,6 +62,41 @@ tagsHandler.post("/", async (c) => {
   }
 });
 
+// Update tag
+tagsHandler.put("/:slug", async (c) => {
+  const slug = c.req.param("slug");
+  const input = await c.req.json<TagInput>();
+
+  if (!input.name) {
+    return c.json({ error: "Name is required" }, 400);
+  }
+
+  const existing = await c.env.DB.prepare(
+    "SELECT * FROM tags WHERE slug = ?",
+  ).bind(slug).first();
+
+  if (!existing) {
+    return c.json({ error: "Tag not found" }, 404);
+  }
+
+  const newSlug = input.slug || slugify(input.name);
+
+  try {
+    await c.env.DB.prepare(
+      "UPDATE tags SET name = ?, slug = ? WHERE id = ?",
+    ).bind(input.name, newSlug, existing.id).run();
+
+    const row = await c.env.DB.prepare("SELECT * FROM tags WHERE id = ?").bind(existing.id).first();
+
+    return c.json(mapRowToTag(row!));
+  } catch (error) {
+    if (String(error).includes("UNIQUE constraint failed")) {
+      return c.json({ error: "Tag with this name or slug already exists" }, 409);
+    }
+    throw error;
+  }
+});
+
 // Delete tag
 tagsHandler.delete("/:slug", async (c) => {
   const slug = c.req.param("slug");
@@ -79,5 +118,15 @@ function mapRowToTag(row: Record<string, unknown>): Tag {
     name: row.name as string,
     slug: row.slug as string,
     createdAt: row.created_at as string,
+  };
+}
+
+function mapRowToTagWithCount(row: Record<string, unknown>): TagWithCount {
+  return {
+    id: row.id as string,
+    name: row.name as string,
+    slug: row.slug as string,
+    createdAt: row.created_at as string,
+    articleCount: (row.article_count as number) || 0,
   };
 }

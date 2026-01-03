@@ -46,6 +46,14 @@ export interface TagInput {
   slug?: string;
 }
 
+export interface TagWithCount extends Tag {
+  articleCount: number;
+}
+
+export interface TagListResponse {
+  tags: TagWithCount[];
+}
+
 // Image types
 export interface Image {
   id: string;

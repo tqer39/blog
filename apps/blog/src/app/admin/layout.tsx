@@ -51,6 +51,14 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
                 New Article
               </Link>
             </li>
+            <li>
+              <Link
+                href="/admin/tags"
+                className="block rounded-lg px-4 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                Tags
+              </Link>
+            </li>
           </ul>
         </nav>
         <div className="absolute bottom-4 left-4 right-4 space-y-2">
