@@ -9,9 +9,15 @@ const nextConfig = {
         pathname: "/blog-images/**",
       },
       {
+        protocol: "http",
+        hostname: "localhost",
+        port: "8787",
+        pathname: "/v1/images/**",
+      },
+      {
         protocol: "https",
         hostname: "cdn.tqer39.dev",
-        pathname: "/images/**",
+        pathname: "/**",
       },
     ],
   },

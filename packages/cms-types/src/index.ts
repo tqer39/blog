@@ -12,6 +12,8 @@ export interface Article {
   createdAt: string;
   updatedAt: string;
   tags: string[];
+  headerImageId: string | null;
+  headerImageUrl: string | null;
 }
 
 export interface ArticleInput {
@@ -21,6 +23,7 @@ export interface ArticleInput {
   content: string;
   status?: ArticleStatus;
   tags?: string[];
+  headerImageId?: string | null;
 }
 
 export interface ArticleListResponse {

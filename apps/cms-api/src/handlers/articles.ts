@@ -53,11 +53,12 @@ articlesHandler.get("/", async (c) => {
 
   const { results } = await c.env.DB.prepare(query).bind(...params).all();
 
-  // Get tags for each article
+  // Get tags and header image for each article
   const articles: Article[] = await Promise.all(
     (results || []).map(async (row) => {
       const tags = await getArticleTags(c.env.DB, row.id as string);
-      return mapRowToArticle(row, tags);
+      const headerImageUrl = await getHeaderImageUrl(c.env.DB, row.header_image_id as string | null, c.env);
+      return mapRowToArticle(row, tags, headerImageUrl);
     }),
   );
 
@@ -84,7 +85,8 @@ articlesHandler.get("/:slug", async (c) => {
   }
 
   const tags = await getArticleTags(c.env.DB, row.id as string);
-  const article = mapRowToArticle(row, tags);
+  const headerImageUrl = await getHeaderImageUrl(c.env.DB, row.header_image_id as string | null, c.env);
+  const article = mapRowToArticle(row, tags, headerImageUrl);
 
   return c.json(article);
 });
@@ -104,9 +106,9 @@ articlesHandler.post("/", async (c) => {
 
   try {
     await c.env.DB.prepare(
-      `INSERT INTO articles (id, slug, title, description, content, status, published_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    ).bind(id, slug, input.title, input.description || null, input.content, status, publishedAt).run();
+      `INSERT INTO articles (id, slug, title, description, content, status, published_at, header_image_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).bind(id, slug, input.title, input.description || null, input.content, status, publishedAt, input.headerImageId || null).run();
 
     // Handle tags
     if (input.tags && input.tags.length > 0) {
@@ -115,8 +117,9 @@ articlesHandler.post("/", async (c) => {
 
     const tags = await getArticleTags(c.env.DB, id);
     const row = await c.env.DB.prepare("SELECT * FROM articles WHERE id = ?").bind(id).first();
+    const headerImageUrl = await getHeaderImageUrl(c.env.DB, input.headerImageId || null, c.env);
 
-    return c.json(mapRowToArticle(row!, tags), 201);
+    return c.json(mapRowToArticle(row!, tags, headerImageUrl), 201);
   } catch (error) {
     if (String(error).includes("UNIQUE constraint failed")) {
       return c.json({ error: "Article with this slug already exists" }, 409);
@@ -157,6 +160,10 @@ articlesHandler.put("/:slug", async (c) => {
     updates.push("slug = ?");
     params.push(input.slug);
   }
+  if (input.headerImageId !== undefined) {
+    updates.push("header_image_id = ?");
+    params.push(input.headerImageId || null);
+  }
 
   if (updates.length > 0) {
     params.push(existing.id as string);
@@ -172,8 +179,9 @@ articlesHandler.put("/:slug", async (c) => {
   const newSlug = input.slug || slug;
   const row = await c.env.DB.prepare("SELECT * FROM articles WHERE slug = ?").bind(newSlug).first();
   const tags = await getArticleTags(c.env.DB, row!.id as string);
+  const headerImageUrl = await getHeaderImageUrl(c.env.DB, row!.header_image_id as string | null, c.env);
 
-  return c.json(mapRowToArticle(row!, tags));
+  return c.json(mapRowToArticle(row!, tags, headerImageUrl));
 });
 
 // Delete article
@@ -205,8 +213,9 @@ articlesHandler.post("/:slug/publish", async (c) => {
 
   const row = await c.env.DB.prepare("SELECT * FROM articles WHERE slug = ?").bind(slug).first();
   const tags = await getArticleTags(c.env.DB, row!.id as string);
+  const headerImageUrl = await getHeaderImageUrl(c.env.DB, row!.header_image_id as string | null, c.env);
 
-  return c.json(mapRowToArticle(row!, tags));
+  return c.json(mapRowToArticle(row!, tags, headerImageUrl));
 });
 
 // Unpublish article
@@ -223,8 +232,9 @@ articlesHandler.post("/:slug/unpublish", async (c) => {
 
   const row = await c.env.DB.prepare("SELECT * FROM articles WHERE slug = ?").bind(slug).first();
   const tags = await getArticleTags(c.env.DB, row!.id as string);
+  const headerImageUrl = await getHeaderImageUrl(c.env.DB, row!.header_image_id as string | null, c.env);
 
-  return c.json(mapRowToArticle(row!, tags));
+  return c.json(mapRowToArticle(row!, tags, headerImageUrl));
 });
 
 // Helper functions
@@ -263,7 +273,7 @@ async function syncArticleTags(db: D1Database, articleId: string, tagNames: stri
   }
 }
 
-function mapRowToArticle(row: Record<string, unknown>, tags: string[]): Article {
+function mapRowToArticle(row: Record<string, unknown>, tags: string[], headerImageUrl: string | null = null): Article {
   return {
     id: row.id as string,
     slug: row.slug as string,
@@ -275,5 +285,25 @@ function mapRowToArticle(row: Record<string, unknown>, tags: string[]): Article 
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
     tags,
+    headerImageId: row.header_image_id as string | null,
+    headerImageUrl,
   };
+}
+
+async function getHeaderImageUrl(db: D1Database, headerImageId: string | null, env: Env): Promise<string | null> {
+  if (!headerImageId) return null;
+
+  const image = await db.prepare(
+    "SELECT r2_key FROM images WHERE id = ?"
+  ).bind(headerImageId).first<{ r2_key: string }>();
+
+  if (!image) return null;
+
+  if (env.R2_PUBLIC_URL) {
+    return `${env.R2_PUBLIC_URL}/${image.r2_key}`;
+  }
+  if (env.ENVIRONMENT === "development") {
+    return `http://localhost:8787/v1/images/file/${image.r2_key}`;
+  }
+  return `https://cdn.tqer39.dev/${image.r2_key}`;
 }

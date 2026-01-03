@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import type { Article, ArticleInput } from '@blog/cms-types';
 import { uploadImage } from '@/lib/api/client';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { MarkdownEditor } from './MarkdownEditor';
 import { SlugInput } from './SlugInput';
 import { TagSelector } from './TagSelector';
+import { ImageIcon, X } from 'lucide-react';
 
 interface ArticleEditorProps {
   initialData?: Article;
@@ -34,12 +35,46 @@ export function ArticleEditor({
   const [status, setStatus] = useState<'draft' | 'published'>(
     initialData?.status ?? 'draft'
   );
+  const [headerImageId, setHeaderImageId] = useState<string | null>(
+    initialData?.headerImageId ?? null
+  );
+  const [headerImageUrl, setHeaderImageUrl] = useState<string | null>(
+    initialData?.headerImageUrl ?? null
+  );
+  const [isUploadingHeader, setIsUploadingHeader] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const headerImageInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = async (file: File): Promise<string> => {
     const result = await uploadImage(file, initialData?.id);
     return result.url;
+  };
+
+  const handleHeaderImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingHeader(true);
+    setError(null);
+
+    try {
+      const result = await uploadImage(file, initialData?.id);
+      setHeaderImageId(result.id);
+      setHeaderImageUrl(result.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to upload header image');
+    } finally {
+      setIsUploadingHeader(false);
+      if (headerImageInputRef.current) {
+        headerImageInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleRemoveHeaderImage = () => {
+    setHeaderImageId(null);
+    setHeaderImageUrl(null);
   };
 
   const handleSave = async () => {
@@ -67,6 +102,7 @@ export function ArticleEditor({
         content,
         tags,
         status,
+        headerImageId,
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save article');
@@ -150,6 +186,50 @@ export function ArticleEditor({
 
         {/* Tags */}
         <TagSelector value={tags} onChange={setTags} />
+
+        {/* Header Image */}
+        <div className="space-y-2">
+          <Label>Header Image</Label>
+          {headerImageUrl ? (
+            <div className="relative inline-block">
+              <img
+                src={headerImageUrl}
+                alt="Header preview"
+                className="max-h-48 rounded-lg border object-cover"
+              />
+              <button
+                type="button"
+                onClick={handleRemoveHeaderImage}
+                className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          ) : (
+            <div
+              onClick={() => headerImageInputRef.current?.click()}
+              className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50"
+            >
+              {isUploadingHeader ? (
+                <span className="text-sm text-muted-foreground">Uploading...</span>
+              ) : (
+                <>
+                  <ImageIcon className="h-8 w-8 text-muted-foreground/50" />
+                  <span className="mt-2 text-sm text-muted-foreground">
+                    Click to upload header image
+                  </span>
+                </>
+              )}
+            </div>
+          )}
+          <input
+            ref={headerImageInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleHeaderImageUpload}
+            className="hidden"
+          />
+        </div>
 
         {/* Content */}
         <div className="space-y-2">
