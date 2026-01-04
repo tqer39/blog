@@ -4,7 +4,6 @@ export type ArticleStatus = "draft" | "published";
 export interface Article {
   id: string;
   hash: string;
-  slug: string;
   title: string;
   description: string | null;
   content: string;
@@ -18,7 +17,6 @@ export interface Article {
 }
 
 export interface ArticleInput {
-  slug: string;
   title: string;
   description?: string;
   content: string;

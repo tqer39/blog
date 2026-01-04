@@ -1,15 +1,15 @@
 import { Hono } from "hono";
 import type { Env } from "../index";
+import { generateHash, generateId } from "../lib/utils";
 
 export const importExportHandler = new Hono<{ Bindings: Env }>();
 
 // Import markdown file
 // POST /import/markdown
-// Body: { content: string, slug?: string }
+// Body: { content: string }
 importExportHandler.post("/markdown", async (c) => {
   const body = await c.req.json<{
     content: string;
-    slug?: string;
   }>();
 
   if (!body.content) {
@@ -60,22 +60,17 @@ importExportHandler.post("/markdown", async (c) => {
     return c.json({ error: "Title is required in frontmatter" }, 400);
   }
 
-  // Generate slug from filename or title
-  const slug = body.slug || title.toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .slice(0, 100);
-
-  const id = crypto.randomUUID();
+  const id = generateId();
+  const hash = generateHash(10);
   const now = new Date().toISOString();
   const status = published ? "published" : "draft";
   const publishedAt = published && date ? new Date(date).toISOString() : (published ? now : null);
 
   // Insert article
   await c.env.DB.prepare(`
-    INSERT INTO articles (id, slug, title, description, content, status, published_at, created_at, updated_at)
+    INSERT INTO articles (id, hash, title, description, content, status, published_at, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).bind(id, slug, title, description || null, markdownContent.trim(), status, publishedAt, now, now).run();
+  `).bind(id, hash, title, description || null, markdownContent.trim(), status, publishedAt, now, now).run();
 
   // Handle tags
   for (const tagName of tags) {
@@ -85,7 +80,7 @@ importExportHandler.post("/markdown", async (c) => {
     let tag = await c.env.DB.prepare("SELECT id FROM tags WHERE slug = ?").bind(tagSlug).first<{ id: string }>();
 
     if (!tag) {
-      const tagId = crypto.randomUUID();
+      const tagId = generateId();
       await c.env.DB.prepare("INSERT INTO tags (id, name, slug) VALUES (?, ?, ?)").bind(tagId, tagName, tagSlug).run();
       tag = { id: tagId };
     }
@@ -96,7 +91,7 @@ importExportHandler.post("/markdown", async (c) => {
 
   return c.json({
     id,
-    slug,
+    hash,
     title,
     status,
     message: "Article imported successfully",
@@ -104,16 +99,16 @@ importExportHandler.post("/markdown", async (c) => {
 });
 
 // Export article as markdown
-// GET /export/:slug
-importExportHandler.get("/:slug", async (c) => {
-  const slug = c.req.param("slug");
+// GET /export/:hash
+importExportHandler.get("/:hash", async (c) => {
+  const hash = c.req.param("hash");
 
   const article = await c.env.DB.prepare(`
-    SELECT id, slug, title, description, content, status, published_at, created_at
-    FROM articles WHERE slug = ?
-  `).bind(slug).first<{
+    SELECT id, hash, title, description, content, status, published_at, created_at
+    FROM articles WHERE hash = ?
+  `).bind(hash).first<{
     id: string;
-    slug: string;
+    hash: string;
     title: string;
     description: string | null;
     content: string;
@@ -155,7 +150,7 @@ ${article.content}`;
   return new Response(markdown, {
     headers: {
       "Content-Type": "text/markdown; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${slug}.md"`,
+      "Content-Disposition": `attachment; filename="${hash}.md"`,
     },
   });
 });
@@ -166,15 +161,15 @@ importExportHandler.get("/", async (c) => {
   const status = c.req.query("status") || "published";
 
   const articles = await c.env.DB.prepare(`
-    SELECT slug FROM articles
+    SELECT hash FROM articles
     WHERE status = ?
     ORDER BY published_at DESC, created_at DESC
-  `).bind(status).all<{ slug: string }>();
+  `).bind(status).all<{ hash: string }>();
 
   return c.json({
     articles: articles.results.map((a) => ({
-      slug: a.slug,
-      exportUrl: `/v1/export/${a.slug}`,
+      hash: a.hash,
+      exportUrl: `/v1/export/${a.hash}`,
     })),
     total: articles.results.length,
   });

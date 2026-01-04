@@ -7,7 +7,6 @@ const API_URL = process.env.CMS_API_URL || "http://localhost:8787/v1";
 const API_KEY = process.env.CMS_API_KEY || "dev-api-key";
 
 interface ArticleInput {
-  slug: string;
   title: string;
   description: string;
   content: string;
@@ -17,7 +16,6 @@ interface ArticleInput {
 
 const articles: ArticleInput[] = [
   {
-    slug: "2025-12-30-hello-world",
     title: "Hello World - ブログを始めました",
     description: "個人ブログを開設しました。技術記事やメモを書いていきます。",
     content: `# Hello World - ブログを始めました
@@ -124,7 +122,6 @@ sequenceDiagram
     status: "published",
   },
   {
-    slug: "nextjs-app-router-guide",
     title: "Next.js App Router 完全ガイド",
     description:
       "Next.js 14のApp Routerについて詳しく解説します。Server Components、Client Components、Layoutsの使い方を学びましょう。",
@@ -168,7 +165,6 @@ App Routerを使いこなして、モダンなWebアプリケーションを構�
     status: "published",
   },
   {
-    slug: "typescript-best-practices",
     title: "TypeScript ベストプラクティス 2024",
     description:
       "TypeScriptを効果的に使うためのベストプラクティスをまとめました。",
@@ -209,7 +205,6 @@ TypeScriptの型システムを正しく理解して、安全なコードを書�
     status: "published",
   },
   {
-    slug: "cloudflare-workers-intro",
     title: "Cloudflare Workers 入門",
     description:
       "Cloudflare Workersでエッジコンピューティングを始めましょう。",
@@ -249,7 +244,6 @@ Cloudflare Workersでエッジコンピューティングの世界を体験し�
     status: "published",
   },
   {
-    slug: "tailwindcss-tips",
     title: "Tailwind CSS 実践テクニック",
     description:
       "Tailwind CSSを使った効率的なスタイリングのテクニックを紹介します。",
@@ -297,7 +291,6 @@ Tailwind CSSでモダンなUIを効率的に構築しましょう。`,
     status: "published",
   },
   {
-    slug: "react-hooks-deep-dive",
     title: "React Hooks 徹底解説",
     description: "React Hooksの仕組みと正しい使い方を深掘りします。",
     content: `# React Hooks 徹底解説
@@ -339,7 +332,6 @@ Hooksを正しく理解して、効率的なReactコンポーネントを作り�
     status: "published",
   },
   {
-    slug: "git-workflow-tips",
     title: "Git ワークフロー改善テクニック",
     description: "日々のGit操作を効率化するテクニックを紹介します。",
     content: `# Git ワークフロー改善テクニック
@@ -374,7 +366,6 @@ Gitを使いこなして、チーム開発を効率化しましょう。`,
     status: "published",
   },
   {
-    slug: "docker-compose-patterns",
     title: "Docker Compose 設計パターン",
     description:
       "Docker Composeを使った開発環境構築のパターンを解説します。",
@@ -422,7 +413,6 @@ Docker Composeで再現可能な開発環境を構築しましょう。`,
     status: "published",
   },
   {
-    slug: "api-design-principles",
     title: "REST API 設計原則",
     description: "良いREST APIを設計するための原則をまとめました。",
     content: `# REST API 設計原則
@@ -468,7 +458,6 @@ DELETE /users/:id      # ユーザー削除
     status: "published",
   },
   {
-    slug: "testing-strategies",
     title: "フロントエンドテスト戦略",
     description:
       "効果的なフロントエンドテストの戦略と実践方法を解説します。",
@@ -511,7 +500,6 @@ test('homepage has title', async ({ page }) => {
     status: "published",
   },
   {
-    slug: "performance-optimization",
     title: "Webパフォーマンス最適化",
     description:
       "Webアプリケーションのパフォーマンスを改善するテクニックを紹介します。",
@@ -559,17 +547,6 @@ const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
   },
 ];
 
-async function checkExistingArticle(slug: string): Promise<boolean> {
-  try {
-    const res = await fetch(`${API_URL}/articles/${slug}`, {
-      headers: { Authorization: `Bearer ${API_KEY}` },
-    });
-    return res.ok;
-  } catch {
-    return false;
-  }
-}
-
 async function createArticle(article: ArticleInput): Promise<boolean> {
   try {
     const res = await fetch(`${API_URL}/articles`, {
@@ -600,22 +577,15 @@ async function seed() {
   console.log("🌱 Seeding sample data...\n");
 
   let created = 0;
-  let skipped = 0;
+  let failed = 0;
 
   for (const article of articles) {
-    const exists = await checkExistingArticle(article.slug);
-    if (exists) {
-      console.log(`  ⏭️  Exists: ${article.title}`);
-      skipped++;
-      continue;
-    }
-
     const success = await createArticle(article);
     if (success) created++;
-    else skipped++;
+    else failed++;
   }
 
-  console.log(`\n✅ Seed completed: ${created} created, ${skipped} skipped`);
+  console.log(`\n✅ Seed completed: ${created} created, ${failed} failed`);
 }
 
 seed().catch(console.error);

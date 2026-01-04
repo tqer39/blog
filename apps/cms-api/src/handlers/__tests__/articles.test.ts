@@ -35,7 +35,7 @@ function createTestApp(mockDB: ReturnType<typeof createMockDB>) {
 
 const sampleArticle = {
   id: "article-1",
-  slug: "test-article",
+  hash: "abc123hash",
   title: "Test Article",
   description: "A test article",
   content: "# Test Content",
@@ -43,6 +43,7 @@ const sampleArticle = {
   published_at: null,
   created_at: "2024-01-01T00:00:00Z",
   updated_at: "2024-01-01T00:00:00Z",
+  header_image_id: null,
 };
 
 describe("articlesHandler", () => {
@@ -58,16 +59,25 @@ describe("articlesHandler", () => {
       // Mock count query
       const mockPrepare = vi.fn();
       mockPrepare
+        // Count query
         .mockReturnValueOnce({
           bind: vi.fn().mockReturnValue({
             first: vi.fn().mockResolvedValue({ count: 1 }),
           }),
         })
+        // Articles query
         .mockReturnValueOnce({
           bind: vi.fn().mockReturnValue({
             all: vi.fn().mockResolvedValue({ results: [sampleArticle] }),
           }),
         })
+        // Tags batch query
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi.fn().mockResolvedValue({ results: [] }),
+          }),
+        })
+        // Header images batch query
         .mockReturnValueOnce({
           bind: vi.fn().mockReturnValue({
             all: vi.fn().mockResolvedValue({ results: [] }),
@@ -112,8 +122,8 @@ describe("articlesHandler", () => {
     });
   });
 
-  describe("GET /articles/:slug", () => {
-    it("should return an article by slug", async () => {
+  describe("GET /articles/:hash", () => {
+    it("should return an article by hash", async () => {
       mockDB.prepare
         .mockReturnValueOnce({
           bind: vi.fn().mockReturnValue({
@@ -124,15 +134,20 @@ describe("articlesHandler", () => {
           bind: vi.fn().mockReturnValue({
             all: vi.fn().mockResolvedValue({ results: [{ name: "javascript" }] }),
           }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue(null),
+          }),
         });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles/test-article");
+      const res = await app.request("/articles/abc123hash");
 
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.title).toBe("Test Article");
-      expect(data.slug).toBe("test-article");
+      expect(data.hash).toBe("abc123hash");
       expect(data.tags).toContain("javascript");
     });
 
@@ -220,7 +235,7 @@ describe("articlesHandler", () => {
       expect(data.error).toBe("Title and content are required");
     });
 
-    it("should return 409 when slug already exists", async () => {
+    it("should return 409 when hash already exists", async () => {
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
           run: vi.fn().mockRejectedValue(new Error("UNIQUE constraint failed")),
@@ -234,17 +249,16 @@ describe("articlesHandler", () => {
         body: JSON.stringify({
           title: "Test Article",
           content: "Content",
-          slug: "existing-slug",
         }),
       });
 
       expect(res.status).toBe(409);
       const data = await res.json();
-      expect(data.error).toBe("Article with this slug already exists");
+      expect(data.error).toBe("Article with this hash already exists");
     });
   });
 
-  describe("DELETE /articles/:slug", () => {
+  describe("DELETE /articles/:hash", () => {
     it("should delete an article", async () => {
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
@@ -253,7 +267,7 @@ describe("articlesHandler", () => {
       });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles/test-article", { method: "DELETE" });
+      const res = await app.request("/articles/abc123hash", { method: "DELETE" });
 
       expect(res.status).toBe(200);
       const data = await res.json();
@@ -276,7 +290,7 @@ describe("articlesHandler", () => {
     });
   });
 
-  describe("POST /articles/:slug/publish", () => {
+  describe("POST /articles/:hash/publish", () => {
     it("should publish an article", async () => {
       const publishedArticle = { ...sampleArticle, status: "published", published_at: "2024-01-02" };
 
@@ -295,10 +309,15 @@ describe("articlesHandler", () => {
           bind: vi.fn().mockReturnValue({
             all: vi.fn().mockResolvedValue({ results: [] }),
           }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue(null),
+          }),
         });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles/test-article/publish", { method: "POST" });
+      const res = await app.request("/articles/abc123hash/publish", { method: "POST" });
 
       expect(res.status).toBe(200);
       const data = await res.json();
@@ -321,7 +340,7 @@ describe("articlesHandler", () => {
     });
   });
 
-  describe("POST /articles/:slug/unpublish", () => {
+  describe("POST /articles/:hash/unpublish", () => {
     it("should unpublish an article", async () => {
       const unpublishedArticle = { ...sampleArticle, status: "draft" };
 
@@ -340,10 +359,15 @@ describe("articlesHandler", () => {
           bind: vi.fn().mockReturnValue({
             all: vi.fn().mockResolvedValue({ results: [] }),
           }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue(null),
+          }),
         });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles/test-article/unpublish", { method: "POST" });
+      const res = await app.request("/articles/abc123hash/unpublish", { method: "POST" });
 
       expect(res.status).toBe(200);
       const data = await res.json();

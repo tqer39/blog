@@ -117,15 +117,14 @@ articlesHandler.post("/", async (c) => {
 
   const id = generateId();
   const hash = generateHash(10);
-  const slug = input.slug || slugify(input.title);
   const status = input.status || "draft";
   const publishedAt = status === "published" ? new Date().toISOString() : null;
 
   try {
     await c.env.DB.prepare(
-      `INSERT INTO articles (id, hash, slug, title, description, content, status, published_at, header_image_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    ).bind(id, hash, slug, input.title, input.description || null, input.content, status, publishedAt, input.headerImageId || null).run();
+      `INSERT INTO articles (id, hash, title, description, content, status, published_at, header_image_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).bind(id, hash, input.title, input.description || null, input.content, status, publishedAt, input.headerImageId || null).run();
 
     // Handle tags
     if (input.tags && input.tags.length > 0) {
@@ -139,7 +138,7 @@ articlesHandler.post("/", async (c) => {
     return c.json(mapRowToArticle(row!, tags, headerImageUrl), 201);
   } catch (error) {
     if (String(error).includes("UNIQUE constraint failed")) {
-      return c.json({ error: "Article with this slug or hash already exists" }, 409);
+      return c.json({ error: "Article with this hash already exists" }, 409);
     }
     throw error;
   }
@@ -172,10 +171,6 @@ articlesHandler.put("/:hash", async (c) => {
   if (input.content !== undefined) {
     updates.push("content = ?");
     params.push(input.content);
-  }
-  if (input.slug !== undefined) {
-    updates.push("slug = ?");
-    params.push(input.slug);
   }
   if (input.headerImageId !== undefined) {
     updates.push("header_image_id = ?");
@@ -395,7 +390,6 @@ function mapRowToArticle(row: Record<string, unknown>, tags: string[], headerIma
   return {
     id: row.id as string,
     hash: row.hash as string,
-    slug: row.slug as string,
     title: row.title as string,
     description: row.description as string | null,
     content: row.content as string,

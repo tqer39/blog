@@ -134,7 +134,7 @@ describe("importExportHandler", () => {
       expect(data.status).toBe("draft");
     });
 
-    it("should use provided slug", async () => {
+    it("should return generated hash", async () => {
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
           run: vi.fn().mockResolvedValue({}),
@@ -145,12 +145,13 @@ describe("importExportHandler", () => {
       const res = await app.request("/import/markdown", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: validMarkdownDraft, slug: "custom-slug" }),
+        body: JSON.stringify({ content: validMarkdownDraft }),
       });
 
       expect(res.status).toBe(201);
       const data = await res.json();
-      expect(data.slug).toBe("custom-slug");
+      expect(data.hash).toBeDefined();
+      expect(data.hash.length).toBeGreaterThan(0);
     });
 
     it("should return 400 when content is missing", async () => {
@@ -243,14 +244,14 @@ Content without title.`;
     });
   });
 
-  describe("GET /export/:slug", () => {
+  describe("GET /export/:hash", () => {
     it("should export an article as markdown", async () => {
       mockDB.prepare
         .mockReturnValueOnce({
           bind: vi.fn().mockReturnValue({
             first: vi.fn().mockResolvedValue({
               id: "article-1",
-              slug: "test-article",
+              hash: "abc123hash",
               title: "Test Article",
               description: "A test description",
               content: "# Hello World",
@@ -269,11 +270,11 @@ Content without title.`;
         });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/export/test-article");
+      const res = await app.request("/export/abc123hash");
 
       expect(res.status).toBe(200);
       expect(res.headers.get("Content-Type")).toBe("text/markdown; charset=utf-8");
-      expect(res.headers.get("Content-Disposition")).toBe('attachment; filename="test-article.md"');
+      expect(res.headers.get("Content-Disposition")).toBe('attachment; filename="abc123hash.md"');
 
       const markdown = await res.text();
       expect(markdown).toContain('title: "Test Article"');
@@ -304,7 +305,7 @@ Content without title.`;
           bind: vi.fn().mockReturnValue({
             first: vi.fn().mockResolvedValue({
               id: "article-1",
-              slug: "draft-article",
+              hash: "draft123hash",
               title: "Draft Article",
               description: null,
               content: "Draft content",
@@ -321,7 +322,7 @@ Content without title.`;
         });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/export/draft-article");
+      const res = await app.request("/export/draft123hash");
 
       expect(res.status).toBe(200);
       const markdown = await res.text();
@@ -336,8 +337,8 @@ Content without title.`;
         bind: vi.fn().mockReturnValue({
           all: vi.fn().mockResolvedValue({
             results: [
-              { slug: "article-1" },
-              { slug: "article-2" },
+              { hash: "hash123" },
+              { hash: "hash456" },
             ],
           }),
         }),
@@ -349,8 +350,8 @@ Content without title.`;
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.articles).toHaveLength(2);
-      expect(data.articles[0].slug).toBe("article-1");
-      expect(data.articles[0].exportUrl).toBe("/v1/export/article-1");
+      expect(data.articles[0].hash).toBe("hash123");
+      expect(data.articles[0].exportUrl).toBe("/v1/export/hash123");
       expect(data.total).toBe(2);
     });
 
@@ -358,7 +359,7 @@ Content without title.`;
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
           all: vi.fn().mockResolvedValue({
-            results: [{ slug: "draft-article" }],
+            results: [{ hash: "hash789" }],
           }),
         }),
       });

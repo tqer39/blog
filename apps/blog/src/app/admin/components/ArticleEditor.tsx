@@ -10,7 +10,6 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { MarkdownEditor } from './MarkdownEditor';
-import { SlugInput } from './SlugInput';
 import { TagSelector } from './TagSelector';
 import { ImageIcon, Sparkles, X } from 'lucide-react';
 
@@ -26,7 +25,6 @@ export function ArticleEditor({
   onCancel,
 }: ArticleEditorProps) {
   const [title, setTitle] = useState(initialData?.title ?? '');
-  const [slug, setSlug] = useState(initialData?.slug ?? '');
   const [description, setDescription] = useState(
     initialData?.description ?? ''
   );
@@ -141,10 +139,6 @@ export function ArticleEditor({
       setError('Title is required');
       return;
     }
-    if (!slug.trim()) {
-      setError('Slug is required');
-      return;
-    }
     if (!content.trim()) {
       setError('Content is required');
       return;
@@ -156,7 +150,6 @@ export function ArticleEditor({
     try {
       await onSave({
         title: title.trim(),
-        slug: slug.trim(),
         description: description.trim() || undefined,
         content,
         tags,
@@ -224,9 +217,6 @@ export function ArticleEditor({
             className="text-xl font-semibold"
           />
         </div>
-
-        {/* Slug */}
-        <SlugInput value={slug} onChange={setSlug} generateFrom={title} articleHash={initialData?.hash} />
 
         {/* Description & Tags with AI Generate */}
         <div className="space-y-4">
