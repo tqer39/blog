@@ -1,19 +1,20 @@
 -- Articles table
 CREATE TABLE IF NOT EXISTS articles (
   id TEXT PRIMARY KEY,
-  slug TEXT UNIQUE NOT NULL,
+  hash TEXT UNIQUE NOT NULL,
   title TEXT NOT NULL,
   description TEXT,
   content TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
   published_at DATETIME,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  header_image_id TEXT REFERENCES images(id) ON DELETE SET NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status);
 CREATE INDEX IF NOT EXISTS idx_articles_published_at ON articles(published_at DESC);
-CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_articles_hash ON articles(hash);
 
 -- Tags table
 CREATE TABLE IF NOT EXISTS tags (
