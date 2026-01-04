@@ -57,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body
-        className={`${bizUDGothic.variable} font-sans flex min-h-screen flex-col bg-stone-50 text-stone-900 dark:bg-stone-900 dark:text-stone-100`}
+        className={`${bizUDGothic.variable} font-sans flex min-h-screen flex-col bg-background text-foreground`}
         suppressHydrationWarning
       >
         <Providers>

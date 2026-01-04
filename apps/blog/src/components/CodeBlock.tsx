@@ -90,8 +90,8 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
         const language = SUPPORTED_LANGUAGES.includes(lang as BundledLanguage)
           ? (lang as BundledLanguage)
           : "typescript"; // fallback to typescript for unknown languages
-        const theme =
-          resolvedTheme === "dark" ? "github-dark" : "github-light";
+        const isDarkTheme = resolvedTheme === "dark" || resolvedTheme === "tokyonight";
+        const theme = isDarkTheme ? "github-dark" : "github-light";
 
         const html = highlighter.codeToHtml(code, {
           lang: language,

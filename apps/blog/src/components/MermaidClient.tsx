@@ -64,9 +64,10 @@ export function MermaidClient({ chart }: MermaidClientProps) {
         await loadMermaid();
         if (cancelled || !window.mermaid) return;
 
+        const isDarkTheme = resolvedTheme === 'dark' || resolvedTheme === 'tokyonight';
         window.mermaid.initialize({
           startOnLoad: false,
-          theme: resolvedTheme === 'dark' ? 'dark' : 'neutral',
+          theme: isDarkTheme ? 'dark' : 'neutral',
         });
 
         // Generate unique ID for each render to avoid Mermaid ID conflicts
@@ -88,10 +89,13 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     };
   }, [chart, resolvedTheme]);
 
+  const isDarkTheme = resolvedTheme === 'dark' || resolvedTheme === 'tokyonight';
+  const bgClass = isDarkTheme ? 'bg-[#24292e]' : 'bg-white';
+
   if (!svg) {
     const lineWidths = [80, 65, 85, 70, 75];
     return (
-      <div className="my-4 rounded-lg bg-white p-4 dark:bg-[#24292e]">
+      <div className={`my-4 rounded-lg p-4 ${bgClass}`}>
         <div className="flex flex-col items-center space-y-2 py-4">
           {lineWidths.map((width, i) => (
             <Skeleton
@@ -112,13 +116,17 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     />
   );
 
+  const buttonClass = isDarkTheme
+    ? 'bg-stone-700/80 text-stone-300 hover:bg-stone-600 hover:text-stone-100'
+    : 'bg-stone-200/80 text-stone-600 hover:bg-stone-300 hover:text-stone-800';
+
   return (
     <>
-      <div className="group relative my-4 overflow-x-auto rounded-lg bg-white p-4 dark:bg-[#24292e]">
+      <div className={`group relative my-4 overflow-x-auto rounded-lg p-4 ${bgClass}`}>
         <button
           type="button"
           onClick={() => setIsFullscreen(true)}
-          className="absolute right-2 top-2 flex items-center gap-1 rounded bg-stone-200/80 px-2 py-1 text-stone-600 opacity-0 transition-all hover:bg-stone-300 hover:text-stone-800 group-hover:opacity-100 dark:bg-stone-700/80 dark:text-stone-400 dark:hover:bg-stone-600 dark:hover:text-stone-200"
+          className={`absolute right-2 top-2 flex items-center gap-1 rounded px-2 py-1 opacity-0 transition-all group-hover:opacity-100 ${buttonClass}`}
           aria-label="Fullscreen"
         >
           <Maximize2 className="h-4 w-4" />
@@ -130,7 +138,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
         onClose={() => setIsFullscreen(false)}
         title="Mermaid Diagram"
       >
-        <div className="flex h-full items-center justify-center overflow-auto rounded-lg bg-white p-8 dark:bg-[#24292e]">
+        <div className={`flex h-full items-center justify-center overflow-auto rounded-lg p-8 ${bgClass}`}>
           {mermaidContent}
         </div>
       </FullscreenModal>
