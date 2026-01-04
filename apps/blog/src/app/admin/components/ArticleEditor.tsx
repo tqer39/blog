@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import type { Article, ArticleInput } from '@blog/cms-types';
 import { generateImage, generateMetadata, getTags, uploadImage } from '@/lib/api/client';
 import { Button } from '@/components/ui/button';
@@ -257,10 +258,13 @@ export function ArticleEditor({
           <Label>Header Image</Label>
           {headerImageUrl ? (
             <div className="relative inline-block">
-              <img
+              <Image
                 src={headerImageUrl}
                 alt="Header preview"
+                width={400}
+                height={200}
                 className="max-h-48 rounded-lg border object-cover"
+                unoptimized
               />
               <button
                 type="button"
