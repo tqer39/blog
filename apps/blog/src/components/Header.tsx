@@ -78,6 +78,7 @@ export function Header() {
                 onClick={handleClose}
                 className="rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
                 aria-label="検索を閉じる"
+                title="検索を閉じる"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -87,6 +88,7 @@ export function Header() {
                 onClick={() => setIsSearchOpen(true)}
                 className="rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
                 aria-label="検索を開く"
+                title="検索"
               >
                 <Search className="h-5 w-5" />
               </button>
@@ -97,6 +99,7 @@ export function Header() {
             href="/feed.xml"
             className="hidden rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:block"
             aria-label="RSS Feed"
+            title="RSS"
           >
             <Rss className="h-5 w-5" />
           </Link>
@@ -105,6 +108,7 @@ export function Header() {
             href="/articles"
             className="hidden rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:block"
             aria-label="Articles"
+            title="記事一覧"
           >
             <BookOpen className="h-5 w-5" />
           </Link>
