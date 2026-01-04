@@ -1,5 +1,6 @@
 "use client";
 
+import dayjs from "dayjs";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { Article } from "@blog/cms-types";
@@ -154,17 +155,7 @@ export default function ArticleListPage() {
                   </td>
                   <td className="px-4 py-5">
                     <span className="text-sm text-muted-foreground">
-                      {article.publishedAt
-                        ? new Date(article.publishedAt).toLocaleDateString("ja-JP", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })
-                        : new Date(article.createdAt).toLocaleDateString("ja-JP", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
+                      {dayjs(article.publishedAt || article.createdAt).format("YYYY/MM/DD")}
                     </span>
                   </td>
                   <td className="px-4 py-5">
