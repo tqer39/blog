@@ -187,11 +187,11 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
 
   const htmlWithLineNumbers = addLineNumbers(highlightedHtml);
 
+  const headerLabel = filename || lang;
+
   const codeContent = (
     <div
-      className={`shiki-wrapper not-prose ${
-        filename ? "rounded-b-lg" : "rounded-lg"
-      } [&_pre]:!m-0 [&_pre]:!py-4 [&_pre]:!px-0 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_code]:grid [&_code]:text-sm [&_.line]:flex [&_.line]:w-full [&_.line]:min-w-max [&_.line]:px-4 [&_.line]:isolate [&_.line:hover]:bg-stone-200 dark:[&_.line:hover]:bg-stone-700 [&_.line-number]:mr-4 [&_.line-number]:w-4 [&_.line-number]:shrink-0 [&_.line-number]:text-right [&_.line-number]:select-none [&_.line-number]:text-stone-500`}
+      className="shiki-wrapper not-prose rounded-b-lg [&_pre]:!m-0 [&_pre]:!py-4 [&_pre]:!px-0 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_code]:grid [&_code]:text-sm [&_.line]:flex [&_.line]:w-full [&_.line]:min-w-max [&_.line]:px-4 [&_.line]:isolate [&_.line:hover]:bg-stone-200 dark:[&_.line:hover]:bg-stone-700 [&_.line-number]:mr-4 [&_.line-number]:w-4 [&_.line-number]:shrink-0 [&_.line-number]:text-right [&_.line-number]:select-none [&_.line-number]:text-stone-500"
       dangerouslySetInnerHTML={{ __html: htmlWithLineNumbers }}
     />
   );
@@ -199,45 +199,13 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   return (
     <>
       <div className="group relative my-4 overflow-hidden rounded-lg">
-        {filename && (
-          <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
-            <span>{filename}</span>
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={handleCopy}
-                className="flex items-center gap-1 rounded px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
-                aria-label="Copy code"
-              >
-                {isCopied ? (
-                  <>
-                    <Check className="h-4 w-4" />
-                    <span className="text-xs">Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-4 w-4" />
-                    <span className="text-xs">Copy</span>
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsFullscreen(true)}
-                className="flex items-center gap-1 rounded px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
-                aria-label="Fullscreen"
-              >
-                <Maximize2 className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-        )}
-        {!filename && (
-          <div className="absolute right-2 top-2 flex items-center gap-1 opacity-0 transition-all group-hover:opacity-100">
+        <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+          <span>{headerLabel}</span>
+          <div className="flex items-center gap-1">
             <button
               type="button"
               onClick={handleCopy}
-              className="flex items-center gap-1 rounded bg-stone-700/80 px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
+              className="flex items-center gap-1 rounded px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
               aria-label="Copy code"
             >
               {isCopied ? (
@@ -255,13 +223,13 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
             <button
               type="button"
               onClick={() => setIsFullscreen(true)}
-              className="flex items-center gap-1 rounded bg-stone-700/80 px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
+              className="flex items-center gap-1 rounded px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
               aria-label="Fullscreen"
             >
               <Maximize2 className="h-4 w-4" />
             </button>
           </div>
-        )}
+        </div>
         {codeContent}
       </div>
       <FullscreenModal
