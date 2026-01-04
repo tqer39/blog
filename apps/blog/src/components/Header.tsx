@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { Search, X } from 'lucide-react';
+import { Rss, Search, X } from 'lucide-react';
 import { ThemeSwitcher } from './ThemeSwitcher';
 
 export function Header() {
@@ -90,6 +90,13 @@ export function Header() {
               </button>
             )}
           </div>
+          <Link
+            href="/feed.xml"
+            className="rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+            aria-label="RSS Feed"
+          >
+            <Rss className="h-5 w-5" />
+          </Link>
           <ThemeSwitcher />
           <Link
             href="/articles"
