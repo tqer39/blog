@@ -1,10 +1,11 @@
 "use client";
 
 import dayjs from "dayjs";
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Article } from "@blog/cms-types";
-import { ArrowDown, ArrowUp, Edit, Eye, EyeOff, Search, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Edit, Eye, EyeOff, ImageIcon, Search, Trash2, X } from "lucide-react";
 
 type ArticleSortKey = "title" | "status" | "date";
 type SortDirection = "asc" | "desc";
@@ -175,6 +176,9 @@ export default function ArticleListPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-muted/50">
+                <th className="w-16 py-4 pl-4 text-left text-sm font-semibold text-foreground">
+                  <span className="sr-only">Image</span>
+                </th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                   <button
                     type="button"
@@ -233,6 +237,22 @@ export default function ArticleListPage() {
                     index % 2 === 0 ? "bg-background" : "bg-muted/20"
                   }`}
                 >
+                  <td className="w-16 py-2 pl-4">
+                    {article.headerImageUrl ? (
+                      <Image
+                        src={article.headerImageUrl}
+                        alt=""
+                        width={48}
+                        height={32}
+                        className="rounded object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="flex h-8 w-12 items-center justify-center rounded bg-muted">
+                        <ImageIcon className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                    )}
+                  </td>
                   <td className="px-6 py-5">
                     <Link
                       href={`/admin/articles/${article.hash}/edit`}

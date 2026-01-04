@@ -12,6 +12,38 @@ interface ArticleInput {
   content: string;
   tags: string[];
   status: "draft" | "published";
+  headerImageId?: string;
+}
+
+// Upload a placeholder image from picsum.photos
+async function uploadPlaceholderImage(): Promise<string | null> {
+  try {
+    // Fetch random image from picsum.photos (800x400)
+    const imageRes = await fetch("https://picsum.photos/800/400");
+    if (!imageRes.ok) return null;
+
+    const imageBlob = await imageRes.blob();
+
+    // Upload to CMS API
+    const formData = new FormData();
+    formData.append("file", imageBlob, "placeholder.jpg");
+
+    const res = await fetch(`${API_URL}/images`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: formData,
+    });
+
+    if (res.ok) {
+      const data = (await res.json()) as { id: string };
+      return data.id;
+    }
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 const articles: ArticleInput[] = [
@@ -576,11 +608,34 @@ async function createArticle(article: ArticleInput): Promise<boolean> {
 async function seed() {
   console.log("🌱 Seeding sample data...\n");
 
+  // Upload placeholder images for first few articles
+  console.log("📷 Uploading placeholder images...\n");
+  const imageIds: (string | null)[] = [];
+  const NUM_IMAGES = 3; // Number of articles to add images to
+
+  for (let i = 0; i < NUM_IMAGES; i++) {
+    const imageId = await uploadPlaceholderImage();
+    imageIds.push(imageId);
+    if (imageId) {
+      console.log(`  ✅ Image ${i + 1}/${NUM_IMAGES} uploaded`);
+    } else {
+      console.log(`  ⚠️  Image ${i + 1}/${NUM_IMAGES} failed`);
+    }
+  }
+
+  console.log("\n📝 Creating articles...\n");
+
   let created = 0;
   let failed = 0;
 
-  for (const article of articles) {
-    const success = await createArticle(article);
+  for (const [index, article] of articles.entries()) {
+    // Assign header image to first NUM_IMAGES articles
+    const headerImageId = index < NUM_IMAGES ? imageIds[index] : undefined;
+    const articleWithImage = headerImageId
+      ? { ...article, headerImageId }
+      : article;
+
+    const success = await createArticle(articleWithImage);
     if (success) created++;
     else failed++;
   }
