@@ -178,6 +178,7 @@ export default function ArticleListPage() {
                     type="button"
                     onClick={() => handleSort("title")}
                     className="inline-flex items-center gap-1 hover:text-primary"
+                    aria-label="Sort by title"
                   >
                     Title
                     {sortKey === "title" && (
@@ -190,6 +191,7 @@ export default function ArticleListPage() {
                     type="button"
                     onClick={() => handleSort("status")}
                     className="inline-flex items-center gap-1 hover:text-primary"
+                    aria-label="Sort by status"
                   >
                     Status
                     {sortKey === "status" && (
@@ -202,6 +204,7 @@ export default function ArticleListPage() {
                     type="button"
                     onClick={() => handleSort("date")}
                     className="inline-flex items-center gap-1 hover:text-primary"
+                    aria-label="Sort by date"
                   >
                     Date
                     {sortKey === "date" && (
