@@ -53,14 +53,30 @@ articlesHandler.get("/", async (c) => {
 
   const { results } = await c.env.DB.prepare(query).bind(...params).all();
 
-  // Get tags and header image for each article
-  const articles: Article[] = await Promise.all(
-    (results || []).map(async (row) => {
-      const tags = await getArticleTags(c.env.DB, row.id as string);
-      const headerImageUrl = await getHeaderImageUrl(c.env.DB, row.header_image_id as string | null, c.env);
-      return mapRowToArticle(row, tags, headerImageUrl);
-    }),
-  );
+  if (!results || results.length === 0) {
+    return c.json({
+      articles: [],
+      total,
+      page,
+      perPage,
+    } satisfies ArticleListResponse);
+  }
+
+  // Batch fetch tags and images to avoid N+1
+  const articleIds = results.map((row) => row.id as string);
+  const [tagsByArticle, imageUrlsByArticle] = await Promise.all([
+    getArticleTagsBatch(c.env.DB, articleIds),
+    getHeaderImageUrlsBatch(c.env.DB, articleIds, c.env),
+  ]);
+
+  const articles: Article[] = results.map((row) => {
+    const id = row.id as string;
+    return mapRowToArticle(
+      row,
+      tagsByArticle.get(id) || [],
+      imageUrlsByArticle.get(id) || null
+    );
+  });
 
   const response: ArticleListResponse = {
     articles,
@@ -238,6 +254,8 @@ articlesHandler.post("/:hash/unpublish", async (c) => {
 });
 
 // Helper functions
+
+// Single article tag fetch (for single article endpoints)
 async function getArticleTags(db: D1Database, articleId: string): Promise<string[]> {
   const { results } = await db.prepare(
     `SELECT t.name FROM tags t
@@ -248,29 +266,129 @@ async function getArticleTags(db: D1Database, articleId: string): Promise<string
   return (results || []).map((r) => r.name as string);
 }
 
+// Batch fetch tags for multiple articles (avoids N+1)
+async function getArticleTagsBatch(
+  db: D1Database,
+  articleIds: string[]
+): Promise<Map<string, string[]>> {
+  const result = new Map<string, string[]>();
+
+  if (articleIds.length === 0) {
+    return result;
+  }
+
+  const placeholders = articleIds.map(() => "?").join(",");
+  const { results } = await db.prepare(
+    `SELECT at.article_id, t.name
+     FROM article_tags at
+     JOIN tags t ON at.tag_id = t.id
+     WHERE at.article_id IN (${placeholders})`
+  ).bind(...articleIds).all();
+
+  // Initialize empty arrays for all article IDs
+  for (const id of articleIds) {
+    result.set(id, []);
+  }
+
+  // Group tags by article
+  for (const row of results || []) {
+    const articleId = row.article_id as string;
+    const tagName = row.name as string;
+    result.get(articleId)?.push(tagName);
+  }
+
+  return result;
+}
+
+// Batch fetch header image URLs for multiple articles (avoids N+1)
+async function getHeaderImageUrlsBatch(
+  db: D1Database,
+  articleIds: string[],
+  env: Env
+): Promise<Map<string, string | null>> {
+  const result = new Map<string, string | null>();
+
+  if (articleIds.length === 0) {
+    return result;
+  }
+
+  // Initialize all as null
+  for (const id of articleIds) {
+    result.set(id, null);
+  }
+
+  const placeholders = articleIds.map(() => "?").join(",");
+  const { results } = await db.prepare(
+    `SELECT a.id as article_id, i.r2_key
+     FROM articles a
+     JOIN images i ON a.header_image_id = i.id
+     WHERE a.id IN (${placeholders}) AND a.header_image_id IS NOT NULL`
+  ).bind(...articleIds).all();
+
+  // Build URLs for articles with images
+  for (const row of results || []) {
+    const articleId = row.article_id as string;
+    const r2Key = row.r2_key as string;
+
+    let url: string;
+    if (env.R2_PUBLIC_URL) {
+      url = `${env.R2_PUBLIC_URL}/${r2Key}`;
+    } else if (env.ENVIRONMENT === "development") {
+      url = `http://localhost:8787/v1/images/file/${r2Key}`;
+    } else {
+      url = `https://cdn.tqer39.dev/${r2Key}`;
+    }
+
+    result.set(articleId, url);
+  }
+
+  return result;
+}
+
+// Optimized tag sync using batch operations
 async function syncArticleTags(db: D1Database, articleId: string, tagNames: string[]): Promise<void> {
   // Remove existing tags
   await db.prepare("DELETE FROM article_tags WHERE article_id = ?").bind(articleId).run();
 
-  // Add new tags
-  for (const name of tagNames) {
-    const tagSlug = slugify(name);
-
-    // Upsert tag
-    await db.prepare(
-      `INSERT INTO tags (id, name, slug) VALUES (?, ?, ?)
-       ON CONFLICT (name) DO NOTHING`,
-    ).bind(generateId(), name, tagSlug).run();
-
-    // Get tag id
-    const tag = await db.prepare("SELECT id FROM tags WHERE name = ?").bind(name).first<{ id: string }>();
-
-    if (tag) {
-      await db.prepare(
-        "INSERT INTO article_tags (article_id, tag_id) VALUES (?, ?)",
-      ).bind(articleId, tag.id).run();
-    }
+  if (tagNames.length === 0) {
+    return;
   }
+
+  // Batch upsert all tags
+  const tagData = tagNames.map((name) => ({
+    id: generateId(),
+    name,
+    slug: slugify(name),
+  }));
+
+  // Use batch for tag upserts
+  const tagInsertStatements = tagData.map((tag) =>
+    db.prepare(
+      `INSERT INTO tags (id, name, slug) VALUES (?, ?, ?)
+       ON CONFLICT (name) DO NOTHING`
+    ).bind(tag.id, tag.name, tag.slug)
+  );
+
+  await db.batch(tagInsertStatements);
+
+  // Fetch all tag IDs in one query
+  const placeholders = tagNames.map(() => "?").join(",");
+  const { results: tagResults } = await db.prepare(
+    `SELECT id, name FROM tags WHERE name IN (${placeholders})`
+  ).bind(...tagNames).all();
+
+  if (!tagResults || tagResults.length === 0) {
+    return;
+  }
+
+  // Batch insert article_tags relationships
+  const articleTagStatements = tagResults.map((tag) =>
+    db.prepare(
+      "INSERT INTO article_tags (article_id, tag_id) VALUES (?, ?)"
+    ).bind(articleId, tag.id as string)
+  );
+
+  await db.batch(articleTagStatements);
 }
 
 function mapRowToArticle(row: Record<string, unknown>, tags: string[], headerImageUrl: string | null = null): Article {
@@ -291,6 +409,7 @@ function mapRowToArticle(row: Record<string, unknown>, tags: string[], headerIma
   };
 }
 
+// Single article header image fetch (for single article endpoints)
 async function getHeaderImageUrl(db: D1Database, headerImageId: string | null, env: Env): Promise<string | null> {
   if (!headerImageId) return null;
 
