@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { ArticleContent } from "@/components/ArticleContent";
+import { ArticleNavigation } from "@/components/ArticleNavigation";
 import { TagLink } from "@/components/TagLink";
 import { getAllArticles, getArticleBySlug } from "@/lib/articles";
 
@@ -66,11 +67,24 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const [article, allArticles] = await Promise.all([
+    getArticleBySlug(slug),
+    getAllArticles(),
+  ]);
 
   if (!article) {
     notFound();
   }
+
+  // Find current article index and get prev/next articles
+  // Articles are sorted by publishedAt descending (newest first)
+  const currentIndex = allArticles.findIndex((a) => a.slug === slug);
+  const prevArticle = currentIndex < allArticles.length - 1
+    ? { slug: allArticles[currentIndex + 1].slug, title: allArticles[currentIndex + 1].title }
+    : null;
+  const nextArticle = currentIndex > 0
+    ? { slug: allArticles[currentIndex - 1].slug, title: allArticles[currentIndex - 1].title }
+    : null;
 
   const displayDate = article.publishedAt || article.createdAt;
 
@@ -105,6 +119,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </div>
       </header>
       <ArticleContent content={article.content} />
+      <ArticleNavigation prevArticle={prevArticle} nextArticle={nextArticle} />
     </article>
   );
 }
