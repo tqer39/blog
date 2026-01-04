@@ -67,6 +67,12 @@
   }
 }
 
+/* Override prose */
+.prose pre {
+  background-color: #0c0c0c9b;
+  border-radius: 0.5rem !important;
+}
+
 /* Override prose styles for code blocks - must be outside @layer to override Tailwind prose */
 .prose .shiki-wrapper pre,
 .prose pre.shiki {
@@ -80,7 +86,6 @@
   margin-bottom: -0.65rem !important;
   margin-left: -0.85rem !important;
   margin-right: -0.9rem !important;
-  border-radius: 0rem !important;
 }
 
 /* Mermaid diagram styling for code blocks */
