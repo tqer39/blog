@@ -4,6 +4,7 @@
   "ignorePaths": [".git", ".gitignore", ".claude", "pnpm-lock.yaml", ".turbo"],
   "words": [
     "aahl",
+    "Amazonwebservices",
     "dango",
     "dont",
     "Imagen",
@@ -61,6 +62,7 @@
     "gemini",
     "hammerspoon",
     "gnewb",
+    "Gnubash",
     "getline",
     "ghostty",
     "googlecode",

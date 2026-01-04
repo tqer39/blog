@@ -1,15 +1,32 @@
 "use client";
 
+import { Check, Copy, Maximize2 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useState } from "react";
 import {
+  SiAmazonwebservices,
+  SiCss3,
+  SiDocker,
+  SiGnubash,
+  SiGo,
+  SiHtml5,
+  SiJavascript,
+  SiJson,
+  SiMarkdown,
+  SiPython,
+  SiRust,
+  SiTerraform,
+  SiTypescript,
+  SiYaml,
+} from "react-icons/si";
+import {
   createHighlighter,
-  type Highlighter,
   type BundledLanguage,
+  type Highlighter,
 } from "shiki";
-import { Mermaid } from "./Mermaid";
-import { Check, Copy, Maximize2 } from "lucide-react";
+
 import { FullscreenModal } from "./FullscreenModal";
+import { Mermaid } from "./Mermaid";
 import { Skeleton } from "./ui/skeleton";
 
 interface CodeBlockProps {
@@ -38,6 +55,27 @@ const SUPPORTED_LANGUAGES: BundledLanguage[] = [
   "c",
   "cpp",
 ];
+
+const languageIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  typescript: SiTypescript,
+  tsx: SiTypescript,
+  javascript: SiJavascript,
+  jsx: SiJavascript,
+  python: SiPython,
+  go: SiGo,
+  rust: SiRust,
+  html: SiHtml5,
+  css: SiCss3,
+  json: SiJson,
+  yaml: SiYaml,
+  markdown: SiMarkdown,
+  bash: SiGnubash,
+  shellscript: SiGnubash,
+  terraform: SiTerraform,
+  hcl: SiTerraform,
+  dockerfile: SiDocker,
+  docker: SiDocker,
+};
 
 let highlighterPromise: Promise<Highlighter> | null = null;
 
@@ -188,6 +226,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const htmlWithLineNumbers = addLineNumbers(highlightedHtml);
 
   const headerLabel = filename || lang;
+  const LangIcon = languageIcons[lang];
 
   const codeContent = (
     <div
@@ -200,7 +239,10 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
     <>
       <div className="group relative my-4 overflow-hidden rounded-lg">
         <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
-          <span>{headerLabel}</span>
+          <div className="flex items-center gap-2">
+            {LangIcon && <LangIcon className="h-4 w-4" />}
+            <span>{headerLabel}</span>
+          </div>
           <div className="flex items-center gap-1">
             <button
               type="button"
