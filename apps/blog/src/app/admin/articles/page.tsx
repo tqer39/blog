@@ -4,7 +4,10 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Article } from "@blog/cms-types";
-import { Edit, Eye, EyeOff, Search, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Edit, Eye, EyeOff, Search, Trash2, X } from "lucide-react";
+
+type ArticleSortKey = "title" | "status" | "date";
+type SortDirection = "asc" | "desc";
 import {
   deleteArticle,
   getArticles,
@@ -21,6 +24,8 @@ export default function ArticleListPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "published" | "draft">("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortKey, setSortKey] = useState<ArticleSortKey>("date");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   const loadArticles = useCallback(async () => {
     try {
@@ -64,16 +69,43 @@ export default function ArticleListPage() {
     }
   }
 
-  const filteredArticles = useMemo(() => {
-    if (!searchQuery.trim()) return articles;
-    const query = searchQuery.toLowerCase();
-    return articles.filter(
-      (article) =>
-        article.title.toLowerCase().includes(query) ||
-        article.hash.toLowerCase().includes(query) ||
-        article.tags.some((tag) => tag.toLowerCase().includes(query))
-    );
-  }, [articles, searchQuery]);
+  function handleSort(key: ArticleSortKey) {
+    if (sortKey === key) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDirection("asc");
+    }
+  }
+
+  const sortedArticles = useMemo(() => {
+    const filtered = searchQuery.trim()
+      ? articles.filter(
+          (article) =>
+            article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            article.hash.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            article.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        )
+      : articles;
+
+    return [...filtered].sort((a, b) => {
+      const modifier = sortDirection === "asc" ? 1 : -1;
+
+      switch (sortKey) {
+        case "title":
+          return a.title.localeCompare(b.title) * modifier;
+        case "status":
+          return a.status.localeCompare(b.status) * modifier;
+        case "date": {
+          const aDate = a.publishedAt || a.createdAt;
+          const bDate = b.publishedAt || b.createdAt;
+          return aDate.localeCompare(bDate) * modifier;
+        }
+        default:
+          return 0;
+      }
+    });
+  }, [articles, searchQuery, sortKey, sortDirection]);
 
   return (
     <div>
@@ -132,7 +164,7 @@ export default function ArticleListPage() {
         <div className="py-12 text-center text-muted-foreground">
           No articles found
         </div>
-      ) : filteredArticles.length === 0 ? (
+      ) : sortedArticles.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground">
           No articles match your search.
         </div>
@@ -142,13 +174,40 @@ export default function ArticleListPage() {
             <thead>
               <tr className="border-b border-border bg-muted/50">
                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                  Title
+                  <button
+                    type="button"
+                    onClick={() => handleSort("title")}
+                    className="inline-flex items-center gap-1 hover:text-primary"
+                  >
+                    Title
+                    {sortKey === "title" && (
+                      sortDirection === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+                    )}
+                  </button>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                  Status
+                  <button
+                    type="button"
+                    onClick={() => handleSort("status")}
+                    className="inline-flex items-center gap-1 hover:text-primary"
+                  >
+                    Status
+                    {sortKey === "status" && (
+                      sortDirection === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+                    )}
+                  </button>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                  Date
+                  <button
+                    type="button"
+                    onClick={() => handleSort("date")}
+                    className="inline-flex items-center gap-1 hover:text-primary"
+                  >
+                    Date
+                    {sortKey === "date" && (
+                      sortDirection === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+                    )}
+                  </button>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
                   Tags
@@ -159,7 +218,7 @@ export default function ArticleListPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filteredArticles.map((article, index) => (
+              {sortedArticles.map((article, index) => (
                 <tr
                   key={article.id}
                   className={`transition-colors hover:bg-muted/50 ${
