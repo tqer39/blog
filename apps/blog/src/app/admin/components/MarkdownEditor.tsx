@@ -46,6 +46,9 @@ export function MarkdownEditor({
   );
   const [splitRatio, setSplitRatio] = useState(50); // percentage for editor width
   const [isDragging, setIsDragging] = useState(false);
+  const [fullscreenSplitRatio, setFullscreenSplitRatio] = useState(50);
+  const [isFullscreenDragging, setIsFullscreenDragging] = useState(false);
+  const fullscreenContainerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const fullscreenTextareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -173,6 +176,12 @@ export function MarkdownEditor({
     setIsDragging(true);
   }, []);
 
+  // Handle fullscreen resize drag
+  const handleFullscreenMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsFullscreenDragging(true);
+  }, []);
+
   useEffect(() => {
     if (!isDragging) return;
 
@@ -198,6 +207,33 @@ export function MarkdownEditor({
       document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDragging]);
+
+  // Handle fullscreen resize drag
+  useEffect(() => {
+    if (!isFullscreenDragging) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const container = fullscreenContainerRef.current;
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      const newRatio = ((e.clientX - rect.left) / rect.width) * 100;
+      // Clamp between 20% and 80%
+      setFullscreenSplitRatio(Math.max(20, Math.min(80, newRatio)));
+    };
+
+    const handleMouseUp = () => {
+      setIsFullscreenDragging(false);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isFullscreenDragging]);
 
   return (
     <TooltipProvider>
@@ -403,8 +439,14 @@ export function MarkdownEditor({
         onClose={() => setIsFullscreen(false)}
         title={`Content Editor (${value.length.toLocaleString()} 文字)`}
       >
-        <div className="flex h-full gap-4">
-          <div className="flex flex-1 flex-col">
+        <div
+          ref={fullscreenContainerRef}
+          className={`flex h-full ${isFullscreenDragging ? "select-none" : ""}`}
+        >
+          <div
+            className="flex flex-col"
+            style={{ width: `${fullscreenSplitRatio}%`, flexShrink: 0 }}
+          >
             <textarea
               ref={fullscreenTextareaRef}
               value={value}
@@ -413,7 +455,19 @@ export function MarkdownEditor({
               placeholder="Write your article in Markdown..."
             />
           </div>
-          <div className="flex-1 overflow-auto rounded-lg border bg-background p-4">
+          {/* Resizable Divider */}
+          <button
+            type="button"
+            aria-label="Resize editor and preview panels"
+            onMouseDown={handleFullscreenMouseDown}
+            className={`group mx-1 flex w-3 cursor-col-resize items-center justify-center rounded-full bg-muted/50 transition-colors hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-primary ${isFullscreenDragging ? "bg-primary/30" : ""}`}
+          >
+            <GripVertical className="h-8 w-4 text-muted-foreground/70 group-hover:text-muted-foreground" />
+          </button>
+          <div
+            className="overflow-auto rounded-lg border bg-background p-4"
+            style={{ width: `${100 - fullscreenSplitRatio}%` }}
+          >
             <ArticleContent content={value} />
           </div>
         </div>
