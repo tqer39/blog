@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { Rss, Search, X } from 'lucide-react';
+import { BookOpen, Rss, Search, X } from 'lucide-react';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { MobileMenu } from './MobileMenu';
 
@@ -103,9 +103,10 @@ export function Header() {
           <ThemeSwitcher />
           <Link
             href="/articles"
-            className="hidden text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 md:block"
+            className="hidden rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:block"
+            aria-label="Articles"
           >
-            Articles
+            <BookOpen className="h-5 w-5" />
           </Link>
           {/* Mobile menu */}
           <MobileMenu

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { Menu, X, Rss } from 'lucide-react';
+import { BookOpen, Menu, Rss, X } from 'lucide-react';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -71,6 +71,7 @@ export function MobileMenu({ isOpen, onToggle }: MobileMenuProps) {
                 onClick={onToggle}
                 className="flex items-center gap-2 text-lg text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
               >
+                <BookOpen className="h-5 w-5" />
                 Articles
               </Link>
             </li>
