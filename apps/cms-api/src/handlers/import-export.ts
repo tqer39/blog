@@ -61,7 +61,7 @@ importExportHandler.post("/markdown", async (c) => {
   }
 
   const id = generateId();
-  const hash = generateHash(10);
+  const hash = generateHash();
   const now = new Date().toISOString();
   const status = published ? "published" : "draft";
   const publishedAt = published && date ? new Date(date).toISOString() : (published ? now : null);

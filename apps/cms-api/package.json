@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@blog/cms-types": "workspace:*",
-    "hono": "4.11.3"
+    "hono": "4.11.3",
+    "ulidx": "^2.4.1"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "4.20260101.0",

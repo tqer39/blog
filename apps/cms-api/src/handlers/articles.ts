@@ -116,7 +116,7 @@ articlesHandler.post("/", async (c) => {
   }
 
   const id = generateId();
-  const hash = generateHash(10);
+  const hash = generateHash();
   const status = input.status || "draft";
   const publishedAt = status === "published" ? new Date().toISOString() : null;
 
