@@ -2,9 +2,9 @@
 
 import dayjs from "dayjs";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Article } from "@blog/cms-types";
-import { Edit, Eye, EyeOff, Trash2 } from "lucide-react";
+import { Edit, Eye, EyeOff, Search, Trash2, X } from "lucide-react";
 import {
   deleteArticle,
   getArticles,
@@ -20,6 +20,7 @@ export default function ArticleListPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "published" | "draft">("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const loadArticles = useCallback(async () => {
     try {
@@ -63,6 +64,17 @@ export default function ArticleListPage() {
     }
   }
 
+  const filteredArticles = useMemo(() => {
+    if (!searchQuery.trim()) return articles;
+    const query = searchQuery.toLowerCase();
+    return articles.filter(
+      (article) =>
+        article.title.toLowerCase().includes(query) ||
+        article.hash.toLowerCase().includes(query) ||
+        article.tags.some((tag) => tag.toLowerCase().includes(query))
+    );
+  }, [articles, searchQuery]);
+
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
@@ -85,6 +97,27 @@ export default function ArticleListPage() {
         </TabsList>
       </Tabs>
 
+      {/* Search input */}
+      <div className="relative mb-6">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search articles by title, hash, or tag..."
+          className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-10 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+        />
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => setSearchQuery("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
       {error && (
         <Alert variant="destructive" className="mb-6">
           <AlertDescription>{error}</AlertDescription>
@@ -98,6 +131,10 @@ export default function ArticleListPage() {
       ) : articles.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground">
           No articles found
+        </div>
+      ) : filteredArticles.length === 0 ? (
+        <div className="py-12 text-center text-muted-foreground">
+          No articles match your search.
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
@@ -122,7 +159,7 @@ export default function ArticleListPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {articles.map((article, index) => (
+              {filteredArticles.map((article, index) => (
                 <tr
                   key={article.id}
                   className={`transition-colors hover:bg-muted/50 ${
