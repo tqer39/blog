@@ -152,7 +152,7 @@ export function ArticleEditor({
       )}
 
       {/* Form */}
-      <div className="space-y-4">
+      <div className="space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
         {/* Title */}
         <div className="space-y-2">
           <Label htmlFor="title">Title</Label>
