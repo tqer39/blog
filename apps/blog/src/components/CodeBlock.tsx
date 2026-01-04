@@ -163,7 +163,8 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
           .map((line: string, i: number) => {
             // Don't add line number to empty last line
             if (i === lines.length - 1 && line === "") return "";
-            return `<span class="line" data-line="${i + 1}">${line}</span>`;
+            const lineNum = i + 1;
+            return `<span class="line"><span class="line-number">${lineNum}</span><span class="line-content">${line}</span></span>`;
           })
           .filter(Boolean)
           .join("\n");
@@ -178,7 +179,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
     <div
       className={`shiki-wrapper not-prose ${
         filename ? "rounded-b-lg" : "rounded-lg"
-      } [&_pre]:!m-0 [&_pre]:!p-4 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_code]:grid [&_code]:text-sm [&_.line]:before:mr-4 [&_.line]:before:inline-block [&_.line]:before:w-4 [&_.line]:before:text-right [&_.line]:before:text-stone-500 [&_.line]:before:content-[attr(data-line)]`}
+      } [&_pre]:!m-0 [&_pre]:!py-4 [&_pre]:!px-0 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_code]:grid [&_code]:text-sm [&_.line]:flex [&_.line]:w-full [&_.line]:min-w-max [&_.line]:px-4 [&_.line]:isolate [&_.line:hover]:bg-stone-200 dark:[&_.line:hover]:bg-stone-700 [&_.line-number]:mr-4 [&_.line-number]:w-4 [&_.line-number]:shrink-0 [&_.line-number]:text-right [&_.line-number]:select-none [&_.line-number]:text-stone-500`}
       dangerouslySetInnerHTML={{ __html: htmlWithLineNumbers }}
     />
   );
