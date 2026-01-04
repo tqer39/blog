@@ -301,3 +301,24 @@
 div:has(svg[id^="mermaid"]) {
   margin: -0.65rem -0.8rem !important;
 }
+
+/* Heading anchor links */
+.prose :is(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 80px;
+}
+
+.prose .anchor-link {
+  opacity: 0;
+  margin-right: 0.5rem;
+  text-decoration: none;
+  color: hsl(var(--muted-foreground));
+  transition: opacity 0.2s;
+}
+
+.prose :is(h1, h2, h3, h4, h5, h6):hover .anchor-link {
+  opacity: 1;
+}
+
+.prose .anchor-link:hover {
+  color: hsl(var(--foreground));
+}

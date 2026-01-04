@@ -1,7 +1,9 @@
 'use client';
 
 import ReactMarkdown from 'react-markdown';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
+import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 
 import { CodeBlock } from './CodeBlock';
@@ -20,7 +22,25 @@ export function ArticleContent({ content }: ArticleContentProps) {
   const processedContent = removeFirstH1(content);
   return (
     <ReactMarkdown
-      rehypePlugins={[rehypeRaw]}
+      rehypePlugins={[
+        rehypeRaw,
+        rehypeSlug,
+        [
+          rehypeAutolinkHeadings,
+          {
+            behavior: 'prepend',
+            properties: {
+              className: ['anchor-link'],
+              ariaHidden: true,
+              tabIndex: -1,
+            },
+            content: {
+              type: 'text',
+              value: '#',
+            },
+          },
+        ],
+      ]}
       remarkPlugins={[remarkGfm]}
       className="prose prose-stone max-w-none dark:prose-invert"
       components={{
