@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from 'react';
 
+import { Clock } from 'lucide-react';
+
 interface TocItem {
   id: string;
   text: string;
   level: number;
 }
 
-export function TableOfContents() {
+interface TableOfContentsProps {
+  readingTime?: number;
+}
+
+export function TableOfContents({ readingTime }: TableOfContentsProps) {
   const [headings, setHeadings] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
 
@@ -84,9 +90,15 @@ export function TableOfContents() {
       style={{ left: 'calc(50% + 28rem)' }}
       aria-label="目次"
     >
-      <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
         目次
       </h2>
+      {readingTime && (
+        <div className="mb-4 flex items-center gap-1.5 text-sm text-stone-500 dark:text-stone-400">
+          <Clock className="h-4 w-4" />
+          <span>約{readingTime}分で読めます</span>
+        </div>
+      )}
       <div className="relative pl-4">
         {/* Timeline line */}
         <div className="absolute left-1 top-2 bottom-2 w-0.5 bg-stone-200 dark:bg-stone-700" />

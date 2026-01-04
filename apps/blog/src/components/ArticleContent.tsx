@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
@@ -20,6 +21,26 @@ function removeFirstH1(content: string): string {
 
 export function ArticleContent({ content }: ArticleContentProps) {
   const processedContent = removeFirstH1(content);
+
+  useEffect(() => {
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('anchor-link')) {
+        e.preventDefault();
+        const heading = target.closest('h1, h2, h3, h4, h5, h6');
+        if (heading?.id) {
+          const url = `${window.location.origin}${window.location.pathname}#${heading.id}`;
+          navigator.clipboard.writeText(url);
+          // Update URL without scrolling
+          window.history.pushState(null, '', `#${heading.id}`);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleAnchorClick);
+    return () => document.removeEventListener('click', handleAnchorClick);
+  }, []);
+
   return (
     <ReactMarkdown
       rehypePlugins={[

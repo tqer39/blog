@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { Clock } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -8,6 +9,7 @@ import { ArticleNavigation } from "@/components/ArticleNavigation";
 import { TableOfContents } from "@/components/TableOfContents";
 import { TagLink } from "@/components/TagLink";
 import { getAllArticles, getArticleByHash } from "@/lib/articles";
+import { calculateReadingTime } from "@/lib/readingTime";
 
 interface ArticlePageProps {
   params: Promise<{ hash: string }>;
@@ -88,10 +90,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     : null;
 
   const displayDate = article.publishedAt || article.createdAt;
+  const readingTime = calculateReadingTime(article.content);
 
   return (
     <>
-      <TableOfContents />
+      <TableOfContents readingTime={readingTime} />
       <article className="mx-auto max-w-4xl px-4 py-8">
       {article.headerImageUrl && (
         <div className="relative mb-8 aspect-[2/1] w-full overflow-hidden rounded-lg">
@@ -114,6 +117,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           >
             {dayjs(displayDate).format("YYYY/MM/DD")}
           </time>
+          <span className="text-stone-400 dark:text-stone-500">·</span>
+          <span className="flex items-center gap-1 text-stone-600 dark:text-stone-400">
+            <Clock className="h-4 w-4" />
+            約{readingTime}分で読めます
+          </span>
           <div className="flex flex-wrap gap-2">
             {article.tags.map((tag) => (
               <TagLink key={tag} tag={tag} size="md" />
