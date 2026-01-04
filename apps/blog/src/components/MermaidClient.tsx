@@ -4,6 +4,7 @@ import { Maximize2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
 import { FullscreenModal } from './FullscreenModal';
+import { Skeleton } from './ui/skeleton';
 
 interface MermaidClientProps {
   chart: string;
@@ -88,11 +89,18 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   }, [chart, resolvedTheme]);
 
   if (!svg) {
+    const lineWidths = [80, 65, 85, 70, 75];
     return (
-      <div className="my-4 rounded bg-white p-4 dark:bg-[#24292e]">
-        <pre className="text-sm text-stone-600 dark:text-stone-400">
-          {chart}
-        </pre>
+      <div className="my-4 rounded-lg bg-white p-4 dark:bg-[#24292e]">
+        <div className="flex flex-col items-center space-y-2 py-4">
+          {lineWidths.map((width, i) => (
+            <Skeleton
+              key={i}
+              className="h-4"
+              style={{ width: `${width}%` }}
+            />
+          ))}
+        </div>
       </div>
     );
   }

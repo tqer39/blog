@@ -10,6 +10,7 @@ import {
 import { Mermaid } from "./Mermaid";
 import { Check, Copy, Maximize2 } from "lucide-react";
 import { FullscreenModal } from "./FullscreenModal";
+import { Skeleton } from "./ui/skeleton";
 
 interface CodeBlockProps {
   children: string;
@@ -130,8 +131,11 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
     return <Mermaid chart={code} />;
   }
 
-  // Loading state
+  // Loading state - skeleton with line-like patterns
   if (isLoading) {
+    const lineCount = Math.min(code.split("\n").length, 8);
+    const lineWidths = [85, 70, 90, 60, 75, 80, 65, 95];
+
     return (
       <div className="my-4">
         {filename && (
@@ -140,13 +144,21 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
           </div>
         )}
         <div
-          className={`overflow-x-auto bg-stone-100 p-4 text-sm dark:bg-stone-800 ${
+          className={`overflow-x-auto bg-stone-100 p-4 dark:bg-stone-800 ${
             filename ? "rounded-b-lg" : "rounded-lg"
           }`}
         >
-          <pre className="text-stone-600 dark:text-stone-400">
-            <code>{code}</code>
-          </pre>
+          <div className="space-y-2">
+            {Array.from({ length: lineCount }).map((_, i) => (
+              <div key={i} className="flex items-center gap-4">
+                <Skeleton className="h-4 w-4 shrink-0" />
+                <Skeleton
+                  className="h-4"
+                  style={{ width: `${lineWidths[i % lineWidths.length]}%` }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
