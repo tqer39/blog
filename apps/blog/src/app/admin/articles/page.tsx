@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { Article } from "@blog/cms-types";
+import { Edit, Eye, EyeOff, Trash2 } from "lucide-react";
 import {
   deleteArticle,
   getArticles,
@@ -10,16 +11,7 @@ import {
   unpublishArticle,
 } from "@/lib/api/client";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ArticleListPage() {
@@ -107,82 +99,137 @@ export default function ArticleListPage() {
           No articles found
         </div>
       ) : (
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Tags</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {articles.map((article) => (
-                <TableRow key={article.id}>
-                  <TableCell>
+        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                  Title
+                </th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
+                  Status
+                </th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
+                  Date
+                </th>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
+                  Tags
+                </th>
+                <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {articles.map((article, index) => (
+                <tr
+                  key={article.id}
+                  className={`transition-colors hover:bg-muted/50 ${
+                    index % 2 === 0 ? "bg-background" : "bg-muted/20"
+                  }`}
+                >
+                  <td className="px-6 py-5">
                     <Link
                       href={`/admin/articles/${article.slug}/edit`}
-                      className="font-medium text-primary hover:underline"
+                      className="block"
                     >
-                      {article.title}
+                      <span className="text-base font-medium text-foreground hover:text-primary">
+                        {article.title}
+                      </span>
+                      <span className="mt-1 block text-xs text-muted-foreground/70">
+                        {article.slug}
+                      </span>
                     </Link>
-                    <div className="text-sm text-muted-foreground">
-                      {article.slug}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        article.status === "published" ? "default" : "secondary"
-                      }
+                  </td>
+                  <td className="px-4 py-5">
+                    <span
+                      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
+                        article.status === "published"
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                          : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                      }`}
                     >
-                      {article.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {article.publishedAt
-                      ? new Date(article.publishedAt).toLocaleDateString()
-                      : new Date(article.createdAt).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {article.tags.map((tag) => (
-                        <Badge key={tag} variant="outline">
+                      {article.status === "published" ? "Published" : "Draft"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-5">
+                    <span className="text-sm text-muted-foreground">
+                      {article.publishedAt
+                        ? new Date(article.publishedAt).toLocaleDateString("ja-JP", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })
+                        : new Date(article.createdAt).toLocaleDateString("ja-JP", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                    </span>
+                  </td>
+                  <td className="px-4 py-5">
+                    <div className="flex flex-wrap gap-1.5">
+                      {article.tags.slice(0, 3).map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex rounded-md bg-secondary px-2 py-0.5 text-xs text-secondary-foreground"
+                        >
                           {tag}
-                        </Badge>
+                        </span>
                       ))}
+                      {article.tags.length > 3 && (
+                        <span className="inline-flex rounded-md bg-secondary/50 px-2 py-0.5 text-xs text-muted-foreground">
+                          +{article.tags.length - 3}
+                        </span>
+                      )}
                     </div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                  </td>
+                  <td className="px-6 py-5">
+                    <div className="flex items-center justify-end gap-1">
                       <Button
                         variant="ghost"
                         size="sm"
+                        className="h-8 gap-1.5 px-2 text-muted-foreground hover:text-foreground"
                         onClick={() => handleTogglePublish(article)}
                       >
-                        {article.status === "published" ? "Unpublish" : "Publish"}
+                        {article.status === "published" ? (
+                          <>
+                            <EyeOff className="h-4 w-4" />
+                            <span className="hidden sm:inline">Unpublish</span>
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="h-4 w-4" />
+                            <span className="hidden sm:inline">Publish</span>
+                          </>
+                        )}
                       </Button>
-                      <Button variant="ghost" size="sm" asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 gap-1.5 px-2 text-muted-foreground hover:text-foreground"
+                        asChild
+                      >
                         <Link href={`/admin/articles/${article.slug}/edit`}>
-                          Edit
+                          <Edit className="h-4 w-4" />
+                          <span className="hidden sm:inline">Edit</span>
                         </Link>
                       </Button>
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-destructive hover:text-destructive"
+                        className="h-8 gap-1.5 px-2 text-muted-foreground hover:text-destructive"
                         onClick={() => handleDelete(article)}
                       >
-                        Delete
+                        <Trash2 className="h-4 w-4" />
+                        <span className="hidden sm:inline">Delete</span>
                       </Button>
                     </div>
-                  </TableCell>
-                </TableRow>
+                  </td>
+                </tr>
               ))}
-            </TableBody>
-          </Table>
+            </tbody>
+          </table>
         </div>
       )}
     </div>
