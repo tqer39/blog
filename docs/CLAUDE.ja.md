@@ -153,6 +153,7 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 | `STRIPE_SECRET_KEY`  | Stripe 決済シークレットキー      |
 | `SLACK_WEBHOOK_DEV`  | Slack 通知 Webhook               |
 | `CODECOV_TOKEN`      | Codecov カバレッジトークン       |
+| `GEMINI_API_KEY`     | Google Gemini API キー           |
 | `OPENAI_API_KEY`     | OpenAI API キー（PR 説明生成用） |
 
 ### GitHub App Secrets
