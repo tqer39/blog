@@ -27,17 +27,17 @@ export function ArticleCard({ article }: ArticleCardProps) {
             />
           </div>
         )}
-        <h2 className="text-xl font-semibold text-stone-900 group-hover:text-blue-600 dark:text-stone-100 dark:group-hover:text-blue-400">
+        <h2 className="text-2xl font-bold text-stone-900 group-hover:text-blue-600 dark:text-stone-100 dark:group-hover:text-blue-400">
           {article.title}
         </h2>
-        <p className="mt-2 text-stone-600 dark:text-stone-400">
+        <p className="mt-2 text-sm text-stone-600 dark:text-stone-400">
           {article.description}
         </p>
       </Link>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <time
           dateTime={displayDate}
-          className="text-sm text-stone-500 dark:text-stone-500"
+          className="text-xs text-stone-500 dark:text-stone-500"
         >
           {dayjs(displayDate).format("YYYY/MM/DD")}
         </time>
