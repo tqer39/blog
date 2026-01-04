@@ -13,7 +13,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
   return (
     <article className="group">
-      <Link href={`/article/${article.slug}`} className="block">
+      <Link href={`/article/${article.hash}`} className="block">
         <h2 className="text-xl font-semibold text-stone-900 group-hover:text-blue-600 dark:text-stone-100 dark:group-hover:text-blue-400">
           {article.title}
         </h2>

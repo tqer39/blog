@@ -6,16 +6,16 @@ import { notFound } from "next/navigation";
 import { ArticleContent } from "@/components/ArticleContent";
 import { ArticleNavigation } from "@/components/ArticleNavigation";
 import { TagLink } from "@/components/TagLink";
-import { getAllArticles, getArticleBySlug } from "@/lib/articles";
+import { getAllArticles, getArticleByHash } from "@/lib/articles";
 
 interface ArticlePageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ hash: string }>;
 }
 
 export async function generateStaticParams() {
   const articles = await getAllArticles();
   return articles.map((article) => ({
-    slug: article.slug,
+    hash: article.hash,
   }));
 }
 
@@ -24,15 +24,15 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
 export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const { hash } = await params;
+  const article = await getArticleByHash(hash);
 
   if (!article) {
     return { title: "Article not found" };
   }
 
   const description = article.description || article.title;
-  const url = `${BASE_URL}/article/${slug}`;
+  const url = `${BASE_URL}/article/${hash}`;
 
   const ogImages = article.headerImageUrl
     ? [{ url: article.headerImageUrl, width: 1200, height: 630, alt: article.title }]
@@ -66,9 +66,9 @@ export async function generateMetadata({
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const { slug } = await params;
+  const { hash } = await params;
   const [article, allArticles] = await Promise.all([
-    getArticleBySlug(slug),
+    getArticleByHash(hash),
     getAllArticles(),
   ]);
 
@@ -78,12 +78,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   // Find current article index and get prev/next articles
   // Articles are sorted by publishedAt descending (newest first)
-  const currentIndex = allArticles.findIndex((a) => a.slug === slug);
+  const currentIndex = allArticles.findIndex((a) => a.hash === hash);
   const prevArticle = currentIndex < allArticles.length - 1
-    ? { slug: allArticles[currentIndex + 1].slug, title: allArticles[currentIndex + 1].title }
+    ? { hash: allArticles[currentIndex + 1].hash, title: allArticles[currentIndex + 1].title }
     : null;
   const nextArticle = currentIndex > 0
-    ? { slug: allArticles[currentIndex - 1].slug, title: allArticles[currentIndex - 1].title }
+    ? { hash: allArticles[currentIndex - 1].hash, title: allArticles[currentIndex - 1].title }
     : null;
 
   const displayDate = article.publishedAt || article.createdAt;

@@ -27,8 +27,8 @@ export async function GET() {
       return `
     <item>
       <title>${escapeXml(article.title)}</title>
-      <link>${BASE_URL}/article/${article.slug}</link>
-      <guid isPermaLink="true">${BASE_URL}/article/${article.slug}</guid>
+      <link>${BASE_URL}/article/${article.hash}</link>
+      <guid isPermaLink="true">${BASE_URL}/article/${article.hash}</guid>
       <description>${escapeXml(description)}</description>
       <pubDate>${pubDate}</pubDate>
       ${article.tags.map((tag) => `<category>${escapeXml(tag)}</category>`).join("\n      ")}

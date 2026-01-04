@@ -18,7 +18,7 @@ export default async function HomePage() {
         ) : (
           <div className="space-y-8">
             {articles.map((article) => (
-              <ArticleCard key={article.slug} article={article} />
+              <ArticleCard key={article.id} article={article} />
             ))}
           </div>
         )}

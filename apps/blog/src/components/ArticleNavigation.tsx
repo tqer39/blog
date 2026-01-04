@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ArticleNavigationProps {
-  prevArticle: { slug: string; title: string } | null;
-  nextArticle: { slug: string; title: string } | null;
+  prevArticle: { hash: string; title: string } | null;
+  nextArticle: { hash: string; title: string } | null;
 }
 
 export function ArticleNavigation({ prevArticle, nextArticle }: ArticleNavigationProps) {
@@ -16,7 +16,7 @@ export function ArticleNavigation({ prevArticle, nextArticle }: ArticleNavigatio
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
         {prevArticle ? (
           <Link
-            href={`/article/${prevArticle.slug}`}
+            href={`/article/${prevArticle.hash}`}
             className="group flex flex-1 flex-col rounded-lg border border-stone-200 p-4 transition-colors hover:border-stone-400 hover:bg-stone-50 dark:border-stone-700 dark:hover:border-stone-500 dark:hover:bg-stone-800"
           >
             <span className="flex items-center gap-1 text-sm text-stone-500 dark:text-stone-400">
@@ -33,7 +33,7 @@ export function ArticleNavigation({ prevArticle, nextArticle }: ArticleNavigatio
 
         {nextArticle ? (
           <Link
-            href={`/article/${nextArticle.slug}`}
+            href={`/article/${nextArticle.hash}`}
             className="group flex flex-1 flex-col items-end rounded-lg border border-stone-200 p-4 text-right transition-colors hover:border-stone-400 hover:bg-stone-50 dark:border-stone-700 dark:hover:border-stone-500 dark:hover:bg-stone-800"
           >
             <span className="flex items-center gap-1 text-sm text-stone-500 dark:text-stone-400">

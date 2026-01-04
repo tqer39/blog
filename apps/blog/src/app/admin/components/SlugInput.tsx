@@ -9,9 +9,10 @@ interface SlugInputProps {
   value: string;
   onChange: (slug: string) => void;
   generateFrom?: string;
+  articleHash?: string;
 }
 
-export function SlugInput({ value, onChange, generateFrom }: SlugInputProps) {
+export function SlugInput({ value, onChange, generateFrom, articleHash }: SlugInputProps) {
   const [isManual, setIsManual] = useState(false);
 
   // Auto-generate slug from title if not manually edited
@@ -55,7 +56,7 @@ export function SlugInput({ value, onChange, generateFrom }: SlugInputProps) {
         )}
       </div>
       <p className="text-xs text-muted-foreground">
-        URL: /article/{value || "..."}
+        URL: /article/{articleHash || "(保存時に自動生成)"}
       </p>
     </div>
   );

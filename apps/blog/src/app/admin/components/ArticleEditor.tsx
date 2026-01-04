@@ -226,7 +226,7 @@ export function ArticleEditor({
         </div>
 
         {/* Slug */}
-        <SlugInput value={slug} onChange={setSlug} generateFrom={title} />
+        <SlugInput value={slug} onChange={setSlug} generateFrom={title} articleHash={initialData?.hash} />
 
         {/* Description & Tags with AI Generate */}
         <div className="space-y-4">

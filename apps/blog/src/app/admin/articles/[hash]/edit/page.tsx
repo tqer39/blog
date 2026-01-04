@@ -9,7 +9,7 @@ import { ArticleEditor } from "../../../components/ArticleEditor";
 export default function EditArticlePage() {
   const params = useParams();
   const router = useRouter();
-  const slug = params.slug as string;
+  const hash = params.hash as string;
 
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ export default function EditArticlePage() {
   useEffect(() => {
     async function loadArticle() {
       try {
-        const data = await getArticle(slug);
+        const data = await getArticle(hash);
         setArticle(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load article");
@@ -27,16 +27,11 @@ export default function EditArticlePage() {
       }
     }
     loadArticle();
-  }, [slug]);
+  }, [hash]);
 
   const handleSave = async (input: ArticleInput) => {
-    await updateArticle(slug, input);
-    // If slug changed, redirect to new URL
-    if (input.slug && input.slug !== slug) {
-      router.push(`/admin/articles/${input.slug}/edit`);
-    } else {
-      router.push("/admin/articles");
-    }
+    await updateArticle(hash, input);
+    router.push("/admin/articles");
   };
 
   const handleCancel = () => {

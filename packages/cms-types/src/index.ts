@@ -3,6 +3,7 @@ export type ArticleStatus = "draft" | "published";
 
 export interface Article {
   id: string;
+  hash: string;
   slug: string;
   title: string;
   description: string | null;

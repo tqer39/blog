@@ -41,9 +41,9 @@ export default function ArticleListPage() {
   async function handleTogglePublish(article: Article) {
     try {
       if (article.status === "published") {
-        await unpublishArticle(article.slug);
+        await unpublishArticle(article.hash);
       } else {
-        await publishArticle(article.slug);
+        await publishArticle(article.hash);
       }
       await loadArticles();
     } catch (err) {
@@ -55,7 +55,7 @@ export default function ArticleListPage() {
     if (!confirm(`Delete "${article.title}"?`)) return;
 
     try {
-      await deleteArticle(article.slug);
+      await deleteArticle(article.hash);
       await loadArticles();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to delete article");
@@ -130,14 +130,14 @@ export default function ArticleListPage() {
                 >
                   <td className="px-6 py-5">
                     <Link
-                      href={`/admin/articles/${article.slug}/edit`}
+                      href={`/admin/articles/${article.hash}/edit`}
                       className="block"
                     >
                       <span className="text-base font-medium text-foreground hover:text-primary">
                         {article.title}
                       </span>
                       <span className="mt-1 block text-xs text-muted-foreground/70">
-                        {article.slug}
+                        {article.hash}
                       </span>
                     </Link>
                   </td>
@@ -210,7 +210,7 @@ export default function ArticleListPage() {
                         className="h-8 gap-1.5 px-2 text-muted-foreground hover:text-foreground"
                         asChild
                       >
-                        <Link href={`/admin/articles/${article.slug}/edit`}>
+                        <Link href={`/admin/articles/${article.hash}/edit`}>
                           <Edit className="h-4 w-4" />
                           <span className="hidden sm:inline">Edit</span>
                         </Link>

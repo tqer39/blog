@@ -5,7 +5,7 @@ import type {
   ArticleInput,
   ArticleListResponse,
 } from "@blog/cms-types";
-import { generateId, slugify } from "../lib/utils";
+import { generateId, generateHash, slugify } from "../lib/utils";
 
 export const articlesHandler = new Hono<{ Bindings: Env }>();
 
@@ -72,13 +72,13 @@ articlesHandler.get("/", async (c) => {
   return c.json(response);
 });
 
-// Get single article by slug
-articlesHandler.get("/:slug", async (c) => {
-  const slug = c.req.param("slug");
+// Get single article by hash
+articlesHandler.get("/:hash", async (c) => {
+  const hash = c.req.param("hash");
 
   const row = await c.env.DB.prepare(
-    "SELECT * FROM articles WHERE slug = ?",
-  ).bind(slug).first();
+    "SELECT * FROM articles WHERE hash = ?",
+  ).bind(hash).first();
 
   if (!row) {
     return c.json({ error: "Article not found" }, 404);
@@ -100,15 +100,16 @@ articlesHandler.post("/", async (c) => {
   }
 
   const id = generateId();
+  const hash = generateHash(10);
   const slug = input.slug || slugify(input.title);
   const status = input.status || "draft";
   const publishedAt = status === "published" ? new Date().toISOString() : null;
 
   try {
     await c.env.DB.prepare(
-      `INSERT INTO articles (id, slug, title, description, content, status, published_at, header_image_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    ).bind(id, slug, input.title, input.description || null, input.content, status, publishedAt, input.headerImageId || null).run();
+      `INSERT INTO articles (id, hash, slug, title, description, content, status, published_at, header_image_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).bind(id, hash, slug, input.title, input.description || null, input.content, status, publishedAt, input.headerImageId || null).run();
 
     // Handle tags
     if (input.tags && input.tags.length > 0) {
@@ -122,20 +123,20 @@ articlesHandler.post("/", async (c) => {
     return c.json(mapRowToArticle(row!, tags, headerImageUrl), 201);
   } catch (error) {
     if (String(error).includes("UNIQUE constraint failed")) {
-      return c.json({ error: "Article with this slug already exists" }, 409);
+      return c.json({ error: "Article with this slug or hash already exists" }, 409);
     }
     throw error;
   }
 });
 
 // Update article
-articlesHandler.put("/:slug", async (c) => {
-  const slug = c.req.param("slug");
+articlesHandler.put("/:hash", async (c) => {
+  const hash = c.req.param("hash");
   const input = await c.req.json<Partial<ArticleInput>>();
 
   const existing = await c.env.DB.prepare(
-    "SELECT * FROM articles WHERE slug = ?",
-  ).bind(slug).first();
+    "SELECT * FROM articles WHERE hash = ?",
+  ).bind(hash).first();
 
   if (!existing) {
     return c.json({ error: "Article not found" }, 404);
@@ -156,7 +157,7 @@ articlesHandler.put("/:slug", async (c) => {
     updates.push("content = ?");
     params.push(input.content);
   }
-  if (input.slug !== undefined && input.slug !== slug) {
+  if (input.slug !== undefined) {
     updates.push("slug = ?");
     params.push(input.slug);
   }
@@ -176,8 +177,7 @@ articlesHandler.put("/:slug", async (c) => {
     await syncArticleTags(c.env.DB, existing.id as string, input.tags);
   }
 
-  const newSlug = input.slug || slug;
-  const row = await c.env.DB.prepare("SELECT * FROM articles WHERE slug = ?").bind(newSlug).first();
+  const row = await c.env.DB.prepare("SELECT * FROM articles WHERE hash = ?").bind(hash).first();
   const tags = await getArticleTags(c.env.DB, row!.id as string);
   const headerImageUrl = await getHeaderImageUrl(c.env.DB, row!.header_image_id as string | null, c.env);
 
@@ -185,12 +185,12 @@ articlesHandler.put("/:slug", async (c) => {
 });
 
 // Delete article
-articlesHandler.delete("/:slug", async (c) => {
-  const slug = c.req.param("slug");
+articlesHandler.delete("/:hash", async (c) => {
+  const hash = c.req.param("hash");
 
   const result = await c.env.DB.prepare(
-    "DELETE FROM articles WHERE slug = ?",
-  ).bind(slug).run();
+    "DELETE FROM articles WHERE hash = ?",
+  ).bind(hash).run();
 
   if (result.meta.changes === 0) {
     return c.json({ error: "Article not found" }, 404);
@@ -200,18 +200,18 @@ articlesHandler.delete("/:slug", async (c) => {
 });
 
 // Publish article
-articlesHandler.post("/:slug/publish", async (c) => {
-  const slug = c.req.param("slug");
+articlesHandler.post("/:hash/publish", async (c) => {
+  const hash = c.req.param("hash");
 
   const result = await c.env.DB.prepare(
-    `UPDATE articles SET status = 'published', published_at = ? WHERE slug = ?`,
-  ).bind(new Date().toISOString(), slug).run();
+    `UPDATE articles SET status = 'published', published_at = ? WHERE hash = ?`,
+  ).bind(new Date().toISOString(), hash).run();
 
   if (result.meta.changes === 0) {
     return c.json({ error: "Article not found" }, 404);
   }
 
-  const row = await c.env.DB.prepare("SELECT * FROM articles WHERE slug = ?").bind(slug).first();
+  const row = await c.env.DB.prepare("SELECT * FROM articles WHERE hash = ?").bind(hash).first();
   const tags = await getArticleTags(c.env.DB, row!.id as string);
   const headerImageUrl = await getHeaderImageUrl(c.env.DB, row!.header_image_id as string | null, c.env);
 
@@ -219,18 +219,18 @@ articlesHandler.post("/:slug/publish", async (c) => {
 });
 
 // Unpublish article
-articlesHandler.post("/:slug/unpublish", async (c) => {
-  const slug = c.req.param("slug");
+articlesHandler.post("/:hash/unpublish", async (c) => {
+  const hash = c.req.param("hash");
 
   const result = await c.env.DB.prepare(
-    `UPDATE articles SET status = 'draft' WHERE slug = ?`,
-  ).bind(slug).run();
+    `UPDATE articles SET status = 'draft' WHERE hash = ?`,
+  ).bind(hash).run();
 
   if (result.meta.changes === 0) {
     return c.json({ error: "Article not found" }, 404);
   }
 
-  const row = await c.env.DB.prepare("SELECT * FROM articles WHERE slug = ?").bind(slug).first();
+  const row = await c.env.DB.prepare("SELECT * FROM articles WHERE hash = ?").bind(hash).first();
   const tags = await getArticleTags(c.env.DB, row!.id as string);
   const headerImageUrl = await getHeaderImageUrl(c.env.DB, row!.header_image_id as string | null, c.env);
 
@@ -276,6 +276,7 @@ async function syncArticleTags(db: D1Database, articleId: string, tagNames: stri
 function mapRowToArticle(row: Record<string, unknown>, tags: string[], headerImageUrl: string | null = null): Article {
   return {
     id: row.id as string,
+    hash: row.hash as string,
     slug: row.slug as string,
     title: row.title as string,
     description: row.description as string | null,
