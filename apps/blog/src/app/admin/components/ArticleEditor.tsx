@@ -256,7 +256,7 @@ export function ArticleEditor({
               rows={2}
             />
             <p className="text-xs text-muted-foreground">
-              {description.length} / 160 characters
+              {description.length} / 160 文字
             </p>
           </div>
           <TagSelector value={tags} onChange={setTags} />
