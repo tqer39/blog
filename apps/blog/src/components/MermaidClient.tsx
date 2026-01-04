@@ -64,7 +64,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
         await loadMermaid();
         if (cancelled || !window.mermaid) return;
 
-        const isDarkTheme = resolvedTheme === 'dark' || resolvedTheme === 'tokyonight';
+        const isDarkTheme = resolvedTheme === 'dark';
         window.mermaid.initialize({
           startOnLoad: false,
           theme: isDarkTheme ? 'dark' : 'neutral',
@@ -89,7 +89,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     };
   }, [chart, resolvedTheme]);
 
-  const isDarkTheme = resolvedTheme === 'dark' || resolvedTheme === 'tokyonight';
+  const isDarkTheme = resolvedTheme === 'dark';
   const bgClass = isDarkTheme ? 'bg-[#24292e]' : 'bg-white';
 
   if (!svg) {
