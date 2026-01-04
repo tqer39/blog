@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 interface TagLinkProps {
   tag: string;
   size?: 'sm' | 'md';
 }
 
-export function TagLink({ tag, size = 'sm' }: TagLinkProps) {
+function TagLinkInner({ tag, size = 'sm' }: TagLinkProps) {
   const searchParams = useSearchParams();
   const currentTags = searchParams.getAll('tags');
   const isActive = currentTags.includes(tag);
@@ -48,5 +49,29 @@ export function TagLink({ tag, size = 'sm' }: TagLinkProps) {
     >
       {tag}
     </Link>
+  );
+}
+
+function TagLinkFallback({ tag, size = 'sm' }: TagLinkProps) {
+  const sizeClasses = size === 'sm'
+    ? 'px-2 py-0.5 text-xs'
+    : 'px-2 py-1 text-sm';
+
+  return (
+    <Link
+      href={`/articles?tags=${encodeURIComponent(tag)}`}
+      onClick={(e) => e.stopPropagation()}
+      className={`rounded transition-colors ${sizeClasses} bg-stone-200 text-stone-600 hover:bg-stone-300 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600`}
+    >
+      {tag}
+    </Link>
+  );
+}
+
+export function TagLink({ tag, size = 'sm' }: TagLinkProps) {
+  return (
+    <Suspense fallback={<TagLinkFallback tag={tag} size={size} />}>
+      <TagLinkInner tag={tag} size={size} />
+    </Suspense>
   );
 }
