@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Search, X } from 'lucide-react';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 export function Header() {
   const router = useRouter();
@@ -89,6 +90,7 @@ export function Header() {
               </button>
             )}
           </div>
+          <ThemeSwitcher />
           <Link
             href="/articles"
             className="text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"

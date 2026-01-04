@@ -3,7 +3,6 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { BIZ_UDGothic } from 'next/font/google';
 
-import { FloatingThemeSwitcher } from '@/components/FloatingThemeSwitcher';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 
@@ -62,7 +61,6 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Providers>
-          <FloatingThemeSwitcher />
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
