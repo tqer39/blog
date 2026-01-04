@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
+import { aiHandler } from "./handlers/ai";
 import { articlesHandler } from "./handlers/articles";
 import { imagesHandler } from "./handlers/images";
 import { importExportHandler } from "./handlers/import-export";
@@ -18,6 +19,8 @@ export interface Env {
   R2_PUBLIC_URL?: string;
   VERCEL_DEPLOY_HOOK_URL?: string;
   WEBHOOK_SECRET?: string;
+  OPENAI_API_KEY?: string;
+  GEMINI_API_KEY?: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();
@@ -44,6 +47,7 @@ app.get("/health", (c) => c.json({ status: "ok" }));
 // API v1 routes (auth required)
 const v1 = new Hono<{ Bindings: Env }>();
 v1.use("*", authMiddleware);
+v1.route("/ai", aiHandler);
 v1.route("/articles", articlesHandler);
 v1.route("/tags", tagsHandler);
 v1.route("/images", imagesHandler);

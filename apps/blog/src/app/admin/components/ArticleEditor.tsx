@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import type { Article, ArticleInput } from '@blog/cms-types';
-import { uploadImage } from '@/lib/api/client';
+import { generateImage, generateMetadata, getTags, uploadImage } from '@/lib/api/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { MarkdownEditor } from './MarkdownEditor';
 import { SlugInput } from './SlugInput';
 import { TagSelector } from './TagSelector';
-import { ImageIcon, X } from 'lucide-react';
+import { ImageIcon, Sparkles, X } from 'lucide-react';
 
 interface ArticleEditorProps {
   initialData?: Article;
@@ -43,6 +43,10 @@ export function ArticleEditor({
   );
   const [isUploadingHeader, setIsUploadingHeader] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [imagePrompt, setImagePrompt] = useState('');
+  const [showImagePrompt, setShowImagePrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const headerImageInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,6 +79,61 @@ export function ArticleEditor({
   const handleRemoveHeaderImage = () => {
     setHeaderImageId(null);
     setHeaderImageUrl(null);
+  };
+
+  const handleGenerateMetadata = async () => {
+    if (!title.trim() || !content.trim()) {
+      setError('Title and content are required to generate metadata');
+      return;
+    }
+
+    setIsGeneratingMetadata(true);
+    setError(null);
+
+    try {
+      // Get existing tags for context
+      const tagsResponse = await getTags();
+      const existingTags = tagsResponse.tags.map((t) => t.name);
+
+      const result = await generateMetadata({
+        title: title.trim(),
+        content,
+        existingTags,
+      });
+
+      setDescription(result.description);
+      setTags(result.tags);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate metadata');
+    } finally {
+      setIsGeneratingMetadata(false);
+    }
+  };
+
+  const handleGenerateImage = async () => {
+    if (!imagePrompt.trim()) {
+      setError('Please enter a prompt for image generation');
+      return;
+    }
+
+    setIsGeneratingImage(true);
+    setError(null);
+
+    try {
+      const result = await generateImage({
+        prompt: imagePrompt.trim(),
+        title: title.trim() || undefined,
+      });
+
+      setHeaderImageId(result.id);
+      setHeaderImageUrl(result.url);
+      setShowImagePrompt(false);
+      setImagePrompt('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate image');
+    } finally {
+      setIsGeneratingImage(false);
+    }
   };
 
   const handleSave = async () => {
@@ -169,23 +228,39 @@ export function ArticleEditor({
         {/* Slug */}
         <SlugInput value={slug} onChange={setSlug} generateFrom={title} />
 
-        {/* Description */}
-        <div className="space-y-2">
-          <Label htmlFor="description">Description (SEO)</Label>
-          <Textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Brief description for SEO (100-160 characters)"
-            rows={2}
-          />
-          <p className="text-xs text-muted-foreground">
-            {description.length} / 160 characters
-          </p>
+        {/* Description & Tags with AI Generate */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Label>Description & Tags</Label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleGenerateMetadata}
+              disabled={isGeneratingMetadata || !title.trim() || !content.trim()}
+              className="gap-1.5"
+            >
+              <Sparkles className="h-4 w-4" />
+              {isGeneratingMetadata ? 'Generating...' : 'AI Generate'}
+            </Button>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="description" className="text-sm text-muted-foreground">
+              Description (SEO)
+            </Label>
+            <Textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Brief description for SEO (100-160 characters)"
+              rows={2}
+            />
+            <p className="text-xs text-muted-foreground">
+              {description.length} / 160 characters
+            </p>
+          </div>
+          <TagSelector value={tags} onChange={setTags} />
         </div>
-
-        {/* Tags */}
-        <TagSelector value={tags} onChange={setTags} />
 
         {/* Header Image */}
         <div className="space-y-2">
@@ -206,21 +281,72 @@ export function ArticleEditor({
                 <X className="h-4 w-4" />
               </button>
             </div>
+          ) : showImagePrompt ? (
+            <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
+              <div className="space-y-2">
+                <Label htmlFor="imagePrompt" className="text-sm">
+                  Image Prompt
+                </Label>
+                <Textarea
+                  id="imagePrompt"
+                  value={imagePrompt}
+                  onChange={(e) => setImagePrompt(e.target.value)}
+                  placeholder="Describe the image you want to generate..."
+                  rows={2}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleGenerateImage}
+                  disabled={isGeneratingImage || !imagePrompt.trim()}
+                  className="gap-1.5"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  {isGeneratingImage ? 'Generating...' : 'Generate'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setShowImagePrompt(false);
+                    setImagePrompt('');
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
           ) : (
-            <div
-              onClick={() => headerImageInputRef.current?.click()}
-              className="flex h-32 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50"
-            >
-              {isUploadingHeader ? (
-                <span className="text-sm text-muted-foreground">Uploading...</span>
-              ) : (
-                <>
-                  <ImageIcon className="h-8 w-8 text-muted-foreground/50" />
-                  <span className="mt-2 text-sm text-muted-foreground">
-                    Click to upload header image
-                  </span>
-                </>
-              )}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => headerImageInputRef.current?.click()}
+                className="flex h-32 flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50"
+              >
+                {isUploadingHeader ? (
+                  <span className="text-sm text-muted-foreground">Uploading...</span>
+                ) : (
+                  <>
+                    <ImageIcon className="h-8 w-8 text-muted-foreground/50" />
+                    <span className="mt-2 text-sm text-muted-foreground">
+                      Upload image
+                    </span>
+                  </>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowImagePrompt(true)}
+                className="flex h-32 w-32 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50"
+              >
+                <Sparkles className="h-8 w-8 text-muted-foreground/50" />
+                <span className="mt-2 text-sm text-muted-foreground">
+                  AI Generate
+                </span>
+              </button>
             </div>
           )}
           <input

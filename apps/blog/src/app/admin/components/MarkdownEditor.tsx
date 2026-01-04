@@ -12,8 +12,11 @@ import {
   Eye,
   Pencil,
   GripVertical,
+  Maximize2,
 } from "lucide-react";
 import { ArticleContent } from "@/components/ArticleContent";
+import { FullscreenModal } from "@/components/FullscreenModal";
+import { EmojiSuggester } from "./EmojiSuggester";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -43,6 +46,8 @@ export function MarkdownEditor({
   );
   const [splitRatio, setSplitRatio] = useState(50); // percentage for editor width
   const [isDragging, setIsDragging] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const fullscreenTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   const insertTextAtCursor = useCallback(
     (text: string) => {
@@ -289,22 +294,47 @@ export function MarkdownEditor({
             </Tooltip>
           </div>
 
-          <ToggleGroup
-            type="single"
-            value={previewMode}
-            onValueChange={(v) => v && setPreviewMode(v as typeof previewMode)}
-            size="sm"
-          >
-            <ToggleGroupItem value="edit" aria-label="Edit mode">
-              <Pencil className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="split" aria-label="Split mode">
-              <Columns2 className="h-4 w-4" />
-            </ToggleGroupItem>
-            <ToggleGroupItem value="preview" aria-label="Preview mode">
-              <Eye className="h-4 w-4" />
-            </ToggleGroupItem>
-          </ToggleGroup>
+          <div className="flex items-center gap-2">
+            <ToggleGroup
+              type="single"
+              value={previewMode}
+              onValueChange={(v) => v && setPreviewMode(v as typeof previewMode)}
+              size="sm"
+            >
+              <ToggleGroupItem value="edit" aria-label="Edit mode">
+                <Pencil className="h-4 w-4" />
+              </ToggleGroupItem>
+              <ToggleGroupItem value="split" aria-label="Split mode">
+                <Columns2 className="h-4 w-4" />
+              </ToggleGroupItem>
+              <ToggleGroupItem value="preview" aria-label="Preview mode">
+                <Eye className="h-4 w-4" />
+              </ToggleGroupItem>
+            </ToggleGroup>
+
+            <Separator orientation="vertical" className="h-6" />
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() => setIsFullscreen(true)}
+                >
+                  <Maximize2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Fullscreen</TooltipContent>
+            </Tooltip>
+          </div>
+        </div>
+
+        {/* Character Count */}
+        <div className="flex items-center justify-end border-b bg-muted/30 px-3 py-1">
+          <span className="text-xs text-muted-foreground">
+            {value.length.toLocaleString()} 文字
+          </span>
         </div>
 
         {/* Editor Area */}
@@ -359,6 +389,35 @@ export function MarkdownEditor({
           )}
         </div>
       </div>
+
+      {/* Emoji Suggester */}
+      <EmojiSuggester
+        textareaRef={textareaRef}
+        value={value}
+        onChange={onChange}
+      />
+
+      {/* Fullscreen Modal */}
+      <FullscreenModal
+        isOpen={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+        title={`Content Editor (${value.length.toLocaleString()} 文字)`}
+      >
+        <div className="flex h-full gap-4">
+          <div className="flex flex-1 flex-col">
+            <textarea
+              ref={fullscreenTextareaRef}
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              className="h-full w-full flex-1 resize-none rounded-lg border bg-background p-4 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="Write your article in Markdown..."
+            />
+          </div>
+          <div className="flex-1 overflow-auto rounded-lg border bg-background p-4">
+            <ArticleContent content={value} />
+          </div>
+        </div>
+      </FullscreenModal>
     </TooltipProvider>
   );
 }
