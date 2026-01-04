@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { ArticleContent } from "@/components/ArticleContent";
 import { ArticleNavigation } from "@/components/ArticleNavigation";
+import { TableOfContents } from "@/components/TableOfContents";
 import { TagLink } from "@/components/TagLink";
 import { getAllArticles, getArticleByHash } from "@/lib/articles";
 
@@ -89,7 +90,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const displayDate = article.publishedAt || article.createdAt;
 
   return (
-    <article className="mx-auto max-w-4xl px-4 py-8">
+    <>
+      <TableOfContents />
+      <article className="mx-auto max-w-4xl px-4 py-8">
       {article.headerImageUrl && (
         <div className="relative mb-8 aspect-[2/1] w-full overflow-hidden rounded-lg">
           <Image
@@ -121,5 +124,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <ArticleContent content={article.content} />
       <ArticleNavigation prevArticle={prevArticle} nextArticle={nextArticle} />
     </article>
+    </>
   );
 }
