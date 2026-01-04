@@ -2,7 +2,7 @@ import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
 
-export const alt = 'うわむき - 上を向いて進んでいく技術ブログ';
+export const alt = 'tB - 未来の自分に向けた技術ログ';
 
 export const size = {
   width: 1200,
@@ -58,7 +58,7 @@ export default function OGImage() {
               letterSpacing: '-0.02em',
             }}
           >
-            うわむき
+            tB
           </span>
         </div>
         <span
@@ -67,7 +67,7 @@ export default function OGImage() {
             color: '#94A3B8',
           }}
         >
-          上を向いて進んでいく技術ブログ
+          未来の自分に向けた技術ログ
         </span>
       </div>
     ),

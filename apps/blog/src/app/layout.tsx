@@ -20,22 +20,22 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "うわむき",
-    template: "%s | うわむき",
+    default: "tB",
+    template: "%s | tB",
   },
-  description: "上を向いて進んでいく技術ブログ",
+  description: "未来の自分に向けた技術ログ",
   openGraph: {
-    title: "うわむき",
-    description: "上を向いて進んでいく技術ブログ",
+    title: "tB",
+    description: "未来の自分に向けた技術ログ",
     url: BASE_URL,
-    siteName: "うわむき",
+    siteName: "tB",
     locale: "ja_JP",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "うわむき",
-    description: "上を向いて進んでいく技術ブログ",
+    title: "tB",
+    description: "未来の自分に向けた技術ログ",
   },
   robots: {
     index: true,

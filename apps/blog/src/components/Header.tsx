@@ -50,7 +50,7 @@ export function Header() {
           href="/"
           className="text-xl font-bold text-stone-900 dark:text-stone-100"
         >
-          うわむき
+          tB
         </Link>
         <nav className="flex items-center gap-4">
           <div className="relative flex items-center">

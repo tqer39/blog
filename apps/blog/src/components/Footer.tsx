@@ -35,7 +35,7 @@ export function Footer() {
             </a>
           </div>
           <p className="text-sm text-stone-500 dark:text-stone-400">
-            &copy; {new Date().getFullYear()} うわむき. All rights reserved.
+            &copy; {new Date().getFullYear()} tB. All rights reserved.
           </p>
         </div>
       </div>
