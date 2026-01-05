@@ -4,7 +4,7 @@ import { Check, Copy, Maximize2 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useState } from "react";
 import {
-  SiAmazonwebservices,
+  SiAmazonaws,
   SiCss3,
   SiDocker,
   SiGnubash,
