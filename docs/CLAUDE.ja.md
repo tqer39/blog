@@ -111,6 +111,8 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 | `just tf -chdir=prod/bootstrap plan` | bootstrap の Terraform plan |
 | `just tf -chdir=prod/main plan`      | main の Terraform plan      |
 
+> **Note**: `bootstrap` は CI/CD を使用する前に、初回のみローカルからデプロイする必要があります。
+
 ## ディレクトリ構造
 
 ```text

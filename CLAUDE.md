@@ -111,6 +111,9 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 | `just tf -chdir=prod/bootstrap plan` | Terraform plan for bootstrap |
 | `just tf -chdir=prod/main plan`      | Terraform plan for main      |
 
+> **Note**: `bootstrap` must be deployed from local for initial setup
+> before CI/CD can be used.
+
 ## Directory Structure
 
 ```text
