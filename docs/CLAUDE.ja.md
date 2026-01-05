@@ -180,15 +180,6 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 | `CLOUDFLARE_ACCOUNT_ID` | CloudFlare アカウント ID |
 | `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS ゾーン ID |
 
-### 認証 Secrets
-
-| Secret                       | 説明                                   |
-| ---------------------------- | -------------------------------------- |
-| `BETTER_AUTH_SECRET_DEV`     | Auth ライブラリシークレット            |
-| `TWITTER_CLIENT_ID_DEV`      | Twitter OAuth クライアント ID          |
-| `TWITTER_CLIENT_SECRET_DEV`  | Twitter OAuth クライアントシークレット |
-| `ADMIN_TWITTER_USERNAME_DEV` | 管理者 Twitter ユーザー名              |
-
 ### サードパーティ Secrets
 
 | Secret               | 説明                             |

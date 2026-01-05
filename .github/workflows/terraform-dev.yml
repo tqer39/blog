@@ -85,10 +85,6 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-          TF_VAR_better_auth_secret: ${{ secrets.BETTER_AUTH_SECRET_DEV }}
-          TF_VAR_twitter_client_id: ${{ secrets.TWITTER_CLIENT_ID_DEV }}
-          TF_VAR_twitter_client_secret: ${{ secrets.TWITTER_CLIENT_SECRET_DEV }}
-          TF_VAR_admin_twitter_username: ${{ secrets.ADMIN_TWITTER_USERNAME_DEV }}
           TF_VAR_resend_api_key: ${{ secrets.RESEND_API_KEY_DEV }}
           TF_VAR_stripe_api_key: ${{ secrets.STRIPE_SECRET_KEY }}
         with:
@@ -116,10 +112,6 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-          TF_VAR_better_auth_secret: ${{ secrets.BETTER_AUTH_SECRET_DEV }}
-          TF_VAR_twitter_client_id: ${{ secrets.TWITTER_CLIENT_ID_DEV }}
-          TF_VAR_twitter_client_secret: ${{ secrets.TWITTER_CLIENT_SECRET_DEV }}
-          TF_VAR_admin_twitter_username: ${{ secrets.ADMIN_TWITTER_USERNAME_DEV }}
           TF_VAR_resend_api_key: ${{ secrets.RESEND_API_KEY_DEV }}
           TF_VAR_stripe_api_key: ${{ secrets.STRIPE_SECRET_KEY }}
         with:

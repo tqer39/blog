@@ -180,15 +180,6 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 | `CLOUDFLARE_ACCOUNT_ID` | CloudFlare account ID   |
 | `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS zone ID  |
 
-### Authentication Secrets
-
-| Secret                       | Description                  |
-| ---------------------------- | ---------------------------- |
-| `BETTER_AUTH_SECRET_DEV`     | Auth library secret          |
-| `TWITTER_CLIENT_ID_DEV`      | Twitter OAuth client ID      |
-| `TWITTER_CLIENT_SECRET_DEV`  | Twitter OAuth client secret  |
-| `ADMIN_TWITTER_USERNAME_DEV` | Admin Twitter username       |
-
 ### Third-party Service Secrets
 
 | Secret               | Description                  |
