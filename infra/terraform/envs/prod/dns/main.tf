@@ -1,6 +1,6 @@
 locals {
   config     = yamldecode(file("../../../config.yml"))
-  env_config = local.config.environments.dev
+  env_config = local.config.environments.prod
   domain     = local.config.project.domain
 }
 
@@ -9,7 +9,7 @@ data "terraform_remote_state" "frontend" {
   backend = "s3"
   config = {
     bucket = "terraform-tfstate-tqer39-072693953877-ap-northeast-1"
-    key    = "blog/infra/terraform/envs/dev/dev-frontend.tfstate"
+    key    = "blog/infra/terraform/envs/prod/prod-frontend.tfstate"
     region = "ap-northeast-1"
   }
 }

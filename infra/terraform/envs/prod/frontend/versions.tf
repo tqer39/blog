@@ -17,10 +17,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "072693953877-dev-terraform-state"
-    key            = "blog/dev/main/terraform.tfstate"
+    bucket         = "072693953877-prod-terraform-state"
+    key            = "blog/prod/main/terraform.tfstate"
     region         = "ap-northeast-1"
-    dynamodb_table = "dev-terraform-lock"
+    dynamodb_table = "prod-terraform-lock"
     encrypt        = true
   }
 }

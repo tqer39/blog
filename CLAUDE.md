@@ -106,10 +106,10 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
 ### Terraform
 
-| Command                             | Description                  |
-| ----------------------------------- | ---------------------------- |
-| `just tf -chdir=dev/bootstrap plan` | Terraform plan for bootstrap |
-| `just tf -chdir=dev/main plan`      | Terraform plan for main      |
+| Command                              | Description                  |
+| ------------------------------------ | ---------------------------- |
+| `just tf -chdir=prod/bootstrap plan` | Terraform plan for bootstrap |
+| `just tf -chdir=prod/main plan`      | Terraform plan for main      |
 
 ## Directory Structure
 
@@ -130,7 +130,7 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 │   └── utils/                 # Shared utilities
 ├── infra/terraform/           # Terraform IaC
 │   ├── modules/               # Terraform modules
-│   └── envs/dev/              # Environment configs
+│   └── envs/prod/             # Environment configs
 ├── docs/                      # Documentation
 ├── turbo.json                 # Turborepo config
 ├── pnpm-workspace.yaml        # pnpm workspace config

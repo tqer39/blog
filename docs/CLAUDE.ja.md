@@ -106,10 +106,10 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 
 ### Terraform
 
-| コマンド                            | 説明                        |
-| ----------------------------------- | --------------------------- |
-| `just tf -chdir=dev/bootstrap plan` | bootstrap の Terraform plan |
-| `just tf -chdir=dev/main plan`      | main の Terraform plan      |
+| コマンド                             | 説明                        |
+| ------------------------------------ | --------------------------- |
+| `just tf -chdir=prod/bootstrap plan` | bootstrap の Terraform plan |
+| `just tf -chdir=prod/main plan`      | main の Terraform plan      |
 
 ## ディレクトリ構造
 
@@ -130,7 +130,7 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 │   └── utils/                 # 共有ユーティリティ
 ├── infra/terraform/           # Terraform IaC
 │   ├── modules/               # Terraform モジュール
-│   └── envs/dev/              # 環境設定
+│   └── envs/prod/             # 環境設定
 ├── docs/                      # ドキュメント
 ├── turbo.json                 # Turborepo 設定
 ├── pnpm-workspace.yaml        # pnpm ワークスペース設定

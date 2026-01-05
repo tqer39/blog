@@ -10,7 +10,7 @@ terraform {
 
   backend "s3" {
     bucket         = "tqer39-terraform-state"
-    key            = "blog/dev/cms-api/terraform.tfstate"
+    key            = "blog/prod/cms-api/terraform.tfstate"
     region         = "ap-northeast-1"
     encrypt        = true
     dynamodb_table = "terraform-state-lock"
