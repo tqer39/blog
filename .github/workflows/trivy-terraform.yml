@@ -29,29 +29,24 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      # Setup mise for Trivy
-      - uses: jdx/mise-action@v3.5.1
-        with:
-          version: 2025.9.13
-          cache: true
-
-      - name: Install Trivy
-        run: mise install
-
       - name: Run Trivy for Terraform
-        run: |
-          trivy config infra/terraform \
-            --severity CRITICAL,HIGH,MEDIUM \
-            --format table \
-            --exit-code 0
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          scan-type: config
+          scan-ref: infra/terraform
+          severity: CRITICAL,HIGH,MEDIUM
+          format: table
+          exit-code: "0"
 
       - name: Run Trivy for Terraform (SARIF for GitHub Security)
-        run: |
-          trivy config infra/terraform \
-            --severity CRITICAL,HIGH,MEDIUM \
-            --format sarif \
-            --output trivy-results.sarif \
-            --exit-code 0
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          scan-type: config
+          scan-ref: infra/terraform
+          severity: CRITICAL,HIGH,MEDIUM
+          format: sarif
+          output: trivy-results.sarif
+          exit-code: "0"
 
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v4
@@ -60,20 +55,29 @@ jobs:
           sarif_file: trivy-results.sarif
           category: trivy-terraform
 
+      - name: Run Trivy for PR comment
+        if: github.event_name == 'pull_request'
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          scan-type: config
+          scan-ref: infra/terraform
+          severity: CRITICAL,HIGH,MEDIUM
+          format: table
+          output: trivy-pr-results.txt
+          exit-code: "0"
+
       - name: Comment on PR with Trivy results
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
-            const { execSync } = require('child_process');
 
-            // Run Trivy again to get formatted output for PR comment
-            let trivyOutput;
+            let trivyOutput = 'No results';
             try {
-              trivyOutput = execSync('trivy config infra/terraform --severity CRITICAL,HIGH,MEDIUM --format table', { encoding: 'utf-8' });
+              trivyOutput = fs.readFileSync('trivy-pr-results.txt', 'utf-8');
             } catch (error) {
-              trivyOutput = error.stdout || 'Failed to run Trivy scan';
+              trivyOutput = 'Failed to read Trivy scan results';
             }
 
             const body = `## Trivy Terraform Security Scan Results
@@ -86,7 +90,7 @@ jobs:
 
             </details>
 
-            🔍 Full results are available in the [Security tab](https://github.com/${{ github.repository }}/security/code-scanning).
+            Full results are available in the [Security tab](https://github.com/${{ github.repository }}/security/code-scanning).
             `;
 
             // Find existing comment
