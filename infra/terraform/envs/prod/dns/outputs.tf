@@ -1,6 +1,6 @@
-output "dns_records" {
-  description = "作成された DNS レコード"
-  value       = module.dns.records
+output "dns_record_id" {
+  description = "作成された DNS レコード ID"
+  value       = module.dns.record_id
 }
 
 output "dev_fqdn" {
