@@ -157,7 +157,7 @@ tf *args:
 
 # mise tool management
 status:
-    @mise status
+    @mise ls
 
 install:
     @mise install
