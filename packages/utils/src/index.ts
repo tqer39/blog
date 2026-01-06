@@ -8,3 +8,27 @@ export { cn } from './style';
 export { createFetchClient, type FetchClientConfig } from './fetch';
 // Result type for error handling
 export { ok, err, toError, type Result } from './result';
+// Type guards
+export {
+  isObject,
+  isString,
+  isNonEmptyString,
+  isNumber,
+  isArray,
+  isStringArray,
+  isNullish,
+  isDefined,
+  assertDefined,
+} from './guards';
+// Validators
+export {
+  valid,
+  invalid,
+  validateRequiredString,
+  validateOptionalString,
+  validateStringArray,
+  validateFileType,
+  validateFileSize,
+  combineValidations,
+  type ValidationResult,
+} from './validators';
