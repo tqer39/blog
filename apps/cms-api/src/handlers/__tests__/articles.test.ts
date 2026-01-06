@@ -1,0 +1,400 @@
+import { Hono } from 'hono';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Env } from '../../index';
+import { withErrorHandler } from '../../test/helpers';
+import { articlesHandler } from '../articles';
+
+// Mock generateId to return predictable values
+vi.mock('../../lib/utils', async () => {
+  const actual = await vi.importActual('../../lib/utils');
+  return {
+    ...actual,
+    generateId: vi.fn(() => 'mock-id-123'),
+  };
+});
+
+function createMockDB() {
+  return {
+    prepare: vi.fn(),
+  };
+}
+
+function createTestApp(mockDB: ReturnType<typeof createMockDB>) {
+  const app = new Hono<{ Bindings: Env }>();
+
+  app.use('*', async (c, next) => {
+    c.env = {
+      DB: mockDB as unknown as D1Database,
+      API_KEY: 'test-key',
+    } as Env;
+    await next();
+  });
+
+  app.route('/articles', articlesHandler);
+  return withErrorHandler(app);
+}
+
+const sampleArticle = {
+  id: 'article-1',
+  hash: 'abc123hash',
+  title: 'Test Article',
+  description: 'A test article',
+  content: '# Test Content',
+  status: 'draft',
+  published_at: null,
+  created_at: '2024-01-01T00:00:00Z',
+  updated_at: '2024-01-01T00:00:00Z',
+  header_image_id: null,
+};
+
+describe('articlesHandler', () => {
+  let mockDB: ReturnType<typeof createMockDB>;
+
+  beforeEach(() => {
+    mockDB = createMockDB();
+    vi.clearAllMocks();
+  });
+
+  describe('GET /articles', () => {
+    it('should return paginated articles', async () => {
+      // Mock count query
+      const mockPrepare = vi.fn();
+      mockPrepare
+        // Count query
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue({ count: 1 }),
+          }),
+        })
+        // Articles query
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi.fn().mockResolvedValue({ results: [sampleArticle] }),
+          }),
+        })
+        // Tags batch query
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi.fn().mockResolvedValue({ results: [] }),
+          }),
+        })
+        // Header images batch query
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi.fn().mockResolvedValue({ results: [] }),
+          }),
+        });
+
+      mockDB.prepare = mockPrepare;
+
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles');
+
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.articles).toHaveLength(1);
+      expect(data.total).toBe(1);
+      expect(data.page).toBe(1);
+      expect(data.perPage).toBe(10);
+    });
+
+    it('should filter by status', async () => {
+      const mockPrepare = vi.fn();
+      mockPrepare
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue({ count: 0 }),
+          }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi.fn().mockResolvedValue({ results: [] }),
+          }),
+        });
+
+      mockDB.prepare = mockPrepare;
+
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles?status=published');
+
+      expect(res.status).toBe(200);
+      // Verify status filter was applied
+      expect(mockPrepare).toHaveBeenCalled();
+    });
+  });
+
+  describe('GET /articles/:hash', () => {
+    it('should return an article by hash', async () => {
+      mockDB.prepare
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue(sampleArticle),
+          }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi
+              .fn()
+              .mockResolvedValue({ results: [{ name: 'javascript' }] }),
+          }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue(null),
+          }),
+        });
+
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles/abc123hash');
+
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.title).toBe('Test Article');
+      expect(data.hash).toBe('abc123hash');
+      expect(data.tags).toContain('javascript');
+    });
+
+    it('should return 404 when article not found', async () => {
+      mockDB.prepare.mockReturnValue({
+        bind: vi.fn().mockReturnValue({
+          first: vi.fn().mockResolvedValue(null),
+        }),
+      });
+
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles/nonexistent');
+
+      expect(res.status).toBe(404);
+      const data = await res.json();
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Article not found');
+    });
+  });
+
+  describe('POST /articles', () => {
+    it('should create a new article', async () => {
+      const createdArticle = {
+        ...sampleArticle,
+        id: 'mock-id-123',
+      };
+
+      mockDB.prepare
+        // INSERT
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            run: vi.fn().mockResolvedValue({}),
+          }),
+        })
+        // Get tags (empty)
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi.fn().mockResolvedValue({ results: [] }),
+          }),
+        })
+        // SELECT created article
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue(createdArticle),
+          }),
+        });
+
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: 'Test Article',
+          content: '# Test Content',
+        }),
+      });
+
+      expect(res.status).toBe(201);
+      const data = await res.json();
+      expect(data.title).toBe('Test Article');
+    });
+
+    it('should return 400 when title is missing', async () => {
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: 'Some content' }),
+      });
+
+      expect(res.status).toBe(400);
+      const data = await res.json();
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.details?.title).toBe('Required');
+    });
+
+    it('should return 400 when content is missing', async () => {
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: 'Some title' }),
+      });
+
+      expect(res.status).toBe(400);
+      const data = await res.json();
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.details?.content).toBe('Required');
+    });
+
+    it('should return 409 when hash already exists', async () => {
+      mockDB.prepare.mockReturnValue({
+        bind: vi.fn().mockReturnValue({
+          run: vi.fn().mockRejectedValue(new Error('UNIQUE constraint failed')),
+        }),
+      });
+
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: 'Test Article',
+          content: 'Content',
+        }),
+      });
+
+      expect(res.status).toBe(409);
+      const data = await res.json();
+      expect(data.error.code).toBe('CONFLICT');
+      expect(data.error.message).toBe('Article with this hash already exists');
+    });
+  });
+
+  describe('DELETE /articles/:hash', () => {
+    it('should delete an article', async () => {
+      mockDB.prepare.mockReturnValue({
+        bind: vi.fn().mockReturnValue({
+          run: vi.fn().mockResolvedValue({ meta: { changes: 1 } }),
+        }),
+      });
+
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles/abc123hash', {
+        method: 'DELETE',
+      });
+
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.success).toBe(true);
+    });
+
+    it('should return 404 when deleting non-existent article', async () => {
+      mockDB.prepare.mockReturnValue({
+        bind: vi.fn().mockReturnValue({
+          run: vi.fn().mockResolvedValue({ meta: { changes: 0 } }),
+        }),
+      });
+
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles/nonexistent', {
+        method: 'DELETE',
+      });
+
+      expect(res.status).toBe(404);
+      const data = await res.json();
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Article not found');
+    });
+  });
+
+  describe('POST /articles/:hash/publish', () => {
+    it('should publish an article', async () => {
+      const publishedArticle = {
+        ...sampleArticle,
+        status: 'published',
+        published_at: '2024-01-02',
+      };
+
+      mockDB.prepare
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            run: vi.fn().mockResolvedValue({ meta: { changes: 1 } }),
+          }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue(publishedArticle),
+          }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi.fn().mockResolvedValue({ results: [] }),
+          }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue(null),
+          }),
+        });
+
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles/abc123hash/publish', {
+        method: 'POST',
+      });
+
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.status).toBe('published');
+    });
+
+    it('should return 404 when publishing non-existent article', async () => {
+      mockDB.prepare.mockReturnValue({
+        bind: vi.fn().mockReturnValue({
+          run: vi.fn().mockResolvedValue({ meta: { changes: 0 } }),
+        }),
+      });
+
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles/nonexistent/publish', {
+        method: 'POST',
+      });
+
+      expect(res.status).toBe(404);
+      const data = await res.json();
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Article not found');
+    });
+  });
+
+  describe('POST /articles/:hash/unpublish', () => {
+    it('should unpublish an article', async () => {
+      const unpublishedArticle = { ...sampleArticle, status: 'draft' };
+
+      mockDB.prepare
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            run: vi.fn().mockResolvedValue({ meta: { changes: 1 } }),
+          }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue(unpublishedArticle),
+          }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi.fn().mockResolvedValue({ results: [] }),
+          }),
+        })
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            first: vi.fn().mockResolvedValue(null),
+          }),
+        });
+
+      const app = createTestApp(mockDB);
+      const res = await app.request('/articles/abc123hash/unpublish', {
+        method: 'POST',
+      });
+
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.status).toBe('draft');
+    });
+  });
+});

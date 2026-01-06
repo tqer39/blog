@@ -1,0 +1,68 @@
+---
+# see https://pre-commit.com
+exclude: |
+  (?x)^(
+    .+/package.*.json|
+    \.turbo/.*
+  )$
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=512']
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+      - id: trailing-whitespace
+
+  - repo: https://github.com/streetsidesoftware/cspell-cli
+    rev: v9.4.0
+    hooks:
+      - id: cspell
+
+  # see: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.47.0
+    hooks:
+      - id: markdownlint
+
+  - repo: local
+    hooks:
+      - id: textlint
+        name: textlint
+        language: node
+        types: [file]
+        files: \.(txt|md|mdown|markdown)$
+        entry: textlint
+        require_serial: false
+        additional_dependencies:
+          - 'textlint@15.5.0'
+          - 'textlint-filter-rule-comments@1.2.2'
+          - 'textlint-rule-preset-smarthr@1.36.1'
+          - 'textlint-rule-preset-ja-technical-writing@12.0.2'
+          - 'textlint-rule-prh@6.1.0'
+
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.11.0
+    hooks:
+      - id: shellcheck
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        name: Format GitHub Actions workflow files
+        types:
+          - yaml
+          - json
+
+  - repo: https://github.com/renovatebot/pre-commit-hooks
+    rev: 42.66.8
+    hooks:
+      - id: renovate-config-validator
+        files: renovate5\.json

@@ -1,0 +1,16 @@
+{
+  "name": "@blog/config",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    "./tsconfig.base.json": "./tsconfig.base.json",
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "files": [
+    "tsconfig.base.json",
+    "src"
+  ]
+}
