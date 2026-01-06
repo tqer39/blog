@@ -1,6 +1,6 @@
 output "cloudflare_hostname" {
   description = "CloudFlare DNS hostname"
-  value       = module.cloudflare_dns.hostname
+  value       = local.domain
 }
 
 output "vercel_project_id" {
