@@ -85,7 +85,7 @@ export function TableOfContents({ readingTime }: TableOfContentsProps) {
 
   return (
     <nav
-      className="hidden xl:block fixed top-24 w-64 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-xl border border-stone-200 bg-white p-5 shadow-lg dark:border-stone-700 dark:bg-stone-900"
+      className="hidden xl:block fixed top-24 w-64 max-h-[calc(100vh-8rem)] overflow-y-auto p-5"
       style={{ left: 'calc(50% + 28rem)' }}
       aria-label="目次"
     >
