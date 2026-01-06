@@ -128,15 +128,11 @@ jobs:
       - name: Slack Notification (Plan Error)
         if: steps.plan.outputs.exitcode == '1'
         continue-on-error: true
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_CHANNEL: "#ntf_gh_private-lab"
-          SLACK_COLOR: danger
-          SLACK_TITLE: "Terraform Plan Error: cms-api"
-          SLACK_MESSAGE: "path: `${{ env.WORKING_DIRECTORY }}`"
-          SLACK_USERNAME: github-bot
-          SLACK_ICON_EMOJI: ":x:"
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        uses: ./.github/actions/slack-deploy-failure
+        with:
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          title: "Terraform Plan Error: cms-api"
+          message: "path: `${{ env.WORKING_DIRECTORY }}`"
 
       - name: Fail on Plan Error
         if: steps.plan.outputs.exitcode == '1'
@@ -270,15 +266,11 @@ jobs:
       - name: Slack Notification (Plan Error)
         if: steps.plan.outputs.exitcode == '1'
         continue-on-error: true
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_CHANNEL: "#ntf_gh_private-lab"
-          SLACK_COLOR: danger
-          SLACK_TITLE: "Terraform Plan Error: frontend"
-          SLACK_MESSAGE: "path: `${{ env.WORKING_DIRECTORY }}`"
-          SLACK_USERNAME: github-bot
-          SLACK_ICON_EMOJI: ":x:"
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        uses: ./.github/actions/slack-deploy-failure
+        with:
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          title: "Terraform Plan Error: frontend"
+          message: "path: `${{ env.WORKING_DIRECTORY }}`"
 
       - name: Fail on Plan Error
         if: steps.plan.outputs.exitcode == '1'
@@ -413,15 +405,11 @@ jobs:
       - name: Slack Notification (Plan Error)
         if: steps.plan.outputs.exitcode == '1'
         continue-on-error: true
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_CHANNEL: "#ntf_gh_private-lab"
-          SLACK_COLOR: danger
-          SLACK_TITLE: "Terraform Plan Error: dns"
-          SLACK_MESSAGE: "path: `${{ env.WORKING_DIRECTORY }}`"
-          SLACK_USERNAME: github-bot
-          SLACK_ICON_EMOJI: ":x:"
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        uses: ./.github/actions/slack-deploy-failure
+        with:
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          title: "Terraform Plan Error: dns"
+          message: "path: `${{ env.WORKING_DIRECTORY }}`"
 
       - name: Fail on Plan Error
         if: steps.plan.outputs.exitcode == '1'
