@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
-import {
-  createSession,
-  getSessionCookieConfig,
-  verifyPassword,
-} from '@/lib/auth';
+import { createSession, getSessionCookieConfig } from '@/lib/auth';
+import { verifyPassword } from '@/lib/password';
 
 // Get password hash from environment variable
 // Generate with: node -e "require('bcryptjs').hash('your-password', 12).then(console.log)"

@@ -4,10 +4,9 @@ import {
   createSession,
   getClearSessionCookieConfig,
   getSessionCookieConfig,
-  hashPassword,
-  verifyPassword,
   verifySession,
 } from '../auth';
+import { hashPassword, verifyPassword } from '../password';
 
 // Mock environment variable
 const mockAuthSecret = 'test-secret-key-for-testing-purposes-12345';

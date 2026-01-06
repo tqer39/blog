@@ -1,4 +1,3 @@
-import { compare, hash } from 'bcryptjs';
 import { cookies } from 'next/headers';
 
 function getAuthSecret(): string {
@@ -15,23 +14,6 @@ const SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days in seconds
 interface SessionPayload {
   authenticated: boolean;
   exp: number;
-}
-
-/**
- * Hash a password using bcrypt
- */
-export async function hashPassword(password: string): Promise<string> {
-  return hash(password, 12);
-}
-
-/**
- * Verify a password against a hash
- */
-export async function verifyPassword(
-  password: string,
-  hashedPassword: string
-): Promise<boolean> {
-  return compare(password, hashedPassword);
 }
 
 /**
