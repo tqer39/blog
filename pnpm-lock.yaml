@@ -32,6 +32,9 @@ importers:
       '@blog/cms-types':
         specifier: workspace:*
         version: link:../../packages/cms-types
+      '@blog/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@blog/utils':
         specifier: workspace:*
         version: link:../../packages/utils

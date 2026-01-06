@@ -1,4 +1,5 @@
 import type { Article, ArticleListResponse, Tag } from '@blog/cms-types';
+import { DEFAULT_API_URL } from '@blog/config';
 import {
   createFetchClient,
   err,
@@ -7,7 +8,7 @@ import {
   type Result,
 } from '@blog/utils';
 
-const API_URL = process.env.CMS_API_URL || 'http://localhost:8787/v1';
+const API_URL = process.env.CMS_API_URL || DEFAULT_API_URL;
 const API_KEY = process.env.CMS_API_KEY || '';
 
 const fetchApi = createFetchClient({

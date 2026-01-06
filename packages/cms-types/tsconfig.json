@@ -1,14 +1,9 @@
 {
+  "extends": "@blog/config/tsconfig.base.json",
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "bundler",
     "lib": ["ESNext"],
-    "strict": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
     "declaration": true
   },
   "include": ["src/**/*.ts"],

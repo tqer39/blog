@@ -1,6 +1,6 @@
-export type PageInfo = (number | string)[];
+export { ARTICLES_PER_PAGE } from '@blog/config';
 
-export const ARTICLES_PER_PAGE = 10;
+export type PageInfo = (number | string)[];
 
 export function getPagination(current: number, max: number): PageInfo {
   const result: PageInfo = [];
