@@ -24,7 +24,7 @@ GitHub Secrets が追加された際に、関連ドキュメントを更新す�
 | -------- | ---- |
 | Infrastructure Secrets | Neon, Vercel, CloudFlare 等のインフラ |
 | Authentication Secrets | OAuth, Auth ライブラリ関連 |
-| Third-party Service Secrets | Resend, Slack, OpenAI 等 |
+| Third-party Service Secrets | Slack, OpenAI 等 |
 | GitHub App Secrets | GitHub App ID, Private Key |
 
 ## テーブル形式

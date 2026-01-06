@@ -186,7 +186,6 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 
 | Secret               | 説明                             |
 | -------------------- | -------------------------------- |
-| `RESEND_API_KEY_DEV` | Resend メールサービス API キー   |
 | `SLACK_WEBHOOK_DEV`  | Slack 通知 Webhook               |
 | `CODECOV_TOKEN`      | Codecov カバレッジトークン       |
 | `GEMINI_API_KEY`     | Google Gemini API キー           |
