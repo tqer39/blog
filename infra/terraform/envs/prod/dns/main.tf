@@ -17,15 +17,8 @@ data "terraform_remote_state" "frontend" {
 module "dns" {
   source = "../../../modules/cloudflare-dns"
 
-  zone_id = var.cloudflare_zone_id
-
-  records = [
-    {
-      name    = local.env_config.subdomain
-      type    = "CNAME"
-      content = data.terraform_remote_state.frontend.outputs.vercel_cname_target
-      proxied = false
-      comment = "blog dev environment - Vercel"
-    }
-  ]
+  zone_id      = var.cloudflare_zone_id
+  subdomain    = local.env_config.subdomain
+  vercel_cname = data.terraform_remote_state.frontend.outputs.vercel_cname_target
+  repository   = local.config.project.repository
 }
