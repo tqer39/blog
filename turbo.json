@@ -16,7 +16,9 @@
       "dependsOn": ["^build"]
     },
     "e2e": {
-      "dependsOn": ["build"]
+      "dependsOn": ["build"],
+      "env": ["CMS_API_URL", "CMS_API_KEY"],
+      "cache": false
     }
   }
 }
