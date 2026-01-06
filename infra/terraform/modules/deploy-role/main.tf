@@ -51,8 +51,8 @@ resource "aws_iam_role_policy" "deploy" {
           "s3:ListBucket"
         ]
         Resource = [
-          "arn:aws:s3:::${var.aws_account_id}-${var.aws_env_name}-terraform-state",
-          "arn:aws:s3:::${var.aws_account_id}-${var.aws_env_name}-terraform-state/*"
+          "arn:aws:s3:::terraform-tfstate-tqer39-${var.aws_account_id}-ap-northeast-1",
+          "arn:aws:s3:::terraform-tfstate-tqer39-${var.aws_account_id}-ap-northeast-1/*"
         ]
       },
       {
