@@ -9,10 +9,9 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "tqer39-terraform-state"
-    key            = "blog/prod/cms-api/terraform.tfstate"
-    region         = "ap-northeast-1"
-    encrypt        = true
-    dynamodb_table = "terraform-state-lock"
+    bucket  = "terraform-tfstate-tqer39-072693953877-ap-northeast-1"
+    key     = "blog/infra/terraform/envs/prod/prod-cms-api.tfstate"
+    encrypt = true
+    region  = "ap-northeast-1"
   }
 }
