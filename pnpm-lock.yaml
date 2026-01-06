@@ -181,6 +181,9 @@ importers:
         specifier: 4.11.3
         version: 4.11.3
     devDependencies:
+      '@blog/config':
+        specifier: workspace:^
+        version: link:../../packages/config
       '@blog/test-utils':
         specifier: workspace:*
         version: link:../../packages/test-utils
