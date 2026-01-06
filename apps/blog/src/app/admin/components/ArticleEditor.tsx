@@ -1,18 +1,23 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import Image from 'next/image';
 import type { Article, ArticleInput } from '@blog/cms-types';
-import { generateImage, generateMetadata, getTags, uploadImage } from '@/lib/api/client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { ImageIcon, Sparkles, X } from 'lucide-react';
+import Image from 'next/image';
+import { useRef, useState } from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  generateImage,
+  generateMetadata,
+  getTags,
+  uploadImage,
+} from '@/lib/api/client';
 import { MarkdownEditor } from './MarkdownEditor';
 import { TagSelector } from './TagSelector';
-import { ImageIcon, Sparkles, X } from 'lucide-react';
 
 interface ArticleEditorProps {
   initialData?: Article;
@@ -54,7 +59,9 @@ export function ArticleEditor({
     return result.url;
   };
 
-  const handleHeaderImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHeaderImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -66,7 +73,9 @@ export function ArticleEditor({
       setHeaderImageId(result.id);
       setHeaderImageUrl(result.url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to upload header image');
+      setError(
+        err instanceof Error ? err.message : 'Failed to upload header image'
+      );
     } finally {
       setIsUploadingHeader(false);
       if (headerImageInputRef.current) {
@@ -103,7 +112,9 @@ export function ArticleEditor({
       setDescription(result.description);
       setTags(result.tags);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate metadata');
+      setError(
+        err instanceof Error ? err.message : 'Failed to generate metadata'
+      );
     } finally {
       setIsGeneratingMetadata(false);
     }
@@ -228,7 +239,9 @@ export function ArticleEditor({
               variant="outline"
               size="sm"
               onClick={handleGenerateMetadata}
-              disabled={isGeneratingMetadata || !title.trim() || !content.trim()}
+              disabled={
+                isGeneratingMetadata || !title.trim() || !content.trim()
+              }
               className="gap-1.5"
             >
               <Sparkles className="h-4 w-4" />
@@ -236,7 +249,10 @@ export function ArticleEditor({
             </Button>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description" className="text-sm text-muted-foreground">
+            <Label
+              htmlFor="description"
+              className="text-sm text-muted-foreground"
+            >
               Description (SEO)
             </Label>
             <Textarea
@@ -321,7 +337,9 @@ export function ArticleEditor({
                 className="flex h-32 flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50"
               >
                 {isUploadingHeader ? (
-                  <span className="text-sm text-muted-foreground">Uploading...</span>
+                  <span className="text-sm text-muted-foreground">
+                    Uploading...
+                  </span>
                 ) : (
                   <>
                     <ImageIcon className="h-8 w-8 text-muted-foreground/50" />

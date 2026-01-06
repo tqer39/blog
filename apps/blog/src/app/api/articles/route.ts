@@ -1,18 +1,23 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { createArticle, getArticles } from "@/lib/api/server";
+import { type NextRequest, NextResponse } from 'next/server';
+import { createArticle, getArticles } from '@/lib/api/server';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const status = searchParams.get("status") || undefined;
-    const tag = searchParams.get("tag") || undefined;
-    const page = searchParams.get("page") ? Number(searchParams.get("page")) : undefined;
-    const perPage = searchParams.get("perPage") ? Number(searchParams.get("perPage")) : undefined;
+    const status = searchParams.get('status') || undefined;
+    const tag = searchParams.get('tag') || undefined;
+    const page = searchParams.get('page')
+      ? Number(searchParams.get('page'))
+      : undefined;
+    const perPage = searchParams.get('perPage')
+      ? Number(searchParams.get('perPage'))
+      : undefined;
 
     const result = await getArticles({ status, tag, page, perPage });
     return NextResponse.json(result);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to fetch articles";
+    const message =
+      error instanceof Error ? error.message : 'Failed to fetch articles';
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
@@ -23,7 +28,8 @@ export async function POST(request: NextRequest) {
     const result = await createArticle(input);
     return NextResponse.json(result);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to create article";
+    const message =
+      error instanceof Error ? error.message : 'Failed to create article';
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { getArticles } from "@/lib/api/client";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getArticles } from '@/lib/api/client';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -21,7 +21,7 @@ export default function AdminDashboard() {
       try {
         const [all, published] = await Promise.all([
           getArticles({ perPage: 1 }),
-          getArticles({ status: "published", perPage: 1 }),
+          getArticles({ status: 'published', perPage: 1 }),
         ]);
 
         setStats({
@@ -30,7 +30,7 @@ export default function AdminDashboard() {
           drafts: all.total - published.total,
         });
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load stats");
+        setError(err instanceof Error ? err.message : 'Failed to load stats');
       } finally {
         setLoading(false);
       }

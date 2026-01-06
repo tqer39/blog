@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import type { Article, ArticleInput } from "@blog/cms-types";
-import { getArticle, updateArticle } from "@/lib/api/client";
-import { ArticleEditor } from "../../../components/ArticleEditor";
+import type { Article, ArticleInput } from '@blog/cms-types';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getArticle, updateArticle } from '@/lib/api/client';
+import { ArticleEditor } from '../../../components/ArticleEditor';
 
 export default function EditArticlePage() {
   const params = useParams();
@@ -21,7 +21,7 @@ export default function EditArticlePage() {
         const data = await getArticle(hash);
         setArticle(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load article");
+        setError(err instanceof Error ? err.message : 'Failed to load article');
       } finally {
         setLoading(false);
       }
@@ -31,11 +31,11 @@ export default function EditArticlePage() {
 
   const handleSave = async (input: ArticleInput) => {
     await updateArticle(hash, input);
-    router.push("/admin/articles");
+    router.push('/admin/articles');
   };
 
   const handleCancel = () => {
-    router.push("/admin/articles");
+    router.push('/admin/articles');
   };
 
   if (loading) {
@@ -49,7 +49,7 @@ export default function EditArticlePage() {
   if (error || !article) {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
-        {error || "Article not found"}
+        {error || 'Article not found'}
       </div>
     );
   }

@@ -1,7 +1,7 @@
-import type { MetadataRoute } from "next";
-import { getAllArticles } from "@/lib/articles";
+import type { MetadataRoute } from 'next';
+import { getAllArticles } from '@/lib/articles';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articles = await getAllArticles();
@@ -9,7 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articleUrls = articles.map((article) => ({
     url: `${BASE_URL}/article/${article.hash}`,
     lastModified: new Date(article.updatedAt || article.createdAt),
-    changeFrequency: "weekly" as const,
+    changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));
 
@@ -17,13 +17,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: BASE_URL,
       lastModified: new Date(),
-      changeFrequency: "daily",
+      changeFrequency: 'daily',
       priority: 1,
     },
     {
       url: `${BASE_URL}/articles`,
       lastModified: new Date(),
-      changeFrequency: "daily",
+      changeFrequency: 'daily',
       priority: 0.9,
     },
     ...articleUrls,

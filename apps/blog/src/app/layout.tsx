@@ -15,27 +15,27 @@ const bizUDGothic = BIZ_UDGothic({
   display: 'swap',
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "tB",
-    template: "%s | tB",
+    default: 'tB',
+    template: '%s | tB',
   },
-  description: "未来の自分に向けた技術ログ",
+  description: '未来の自分に向けた技術ログ',
   openGraph: {
-    title: "tB",
-    description: "未来の自分に向けた技術ログ",
+    title: 'tB',
+    description: '未来の自分に向けた技術ログ',
     url: BASE_URL,
-    siteName: "tB",
-    locale: "ja_JP",
-    type: "website",
+    siteName: 'tB',
+    locale: 'ja_JP',
+    type: 'website',
   },
   twitter: {
-    card: "summary_large_image",
-    title: "tB",
-    description: "未来の自分に向けた技術ログ",
+    card: 'summary_large_image',
+    title: 'tB',
+    description: '未来の自分に向けた技術ログ',
   },
   robots: {
     index: true,
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: BASE_URL,
     types: {
-      "application/rss+xml": `${BASE_URL}/feed.xml`,
+      'application/rss+xml': `${BASE_URL}/feed.xml`,
     },
   },
 };

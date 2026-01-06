@@ -1,38 +1,40 @@
-import Link from "next/link";
-import { Suspense } from "react";
-import { X } from "lucide-react";
-import { ArticleCard } from "@/components/ArticleCard";
-import { ArticleTagSelector } from "@/components/ArticleTagSelector";
-import { Pagination } from "@/components/Pagination";
-import { getAllArticles } from "@/lib/articles";
-import { ARTICLES_PER_PAGE } from "@/lib/pagination";
+import { X } from 'lucide-react';
+import Link from 'next/link';
+import { Suspense } from 'react';
+import { ArticleCard } from '@/components/ArticleCard';
+import { ArticleTagSelector } from '@/components/ArticleTagSelector';
+import { Pagination } from '@/components/Pagination';
+import { getAllArticles } from '@/lib/articles';
+import { ARTICLES_PER_PAGE } from '@/lib/pagination';
 
 interface ArticlesPageProps {
   searchParams: Promise<{ tags?: string | string[]; q?: string }>;
 }
 
-export default async function ArticlesPage({ searchParams }: ArticlesPageProps) {
+export default async function ArticlesPage({
+  searchParams,
+}: ArticlesPageProps) {
   const { tags, q } = await searchParams;
-  const selectedTags = tags
-    ? Array.isArray(tags)
-      ? tags
-      : [tags]
-    : [];
-  const searchQuery = q?.trim() || "";
+  const selectedTags = tags ? (Array.isArray(tags) ? tags : [tags]) : [];
+  const searchQuery = q?.trim() || '';
 
   const allArticles = await getAllArticles();
 
   // Extract all unique tags from articles
-  const allTags = [...new Set(allArticles.flatMap((article) => article.tags))].sort();
+  const allTags = [
+    ...new Set(allArticles.flatMap((article) => article.tags)),
+  ].sort();
 
   // Filter by tags (AND condition) and search query
   const filteredArticles = allArticles.filter((article) => {
     // Tag filter
-    const matchesTags = selectedTags.length === 0 ||
+    const matchesTags =
+      selectedTags.length === 0 ||
       selectedTags.every((tag) => article.tags.includes(tag));
 
     // Search filter (case-insensitive)
-    const matchesSearch = !searchQuery ||
+    const matchesSearch =
+      !searchQuery ||
       article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.content.toLowerCase().includes(searchQuery.toLowerCase());
@@ -44,9 +46,10 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
   const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
 
   // Build clear search URL (preserve tags)
-  const clearSearchUrl = selectedTags.length > 0
-    ? `/articles?${selectedTags.map(t => `tags=${encodeURIComponent(t)}`).join('&')}`
-    : '/articles';
+  const clearSearchUrl =
+    selectedTags.length > 0
+      ? `/articles?${selectedTags.map((t) => `tags=${encodeURIComponent(t)}`).join('&')}`
+      : '/articles';
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
@@ -55,7 +58,11 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
       {searchQuery && (
         <div className="mb-6 flex items-center gap-2 rounded-lg bg-stone-100 px-4 py-3 dark:bg-stone-800">
           <span className="text-stone-600 dark:text-stone-400">
-            「<span className="font-medium text-stone-900 dark:text-stone-100">{searchQuery}</span>」の検索結果
+            「
+            <span className="font-medium text-stone-900 dark:text-stone-100">
+              {searchQuery}
+            </span>
+            」の検索結果
             <span className="ml-2 text-sm">({filteredArticles.length}件)</span>
           </span>
           <Link
@@ -75,10 +82,10 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
       {articles.length === 0 ? (
         <p className="text-stone-600 dark:text-stone-400">
           {searchQuery
-            ? "検索結果が見つかりませんでした。"
+            ? '検索結果が見つかりませんでした。'
             : selectedTags.length > 0
-              ? "No articles match the selected tags."
-              : "No articles yet. Stay tuned!"}
+              ? 'No articles match the selected tags.'
+              : 'No articles yet. Stay tuned!'}
         </p>
       ) : (
         <>

@@ -1,7 +1,7 @@
-import Link from "next/link";
+import Link from 'next/link';
 
-import { ArticleCard } from "@/components/ArticleCard";
-import { getAllArticles } from "@/lib/articles";
+import { ArticleCard } from '@/components/ArticleCard';
+import { getAllArticles } from '@/lib/articles';
 
 export default async function HomePage() {
   const allArticles = await getAllArticles();

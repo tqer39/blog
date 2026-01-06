@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Check, Copy, Maximize2 } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useCallback, useEffect, useState } from "react";
+import { Check, Copy, Maximize2 } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { useCallback, useEffect, useState } from 'react';
 import {
   SiCss3,
   SiDocker,
@@ -17,16 +17,16 @@ import {
   SiTerraform,
   SiTypescript,
   SiYaml,
-} from "react-icons/si";
+} from 'react-icons/si';
 import {
-  createHighlighter,
   type BundledLanguage,
+  createHighlighter,
   type Highlighter,
-} from "shiki";
+} from 'shiki';
 
-import { FullscreenModal } from "./FullscreenModal";
-import { Mermaid } from "./Mermaid";
-import { Skeleton } from "./ui/skeleton";
+import { FullscreenModal } from './FullscreenModal';
+import { Mermaid } from './Mermaid';
+import { Skeleton } from './ui/skeleton';
 
 interface CodeBlockProps {
   children: string;
@@ -35,27 +35,30 @@ interface CodeBlockProps {
 }
 
 const SUPPORTED_LANGUAGES: BundledLanguage[] = [
-  "typescript",
-  "javascript",
-  "tsx",
-  "jsx",
-  "python",
-  "bash",
-  "shellscript",
-  "json",
-  "yaml",
-  "markdown",
-  "html",
-  "css",
-  "sql",
-  "go",
-  "rust",
-  "java",
-  "c",
-  "cpp",
+  'typescript',
+  'javascript',
+  'tsx',
+  'jsx',
+  'python',
+  'bash',
+  'shellscript',
+  'json',
+  'yaml',
+  'markdown',
+  'html',
+  'css',
+  'sql',
+  'go',
+  'rust',
+  'java',
+  'c',
+  'cpp',
 ];
 
-const languageIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+const languageIcons: Record<
+  string,
+  React.ComponentType<{ className?: string }>
+> = {
   typescript: SiTypescript,
   tsx: SiTypescript,
   javascript: SiJavascript,
@@ -81,7 +84,7 @@ let highlighterPromise: Promise<Highlighter> | null = null;
 function getHighlighter(): Promise<Highlighter> {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
-      themes: ["github-light", "github-dark"],
+      themes: ['github-light', 'github-dark'],
       langs: SUPPORTED_LANGUAGES,
     });
   }
@@ -90,16 +93,16 @@ function getHighlighter(): Promise<Highlighter> {
 
 export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const { resolvedTheme } = useTheme();
-  const [highlightedHtml, setHighlightedHtml] = useState<string>("");
+  const [highlightedHtml, setHighlightedHtml] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const match = /language-(\w+)(:?.+)?/.exec(className || "");
-  const lang = match?.[1] || "";
-  const filename = match?.[2]?.slice(1) || "";
+  const match = /language-(\w+)(:?.+)?/.exec(className || '');
+  const lang = match?.[1] || '';
+  const filename = match?.[2]?.slice(1) || '';
 
-  const code = String(children).replace(/\n$/, "");
+  const code = String(children).replace(/\n$/, '');
 
   const handleCopy = useCallback(async () => {
     try {
@@ -107,7 +110,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
-      console.error("Failed to copy code:", error);
+      console.error('Failed to copy code:', error);
     }
   }, [code]);
 
@@ -126,9 +129,9 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
 
         const language = SUPPORTED_LANGUAGES.includes(lang as BundledLanguage)
           ? (lang as BundledLanguage)
-          : "typescript"; // fallback to typescript for unknown languages
-        const isDarkTheme = resolvedTheme === "dark";
-        const theme = isDarkTheme ? "github-dark" : "github-light";
+          : 'typescript'; // fallback to typescript for unknown languages
+        const isDarkTheme = resolvedTheme === 'dark';
+        const theme = isDarkTheme ? 'github-dark' : 'github-light';
 
         const html = highlighter.codeToHtml(code, {
           lang: language,
@@ -140,7 +143,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
           setIsLoading(false);
         }
       } catch (error) {
-        console.error("Failed to highlight code:", error);
+        console.error('Failed to highlight code:', error);
         if (!cancelled) {
           setIsLoading(false);
         }
@@ -164,13 +167,13 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   }
 
   // Mermaid diagrams
-  if (lang === "mermaid") {
+  if (lang === 'mermaid') {
     return <Mermaid chart={code} />;
   }
 
   // Loading state - skeleton with line-like patterns
   if (isLoading) {
-    const lineCount = Math.min(code.split("\n").length, 8);
+    const lineCount = Math.min(code.split('\n').length, 8);
     const lineWidths = [85, 70, 90, 60, 75, 80, 65, 95];
 
     return (
@@ -182,7 +185,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
         )}
         <div
           className={`overflow-x-auto bg-stone-100 p-4 dark:bg-stone-800 ${
-            filename ? "rounded-b-lg" : "rounded-lg"
+            filename ? 'rounded-b-lg' : 'rounded-lg'
           }`}
         >
           <div className="space-y-2">
@@ -207,16 +210,16 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
     return html.replace(
       /<code([^>]*)>([\s\S]*?)<\/code>/,
       (_, attrs, content) => {
-        const lines = content.split("\n");
+        const lines = content.split('\n');
         const wrappedLines = lines
           .map((line: string, i: number) => {
             // Don't add line number to empty last line
-            if (i === lines.length - 1 && line === "") return "";
+            if (i === lines.length - 1 && line === '') return '';
             const lineNum = i + 1;
             return `<span class="line"><span class="line-number">${lineNum}</span><span class="line-content">${line}</span></span>`;
           })
           .filter(Boolean)
-          .join("\n");
+          .join('\n');
         return `<code${attrs}>${wrappedLines}</code>`;
       }
     );
@@ -278,9 +281,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
         onClose={() => setIsFullscreen(false)}
         title={filename || lang}
       >
-        <div className="h-full overflow-auto rounded-lg">
-          {codeContent}
-        </div>
+        <div className="h-full overflow-auto rounded-lg">{codeContent}</div>
       </FullscreenModal>
     </>
   );

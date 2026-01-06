@@ -1,222 +1,235 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import type { Article, Tag } from '@blog/cms-types';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  getArticles,
-  getArticle,
   createArticle,
-  updateArticle,
+  createTag,
   deleteArticle,
+  deleteImage,
+  deleteTag,
+  getArticle,
+  getArticles,
+  getTags,
   publishArticle,
   unpublishArticle,
-  getTags,
-  createTag,
-  deleteTag,
+  updateArticle,
   uploadImage,
-  deleteImage,
-} from "../client";
-import type { Article, Tag } from "@blog/cms-types";
+} from '../client';
 
 // Mock fetch globally
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
 const sampleArticle: Article = {
-  id: "article-1",
-  slug: "test-article",
-  title: "Test Article",
-  description: "A test article",
-  content: "# Test Content",
-  status: "published",
-  tags: ["javascript"],
-  publishedAt: "2024-01-15T00:00:00Z",
-  createdAt: "2024-01-01T00:00:00Z",
-  updatedAt: "2024-01-15T00:00:00Z",
+  id: 'article-1',
+  slug: 'test-article',
+  title: 'Test Article',
+  description: 'A test article',
+  content: '# Test Content',
+  status: 'published',
+  tags: ['javascript'],
+  publishedAt: '2024-01-15T00:00:00Z',
+  createdAt: '2024-01-01T00:00:00Z',
+  updatedAt: '2024-01-15T00:00:00Z',
 };
 
 const sampleTag: Tag = {
-  id: "tag-1",
-  name: "JavaScript",
-  slug: "javascript",
-  createdAt: "2024-01-01T00:00:00Z",
+  id: 'tag-1',
+  name: 'JavaScript',
+  slug: 'javascript',
+  createdAt: '2024-01-01T00:00:00Z',
 };
 
-describe("API Client", () => {
+describe('API Client', () => {
   beforeEach(() => {
     mockFetch.mockReset();
   });
 
-  describe("Articles", () => {
-    describe("getArticles", () => {
-      it("should fetch articles without params", async () => {
+  describe('Articles', () => {
+    describe('getArticles', () => {
+      it('should fetch articles without params', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
-          json: () => Promise.resolve({
-            articles: [sampleArticle],
-            total: 1,
-            page: 1,
-            perPage: 10,
-          }),
+          json: () =>
+            Promise.resolve({
+              articles: [sampleArticle],
+              total: 1,
+              page: 1,
+              perPage: 10,
+            }),
         });
 
         const result = await getArticles();
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/articles"),
+          expect.stringContaining('/articles'),
           expect.objectContaining({
             headers: expect.objectContaining({
-              Authorization: expect.stringContaining("Bearer"),
+              Authorization: expect.stringContaining('Bearer'),
             }),
           })
         );
         expect(result.articles).toHaveLength(1);
       });
 
-      it("should fetch articles with params", async () => {
+      it('should fetch articles with params', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
-          json: () => Promise.resolve({
-            articles: [],
-            total: 0,
-            page: 2,
-            perPage: 20,
-          }),
+          json: () =>
+            Promise.resolve({
+              articles: [],
+              total: 0,
+              page: 2,
+              perPage: 20,
+            }),
         });
 
-        await getArticles({ status: "draft", tag: "javascript", page: 2, perPage: 20 });
+        await getArticles({
+          status: 'draft',
+          tag: 'javascript',
+          page: 2,
+          perPage: 20,
+        });
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("status=draft"),
+          expect.stringContaining('status=draft'),
           expect.any(Object)
         );
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("tag=javascript"),
+          expect.stringContaining('tag=javascript'),
           expect.any(Object)
         );
       });
     });
 
-    describe("getArticle", () => {
-      it("should fetch a single article", async () => {
+    describe('getArticle', () => {
+      it('should fetch a single article', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
           json: () => Promise.resolve(sampleArticle),
         });
 
-        const result = await getArticle("test-article");
+        const result = await getArticle('test-article');
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/articles/test-article"),
+          expect.stringContaining('/articles/test-article'),
           expect.any(Object)
         );
-        expect(result.title).toBe("Test Article");
+        expect(result.title).toBe('Test Article');
       });
 
-      it("should throw error when article not found", async () => {
+      it('should throw error when article not found', async () => {
         mockFetch.mockResolvedValue({
           ok: false,
           status: 404,
-          json: () => Promise.resolve({ error: "Article not found" }),
+          json: () => Promise.resolve({ error: 'Article not found' }),
         });
 
-        await expect(getArticle("nonexistent")).rejects.toThrow("Article not found");
+        await expect(getArticle('nonexistent')).rejects.toThrow(
+          'Article not found'
+        );
       });
     });
 
-    describe("createArticle", () => {
-      it("should create an article", async () => {
+    describe('createArticle', () => {
+      it('should create an article', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
           json: () => Promise.resolve(sampleArticle),
         });
 
         const result = await createArticle({
-          title: "Test Article",
-          content: "# Test Content",
+          title: 'Test Article',
+          content: '# Test Content',
         });
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/articles"),
+          expect.stringContaining('/articles'),
           expect.objectContaining({
-            method: "POST",
+            method: 'POST',
             headers: expect.objectContaining({
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             }),
           })
         );
-        expect(result.title).toBe("Test Article");
+        expect(result.title).toBe('Test Article');
       });
     });
 
-    describe("updateArticle", () => {
-      it("should update an article", async () => {
+    describe('updateArticle', () => {
+      it('should update an article', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
-          json: () => Promise.resolve({ ...sampleArticle, title: "Updated Title" }),
+          json: () =>
+            Promise.resolve({ ...sampleArticle, title: 'Updated Title' }),
         });
 
-        const result = await updateArticle("test-article", { title: "Updated Title" });
+        const result = await updateArticle('test-article', {
+          title: 'Updated Title',
+        });
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/articles/test-article"),
-          expect.objectContaining({ method: "PUT" })
+          expect.stringContaining('/articles/test-article'),
+          expect.objectContaining({ method: 'PUT' })
         );
-        expect(result.title).toBe("Updated Title");
+        expect(result.title).toBe('Updated Title');
       });
     });
 
-    describe("deleteArticle", () => {
-      it("should delete an article", async () => {
+    describe('deleteArticle', () => {
+      it('should delete an article', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ success: true }),
         });
 
-        await deleteArticle("test-article");
+        await deleteArticle('test-article');
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/articles/test-article"),
-          expect.objectContaining({ method: "DELETE" })
+          expect.stringContaining('/articles/test-article'),
+          expect.objectContaining({ method: 'DELETE' })
         );
       });
     });
 
-    describe("publishArticle", () => {
-      it("should publish an article", async () => {
+    describe('publishArticle', () => {
+      it('should publish an article', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
-          json: () => Promise.resolve({ ...sampleArticle, status: "published" }),
+          json: () =>
+            Promise.resolve({ ...sampleArticle, status: 'published' }),
         });
 
-        const result = await publishArticle("test-article");
+        const result = await publishArticle('test-article');
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/articles/test-article/publish"),
-          expect.objectContaining({ method: "POST" })
+          expect.stringContaining('/articles/test-article/publish'),
+          expect.objectContaining({ method: 'POST' })
         );
-        expect(result.status).toBe("published");
+        expect(result.status).toBe('published');
       });
     });
 
-    describe("unpublishArticle", () => {
-      it("should unpublish an article", async () => {
+    describe('unpublishArticle', () => {
+      it('should unpublish an article', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
-          json: () => Promise.resolve({ ...sampleArticle, status: "draft" }),
+          json: () => Promise.resolve({ ...sampleArticle, status: 'draft' }),
         });
 
-        const result = await unpublishArticle("test-article");
+        const result = await unpublishArticle('test-article');
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/articles/test-article/unpublish"),
-          expect.objectContaining({ method: "POST" })
+          expect.stringContaining('/articles/test-article/unpublish'),
+          expect.objectContaining({ method: 'POST' })
         );
-        expect(result.status).toBe("draft");
+        expect(result.status).toBe('draft');
       });
     });
   });
 
-  describe("Tags", () => {
-    describe("getTags", () => {
-      it("should fetch all tags", async () => {
+  describe('Tags', () => {
+    describe('getTags', () => {
+      it('should fetch all tags', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ tags: [sampleTag] }),
@@ -225,134 +238,136 @@ describe("API Client", () => {
         const result = await getTags();
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/tags"),
+          expect.stringContaining('/tags'),
           expect.any(Object)
         );
         expect(result.tags).toHaveLength(1);
       });
     });
 
-    describe("createTag", () => {
-      it("should create a tag", async () => {
+    describe('createTag', () => {
+      it('should create a tag', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
           json: () => Promise.resolve(sampleTag),
         });
 
-        const result = await createTag({ name: "JavaScript" });
+        const result = await createTag({ name: 'JavaScript' });
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/tags"),
+          expect.stringContaining('/tags'),
           expect.objectContaining({
-            method: "POST",
+            method: 'POST',
             headers: expect.objectContaining({
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             }),
           })
         );
-        expect(result.name).toBe("JavaScript");
+        expect(result.name).toBe('JavaScript');
       });
     });
 
-    describe("deleteTag", () => {
-      it("should delete a tag", async () => {
+    describe('deleteTag', () => {
+      it('should delete a tag', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ success: true }),
         });
 
-        await deleteTag("javascript");
+        await deleteTag('javascript');
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/tags/javascript"),
-          expect.objectContaining({ method: "DELETE" })
+          expect.stringContaining('/tags/javascript'),
+          expect.objectContaining({ method: 'DELETE' })
         );
       });
     });
   });
 
-  describe("Images", () => {
-    describe("uploadImage", () => {
-      it("should upload an image", async () => {
+  describe('Images', () => {
+    describe('uploadImage', () => {
+      it('should upload an image', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
-          json: () => Promise.resolve({
-            id: "image-1",
-            url: "https://cdn.example.com/image.jpg",
-            filename: "image.jpg",
-            mimeType: "image/jpeg",
-            sizeBytes: 1024,
-          }),
+          json: () =>
+            Promise.resolve({
+              id: 'image-1',
+              url: 'https://cdn.example.com/image.jpg',
+              filename: 'image.jpg',
+              mimeType: 'image/jpeg',
+              sizeBytes: 1024,
+            }),
         });
 
-        const file = new File(["test"], "test.jpg", { type: "image/jpeg" });
-        const result = await uploadImage(file, "article-1", "Test image");
+        const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+        const result = await uploadImage(file, 'article-1', 'Test image');
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/images"),
+          expect.stringContaining('/images'),
           expect.objectContaining({
-            method: "POST",
+            method: 'POST',
             body: expect.any(FormData),
           })
         );
-        expect(result.id).toBe("image-1");
+        expect(result.id).toBe('image-1');
       });
 
-      it("should upload an image without optional params", async () => {
+      it('should upload an image without optional params', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
-          json: () => Promise.resolve({
-            id: "image-1",
-            url: "https://cdn.example.com/image.jpg",
-            filename: "image.jpg",
-            mimeType: "image/jpeg",
-            sizeBytes: 1024,
-          }),
+          json: () =>
+            Promise.resolve({
+              id: 'image-1',
+              url: 'https://cdn.example.com/image.jpg',
+              filename: 'image.jpg',
+              mimeType: 'image/jpeg',
+              sizeBytes: 1024,
+            }),
         });
 
-        const file = new File(["test"], "test.jpg", { type: "image/jpeg" });
+        const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
         await uploadImage(file);
 
         expect(mockFetch).toHaveBeenCalled();
       });
     });
 
-    describe("deleteImage", () => {
-      it("should delete an image", async () => {
+    describe('deleteImage', () => {
+      it('should delete an image', async () => {
         mockFetch.mockResolvedValue({
           ok: true,
           json: () => Promise.resolve({ success: true }),
         });
 
-        await deleteImage("image-1");
+        await deleteImage('image-1');
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining("/images/image-1"),
-          expect.objectContaining({ method: "DELETE" })
+          expect.stringContaining('/images/image-1'),
+          expect.objectContaining({ method: 'DELETE' })
         );
       });
     });
   });
 
-  describe("Error Handling", () => {
-    it("should handle API errors with error message", async () => {
+  describe('Error Handling', () => {
+    it('should handle API errors with error message', async () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 400,
-        json: () => Promise.resolve({ error: "Validation failed" }),
+        json: () => Promise.resolve({ error: 'Validation failed' }),
       });
 
-      await expect(getArticle("test")).rejects.toThrow("Validation failed");
+      await expect(getArticle('test')).rejects.toThrow('Validation failed');
     });
 
-    it("should handle API errors without error message", async () => {
+    it('should handle API errors without error message', async () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 500,
-        json: () => Promise.reject(new Error("Invalid JSON")),
+        json: () => Promise.reject(new Error('Invalid JSON')),
       });
 
-      await expect(getArticle("test")).rejects.toThrow("Unknown error");
+      await expect(getArticle('test')).rejects.toThrow('Unknown error');
     });
   });
 });

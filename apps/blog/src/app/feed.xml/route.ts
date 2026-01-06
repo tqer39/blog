@@ -1,16 +1,16 @@
-import { getAllArticles } from "@/lib/articles";
+import { getAllArticles } from '@/lib/articles';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 const SITE_TITLE = "tqer39's blog";
-const SITE_DESCRIPTION = "Personal blog by tqer39";
+const SITE_DESCRIPTION = 'Personal blog by tqer39';
 
 function escapeXml(text: string): string {
   return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
 export async function GET() {
@@ -31,10 +31,10 @@ export async function GET() {
       <guid isPermaLink="true">${BASE_URL}/article/${article.hash}</guid>
       <description>${escapeXml(description)}</description>
       <pubDate>${pubDate}</pubDate>
-      ${article.tags.map((tag) => `<category>${escapeXml(tag)}</category>`).join("\n      ")}
+      ${article.tags.map((tag) => `<category>${escapeXml(tag)}</category>`).join('\n      ')}
     </item>`;
     })
-    .join("");
+    .join('');
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -51,8 +51,8 @@ export async function GET() {
 
   return new Response(rss, {
     headers: {
-      "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      'Content-Type': 'application/xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600, s-maxage=3600',
     },
   });
 }

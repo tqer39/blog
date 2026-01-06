@@ -1,5 +1,5 @@
-import { vi } from "vitest";
-import type { Env } from "../index";
+import { vi } from 'vitest';
+import type { Env } from '../index';
 
 /**
  * Mock D1 prepared statement
@@ -21,7 +21,10 @@ export function createMockStatement(options: {
  * Create a mock D1Database
  */
 export function createMockDB() {
-  const mockStatements = new Map<string, ReturnType<typeof createMockStatement>>();
+  const mockStatements = new Map<
+    string,
+    ReturnType<typeof createMockStatement>
+  >();
 
   return {
     prepare: vi.fn((sql: string) => {
@@ -33,7 +36,10 @@ export function createMockDB() {
       return createMockStatement({});
     }),
     // Helper to set up specific query responses
-    mockQuery: (sql: string, response: Parameters<typeof createMockStatement>[0]) => {
+    mockQuery: (
+      sql: string,
+      response: Parameters<typeof createMockStatement>[0]
+    ) => {
       mockStatements.set(sql, createMockStatement(response));
     },
     // Helper to get the mock for assertions
@@ -48,9 +54,9 @@ export function createMockEnv(overrides?: Partial<Env>): Env {
   return {
     DB: createMockDB() as unknown as D1Database,
     BUCKET: {} as R2Bucket,
-    API_KEY: "test-api-key",
-    VERCEL_DEPLOY_HOOK_URL: "https://api.vercel.com/test-hook",
-    PUBLIC_URL: "http://localhost:8787",
+    API_KEY: 'test-api-key',
+    VERCEL_DEPLOY_HOOK_URL: 'https://api.vercel.com/test-hook',
+    PUBLIC_URL: 'http://localhost:8787',
     ...overrides,
   };
 }
@@ -58,7 +64,7 @@ export function createMockEnv(overrides?: Partial<Env>): Env {
 /**
  * Create authorization header
  */
-export function authHeader(apiKey = "test-api-key") {
+export function authHeader(apiKey = 'test-api-key') {
   return { Authorization: `Bearer ${apiKey}` };
 }
 
@@ -66,23 +72,23 @@ export function authHeader(apiKey = "test-api-key") {
  * Sample article data for tests
  */
 export const sampleArticle = {
-  id: "test-article-id",
-  slug: "test-article",
-  title: "Test Article",
-  description: "A test article",
-  content: "# Test Content",
-  status: "draft",
+  id: 'test-article-id',
+  slug: 'test-article',
+  title: 'Test Article',
+  description: 'A test article',
+  content: '# Test Content',
+  status: 'draft',
   published_at: null,
-  created_at: "2024-01-01T00:00:00Z",
-  updated_at: "2024-01-01T00:00:00Z",
+  created_at: '2024-01-01T00:00:00Z',
+  updated_at: '2024-01-01T00:00:00Z',
 };
 
 /**
  * Sample tag data for tests
  */
 export const sampleTag = {
-  id: "test-tag-id",
-  name: "Test Tag",
-  slug: "test-tag",
-  created_at: "2024-01-01T00:00:00Z",
+  id: 'test-tag-id',
+  name: 'Test Tag',
+  slug: 'test-tag',
+  created_at: '2024-01-01T00:00:00Z',
 };

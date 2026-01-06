@@ -1,8 +1,8 @@
 'use client';
 
+import { BookOpen, Menu, Rss, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { BookOpen, Menu, Rss, X } from 'lucide-react';
 
 interface MobileMenuProps {
   isOpen: boolean;

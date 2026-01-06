@@ -1,5 +1,5 @@
 // Re-export types from shared cms-types package
-export type { Article, ArticleStatus } from "@blog/cms-types";
+export type { Article, ArticleStatus } from '@blog/cms-types';
 
 // Legacy type alias for backwards compatibility
 // Note: This type is deprecated. Use Article from @blog/cms-types instead.

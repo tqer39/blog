@@ -1,5 +1,5 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { generateMetadata } from "@/lib/api/server";
+import { type NextRequest, NextResponse } from 'next/server';
+import { generateMetadata } from '@/lib/api/server';
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,7 +7,8 @@ export async function POST(request: NextRequest) {
     const result = await generateMetadata(input);
     return NextResponse.json(result);
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to generate metadata";
+    const message =
+      error instanceof Error ? error.message : 'Failed to generate metadata';
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

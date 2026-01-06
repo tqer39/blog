@@ -1,6 +1,6 @@
-import { Hono } from "hono";
-import type { Env } from "../index";
-import { generateId } from "../lib/utils";
+import { Hono } from 'hono';
+import type { Env } from '../index';
+import { generateId } from '../lib/utils';
 
 export const aiHandler = new Hono<{ Bindings: Env }>();
 
@@ -26,17 +26,17 @@ interface GenerateImageResponse {
 }
 
 // Generate article metadata (description + tags) using OpenAI
-aiHandler.post("/generate-metadata", async (c) => {
+aiHandler.post('/generate-metadata', async (c) => {
   const apiKey = c.env.OPENAI_API_KEY;
   if (!apiKey) {
-    return c.json({ error: "OpenAI API key not configured" }, 500);
+    return c.json({ error: 'OpenAI API key not configured' }, 500);
   }
 
   const body = await c.req.json<GenerateMetadataRequest>();
   const { title, content, existingTags } = body;
 
   if (!title || !content) {
-    return c.json({ error: "Title and content are required" }, 400);
+    return c.json({ error: 'Title and content are required' }, 400);
   }
 
   // Truncate content if too long (keep first 3000 chars)
@@ -64,30 +64,30 @@ Guidelines:
 Content:
 ${truncatedContent}
 
-${existingTags?.length ? `Existing tags in the system: ${existingTags.join(", ")}. Prefer using these if relevant.` : ""}`;
+${existingTags?.length ? `Existing tags in the system: ${existingTags.join(', ')}. Prefer using these if relevant.` : ''}`;
 
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: 'gpt-4o-mini',
         messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
         ],
         temperature: 0.7,
-        response_format: { type: "json_object" },
+        response_format: { type: 'json_object' },
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error("OpenAI API error:", error);
-      return c.json({ error: "Failed to generate metadata" }, 500);
+      console.error('OpenAI API error:', error);
+      return c.json({ error: 'Failed to generate metadata' }, 500);
     }
 
     const data = await response.json<{
@@ -99,23 +99,23 @@ ${existingTags?.length ? `Existing tags in the system: ${existingTags.join(", ")
 
     return c.json(result);
   } catch (error) {
-    console.error("Error generating metadata:", error);
-    return c.json({ error: "Failed to generate metadata" }, 500);
+    console.error('Error generating metadata:', error);
+    return c.json({ error: 'Failed to generate metadata' }, 500);
   }
 });
 
 // Generate header image using Gemini (Imagen)
-aiHandler.post("/generate-image", async (c) => {
+aiHandler.post('/generate-image', async (c) => {
   const apiKey = c.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return c.json({ error: "Gemini API key not configured" }, 500);
+    return c.json({ error: 'Gemini API key not configured' }, 500);
   }
 
   const body = await c.req.json<GenerateImageRequest>();
   const { prompt, title } = body;
 
   if (!prompt) {
-    return c.json({ error: "Prompt is required" }, 400);
+    return c.json({ error: 'Prompt is required' }, 400);
   }
 
   // Create a descriptive prompt for header image
@@ -128,17 +128,17 @@ aiHandler.post("/generate-image", async (c) => {
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           instances: [{ prompt: imagePrompt }],
           parameters: {
             sampleCount: 1,
-            aspectRatio: "16:9",
-            personGeneration: "dont_allow",
-            safetyFilterLevel: "block_low_and_above",
+            aspectRatio: '16:9',
+            personGeneration: 'dont_allow',
+            safetyFilterLevel: 'block_low_and_above',
           },
         }),
       }
@@ -146,8 +146,8 @@ aiHandler.post("/generate-image", async (c) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Gemini API error:", errorText);
-      return c.json({ error: "Failed to generate image" }, 500);
+      console.error('Gemini API error:', errorText);
+      return c.json({ error: 'Failed to generate image' }, 500);
     }
 
     const data = await response.json<{
@@ -155,12 +155,12 @@ aiHandler.post("/generate-image", async (c) => {
     }>();
 
     if (!data.predictions || data.predictions.length === 0) {
-      return c.json({ error: "No image generated" }, 500);
+      return c.json({ error: 'No image generated' }, 500);
     }
 
     const prediction = data.predictions[0];
     const imageData = prediction.bytesBase64Encoded;
-    const mimeType = prediction.mimeType || "image/png";
+    const mimeType = prediction.mimeType || 'image/png';
 
     // Convert base64 to binary
     const binaryData = Uint8Array.from(atob(imageData), (c) => c.charCodeAt(0));
@@ -168,16 +168,16 @@ aiHandler.post("/generate-image", async (c) => {
     // Upload to R2
     const now = new Date();
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, '0');
     const id = generateId();
-    const ext = mimeType === "image/jpeg" ? "jpg" : "png";
+    const ext = mimeType === 'image/jpeg' ? 'jpg' : 'png';
     const filename = `${id}.${ext}`;
     const r2Key = `images/${year}/${month}/${filename}`;
 
     await c.env.R2_BUCKET.put(r2Key, binaryData, {
       httpMetadata: {
         contentType: mimeType,
-        cacheControl: "public, max-age=31536000, immutable",
+        cacheControl: 'public, max-age=31536000, immutable',
       },
     });
 
@@ -206,8 +206,8 @@ aiHandler.post("/generate-image", async (c) => {
 
     return c.json(result, 201);
   } catch (error) {
-    console.error("Error generating image:", error);
-    return c.json({ error: "Failed to generate image" }, 500);
+    console.error('Error generating image:', error);
+    return c.json({ error: 'Failed to generate image' }, 500);
   }
 });
 
@@ -215,7 +215,7 @@ function getPublicUrl(env: Env, r2Key: string): string {
   if (env.R2_PUBLIC_URL) {
     return `${env.R2_PUBLIC_URL}/${r2Key}`;
   }
-  if (env.ENVIRONMENT === "development") {
+  if (env.ENVIRONMENT === 'development') {
     return `http://localhost:8787/v1/images/file/${r2Key}`;
   }
   return `https://cdn.tqer39.dev/${r2Key}`;

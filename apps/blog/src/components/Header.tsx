@@ -1,11 +1,11 @@
 'use client';
 
+import { BookOpen, Rss, Search, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { BookOpen, Rss, Search, X } from 'lucide-react';
-import { ThemeSwitcher } from './ThemeSwitcher';
 import { MobileMenu } from './MobileMenu';
+import { ThemeSwitcher } from './ThemeSwitcher';
 
 export function Header() {
   const router = useRouter();

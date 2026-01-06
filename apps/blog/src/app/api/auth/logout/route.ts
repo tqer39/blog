@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { getClearSessionCookieConfig } from "@/lib/auth";
+import { NextResponse } from 'next/server';
+import { getClearSessionCookieConfig } from '@/lib/auth';
 
 export async function POST() {
   const cookieConfig = getClearSessionCookieConfig();

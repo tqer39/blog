@@ -1,42 +1,53 @@
-"use client";
+'use client';
 
-import dayjs from "dayjs";
-import Image from "next/image";
-import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Article } from "@blog/cms-types";
-import { ArrowDown, ArrowUp, Edit, Eye, EyeOff, ImageIcon, Search, Trash2, X } from "lucide-react";
+import type { Article } from '@blog/cms-types';
+import dayjs from 'dayjs';
+import {
+  ArrowDown,
+  ArrowUp,
+  Edit,
+  Eye,
+  EyeOff,
+  ImageIcon,
+  Search,
+  Trash2,
+  X,
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-type ArticleSortKey = "title" | "status" | "date";
-type SortDirection = "asc" | "desc";
+type ArticleSortKey = 'title' | 'status' | 'date';
+type SortDirection = 'asc' | 'desc';
+
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   deleteArticle,
   getArticles,
   publishArticle,
   unpublishArticle,
-} from "@/lib/api/client";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from '@/lib/api/client';
 
 export default function ArticleListPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"all" | "published" | "draft">("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortKey, setSortKey] = useState<ArticleSortKey>("date");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortKey, setSortKey] = useState<ArticleSortKey>('date');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   const loadArticles = useCallback(async () => {
     try {
       setLoading(true);
-      const status = filter === "all" ? undefined : filter;
+      const status = filter === 'all' ? undefined : filter;
       const response = await getArticles({ status, perPage: 100 });
       setArticles(response.articles);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load articles");
+      setError(err instanceof Error ? err.message : 'Failed to load articles');
     } finally {
       setLoading(false);
     }
@@ -48,14 +59,14 @@ export default function ArticleListPage() {
 
   async function handleTogglePublish(article: Article) {
     try {
-      if (article.status === "published") {
+      if (article.status === 'published') {
         await unpublishArticle(article.hash);
       } else {
         await publishArticle(article.hash);
       }
       await loadArticles();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to update article");
+      alert(err instanceof Error ? err.message : 'Failed to update article');
     }
   }
 
@@ -66,16 +77,16 @@ export default function ArticleListPage() {
       await deleteArticle(article.hash);
       await loadArticles();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete article");
+      alert(err instanceof Error ? err.message : 'Failed to delete article');
     }
   }
 
   function handleSort(key: ArticleSortKey) {
     if (sortKey === key) {
-      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
       setSortKey(key);
-      setSortDirection("asc");
+      setSortDirection('asc');
     }
   }
 
@@ -85,19 +96,21 @@ export default function ArticleListPage() {
           (article) =>
             article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             article.hash.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            article.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+            article.tags.some((tag) =>
+              tag.toLowerCase().includes(searchQuery.toLowerCase())
+            )
         )
       : articles;
 
     return [...filtered].sort((a, b) => {
-      const modifier = sortDirection === "asc" ? 1 : -1;
+      const modifier = sortDirection === 'asc' ? 1 : -1;
 
       switch (sortKey) {
-        case "title":
+        case 'title':
           return a.title.localeCompare(b.title) * modifier;
-        case "status":
+        case 'status':
           return a.status.localeCompare(b.status) * modifier;
-        case "date": {
+        case 'date': {
           const aDate = a.publishedAt || a.createdAt;
           const bDate = b.publishedAt || b.createdAt;
           return aDate.localeCompare(bDate) * modifier;
@@ -143,7 +156,7 @@ export default function ArticleListPage() {
         {searchQuery && (
           <button
             type="button"
-            onClick={() => setSearchQuery("")}
+            onClick={() => setSearchQuery('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             aria-label="Clear search"
             title="Clear search"
@@ -182,43 +195,52 @@ export default function ArticleListPage() {
                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                   <button
                     type="button"
-                    onClick={() => handleSort("title")}
+                    onClick={() => handleSort('title')}
                     className="inline-flex items-center gap-1 hover:text-primary"
                     aria-label="Sort by title"
                     title="Sort by title"
                   >
                     Title
-                    {sortKey === "title" && (
-                      sortDirection === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
-                    )}
+                    {sortKey === 'title' &&
+                      (sortDirection === 'asc' ? (
+                        <ArrowUp className="h-3 w-3" />
+                      ) : (
+                        <ArrowDown className="h-3 w-3" />
+                      ))}
                   </button>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
                   <button
                     type="button"
-                    onClick={() => handleSort("status")}
+                    onClick={() => handleSort('status')}
                     className="inline-flex items-center gap-1 hover:text-primary"
                     aria-label="Sort by status"
                     title="Sort by status"
                   >
                     Status
-                    {sortKey === "status" && (
-                      sortDirection === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
-                    )}
+                    {sortKey === 'status' &&
+                      (sortDirection === 'asc' ? (
+                        <ArrowUp className="h-3 w-3" />
+                      ) : (
+                        <ArrowDown className="h-3 w-3" />
+                      ))}
                   </button>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
                   <button
                     type="button"
-                    onClick={() => handleSort("date")}
+                    onClick={() => handleSort('date')}
                     className="inline-flex items-center gap-1 hover:text-primary"
                     aria-label="Sort by date"
                     title="Sort by date"
                   >
                     Date
-                    {sortKey === "date" && (
-                      sortDirection === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
-                    )}
+                    {sortKey === 'date' &&
+                      (sortDirection === 'asc' ? (
+                        <ArrowUp className="h-3 w-3" />
+                      ) : (
+                        <ArrowDown className="h-3 w-3" />
+                      ))}
                   </button>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
@@ -234,7 +256,7 @@ export default function ArticleListPage() {
                 <tr
                   key={article.id}
                   className={`transition-colors hover:bg-muted/50 ${
-                    index % 2 === 0 ? "bg-background" : "bg-muted/20"
+                    index % 2 === 0 ? 'bg-background' : 'bg-muted/20'
                   }`}
                 >
                   <td className="w-16 py-2 pl-4">
@@ -269,17 +291,19 @@ export default function ArticleListPage() {
                   <td className="px-4 py-5">
                     <span
                       className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${
-                        article.status === "published"
-                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-                          : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400"
+                        article.status === 'published'
+                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                          : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
                       }`}
                     >
-                      {article.status === "published" ? "Published" : "Draft"}
+                      {article.status === 'published' ? 'Published' : 'Draft'}
                     </span>
                   </td>
                   <td className="px-4 py-5">
                     <span className="text-sm text-muted-foreground">
-                      {dayjs(article.publishedAt || article.createdAt).format("YYYY/MM/DD")}
+                      {dayjs(article.publishedAt || article.createdAt).format(
+                        'YYYY/MM/DD'
+                      )}
                     </span>
                   </td>
                   <td className="px-4 py-5">
@@ -307,7 +331,7 @@ export default function ArticleListPage() {
                         className="h-8 gap-1.5 px-2 text-muted-foreground hover:text-foreground"
                         onClick={() => handleTogglePublish(article)}
                       >
-                        {article.status === "published" ? (
+                        {article.status === 'published' ? (
                           <>
                             <EyeOff className="h-4 w-4" />
                             <span className="hidden sm:inline">Unpublish</span>

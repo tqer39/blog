@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { X } from "lucide-react";
-import { createTag, getTags } from "@/lib/api/client";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { createTag, getTags } from '@/lib/api/client';
 
 interface TagSelectorProps {
   value: string[];
@@ -15,7 +15,7 @@ interface TagSelectorProps {
 
 export function TagSelector({ value, onChange }: TagSelectorProps) {
   const [availableTags, setAvailableTags] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
       }
     }
 
-    setInputValue("");
+    setInputValue('');
   };
 
   const handleRemoveTag = (tagName: string) => {
@@ -57,7 +57,7 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === ",") {
+    if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
       handleAddTag(inputValue);
     }
@@ -66,7 +66,7 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
   const suggestions = availableTags.filter(
     (tag) =>
       !value.includes(tag) &&
-      tag.toLowerCase().includes(inputValue.toLowerCase()),
+      tag.toLowerCase().includes(inputValue.toLowerCase())
   );
 
   return (
@@ -101,7 +101,7 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={isLoading ? "Loading tags..." : "Add tags (press Enter)"}
+          placeholder={isLoading ? 'Loading tags...' : 'Add tags (press Enter)'}
           disabled={isLoading}
         />
 

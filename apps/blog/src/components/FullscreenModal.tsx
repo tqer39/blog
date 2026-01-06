@@ -1,7 +1,7 @@
 'use client';
 
 import { X } from 'lucide-react';
-import { useEffect, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 interface FullscreenModalProps {
@@ -11,7 +11,12 @@ interface FullscreenModalProps {
   title?: string;
 }
 
-export function FullscreenModal({ isOpen, onClose, children, title }: FullscreenModalProps) {
+export function FullscreenModal({
+  isOpen,
+  onClose,
+  children,
+  title,
+}: FullscreenModalProps) {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -54,9 +59,7 @@ export function FullscreenModal({ isOpen, onClose, children, title }: Fullscreen
           <X className="h-5 w-5" />
         </button>
       </div>
-      <div className="flex-1 overflow-auto p-4">
-        {children}
-      </div>
+      <div className="flex-1 overflow-auto p-4">{children}</div>
     </div>,
     document.body
   );

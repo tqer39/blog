@@ -1,7 +1,7 @@
-import type { Article, ArticleListResponse, Tag } from "@blog/cms-types";
+import type { Article, ArticleListResponse, Tag } from '@blog/cms-types';
 
-const API_URL = process.env.CMS_API_URL || "http://localhost:8787/v1";
-const API_KEY = process.env.CMS_API_KEY || "";
+const API_URL = process.env.CMS_API_URL || 'http://localhost:8787/v1';
+const API_KEY = process.env.CMS_API_KEY || '';
 
 async function fetchApi<T>(endpoint: string): Promise<T> {
   const response = await fetch(`${API_URL}${endpoint}`, {
@@ -21,7 +21,7 @@ async function fetchApi<T>(endpoint: string): Promise<T> {
 export async function getAllArticles(): Promise<Article[]> {
   try {
     const data = await fetchApi<ArticleListResponse>(
-      "/articles?status=published&perPage=1000"
+      '/articles?status=published&perPage=1000'
     );
     // Sort by publishedAt descending
     return data.articles.sort((a, b) => {
@@ -30,7 +30,7 @@ export async function getAllArticles(): Promise<Article[]> {
       return dateA > dateB ? -1 : 1;
     });
   } catch (error) {
-    console.error("Failed to fetch articles:", error);
+    console.error('Failed to fetch articles:', error);
     return [];
   }
 }
@@ -46,10 +46,10 @@ export async function getArticleByHash(hash: string): Promise<Article | null> {
 
 export async function getAllTags(): Promise<string[]> {
   try {
-    const tags = await fetchApi<Tag[]>("/tags");
+    const tags = await fetchApi<Tag[]>('/tags');
     return tags.map((t) => t.name).sort();
   } catch (error) {
-    console.error("Failed to fetch tags:", error);
+    console.error('Failed to fetch tags:', error);
     return [];
   }
 }

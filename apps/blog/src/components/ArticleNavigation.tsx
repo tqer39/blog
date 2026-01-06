@@ -1,12 +1,15 @@
-import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
 
 interface ArticleNavigationProps {
   prevArticle: { hash: string; title: string } | null;
   nextArticle: { hash: string; title: string } | null;
 }
 
-export function ArticleNavigation({ prevArticle, nextArticle }: ArticleNavigationProps) {
+export function ArticleNavigation({
+  prevArticle,
+  nextArticle,
+}: ArticleNavigationProps) {
   if (!prevArticle && !nextArticle) {
     return null;
   }

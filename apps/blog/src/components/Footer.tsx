@@ -1,4 +1,4 @@
-import { BsGithub, BsTwitter, BsLink45Deg } from 'react-icons/bs';
+import { BsGithub, BsLink45Deg, BsTwitter } from 'react-icons/bs';
 
 export function Footer() {
   return (

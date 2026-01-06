@@ -1,15 +1,15 @@
-import { compare, hash } from "bcryptjs";
-import { cookies } from "next/headers";
+import { compare, hash } from 'bcryptjs';
+import { cookies } from 'next/headers';
 
 function getAuthSecret(): string {
   const secret = process.env.AUTH_SECRET;
   if (!secret) {
-    throw new Error("AUTH_SECRET environment variable is required");
+    throw new Error('AUTH_SECRET environment variable is required');
   }
   return secret;
 }
 
-const COOKIE_NAME = "admin_session";
+const COOKIE_NAME = 'admin_session';
 const SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days in seconds
 
 interface SessionPayload {
@@ -48,21 +48,21 @@ export async function createSession(): Promise<string> {
 
   // Create HMAC signature
   const key = await crypto.subtle.importKey(
-    "raw",
+    'raw',
     encoder.encode(getAuthSecret()),
-    { name: "HMAC", hash: "SHA-256" },
+    { name: 'HMAC', hash: 'SHA-256' },
     false,
-    ["sign"]
+    ['sign']
   );
 
   const signature = await crypto.subtle.sign(
-    "HMAC",
+    'HMAC',
     key,
     encoder.encode(payloadStr)
   );
 
-  const signatureBase64 = Buffer.from(signature).toString("base64url");
-  const payloadBase64 = Buffer.from(payloadStr).toString("base64url");
+  const signatureBase64 = Buffer.from(signature).toString('base64url');
+  const payloadBase64 = Buffer.from(payloadStr).toString('base64url');
 
   return `${payloadBase64}.${signatureBase64}`;
 }
@@ -72,25 +72,25 @@ export async function createSession(): Promise<string> {
  */
 export async function verifySession(token: string): Promise<boolean> {
   try {
-    const [payloadBase64, signatureBase64] = token.split(".");
+    const [payloadBase64, signatureBase64] = token.split('.');
     if (!payloadBase64 || !signatureBase64) return false;
 
-    const payloadStr = Buffer.from(payloadBase64, "base64url").toString();
-    const signature = Buffer.from(signatureBase64, "base64url");
+    const payloadStr = Buffer.from(payloadBase64, 'base64url').toString();
+    const signature = Buffer.from(signatureBase64, 'base64url');
 
     const encoder = new TextEncoder();
 
     // Verify HMAC signature
     const key = await crypto.subtle.importKey(
-      "raw",
+      'raw',
       encoder.encode(getAuthSecret()),
-      { name: "HMAC", hash: "SHA-256" },
+      { name: 'HMAC', hash: 'SHA-256' },
       false,
-      ["verify"]
+      ['verify']
     );
 
     const valid = await crypto.subtle.verify(
-      "HMAC",
+      'HMAC',
       key,
       signature,
       encoder.encode(payloadStr)
@@ -133,10 +133,10 @@ export function getSessionCookieConfig(token: string) {
     name: COOKIE_NAME,
     value: token,
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict" as const,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict' as const,
     maxAge: SESSION_DURATION,
-    path: "/",
+    path: '/',
   };
 }
 
@@ -146,12 +146,12 @@ export function getSessionCookieConfig(token: string) {
 export function getClearSessionCookieConfig() {
   return {
     name: COOKIE_NAME,
-    value: "",
+    value: '',
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict" as const,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict' as const,
     maxAge: 0,
-    path: "/",
+    path: '/',
   };
 }
 

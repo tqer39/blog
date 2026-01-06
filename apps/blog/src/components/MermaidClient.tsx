@@ -98,11 +98,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
       <div className={`my-4 rounded-lg p-4 ${bgClass}`}>
         <div className="flex flex-col items-center space-y-2 py-4">
           {lineWidths.map((width, i) => (
-            <Skeleton
-              key={i}
-              className="h-4"
-              style={{ width: `${width}%` }}
-            />
+            <Skeleton key={i} className="h-4" style={{ width: `${width}%` }} />
           ))}
         </div>
       </div>
@@ -122,7 +118,9 @@ export function MermaidClient({ chart }: MermaidClientProps) {
 
   return (
     <>
-      <div className={`group relative my-4 overflow-x-auto rounded-lg p-4 ${bgClass}`}>
+      <div
+        className={`group relative my-4 overflow-x-auto rounded-lg p-4 ${bgClass}`}
+      >
         <button
           type="button"
           onClick={() => setIsFullscreen(true)}
@@ -138,7 +136,9 @@ export function MermaidClient({ chart }: MermaidClientProps) {
         onClose={() => setIsFullscreen(false)}
         title="Mermaid Diagram"
       >
-        <div className={`flex h-full items-center justify-center overflow-auto rounded-lg p-8 ${bgClass}`}>
+        <div
+          className={`flex h-full items-center justify-center overflow-auto rounded-lg p-8 ${bgClass}`}
+        >
           {mermaidContent}
         </div>
       </FullscreenModal>

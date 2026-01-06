@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { BsFillMoonFill, BsFillSunFill, BsDisplay } from 'react-icons/bs';
+import { BsDisplay, BsFillMoonFill, BsFillSunFill } from 'react-icons/bs';
 
 const themes = ['light', 'dark', 'system'] as const;
 type Theme = (typeof themes)[number];
@@ -28,7 +28,9 @@ export function FloatingThemeSwitcher() {
       case 'dark':
         return <BsFillMoonFill className="h-5 w-5 text-blue-400" />;
       default:
-        return <BsDisplay className="h-5 w-5 text-stone-500 dark:text-stone-400" />;
+        return (
+          <BsDisplay className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+        );
     }
   };
 

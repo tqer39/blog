@@ -1,9 +1,9 @@
 'use client';
 
+import { ChevronDown, ChevronUp, X } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, X } from 'lucide-react';
 
 interface ArticleTagSelectorProps {
   allTags: string[];
@@ -16,7 +16,9 @@ export function ArticleTagSelector({ allTags }: ArticleTagSelectorProps) {
   const selectedTags = searchParams.getAll('tags');
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const visibleTags = isExpanded ? allTags : allTags.slice(0, INITIAL_TAGS_COUNT);
+  const visibleTags = isExpanded
+    ? allTags
+    : allTags.slice(0, INITIAL_TAGS_COUNT);
   const hasMoreTags = allTags.length > INITIAL_TAGS_COUNT;
 
   const buildTagUrl = (tag: string) => {
@@ -38,7 +40,9 @@ export function ArticleTagSelector({ allTags }: ArticleTagSelectorProps) {
       newParams.append('tags', tag);
     }
 
-    return newParams.toString() ? `/articles?${newParams.toString()}` : '/articles';
+    return newParams.toString()
+      ? `/articles?${newParams.toString()}`
+      : '/articles';
   };
 
   if (allTags.length === 0) {

@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { headers } from "next/headers";
-import type { ReactNode } from "react";
-import { LogoutButton } from "./components/LogoutButton";
+import { headers } from 'next/headers';
+import Link from 'next/link';
+import type { ReactNode } from 'react';
+import { LogoutButton } from './components/LogoutButton';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -9,10 +9,10 @@ interface AdminLayoutProps {
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
   const headersList = await headers();
-  const pathname = headersList.get("x-pathname") || "";
+  const pathname = headersList.get('x-pathname') || '';
 
   // Login page uses minimal layout
-  if (pathname === "/admin/login") {
+  if (pathname === '/admin/login') {
     return <>{children}</>;
   }
 

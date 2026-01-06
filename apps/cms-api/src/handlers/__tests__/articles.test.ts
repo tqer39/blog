@@ -1,14 +1,14 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { Hono } from "hono";
-import { articlesHandler } from "../articles";
-import type { Env } from "../../index";
+import { Hono } from 'hono';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Env } from '../../index';
+import { articlesHandler } from '../articles';
 
 // Mock generateId to return predictable values
-vi.mock("../../lib/utils", async () => {
-  const actual = await vi.importActual("../../lib/utils");
+vi.mock('../../lib/utils', async () => {
+  const actual = await vi.importActual('../../lib/utils');
   return {
     ...actual,
-    generateId: vi.fn(() => "mock-id-123"),
+    generateId: vi.fn(() => 'mock-id-123'),
   };
 });
 
@@ -21,32 +21,32 @@ function createMockDB() {
 function createTestApp(mockDB: ReturnType<typeof createMockDB>) {
   const app = new Hono<{ Bindings: Env }>();
 
-  app.use("*", async (c, next) => {
+  app.use('*', async (c, next) => {
     c.env = {
       DB: mockDB as unknown as D1Database,
-      API_KEY: "test-key",
+      API_KEY: 'test-key',
     } as Env;
     await next();
   });
 
-  app.route("/articles", articlesHandler);
+  app.route('/articles', articlesHandler);
   return app;
 }
 
 const sampleArticle = {
-  id: "article-1",
-  hash: "abc123hash",
-  title: "Test Article",
-  description: "A test article",
-  content: "# Test Content",
-  status: "draft",
+  id: 'article-1',
+  hash: 'abc123hash',
+  title: 'Test Article',
+  description: 'A test article',
+  content: '# Test Content',
+  status: 'draft',
   published_at: null,
-  created_at: "2024-01-01T00:00:00Z",
-  updated_at: "2024-01-01T00:00:00Z",
+  created_at: '2024-01-01T00:00:00Z',
+  updated_at: '2024-01-01T00:00:00Z',
   header_image_id: null,
 };
 
-describe("articlesHandler", () => {
+describe('articlesHandler', () => {
   let mockDB: ReturnType<typeof createMockDB>;
 
   beforeEach(() => {
@@ -54,8 +54,8 @@ describe("articlesHandler", () => {
     vi.clearAllMocks();
   });
 
-  describe("GET /articles", () => {
-    it("should return paginated articles", async () => {
+  describe('GET /articles', () => {
+    it('should return paginated articles', async () => {
       // Mock count query
       const mockPrepare = vi.fn();
       mockPrepare
@@ -87,7 +87,7 @@ describe("articlesHandler", () => {
       mockDB.prepare = mockPrepare;
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles");
+      const res = await app.request('/articles');
 
       expect(res.status).toBe(200);
       const data = await res.json();
@@ -97,7 +97,7 @@ describe("articlesHandler", () => {
       expect(data.perPage).toBe(10);
     });
 
-    it("should filter by status", async () => {
+    it('should filter by status', async () => {
       const mockPrepare = vi.fn();
       mockPrepare
         .mockReturnValueOnce({
@@ -114,7 +114,7 @@ describe("articlesHandler", () => {
       mockDB.prepare = mockPrepare;
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles?status=published");
+      const res = await app.request('/articles?status=published');
 
       expect(res.status).toBe(200);
       // Verify status filter was applied
@@ -122,8 +122,8 @@ describe("articlesHandler", () => {
     });
   });
 
-  describe("GET /articles/:hash", () => {
-    it("should return an article by hash", async () => {
+  describe('GET /articles/:hash', () => {
+    it('should return an article by hash', async () => {
       mockDB.prepare
         .mockReturnValueOnce({
           bind: vi.fn().mockReturnValue({
@@ -132,7 +132,9 @@ describe("articlesHandler", () => {
         })
         .mockReturnValueOnce({
           bind: vi.fn().mockReturnValue({
-            all: vi.fn().mockResolvedValue({ results: [{ name: "javascript" }] }),
+            all: vi
+              .fn()
+              .mockResolvedValue({ results: [{ name: 'javascript' }] }),
           }),
         })
         .mockReturnValueOnce({
@@ -142,16 +144,16 @@ describe("articlesHandler", () => {
         });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles/abc123hash");
+      const res = await app.request('/articles/abc123hash');
 
       expect(res.status).toBe(200);
       const data = await res.json();
-      expect(data.title).toBe("Test Article");
-      expect(data.hash).toBe("abc123hash");
-      expect(data.tags).toContain("javascript");
+      expect(data.title).toBe('Test Article');
+      expect(data.hash).toBe('abc123hash');
+      expect(data.tags).toContain('javascript');
     });
 
-    it("should return 404 when article not found", async () => {
+    it('should return 404 when article not found', async () => {
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
           first: vi.fn().mockResolvedValue(null),
@@ -159,19 +161,19 @@ describe("articlesHandler", () => {
       });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles/nonexistent");
+      const res = await app.request('/articles/nonexistent');
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe("Article not found");
+      expect(data.error).toBe('Article not found');
     });
   });
 
-  describe("POST /articles", () => {
-    it("should create a new article", async () => {
+  describe('POST /articles', () => {
+    it('should create a new article', async () => {
       const createdArticle = {
         ...sampleArticle,
-        id: "mock-id-123",
+        id: 'mock-id-123',
       };
 
       mockDB.prepare
@@ -195,71 +197,71 @@ describe("articlesHandler", () => {
         });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await app.request('/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: "Test Article",
-          content: "# Test Content",
+          title: 'Test Article',
+          content: '# Test Content',
         }),
       });
 
       expect(res.status).toBe(201);
       const data = await res.json();
-      expect(data.title).toBe("Test Article");
+      expect(data.title).toBe('Test Article');
     });
 
-    it("should return 400 when title is missing", async () => {
+    it('should return 400 when title is missing', async () => {
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: "Some content" }),
+      const res = await app.request('/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: 'Some content' }),
       });
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toBe("Title and content are required");
+      expect(data.error).toBe('Title and content are required');
     });
 
-    it("should return 400 when content is missing", async () => {
+    it('should return 400 when content is missing', async () => {
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "Some title" }),
+      const res = await app.request('/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: 'Some title' }),
       });
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toBe("Title and content are required");
+      expect(data.error).toBe('Title and content are required');
     });
 
-    it("should return 409 when hash already exists", async () => {
+    it('should return 409 when hash already exists', async () => {
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
-          run: vi.fn().mockRejectedValue(new Error("UNIQUE constraint failed")),
+          run: vi.fn().mockRejectedValue(new Error('UNIQUE constraint failed')),
         }),
       });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await app.request('/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          title: "Test Article",
-          content: "Content",
+          title: 'Test Article',
+          content: 'Content',
         }),
       });
 
       expect(res.status).toBe(409);
       const data = await res.json();
-      expect(data.error).toBe("Article with this hash already exists");
+      expect(data.error).toBe('Article with this hash already exists');
     });
   });
 
-  describe("DELETE /articles/:hash", () => {
-    it("should delete an article", async () => {
+  describe('DELETE /articles/:hash', () => {
+    it('should delete an article', async () => {
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
           run: vi.fn().mockResolvedValue({ meta: { changes: 1 } }),
@@ -267,14 +269,16 @@ describe("articlesHandler", () => {
       });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles/abc123hash", { method: "DELETE" });
+      const res = await app.request('/articles/abc123hash', {
+        method: 'DELETE',
+      });
 
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.success).toBe(true);
     });
 
-    it("should return 404 when deleting non-existent article", async () => {
+    it('should return 404 when deleting non-existent article', async () => {
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
           run: vi.fn().mockResolvedValue({ meta: { changes: 0 } }),
@@ -282,17 +286,23 @@ describe("articlesHandler", () => {
       });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles/nonexistent", { method: "DELETE" });
+      const res = await app.request('/articles/nonexistent', {
+        method: 'DELETE',
+      });
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe("Article not found");
+      expect(data.error).toBe('Article not found');
     });
   });
 
-  describe("POST /articles/:hash/publish", () => {
-    it("should publish an article", async () => {
-      const publishedArticle = { ...sampleArticle, status: "published", published_at: "2024-01-02" };
+  describe('POST /articles/:hash/publish', () => {
+    it('should publish an article', async () => {
+      const publishedArticle = {
+        ...sampleArticle,
+        status: 'published',
+        published_at: '2024-01-02',
+      };
 
       mockDB.prepare
         .mockReturnValueOnce({
@@ -317,14 +327,16 @@ describe("articlesHandler", () => {
         });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles/abc123hash/publish", { method: "POST" });
+      const res = await app.request('/articles/abc123hash/publish', {
+        method: 'POST',
+      });
 
       expect(res.status).toBe(200);
       const data = await res.json();
-      expect(data.status).toBe("published");
+      expect(data.status).toBe('published');
     });
 
-    it("should return 404 when publishing non-existent article", async () => {
+    it('should return 404 when publishing non-existent article', async () => {
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
           run: vi.fn().mockResolvedValue({ meta: { changes: 0 } }),
@@ -332,17 +344,19 @@ describe("articlesHandler", () => {
       });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles/nonexistent/publish", { method: "POST" });
+      const res = await app.request('/articles/nonexistent/publish', {
+        method: 'POST',
+      });
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe("Article not found");
+      expect(data.error).toBe('Article not found');
     });
   });
 
-  describe("POST /articles/:hash/unpublish", () => {
-    it("should unpublish an article", async () => {
-      const unpublishedArticle = { ...sampleArticle, status: "draft" };
+  describe('POST /articles/:hash/unpublish', () => {
+    it('should unpublish an article', async () => {
+      const unpublishedArticle = { ...sampleArticle, status: 'draft' };
 
       mockDB.prepare
         .mockReturnValueOnce({
@@ -367,11 +381,13 @@ describe("articlesHandler", () => {
         });
 
       const app = createTestApp(mockDB);
-      const res = await app.request("/articles/abc123hash/unpublish", { method: "POST" });
+      const res = await app.request('/articles/abc123hash/unpublish', {
+        method: 'POST',
+      });
 
       expect(res.status).toBe(200);
       const data = await res.json();
-      expect(data.status).toBe("draft");
+      expect(data.status).toBe('draft');
     });
   });
 });

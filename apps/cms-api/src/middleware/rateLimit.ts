@@ -1,5 +1,5 @@
-import type { Context, Next } from "hono";
-import type { Env } from "../index";
+import type { Context, Next } from 'hono';
+import type { Env } from '../index';
 
 interface RateLimitEntry {
   count: number;
@@ -26,13 +26,13 @@ function cleanup() {
 
 export async function rateLimitMiddleware(
   c: Context<{ Bindings: Env }>,
-  next: Next,
+  next: Next
 ) {
   // Get client IP from Cloudflare headers
   const clientIp =
-    c.req.header("cf-connecting-ip") ||
-    c.req.header("x-forwarded-for")?.split(",")[0] ||
-    "unknown";
+    c.req.header('cf-connecting-ip') ||
+    c.req.header('x-forwarded-for')?.split(',')[0] ||
+    'unknown';
 
   const now = Date.now();
   const entry = rateLimitStore.get(clientIp);
@@ -41,8 +41,8 @@ export async function rateLimitMiddleware(
     // Within current window
     if (entry.count >= MAX_REQUESTS) {
       return c.json(
-        { error: "Too many requests. Please try again later." },
-        429,
+        { error: 'Too many requests. Please try again later.' },
+        429
       );
     }
     entry.count++;

@@ -31,11 +31,12 @@ function TagLinkInner({ tag, size = 'sm' }: TagLinkProps) {
     newParams.append('tags', tag);
   }
 
-  const href = newParams.toString() ? `/articles?${newParams.toString()}` : '/articles';
+  const href = newParams.toString()
+    ? `/articles?${newParams.toString()}`
+    : '/articles';
 
-  const sizeClasses = size === 'sm'
-    ? 'px-2 py-0.5 text-xs'
-    : 'px-2 py-1 text-sm';
+  const sizeClasses =
+    size === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-2 py-1 text-sm';
 
   return (
     <Link
@@ -53,9 +54,8 @@ function TagLinkInner({ tag, size = 'sm' }: TagLinkProps) {
 }
 
 function TagLinkFallback({ tag, size = 'sm' }: TagLinkProps) {
-  const sizeClasses = size === 'sm'
-    ? 'px-2 py-0.5 text-xs'
-    : 'px-2 py-1 text-sm';
+  const sizeClasses =
+    size === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-2 py-1 text-sm';
 
   return (
     <Link

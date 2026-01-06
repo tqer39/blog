@@ -1,9 +1,9 @@
-import dayjs from "dayjs";
-import Image from "next/image";
-import Link from "next/link";
+import dayjs from 'dayjs';
+import Image from 'next/image';
+import Link from 'next/link';
 
-import type { Article } from "@/types/article";
-import { TagLink } from "./TagLink";
+import type { Article } from '@/types/article';
+import { TagLink } from './TagLink';
 
 interface ArticleCardProps {
   article: Article;
@@ -39,7 +39,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
           dateTime={displayDate}
           className="text-xs text-stone-500 dark:text-stone-500"
         >
-          {dayjs(displayDate).format("YYYY/MM/DD")}
+          {dayjs(displayDate).format('YYYY/MM/DD')}
         </time>
         <div className="flex flex-wrap gap-1">
           {article.tags.map((tag) => (

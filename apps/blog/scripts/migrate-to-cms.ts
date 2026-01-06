@@ -10,12 +10,12 @@
  *   - D1 database initialized (just db-migrate-local)
  */
 
-import fs from "node:fs";
-import path from "node:path";
-import matter from "gray-matter";
+import fs from 'node:fs';
+import path from 'node:path';
+import matter from 'gray-matter';
 
-const API_URL = process.env.CMS_API_URL || "http://localhost:8787/v1";
-const API_KEY = process.env.CMS_API_KEY || "dev-api-key";
+const API_URL = process.env.CMS_API_URL || 'http://localhost:8787/v1';
+const API_KEY = process.env.CMS_API_KEY || 'dev-api-key';
 
 interface OldFrontmatter {
   title: string;
@@ -30,7 +30,7 @@ interface ArticleInput {
   title: string;
   description?: string;
   content: string;
-  status?: "draft" | "published";
+  status?: 'draft' | 'published';
   tags?: string[];
 }
 
@@ -41,7 +41,7 @@ async function fetchApi<T>(
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${API_KEY}`,
       ...options.headers,
     },
@@ -56,42 +56,40 @@ async function fetchApi<T>(
 }
 
 async function createArticle(input: ArticleInput): Promise<void> {
-  await fetchApi("/articles", {
-    method: "POST",
+  await fetchApi('/articles', {
+    method: 'POST',
     body: JSON.stringify(input),
   });
 }
 
 async function createTagIfNotExists(tagName: string): Promise<void> {
-  const slug = tagName.toLowerCase().replace(/\s+/g, "-");
+  const slug = tagName.toLowerCase().replace(/\s+/g, '-');
   try {
-    await fetchApi("/tags", {
-      method: "POST",
+    await fetchApi('/tags', {
+      method: 'POST',
       body: JSON.stringify({ name: tagName, slug }),
     });
     console.log(`  Created tag: ${tagName}`);
   } catch (error) {
     // Tag might already exist, which is fine
-    if (error instanceof Error && !error.message.includes("409")) {
+    if (error instanceof Error && !error.message.includes('409')) {
       console.log(`  Tag already exists: ${tagName}`);
     }
   }
 }
 
 async function migrate(): Promise<void> {
-  const contentsDir = path.join(process.cwd(), "src/contents");
+  const contentsDir = path.join(process.cwd(), 'src/contents');
 
   if (!fs.existsSync(contentsDir)) {
-    console.log("No contents directory found. Nothing to migrate.");
+    console.log('No contents directory found. Nothing to migrate.');
     return;
   }
 
-  const files = fs
-    .readdirSync(contentsDir)
-    .filter((f) => f.endsWith(".md"));
+  const files = fs.readdirSync(contentsDir).filter((f) => f.endsWith('.md'));
 
   if (files.length === 0) {
-    console.log("No markdown files found. Nothing to migrate.");
+    console.log('No markdown files found. Nothing to migrate.');
     return;
   }
 
@@ -102,7 +100,7 @@ async function migrate(): Promise<void> {
   // First pass: collect all tags
   for (const filename of files) {
     const filePath = path.join(contentsDir, filename);
-    const fileContents = fs.readFileSync(filePath, "utf8");
+    const fileContents = fs.readFileSync(filePath, 'utf8');
     const { data } = matter(fileContents);
     const frontmatter = data as OldFrontmatter;
 
@@ -124,9 +122,9 @@ async function migrate(): Promise<void> {
 
   // Migrate articles
   for (const filename of files) {
-    const slug = filename.replace(/\.md$/, "");
+    const slug = filename.replace(/\.md$/, '');
     const filePath = path.join(contentsDir, filename);
-    const fileContents = fs.readFileSync(filePath, "utf8");
+    const fileContents = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContents);
     const frontmatter = data as OldFrontmatter;
 
@@ -134,14 +132,14 @@ async function migrate(): Promise<void> {
     console.log(`  Title: ${frontmatter.title}`);
     console.log(`  Date: ${frontmatter.date}`);
     console.log(`  Published: ${frontmatter.published}`);
-    console.log(`  Tags: ${frontmatter.tags.join(", ")}`);
+    console.log(`  Tags: ${frontmatter.tags.join(', ')}`);
 
     const input: ArticleInput = {
       slug,
       title: frontmatter.title,
       description: frontmatter.description,
       content: content.trim(),
-      status: frontmatter.published ? "published" : "draft",
+      status: frontmatter.published ? 'published' : 'draft',
       tags: frontmatter.tags,
     };
 
@@ -155,7 +153,7 @@ async function migrate(): Promise<void> {
     }
   }
 
-  console.log("Migration complete!");
+  console.log('Migration complete!');
 }
 
 migrate().catch(console.error);

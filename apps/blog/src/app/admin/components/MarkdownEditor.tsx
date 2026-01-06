@@ -1,31 +1,31 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Bold,
   Code,
+  Columns2,
+  Eye,
+  GripVertical,
   Heading2,
   Italic,
   Link,
   List,
-  Columns2,
-  Eye,
-  Pencil,
-  GripVertical,
   Maximize2,
-} from "lucide-react";
-import { ArticleContent } from "@/components/ArticleContent";
-import { FullscreenModal } from "@/components/FullscreenModal";
-import { EmojiSuggester } from "./EmojiSuggester";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+  Pencil,
+} from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ArticleContent } from '@/components/ArticleContent';
+import { FullscreenModal } from '@/components/FullscreenModal';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from '@/components/ui/tooltip';
+import { EmojiSuggester } from './EmojiSuggester';
 
 interface MarkdownEditorProps {
   value: string;
@@ -41,8 +41,8 @@ export function MarkdownEditor({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [previewMode, setPreviewMode] = useState<"edit" | "preview" | "split">(
-    "split"
+  const [previewMode, setPreviewMode] = useState<'edit' | 'preview' | 'split'>(
+    'split'
   );
   const [splitRatio, setSplitRatio] = useState(50); // percentage for editor width
   const [isDragging, setIsDragging] = useState(false);
@@ -107,7 +107,7 @@ export function MarkdownEditor({
       if (!items) return;
 
       for (const item of Array.from(items)) {
-        if (item.type.startsWith("image/")) {
+        if (item.type.startsWith('image/')) {
           e.preventDefault();
           const file = item.getAsFile();
           if (!file) continue;
@@ -117,7 +117,9 @@ export function MarkdownEditor({
             const url = await onImageUpload(file);
             insertTextAtCursor(`![](${url})`);
           } catch (err) {
-            alert(err instanceof Error ? err.message : "Failed to upload image");
+            alert(
+              err instanceof Error ? err.message : 'Failed to upload image'
+            );
           } finally {
             setIsUploading(false);
           }
@@ -126,8 +128,8 @@ export function MarkdownEditor({
       }
     };
 
-    textarea.addEventListener("paste", handlePaste);
-    return () => textarea.removeEventListener("paste", handlePaste);
+    textarea.addEventListener('paste', handlePaste);
+    return () => textarea.removeEventListener('paste', handlePaste);
   }, [onImageUpload, insertTextAtCursor]);
 
   // Handle drag and drop
@@ -148,13 +150,15 @@ export function MarkdownEditor({
       if (!files?.length) return;
 
       for (const file of Array.from(files)) {
-        if (file.type.startsWith("image/")) {
+        if (file.type.startsWith('image/')) {
           setIsUploading(true);
           try {
             const url = await onImageUpload(file);
             insertTextAtCursor(`![](${url})\n`);
           } catch (err) {
-            alert(err instanceof Error ? err.message : "Failed to upload image");
+            alert(
+              err instanceof Error ? err.message : 'Failed to upload image'
+            );
           } finally {
             setIsUploading(false);
           }
@@ -162,11 +166,11 @@ export function MarkdownEditor({
       }
     };
 
-    textarea.addEventListener("dragover", handleDragOver);
-    textarea.addEventListener("drop", handleDrop);
+    textarea.addEventListener('dragover', handleDragOver);
+    textarea.addEventListener('drop', handleDrop);
     return () => {
-      textarea.removeEventListener("dragover", handleDragOver);
-      textarea.removeEventListener("drop", handleDrop);
+      textarea.removeEventListener('dragover', handleDragOver);
+      textarea.removeEventListener('drop', handleDrop);
     };
   }, [onImageUpload, insertTextAtCursor]);
 
@@ -199,12 +203,12 @@ export function MarkdownEditor({
       setIsDragging(false);
     };
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isDragging]);
 
@@ -226,12 +230,12 @@ export function MarkdownEditor({
       setIsFullscreenDragging(false);
     };
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isFullscreenDragging]);
 
@@ -247,7 +251,7 @@ export function MarkdownEditor({
                   variant="ghost"
                   size="sm"
                   className="h-8 w-8 p-0"
-                  onClick={() => wrapSelection("**", "**")}
+                  onClick={() => wrapSelection('**', '**')}
                 >
                   <Bold className="h-4 w-4" />
                 </Button>
@@ -261,7 +265,7 @@ export function MarkdownEditor({
                   variant="ghost"
                   size="sm"
                   className="h-8 w-8 p-0"
-                  onClick={() => wrapSelection("_", "_")}
+                  onClick={() => wrapSelection('_', '_')}
                 >
                   <Italic className="h-4 w-4" />
                 </Button>
@@ -277,7 +281,7 @@ export function MarkdownEditor({
                   variant="ghost"
                   size="sm"
                   className="h-8 w-8 p-0"
-                  onClick={() => insertTextAtCursor("## ")}
+                  onClick={() => insertTextAtCursor('## ')}
                 >
                   <Heading2 className="h-4 w-4" />
                 </Button>
@@ -291,7 +295,7 @@ export function MarkdownEditor({
                   variant="ghost"
                   size="sm"
                   className="h-8 w-8 p-0"
-                  onClick={() => insertTextAtCursor("- ")}
+                  onClick={() => insertTextAtCursor('- ')}
                 >
                   <List className="h-4 w-4" />
                 </Button>
@@ -307,7 +311,7 @@ export function MarkdownEditor({
                   variant="ghost"
                   size="sm"
                   className="h-8 w-8 p-0"
-                  onClick={() => insertTextAtCursor("```\n\n```")}
+                  onClick={() => insertTextAtCursor('```\n\n```')}
                 >
                   <Code className="h-4 w-4" />
                 </Button>
@@ -321,7 +325,7 @@ export function MarkdownEditor({
                   variant="ghost"
                   size="sm"
                   className="h-8 w-8 p-0"
-                  onClick={() => insertTextAtCursor("[](url)")}
+                  onClick={() => insertTextAtCursor('[](url)')}
                 >
                   <Link className="h-4 w-4" />
                 </Button>
@@ -334,7 +338,9 @@ export function MarkdownEditor({
             <ToggleGroup
               type="single"
               value={previewMode}
-              onValueChange={(v) => v && setPreviewMode(v as typeof previewMode)}
+              onValueChange={(v) =>
+                v && setPreviewMode(v as typeof previewMode)
+              }
               size="sm"
             >
               <ToggleGroupItem value="edit" aria-label="Edit mode">
@@ -376,13 +382,13 @@ export function MarkdownEditor({
         {/* Editor Area */}
         <div
           ref={containerRef}
-          className={`flex min-h-[500px] ${isDragging ? "select-none" : ""}`}
+          className={`flex min-h-[500px] ${isDragging ? 'select-none' : ''}`}
         >
-          {(previewMode === "edit" || previewMode === "split") && (
+          {(previewMode === 'edit' || previewMode === 'split') && (
             <div
               className="relative"
               style={{
-                width: previewMode === "split" ? `${splitRatio}%` : "100%",
+                width: previewMode === 'split' ? `${splitRatio}%` : '100%',
                 flexShrink: 0,
               }}
             >
@@ -395,29 +401,31 @@ export function MarkdownEditor({
               />
               {isUploading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-background/80">
-                  <div className="text-muted-foreground">Uploading image...</div>
+                  <div className="text-muted-foreground">
+                    Uploading image...
+                  </div>
                 </div>
               )}
             </div>
           )}
           {/* Resizable Divider */}
-          {previewMode === "split" && (
+          {previewMode === 'split' && (
             <button
               type="button"
               aria-label="Resize editor and preview panels"
               onMouseDown={handleMouseDown}
-              className={`group flex w-2 cursor-col-resize items-center justify-center border-x bg-muted/30 transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary ${isDragging ? "bg-primary/20" : ""}`}
+              className={`group flex w-2 cursor-col-resize items-center justify-center border-x bg-muted/30 transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary ${isDragging ? 'bg-primary/20' : ''}`}
             >
               <GripVertical className="h-6 w-4 text-muted-foreground/50 group-hover:text-muted-foreground" />
             </button>
           )}
-          {(previewMode === "preview" || previewMode === "split") && (
+          {(previewMode === 'preview' || previewMode === 'split') && (
             <div
               className="overflow-auto bg-background p-4"
               style={{
                 width:
-                  previewMode === "split" ? `${100 - splitRatio}%` : "100%",
-                flexGrow: previewMode === "preview" ? 1 : 0,
+                  previewMode === 'split' ? `${100 - splitRatio}%` : '100%',
+                flexGrow: previewMode === 'preview' ? 1 : 0,
               }}
             >
               <ArticleContent content={value} />
@@ -441,7 +449,7 @@ export function MarkdownEditor({
       >
         <div
           ref={fullscreenContainerRef}
-          className={`flex h-full ${isFullscreenDragging ? "select-none" : ""}`}
+          className={`flex h-full ${isFullscreenDragging ? 'select-none' : ''}`}
         >
           <div
             className="flex flex-col"
@@ -460,7 +468,7 @@ export function MarkdownEditor({
             type="button"
             aria-label="Resize editor and preview panels"
             onMouseDown={handleFullscreenMouseDown}
-            className={`group mx-1 flex w-3 cursor-col-resize items-center justify-center rounded-full bg-muted/50 transition-colors hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-primary ${isFullscreenDragging ? "bg-primary/30" : ""}`}
+            className={`group mx-1 flex w-3 cursor-col-resize items-center justify-center rounded-full bg-muted/50 transition-colors hover:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-primary ${isFullscreenDragging ? 'bg-primary/30' : ''}`}
           >
             <GripVertical className="h-8 w-4 text-muted-foreground/70 group-hover:text-muted-foreground" />
           </button>

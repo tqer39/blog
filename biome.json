@@ -1,6 +1,13 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": { "level": "on" }
+      }
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -14,7 +21,6 @@
       },
       "suspicious": {
         "noExplicitAny": "warn",
-        "noUnknownAtRules": "off",
         "noArrayIndexKey": "off"
       },
       "security": {

@@ -34,13 +34,13 @@ start:
 
 # Code quality
 lint:
-    @biome lint --write .
+    @npx biome lint --write .
 
 format:
-    @biome format --write .
+    @npx biome format --write .
 
 check:
-    @biome check --write .
+    @npx biome check --write .
 
 lint-hook hook:
     @prek run {{hook}}

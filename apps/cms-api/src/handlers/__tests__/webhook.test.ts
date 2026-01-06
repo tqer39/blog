@@ -1,6 +1,6 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { Hono } from "hono";
-import { webhookHandler } from "../webhook";
+import { Hono } from 'hono';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { webhookHandler } from '../webhook';
 
 interface WebhookEnv {
   VERCEL_DEPLOY_HOOK_URL?: string;
@@ -10,7 +10,7 @@ interface WebhookEnv {
 function createTestApp(env: Partial<WebhookEnv> = {}) {
   const app = new Hono<{ Bindings: WebhookEnv }>();
 
-  app.use("*", async (c, next) => {
+  app.use('*', async (c, next) => {
     c.env = {
       VERCEL_DEPLOY_HOOK_URL: env.VERCEL_DEPLOY_HOOK_URL,
       WEBHOOK_SECRET: env.WEBHOOK_SECRET,
@@ -18,7 +18,7 @@ function createTestApp(env: Partial<WebhookEnv> = {}) {
     await next();
   });
 
-  app.route("/webhook", webhookHandler);
+  app.route('/webhook', webhookHandler);
   return app;
 }
 
@@ -26,133 +26,133 @@ function createTestApp(env: Partial<WebhookEnv> = {}) {
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
-describe("webhookHandler", () => {
+describe('webhookHandler', () => {
   beforeEach(() => {
     mockFetch.mockReset();
   });
 
-  describe("POST /webhook/rebuild", () => {
-    it("should trigger rebuild successfully", async () => {
+  describe('POST /webhook/rebuild', () => {
+    it('should trigger rebuild successfully', async () => {
       mockFetch.mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({ job: { id: "job-123" } }),
+        json: () => Promise.resolve({ job: { id: 'job-123' } }),
       });
 
       const app = createTestApp({
-        VERCEL_DEPLOY_HOOK_URL: "https://api.vercel.com/deploy/hook",
+        VERCEL_DEPLOY_HOOK_URL: 'https://api.vercel.com/deploy/hook',
       });
 
-      const res = await app.request("/webhook/rebuild", { method: "POST" });
+      const res = await app.request('/webhook/rebuild', { method: 'POST' });
 
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.success).toBe(true);
-      expect(data.message).toBe("Rebuild triggered successfully");
+      expect(data.message).toBe('Rebuild triggered successfully');
       expect(mockFetch).toHaveBeenCalledWith(
-        "https://api.vercel.com/deploy/hook",
-        expect.objectContaining({ method: "POST" })
+        'https://api.vercel.com/deploy/hook',
+        expect.objectContaining({ method: 'POST' })
       );
     });
 
-    it("should return 500 when VERCEL_DEPLOY_HOOK_URL is not configured", async () => {
+    it('should return 500 when VERCEL_DEPLOY_HOOK_URL is not configured', async () => {
       const app = createTestApp({});
 
-      const res = await app.request("/webhook/rebuild", { method: "POST" });
+      const res = await app.request('/webhook/rebuild', { method: 'POST' });
 
       expect(res.status).toBe(500);
       const data = await res.json();
-      expect(data.error).toBe("VERCEL_DEPLOY_HOOK_URL not configured");
+      expect(data.error).toBe('VERCEL_DEPLOY_HOOK_URL not configured');
     });
 
-    it("should verify webhook secret when configured", async () => {
+    it('should verify webhook secret when configured', async () => {
       mockFetch.mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({ job: { id: "job-123" } }),
+        json: () => Promise.resolve({ job: { id: 'job-123' } }),
       });
 
       const app = createTestApp({
-        VERCEL_DEPLOY_HOOK_URL: "https://api.vercel.com/deploy/hook",
-        WEBHOOK_SECRET: "my-secret",
+        VERCEL_DEPLOY_HOOK_URL: 'https://api.vercel.com/deploy/hook',
+        WEBHOOK_SECRET: 'my-secret',
       });
 
       // Request with correct secret
-      const res = await app.request("/webhook/rebuild", {
-        method: "POST",
-        headers: { "X-Webhook-Secret": "my-secret" },
+      const res = await app.request('/webhook/rebuild', {
+        method: 'POST',
+        headers: { 'X-Webhook-Secret': 'my-secret' },
       });
 
       expect(res.status).toBe(200);
     });
 
-    it("should return 401 when webhook secret is invalid", async () => {
+    it('should return 401 when webhook secret is invalid', async () => {
       const app = createTestApp({
-        VERCEL_DEPLOY_HOOK_URL: "https://api.vercel.com/deploy/hook",
-        WEBHOOK_SECRET: "my-secret",
+        VERCEL_DEPLOY_HOOK_URL: 'https://api.vercel.com/deploy/hook',
+        WEBHOOK_SECRET: 'my-secret',
       });
 
-      const res = await app.request("/webhook/rebuild", {
-        method: "POST",
-        headers: { "X-Webhook-Secret": "wrong-secret" },
+      const res = await app.request('/webhook/rebuild', {
+        method: 'POST',
+        headers: { 'X-Webhook-Secret': 'wrong-secret' },
       });
 
       expect(res.status).toBe(401);
       const data = await res.json();
-      expect(data.error).toBe("Unauthorized");
+      expect(data.error).toBe('Unauthorized');
     });
 
-    it("should return 401 when webhook secret is missing", async () => {
+    it('should return 401 when webhook secret is missing', async () => {
       const app = createTestApp({
-        VERCEL_DEPLOY_HOOK_URL: "https://api.vercel.com/deploy/hook",
-        WEBHOOK_SECRET: "my-secret",
+        VERCEL_DEPLOY_HOOK_URL: 'https://api.vercel.com/deploy/hook',
+        WEBHOOK_SECRET: 'my-secret',
       });
 
-      const res = await app.request("/webhook/rebuild", { method: "POST" });
+      const res = await app.request('/webhook/rebuild', { method: 'POST' });
 
       expect(res.status).toBe(401);
     });
 
-    it("should handle Vercel API failure", async () => {
+    it('should handle Vercel API failure', async () => {
       mockFetch.mockResolvedValue({
         ok: false,
-        text: () => Promise.resolve("Internal Server Error"),
+        text: () => Promise.resolve('Internal Server Error'),
       });
 
       const app = createTestApp({
-        VERCEL_DEPLOY_HOOK_URL: "https://api.vercel.com/deploy/hook",
+        VERCEL_DEPLOY_HOOK_URL: 'https://api.vercel.com/deploy/hook',
       });
 
-      const res = await app.request("/webhook/rebuild", { method: "POST" });
+      const res = await app.request('/webhook/rebuild', { method: 'POST' });
 
       expect(res.status).toBe(500);
       const data = await res.json();
-      expect(data.error).toBe("Failed to trigger rebuild");
-      expect(data.details).toBe("Internal Server Error");
+      expect(data.error).toBe('Failed to trigger rebuild');
+      expect(data.details).toBe('Internal Server Error');
     });
 
-    it("should handle network errors", async () => {
-      mockFetch.mockRejectedValue(new Error("Network error"));
+    it('should handle network errors', async () => {
+      mockFetch.mockRejectedValue(new Error('Network error'));
 
       const app = createTestApp({
-        VERCEL_DEPLOY_HOOK_URL: "https://api.vercel.com/deploy/hook",
+        VERCEL_DEPLOY_HOOK_URL: 'https://api.vercel.com/deploy/hook',
       });
 
-      const res = await app.request("/webhook/rebuild", { method: "POST" });
+      const res = await app.request('/webhook/rebuild', { method: 'POST' });
 
       expect(res.status).toBe(500);
       const data = await res.json();
-      expect(data.error).toBe("Failed to trigger rebuild");
-      expect(data.details).toBe("Network error");
+      expect(data.error).toBe('Failed to trigger rebuild');
+      expect(data.details).toBe('Network error');
     });
   });
 
-  describe("GET /webhook/status", () => {
-    it("should return status when webhook is configured", async () => {
+  describe('GET /webhook/status', () => {
+    it('should return status when webhook is configured', async () => {
       const app = createTestApp({
-        VERCEL_DEPLOY_HOOK_URL: "https://api.vercel.com/deploy/hook",
-        WEBHOOK_SECRET: "my-secret",
+        VERCEL_DEPLOY_HOOK_URL: 'https://api.vercel.com/deploy/hook',
+        WEBHOOK_SECRET: 'my-secret',
       });
 
-      const res = await app.request("/webhook/status");
+      const res = await app.request('/webhook/status');
 
       expect(res.status).toBe(200);
       const data = await res.json();
@@ -160,10 +160,10 @@ describe("webhookHandler", () => {
       expect(data.webhookSecretConfigured).toBe(true);
     });
 
-    it("should return status when webhook is not configured", async () => {
+    it('should return status when webhook is not configured', async () => {
       const app = createTestApp({});
 
-      const res = await app.request("/webhook/status");
+      const res = await app.request('/webhook/status');
 
       expect(res.status).toBe(200);
       const data = await res.json();
@@ -171,12 +171,12 @@ describe("webhookHandler", () => {
       expect(data.webhookSecretConfigured).toBe(false);
     });
 
-    it("should return partial configuration status", async () => {
+    it('should return partial configuration status', async () => {
       const app = createTestApp({
-        VERCEL_DEPLOY_HOOK_URL: "https://api.vercel.com/deploy/hook",
+        VERCEL_DEPLOY_HOOK_URL: 'https://api.vercel.com/deploy/hook',
       });
 
-      const res = await app.request("/webhook/status");
+      const res = await app.request('/webhook/status');
 
       expect(res.status).toBe(200);
       const data = await res.json();
