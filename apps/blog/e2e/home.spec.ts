@@ -8,7 +8,7 @@ test.describe('Home Page', () => {
 
   test('should have navigation links', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('link', { name: 'Articles' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Articles', exact: true })).toBeVisible();
     await expect(
       page.getByRole('link', { name: "tqer39's blog" })
     ).toBeVisible();
@@ -31,8 +31,8 @@ test.describe('Home Page', () => {
 test.describe('Article Page', () => {
   test('should navigate to article from home', async ({ page }) => {
     await page.goto('/');
-    const firstArticle = page.locator('article').first();
-    await firstArticle.click();
+    const firstArticleLink = page.locator('article').first().getByRole('link').first();
+    await firstArticleLink.click();
     await expect(page).toHaveURL(/\/article\/.+/);
   });
 });
