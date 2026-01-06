@@ -1,5 +1,5 @@
 # CloudFlare DNS Record for Vercel
-resource "cloudflare_record" "blog" {
+resource "cloudflare_dns_record" "blog" {
   zone_id = var.zone_id
   name    = var.subdomain
   content = var.vercel_cname
