@@ -111,8 +111,35 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm --filter @blog/web exec playwright install --with-deps
 
+      - name: Setup D1 database
+        run: |
+          cd apps/cms-api
+          for migration in migrations/*.sql; do
+            pnpm wrangler d1 execute blog-cms --local --file="$migration"
+          done
+
+      - name: Start CMS API
+        run: pnpm --filter @blog/cms-api dev &
+
+      - name: Wait for CMS API
+        run: |
+          for i in {1..30}; do
+            curl -s http://localhost:8787/v1/articles && break
+            echo "Waiting for API... ($i/30)"
+            sleep 1
+          done
+
+      - name: Seed database
+        run: pnpm --filter @blog/cms-api seed
+        env:
+          CMS_API_URL: http://localhost:8787/v1
+          CMS_API_KEY: dev-api-key
+
       - name: Run E2E tests
         run: pnpm e2e
+        env:
+          CMS_API_URL: http://localhost:8787/v1
+          CMS_API_KEY: dev-api-key
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
