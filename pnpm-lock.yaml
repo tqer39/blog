@@ -205,6 +205,9 @@ importers:
 
   packages/cms-types:
     devDependencies:
+      '@blog/config':
+        specifier: workspace:*
+        version: link:../config
       typescript:
         specifier: 5.1.6
         version: 5.1.6

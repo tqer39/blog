@@ -17,6 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@blog/config": "workspace:*",
     "typescript": "5.1.6"
   }
 }
