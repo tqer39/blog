@@ -188,7 +188,6 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 | Secret               | Description                  |
 | -------------------- | ---------------------------- |
 | `RESEND_API_KEY_DEV` | Resend email service API key |
-| `STRIPE_SECRET_KEY`  | Stripe payment secret key    |
 | `SLACK_WEBHOOK_DEV`  | Slack notification webhook   |
 | `CODECOV_TOKEN`      | Codecov coverage token       |
 | `GEMINI_API_KEY`     | Google Gemini API key        |
