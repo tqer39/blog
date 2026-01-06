@@ -17,10 +17,9 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "072693953877-prod-terraform-state"
-    key            = "blog/prod/main/terraform.tfstate"
-    region         = "ap-northeast-1"
-    dynamodb_table = "prod-terraform-lock"
-    encrypt        = true
+    bucket  = "terraform-tfstate-tqer39-072693953877-ap-northeast-1"
+    key     = "blog/infra/terraform/envs/prod/prod-frontend.tfstate"
+    encrypt = true
+    region  = "ap-northeast-1"
   }
 }
