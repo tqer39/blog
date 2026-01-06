@@ -7,31 +7,15 @@ import type {
   TagInput,
   TagListResponse,
 } from '@blog/cms-types';
+import { createFetchClient } from '@blog/utils';
 
 const API_URL = process.env.CMS_API_URL || 'http://localhost:8787/v1';
 const API_KEY = process.env.CMS_API_KEY || 'dev-api-key';
 
-async function fetchApi<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${API_KEY}`,
-      ...options.headers,
-    },
-  });
-
-  if (!response.ok) {
-    const error = await response
-      .json()
-      .catch(() => ({ error: 'Unknown error' }));
-    throw new Error(error.error || `HTTP ${response.status}`);
-  }
-
-  return response.json();
-}
+const fetchApi = createFetchClient({
+  baseUrl: API_URL,
+  headers: { Authorization: `Bearer ${API_KEY}` },
+});
 
 // Articles
 export async function getArticles(params?: {

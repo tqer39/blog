@@ -7,22 +7,9 @@ import type {
   TagInput,
   TagListResponse,
 } from '@blog/cms-types';
+import { createFetchClient } from '@blog/utils';
 
-async function fetchApi<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const response = await fetch(`/api${endpoint}`, options);
-
-  if (!response.ok) {
-    const error = await response
-      .json()
-      .catch(() => ({ error: 'Unknown error' }));
-    throw new Error(error.error || `HTTP ${response.status}`);
-  }
-
-  return response.json();
-}
+const fetchApi = createFetchClient({ baseUrl: '/api' });
 
 // Articles
 export async function getArticles(params?: {
