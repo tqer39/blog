@@ -15,7 +15,7 @@ data "terraform_remote_state" "frontend" {
 }
 
 module "dns" {
-  source = "../../../modules/cloudflare"
+  source = "../../../modules/cloudflare-dns"
 
   zone_id = var.cloudflare_zone_id
 
