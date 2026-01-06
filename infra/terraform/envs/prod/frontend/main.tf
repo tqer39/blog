@@ -21,6 +21,7 @@ module "vercel_project" {
   organization     = local.config.project.organization
   repository       = local.config.project.repository
   framework        = local.environment.vercel.framework
+  root_directory   = local.environment.vercel.root_directory
   build_command    = local.environment.vercel.build_command
   output_directory = local.environment.vercel.output_directory
   domain           = local.domain

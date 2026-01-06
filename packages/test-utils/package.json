@@ -20,6 +20,9 @@
       "default": "./src/e2e/index.ts"
     }
   },
+  "devDependencies": {
+    "@blog/config": "workspace:*"
+  },
   "peerDependencies": {
     "@playwright/test": ">=1.40.0",
     "vitest": ">=1.0.0"

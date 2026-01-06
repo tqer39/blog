@@ -31,6 +31,12 @@ variable "output_directory" {
   default     = "out"
 }
 
+variable "root_directory" {
+  description = "Root directory for the project (for monorepos)"
+  type        = string
+  default     = null
+}
+
 variable "domain" {
   description = "Custom domain"
   type        = string
