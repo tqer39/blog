@@ -13,8 +13,9 @@ environments:
     subdomain: blog
     vercel:
       framework: nextjs
-      build_command: npm run build
-      output_directory: out
+      root_directory: apps/blog
+      build_command: pnpm build
+      output_directory: .next
 
 tags:
   common:

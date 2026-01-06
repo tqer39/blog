@@ -8,6 +8,7 @@ resource "vercel_project" "blog" {
     repo = "${var.organization}/${var.repository}"
   }
 
+  root_directory   = var.root_directory
   build_command    = var.build_command
   output_directory = var.output_directory
 
