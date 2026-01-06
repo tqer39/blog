@@ -16,7 +16,8 @@ interface ArticlePageProps {
 }
 
 export async function generateStaticParams() {
-  const articles = await getAllArticles();
+  const result = await getAllArticles();
+  const articles = result.ok ? result.data : [];
   return articles.map((article) => ({
     hash: article.hash,
   }));
@@ -28,11 +29,13 @@ export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
   const { hash } = await params;
-  const article = await getArticleByHash(hash);
+  const result = await getArticleByHash(hash);
 
-  if (!article) {
+  if (!result.ok || !result.data) {
     return { title: 'Article not found' };
   }
+
+  const article = result.data;
 
   const description = article.description || article.title;
   const url = `${BASE_URL}/article/${hash}`;
@@ -77,14 +80,17 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { hash } = await params;
-  const [article, allArticles] = await Promise.all([
+  const [articleResult, allArticlesResult] = await Promise.all([
     getArticleByHash(hash),
     getAllArticles(),
   ]);
 
-  if (!article) {
+  if (!articleResult.ok || !articleResult.data) {
     notFound();
   }
+
+  const article = articleResult.data;
+  const allArticles = allArticlesResult.ok ? allArticlesResult.data : [];
 
   // Find current article index and get prev/next articles
   // Articles are sorted by publishedAt descending (newest first)

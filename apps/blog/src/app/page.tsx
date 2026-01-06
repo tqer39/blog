@@ -4,8 +4,8 @@ import { ArticleCard } from '@/components/ArticleCard';
 import { getAllArticles } from '@/lib/articles';
 
 export default async function HomePage() {
-  const allArticles = await getAllArticles();
-  const articles = allArticles.slice(0, 5);
+  const result = await getAllArticles();
+  const articles = result.ok ? result.data.slice(0, 5) : [];
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">

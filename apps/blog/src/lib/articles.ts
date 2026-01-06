@@ -1,71 +1,83 @@
 import type { Article, ArticleListResponse, Tag } from '@blog/cms-types';
+import {
+  createFetchClient,
+  err,
+  ok,
+  toError,
+  type Result,
+} from '@blog/utils';
 
 const API_URL = process.env.CMS_API_URL || 'http://localhost:8787/v1';
 const API_KEY = process.env.CMS_API_KEY || '';
 
-async function fetchApi<T>(endpoint: string): Promise<T> {
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    headers: {
-      Authorization: `Bearer ${API_KEY}`,
-    },
-    next: { revalidate: 60 }, // ISR: revalidate every 60 seconds
+const fetchApi = createFetchClient({
+  baseUrl: API_URL,
+  headers: { Authorization: `Bearer ${API_KEY}` },
+});
+
+/**
+ * Sort articles by date (publishedAt or createdAt) in descending order
+ */
+function sortArticlesByDate(articles: Article[]): Article[] {
+  return [...articles].sort((a, b) => {
+    const dateA = a.publishedAt || a.createdAt;
+    const dateB = b.publishedAt || b.createdAt;
+    return dateA > dateB ? -1 : 1;
   });
-
-  if (!response.ok) {
-    throw new Error(`API error ${response.status}`);
-  }
-
-  return response.json();
 }
 
-export async function getAllArticles(): Promise<Article[]> {
+export async function getAllArticles(): Promise<Result<Article[]>> {
   try {
     const data = await fetchApi<ArticleListResponse>(
-      '/articles?status=published&perPage=1000'
+      '/articles?status=published&perPage=1000',
+      { next: { revalidate: 60 } }
     );
-    // Sort by publishedAt descending
-    return data.articles.sort((a, b) => {
-      const dateA = a.publishedAt || a.createdAt;
-      const dateB = b.publishedAt || b.createdAt;
-      return dateA > dateB ? -1 : 1;
-    });
+    return ok(sortArticlesByDate(data.articles));
   } catch (error) {
     console.error('Failed to fetch articles:', error);
-    return [];
+    return err(toError(error));
   }
 }
 
-export async function getArticleByHash(hash: string): Promise<Article | null> {
+export async function getArticleByHash(
+  hash: string
+): Promise<Result<Article | null>> {
   try {
-    return await fetchApi<Article>(`/articles/${hash}`);
+    const article = await fetchApi<Article>(`/articles/${hash}`, {
+      next: { revalidate: 60 },
+    });
+    return ok(article);
   } catch (error) {
+    // 404 is expected for non-existent articles
+    if (error instanceof Error && error.message.includes('404')) {
+      return ok(null);
+    }
     console.error(`Failed to fetch article ${hash}:`, error);
-    return null;
+    return err(toError(error));
   }
 }
 
-export async function getAllTags(): Promise<string[]> {
+export async function getAllTags(): Promise<Result<string[]>> {
   try {
-    const tags = await fetchApi<Tag[]>('/tags');
-    return tags.map((t) => t.name).sort();
+    const tags = await fetchApi<Tag[]>('/tags', { next: { revalidate: 60 } });
+    return ok(tags.map((t) => t.name).sort());
   } catch (error) {
     console.error('Failed to fetch tags:', error);
-    return [];
+    return err(toError(error));
   }
 }
 
-export async function getArticlesByTag(tag: string): Promise<Article[]> {
+export async function getArticlesByTag(
+  tag: string
+): Promise<Result<Article[]>> {
   try {
     const data = await fetchApi<ArticleListResponse>(
-      `/articles?status=published&tag=${encodeURIComponent(tag)}&perPage=1000`
+      `/articles?status=published&tag=${encodeURIComponent(tag)}&perPage=1000`,
+      { next: { revalidate: 60 } }
     );
-    return data.articles.sort((a, b) => {
-      const dateA = a.publishedAt || a.createdAt;
-      const dateB = b.publishedAt || b.createdAt;
-      return dateA > dateB ? -1 : 1;
-    });
+    return ok(sortArticlesByDate(data.articles));
   } catch (error) {
     console.error(`Failed to fetch articles for tag ${tag}:`, error);
-    return [];
+    return err(toError(error));
   }
 }

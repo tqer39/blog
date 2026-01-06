@@ -80,19 +80,22 @@ describe('articles', () => {
           }),
       });
 
-      const articles = await getAllArticles();
+      const result = await getAllArticles();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('/articles?status=published&perPage=1000'),
         expect.any(Object)
       );
-      expect(articles).toHaveLength(2);
-      // Should be sorted by publishedAt descending
-      expect(articles[0].hash).toBe('testhash123'); // 2024-01-15
-      expect(articles[1].hash).toBe('anotherhash456'); // 2024-01-10
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.data).toHaveLength(2);
+        // Should be sorted by publishedAt descending
+        expect(result.data[0].hash).toBe('testhash123'); // 2024-01-15
+        expect(result.data[1].hash).toBe('anotherhash456'); // 2024-01-10
+      }
     });
 
-    it('should return empty array on API error', async () => {
+    it('should return error result on API error', async () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 500,
@@ -101,22 +104,22 @@ describe('articles', () => {
       const consoleSpy = vi
         .spyOn(console, 'error')
         .mockImplementation(() => {});
-      const articles = await getAllArticles();
+      const result = await getAllArticles();
 
-      expect(articles).toEqual([]);
+      expect(result.ok).toBe(false);
       expect(consoleSpy).toHaveBeenCalled();
       consoleSpy.mockRestore();
     });
 
-    it('should return empty array on network error', async () => {
+    it('should return error result on network error', async () => {
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       const consoleSpy = vi
         .spyOn(console, 'error')
         .mockImplementation(() => {});
-      const articles = await getAllArticles();
+      const result = await getAllArticles();
 
-      expect(articles).toEqual([]);
+      expect(result.ok).toBe(false);
       expect(consoleSpy).toHaveBeenCalled();
       consoleSpy.mockRestore();
     });
@@ -136,13 +139,16 @@ describe('articles', () => {
           }),
       });
 
-      const articles = await getAllArticles();
+      const result = await getAllArticles();
 
-      expect(articles).toHaveLength(2);
-      // articleWithPublishedAt has publishedAt: 2024-01-10
-      // articleWithoutPublishedAt falls back to createdAt: 2024-01-01
-      expect(articles[0].hash).toBe('anotherhash456');
-      expect(articles[1].hash).toBe('testhash123');
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.data).toHaveLength(2);
+        // articleWithPublishedAt has publishedAt: 2024-01-10
+        // articleWithoutPublishedAt falls back to createdAt: 2024-01-01
+        expect(result.data[0].hash).toBe('anotherhash456');
+        expect(result.data[1].hash).toBe('testhash123');
+      }
     });
   });
 
@@ -153,40 +159,42 @@ describe('articles', () => {
         json: () => Promise.resolve(sampleArticle),
       });
 
-      const article = await getArticleByHash('testhash123');
+      const result = await getArticleByHash('testhash123');
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('/articles/testhash123'),
         expect.any(Object)
       );
-      expect(article).toEqual(sampleArticle);
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.data).toEqual(sampleArticle);
+      }
     });
 
-    it('should return null when article not found', async () => {
+    it('should return ok with null when article not found (404)', async () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 404,
+        json: () => Promise.resolve({ error: 'HTTP 404' }),
       });
 
-      const consoleSpy = vi
-        .spyOn(console, 'error')
-        .mockImplementation(() => {});
-      const article = await getArticleByHash('nonexistent');
+      const result = await getArticleByHash('nonexistent');
 
-      expect(article).toBeNull();
-      expect(consoleSpy).toHaveBeenCalled();
-      consoleSpy.mockRestore();
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.data).toBeNull();
+      }
     });
 
-    it('should return null on network error', async () => {
+    it('should return error result on network error', async () => {
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       const consoleSpy = vi
         .spyOn(console, 'error')
         .mockImplementation(() => {});
-      const article = await getArticleByHash('testhash123');
+      const result = await getArticleByHash('testhash123');
 
-      expect(article).toBeNull();
+      expect(result.ok).toBe(false);
       consoleSpy.mockRestore();
     });
   });
@@ -198,16 +206,19 @@ describe('articles', () => {
         json: () => Promise.resolve(sampleTags),
       });
 
-      const tags = await getAllTags();
+      const result = await getAllTags();
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('/tags'),
         expect.any(Object)
       );
-      expect(tags).toEqual(['javascript', 'testing', 'typescript']);
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.data).toEqual(['javascript', 'testing', 'typescript']);
+      }
     });
 
-    it('should return empty array on error', async () => {
+    it('should return error result on error', async () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 500,
@@ -216,9 +227,9 @@ describe('articles', () => {
       const consoleSpy = vi
         .spyOn(console, 'error')
         .mockImplementation(() => {});
-      const tags = await getAllTags();
+      const result = await getAllTags();
 
-      expect(tags).toEqual([]);
+      expect(result.ok).toBe(false);
       consoleSpy.mockRestore();
     });
   });
@@ -236,7 +247,7 @@ describe('articles', () => {
           }),
       });
 
-      const articles = await getArticlesByTag('javascript');
+      const result = await getArticlesByTag('javascript');
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining(
@@ -244,8 +255,11 @@ describe('articles', () => {
         ),
         expect.any(Object)
       );
-      expect(articles).toHaveLength(1);
-      expect(articles[0].hash).toBe('testhash123');
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.data).toHaveLength(1);
+        expect(result.data[0].hash).toBe('testhash123');
+      }
     });
 
     it('should URL encode special characters in tag name', async () => {
@@ -268,15 +282,15 @@ describe('articles', () => {
       );
     });
 
-    it('should return empty array on error', async () => {
+    it('should return error result on error', async () => {
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       const consoleSpy = vi
         .spyOn(console, 'error')
         .mockImplementation(() => {});
-      const articles = await getArticlesByTag('javascript');
+      const result = await getArticlesByTag('javascript');
 
-      expect(articles).toEqual([]);
+      expect(result.ok).toBe(false);
       consoleSpy.mockRestore();
     });
 
@@ -292,10 +306,13 @@ describe('articles', () => {
           }),
       });
 
-      const articles = await getArticlesByTag('javascript');
+      const result = await getArticlesByTag('javascript');
 
-      expect(articles[0].hash).toBe('testhash123');
-      expect(articles[1].hash).toBe('anotherhash456');
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.data[0].hash).toBe('testhash123');
+        expect(result.data[1].hash).toBe('anotherhash456');
+      }
     });
   });
 });

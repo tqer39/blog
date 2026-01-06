@@ -15,7 +15,8 @@ interface ArticlesPageProps {
 }
 
 export async function generateStaticParams() {
-  const articles = await getAllArticles();
+  const result = await getAllArticles();
+  const articles = result.ok ? result.data : [];
   const totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE);
 
   return Array.from({ length: totalPages }, (_, i) => ({
@@ -38,7 +39,8 @@ export default async function ArticlesPage({
   const selectedTags = tags ? (Array.isArray(tags) ? tags : [tags]) : [];
   const searchQuery = q?.trim() || '';
 
-  const allArticles = await getAllArticles();
+  const result = await getAllArticles();
+  const allArticles = result.ok ? result.data : [];
 
   // Extract all unique tags from articles
   const allTags = [

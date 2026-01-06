@@ -4,7 +4,8 @@ import { getAllArticles } from '@/lib/articles';
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const articles = await getAllArticles();
+  const result = await getAllArticles();
+  const articles = result.ok ? result.data : [];
 
   const articleUrls = articles.map((article) => ({
     url: `${BASE_URL}/article/${article.hash}`,

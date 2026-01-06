@@ -14,7 +14,8 @@ function escapeXml(text: string): string {
 }
 
 export async function GET() {
-  const articles = await getAllArticles();
+  const result = await getAllArticles();
+  const articles = result.ok ? result.data : [];
 
   const rssItems = articles
     .slice(0, 20) // Limit to 20 most recent articles
