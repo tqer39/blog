@@ -176,7 +176,6 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 
 | Secret                  | 説明                     |
 | ----------------------- | ------------------------ |
-| `NEON_API_KEY`          | Neon Postgres API キー   |
 | `VERCEL_API_TOKEN`      | Vercel デプロイトークン  |
 | `CLOUDFLARE_API_TOKEN`  | CloudFlare API トークン  |
 | `CLOUDFLARE_ACCOUNT_ID` | CloudFlare アカウント ID |

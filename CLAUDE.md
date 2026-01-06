@@ -177,7 +177,6 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
 | Secret                  | Description             |
 | ----------------------- | ----------------------- |
-| `NEON_API_KEY`          | Neon Postgres API key   |
 | `VERCEL_API_TOKEN`      | Vercel deployment token |
 | `CLOUDFLARE_API_TOKEN`  | CloudFlare API token    |
 | `CLOUDFLARE_ACCOUNT_ID` | CloudFlare account ID   |
