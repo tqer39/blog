@@ -15,16 +15,17 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArticleContent } from '@/components/ArticleContent';
-import { FullscreenModal } from '@/components/FullscreenModal';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
+  Button,
+  FullscreenModal,
+  Separator,
+  ToggleGroup,
+  ToggleGroupItem,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@blog/ui';
 import { EmojiSuggester } from './EmojiSuggester';
 
 interface MarkdownEditorProps {

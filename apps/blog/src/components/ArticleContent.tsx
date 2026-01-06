@@ -7,8 +7,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 
-import { CodeBlock } from './CodeBlock';
-import { Mermaid } from './Mermaid';
+import { CodeBlock, Mermaid } from '@blog/ui';
 
 interface ArticleContentProps {
   content: string;

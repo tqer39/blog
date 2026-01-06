@@ -17,6 +17,7 @@
   "dependencies": {
     "@blog/cms-types": "workspace:*",
     "@blog/config": "workspace:*",
+    "@blog/ui": "workspace:*",
     "@blog/utils": "workspace:*",
     "@radix-ui/react-label": "2.1.8",
     "@radix-ui/react-popover": "1.1.15",

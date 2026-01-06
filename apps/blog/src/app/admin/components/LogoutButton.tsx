@@ -2,7 +2,7 @@
 
 import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '@blog/ui';
 
 export function LogoutButton() {
   const router = useRouter();

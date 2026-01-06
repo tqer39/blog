@@ -2,9 +2,15 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Alert,
+  AlertDescription,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@blog/ui';
 import { getArticles } from '@/lib/api/client';
 
 export default function AdminDashboard() {

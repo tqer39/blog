@@ -20,9 +20,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 type ArticleSortKey = 'title' | 'status' | 'date';
 type SortDirection = 'asc' | 'desc';
 
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Alert,
+  AlertDescription,
+  Button,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from '@blog/ui';
 import {
   deleteArticle,
   getArticles,

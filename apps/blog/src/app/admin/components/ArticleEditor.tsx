@@ -4,12 +4,15 @@ import type { Article, ArticleInput } from '@blog/cms-types';
 import { ImageIcon, Sparkles, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import {
+  Alert,
+  AlertDescription,
+  Badge,
+  Button,
+  Input,
+  Label,
+  Textarea,
+} from '@blog/ui';
 import {
   generateImage,
   generateMetadata,
