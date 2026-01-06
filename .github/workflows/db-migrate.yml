@@ -46,12 +46,8 @@ jobs:
 
       - name: Slack Notification (Failure)
         if: failure()
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_CHANNEL: "#ntf_gh_private-lab"
-          SLACK_COLOR: danger
-          SLACK_TITLE: "DB Migration Failed"
-          SLACK_MESSAGE: "D1 migration failed on main branch"
-          SLACK_USERNAME: github-bot
-          SLACK_ICON_EMOJI: ":x:"
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        uses: ./.github/actions/slack-deploy-failure
+        with:
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          title: "DB Migration Failed"
+          message: "D1 migration failed on main branch"
