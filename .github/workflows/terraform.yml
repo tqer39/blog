@@ -136,7 +136,7 @@ jobs:
           SLACK_MESSAGE: "path: `${{ env.WORKING_DIRECTORY }}`"
           SLACK_USERNAME: github-bot
           SLACK_ICON_EMOJI: ":x:"
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_PROD }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
       - name: Fail on Plan Error
         if: steps.plan.outputs.exitcode == '1'
@@ -278,7 +278,7 @@ jobs:
           SLACK_MESSAGE: "path: `${{ env.WORKING_DIRECTORY }}`"
           SLACK_USERNAME: github-bot
           SLACK_ICON_EMOJI: ":x:"
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_PROD }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
       - name: Fail on Plan Error
         if: steps.plan.outputs.exitcode == '1'
@@ -421,7 +421,7 @@ jobs:
           SLACK_MESSAGE: "path: `${{ env.WORKING_DIRECTORY }}`"
           SLACK_USERNAME: github-bot
           SLACK_ICON_EMOJI: ":x:"
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_PROD }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
       - name: Fail on Plan Error
         if: steps.plan.outputs.exitcode == '1'
