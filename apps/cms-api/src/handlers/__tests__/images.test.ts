@@ -4,8 +4,8 @@ import type { Env } from '../../index';
 import { imagesHandler } from '../images';
 
 // Mock generateId to return predictable values
-vi.mock('../../lib/utils', async () => {
-  const actual = await vi.importActual('../../lib/utils');
+vi.mock('@blog/utils', async () => {
+  const actual = await vi.importActual('@blog/utils');
   return {
     ...actual,
     generateId: vi.fn(() => 'mock-image-id'),

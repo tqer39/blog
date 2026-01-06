@@ -3,9 +3,9 @@ import type {
   ArticleInput,
   ArticleListResponse,
 } from '@blog/cms-types';
+import { generateHash, generateId, slugify } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
-import { generateHash, generateId, slugify } from '../lib/utils';
 
 export const articlesHandler = new Hono<{ Bindings: Env }>();
 

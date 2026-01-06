@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateId, slugify } from '../utils';
+import { generateId, slugify } from '@blog/utils';
 
 describe('generateId', () => {
   it('should generate a 16 character hex string', () => {

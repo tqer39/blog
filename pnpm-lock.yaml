@@ -32,6 +32,9 @@ importers:
       '@blog/cms-types':
         specifier: workspace:*
         version: link:../../packages/cms-types
+      '@blog/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@radix-ui/react-label':
         specifier: 2.1.8
         version: 2.1.8(@types/react-dom@18.2.7)(@types/react@18.2.15)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -165,12 +168,12 @@ importers:
       '@blog/cms-types':
         specifier: workspace:*
         version: link:../../packages/cms-types
+      '@blog/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       hono:
         specifier: 4.11.3
         version: 4.11.3
-      ulidx:
-        specifier: ^2.4.1
-        version: 2.4.1
     devDependencies:
       '@cloudflare/workers-types':
         specifier: 4.20260101.0
@@ -203,6 +206,16 @@ importers:
         version: 5.1.6
 
   packages/utils:
+    dependencies:
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      tailwind-merge:
+        specifier: ^2.6.0
+        version: 2.6.0
+      ulidx:
+        specifier: ^2.4.1
+        version: 2.4.1
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.11
@@ -2696,6 +2709,9 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  tailwind-merge@2.6.0:
+    resolution: {integrity: sha512-P+Vu1qXfzediirmHOC3xKGAYeZtPcV9g76X+xg2FD4tYgR71ewMA35Y3sCz3zhiN/dwefRpJX0yBcgwi1fXNQA==}
 
   tailwind-merge@3.4.0:
     resolution: {integrity: sha512-uSaO4gnW+b3Y2aWoWfFpX62vn2sR3skfhbjsEnaBI81WD1wBLlHZe5sWf0AqjksNdYTbGBEd0UasQMT3SNV15g==}
@@ -5483,6 +5499,8 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  tailwind-merge@2.6.0: {}
 
   tailwind-merge@3.4.0: {}
 

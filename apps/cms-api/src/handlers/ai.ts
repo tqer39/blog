@@ -1,6 +1,6 @@
+import { generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
-import { generateId } from '../lib/utils';
 
 export const aiHandler = new Hono<{ Bindings: Env }>();
 

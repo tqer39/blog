@@ -1,7 +1,7 @@
 import type { Tag, TagInput, TagWithCount } from '@blog/cms-types';
+import { generateId, slugify } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
-import { generateId, slugify } from '../lib/utils';
 
 export const tagsHandler = new Hono<{ Bindings: Env }>();
 

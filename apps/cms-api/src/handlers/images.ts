@@ -1,7 +1,7 @@
 import type { Image, ImageUploadResponse } from '@blog/cms-types';
+import { generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
-import { generateId } from '../lib/utils';
 
 export const imagesHandler = new Hono<{ Bindings: Env }>();
 
