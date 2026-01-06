@@ -9,9 +9,7 @@ test.describe('Home Page', () => {
   test('should have navigation links', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByRole('link', { name: 'Articles', exact: true })).toBeVisible();
-    await expect(
-      page.getByRole('link', { name: "tqer39's blog" })
-    ).toBeVisible();
+    await expect(page.getByRole('link', { name: 'tB' })).toBeVisible();
   });
 
   test('should have theme switcher', async ({ page }) => {
