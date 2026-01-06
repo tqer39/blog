@@ -114,7 +114,10 @@ describe('API Client', () => {
         mockFetch.mockResolvedValue({
           ok: false,
           status: 404,
-          json: () => Promise.resolve({ error: 'Article not found' }),
+          json: () =>
+            Promise.resolve({
+              error: { code: 'NOT_FOUND', message: 'Article not found' },
+            }),
         });
 
         await expect(getArticle('nonexistent')).rejects.toThrow(
@@ -347,7 +350,10 @@ describe('API Client', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 400,
-        json: () => Promise.resolve({ error: 'Validation failed' }),
+        json: () =>
+          Promise.resolve({
+            error: { code: 'VALIDATION_ERROR', message: 'Validation failed' },
+          }),
       });
 
       await expect(getArticle('test')).rejects.toThrow('Validation failed');

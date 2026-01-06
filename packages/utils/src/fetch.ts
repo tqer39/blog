@@ -22,10 +22,16 @@ export function createFetchClient(config: FetchClientConfig) {
     });
 
     if (!response.ok) {
-      const error = await response
+      const data = await response
         .json()
-        .catch(() => ({ error: 'Unknown error' }));
-      throw new Error(error.error || `HTTP ${response.status}`);
+        .catch(() => ({ error: { message: 'Unknown error' } }));
+      const errorInfo = data.error;
+      // Support both new format { error: { code, message } } and legacy { error: string }
+      const message =
+        typeof errorInfo === 'string'
+          ? errorInfo
+          : errorInfo?.message || `HTTP ${response.status}`;
+      throw new Error(message);
     }
 
     return response.json();
