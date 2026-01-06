@@ -21,6 +21,7 @@
     "hono": "4.11.3"
   },
   "devDependencies": {
+    "@blog/test-utils": "workspace:*",
     "@cloudflare/workers-types": "4.20260101.0",
     "tsx": "4.21.0",
     "typescript": "5.1.6",

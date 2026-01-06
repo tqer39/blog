@@ -1,43 +1,46 @@
 import { expect, test } from '@playwright/test';
+import { ArticlesListPage, HomePage } from '@blog/test-utils/e2e';
 
 test.describe('Home Page', () => {
   test('should display the blog title', async ({ page }) => {
-    await page.goto('/');
-    await expect(page.locator('h1')).toContainText('Latest Articles');
+    const homePage = new HomePage(page);
+    await homePage.goto();
+    await expect(homePage.title).toContainText('Latest Articles');
   });
 
   test('should have navigation links', async ({ page }) => {
-    await page.goto('/');
-    await expect(page.getByRole('link', { name: 'Articles', exact: true })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'tB' })).toBeVisible();
+    const homePage = new HomePage(page);
+    await homePage.goto();
+    await expect(homePage.articlesLink).toBeVisible();
+    await expect(homePage.logoLink).toBeVisible();
   });
 
   test('should have theme switcher', async ({ page }) => {
-    await page.goto('/');
-    await expect(
-      page.getByRole('button', { name: 'Toggle theme' })
-    ).toBeVisible();
+    const homePage = new HomePage(page);
+    await homePage.goto();
+    await expect(homePage.themeToggle).toBeVisible();
   });
 
   test('should display article cards', async ({ page }) => {
-    await page.goto('/');
-    const articles = page.locator('article');
-    await expect(articles.first()).toBeVisible();
+    const homePage = new HomePage(page);
+    await homePage.goto();
+    await expect(homePage.articleCards.first()).toBeVisible();
   });
 });
 
 test.describe('Article Page', () => {
   test('should navigate to article from home', async ({ page }) => {
-    await page.goto('/');
-    const firstArticleLink = page.locator('article').first().getByRole('link').first();
-    await firstArticleLink.click();
+    const homePage = new HomePage(page);
+    await homePage.goto();
+    await homePage.clickFirstArticle();
     await expect(page).toHaveURL(/\/article\/.+/);
   });
 });
 
 test.describe('Articles List Page', () => {
   test('should display all articles', async ({ page }) => {
-    await page.goto('/articles');
-    await expect(page.locator('h1')).toContainText('All Articles');
+    const articlesListPage = new ArticlesListPage(page);
+    await articlesListPage.goto();
+    await expect(articlesListPage.title).toContainText('All Articles');
   });
 });

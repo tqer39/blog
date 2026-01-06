@@ -1,0 +1,35 @@
+{
+  "name": "@blog/test-utils",
+  "version": "0.1.0",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./fixtures": {
+      "types": "./src/fixtures/index.ts",
+      "default": "./src/fixtures/index.ts"
+    },
+    "./mocks": {
+      "types": "./src/mocks/index.ts",
+      "default": "./src/mocks/index.ts"
+    },
+    "./e2e": {
+      "types": "./src/e2e/index.ts",
+      "default": "./src/e2e/index.ts"
+    }
+  },
+  "peerDependencies": {
+    "@playwright/test": ">=1.40.0",
+    "vitest": ">=1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@playwright/test": {
+      "optional": true
+    },
+    "vitest": {
+      "optional": true
+    }
+  }
+}
