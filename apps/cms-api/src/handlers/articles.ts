@@ -6,6 +6,7 @@ import type {
 import { generateHash, generateId, slugify } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
+import { conflict, notFound, validationError } from '../lib/errors';
 
 export const articlesHandler = new Hono<{ Bindings: Env }>();
 
@@ -104,7 +105,7 @@ articlesHandler.get('/:hash', async (c) => {
     .first();
 
   if (!row) {
-    return c.json({ error: 'Article not found' }, 404);
+    notFound('Article not found');
   }
 
   const tags = await getArticleTags(c.env.DB, row.id as string);
@@ -123,7 +124,10 @@ articlesHandler.post('/', async (c) => {
   const input = await c.req.json<ArticleInput>();
 
   if (!input.title || !input.content) {
-    return c.json({ error: 'Title and content are required' }, 400);
+    validationError('Invalid input', {
+      ...(input.title ? {} : { title: 'Required' }),
+      ...(input.content ? {} : { content: 'Required' }),
+    });
   }
 
   const id = generateId();
@@ -166,7 +170,7 @@ articlesHandler.post('/', async (c) => {
     return c.json(mapRowToArticle(row!, tags, headerImageUrl), 201);
   } catch (error) {
     if (String(error).includes('UNIQUE constraint failed')) {
-      return c.json({ error: 'Article with this hash already exists' }, 409);
+      conflict('Article with this hash already exists');
     }
     throw error;
   }
@@ -184,7 +188,7 @@ articlesHandler.put('/:hash', async (c) => {
     .first();
 
   if (!existing) {
-    return c.json({ error: 'Article not found' }, 404);
+    notFound('Article not found');
   }
 
   const updates: string[] = [];
@@ -242,7 +246,7 @@ articlesHandler.delete('/:hash', async (c) => {
     .run();
 
   if (result.meta.changes === 0) {
-    return c.json({ error: 'Article not found' }, 404);
+    notFound('Article not found');
   }
 
   return c.json({ success: true });
@@ -259,7 +263,7 @@ articlesHandler.post('/:hash/publish', async (c) => {
     .run();
 
   if (result.meta.changes === 0) {
-    return c.json({ error: 'Article not found' }, 404);
+    notFound('Article not found');
   }
 
   const row = await c.env.DB.prepare('SELECT * FROM articles WHERE hash = ?')
@@ -286,7 +290,7 @@ articlesHandler.post('/:hash/unpublish', async (c) => {
     .run();
 
   if (result.meta.changes === 0) {
-    return c.json({ error: 'Article not found' }, 404);
+    notFound('Article not found');
   }
 
   const row = await c.env.DB.prepare('SELECT * FROM articles WHERE hash = ?')

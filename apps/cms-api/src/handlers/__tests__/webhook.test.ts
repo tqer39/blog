@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ApiException } from '../../lib/errors';
 import { webhookHandler } from '../webhook';
 
 interface WebhookEnv {
@@ -19,6 +20,32 @@ function createTestApp(env: Partial<WebhookEnv> = {}) {
   });
 
   app.route('/webhook', webhookHandler);
+
+  // Add error handler for structured errors
+  app.onError((err, c) => {
+    if (err instanceof ApiException) {
+      return c.json(
+        {
+          error: {
+            code: err.code,
+            message: err.message,
+            ...(err.details && { details: err.details }),
+          },
+        },
+        err.status as 400 | 401 | 404 | 409 | 500
+      );
+    }
+    return c.json(
+      {
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: err.message || 'An unexpected error occurred',
+        },
+      },
+      500
+    );
+  });
+
   return app;
 }
 
@@ -61,7 +88,8 @@ describe('webhookHandler', () => {
 
       expect(res.status).toBe(500);
       const data = await res.json();
-      expect(data.error).toBe('VERCEL_DEPLOY_HOOK_URL not configured');
+      expect(data.error.code).toBe('INTERNAL_ERROR');
+      expect(data.error.message).toBe('VERCEL_DEPLOY_HOOK_URL not configured');
     });
 
     it('should verify webhook secret when configured', async () => {
@@ -97,7 +125,8 @@ describe('webhookHandler', () => {
 
       expect(res.status).toBe(401);
       const data = await res.json();
-      expect(data.error).toBe('Unauthorized');
+      expect(data.error.code).toBe('UNAUTHORIZED');
+      expect(data.error.message).toBe('Invalid webhook secret');
     });
 
     it('should return 401 when webhook secret is missing', async () => {
@@ -125,8 +154,8 @@ describe('webhookHandler', () => {
 
       expect(res.status).toBe(500);
       const data = await res.json();
-      expect(data.error).toBe('Failed to trigger rebuild');
-      expect(data.details).toBe('Internal Server Error');
+      expect(data.error.code).toBe('INTERNAL_ERROR');
+      expect(data.error.message).toBe('Failed to trigger rebuild');
     });
 
     it('should handle network errors', async () => {
@@ -140,8 +169,8 @@ describe('webhookHandler', () => {
 
       expect(res.status).toBe(500);
       const data = await res.json();
-      expect(data.error).toBe('Failed to trigger rebuild');
-      expect(data.details).toBe('Network error');
+      expect(data.error.code).toBe('INTERNAL_ERROR');
+      expect(data.error.message).toBe('Failed to trigger rebuild');
     });
   });
 

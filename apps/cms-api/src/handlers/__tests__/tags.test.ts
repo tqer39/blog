@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Env } from '../../index';
+import { withErrorHandler } from '../../test/helpers';
 import { tagsHandler } from '../tags';
 
 // Mock generateId to return predictable values
@@ -30,7 +31,7 @@ function createTestApp(mockDB: ReturnType<typeof createMockDB>) {
   });
 
   app.route('/tags', tagsHandler);
-  return app;
+  return withErrorHandler(app);
 }
 
 describe('tagsHandler', () => {
@@ -126,7 +127,8 @@ describe('tagsHandler', () => {
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe('Tag not found');
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Tag not found');
     });
   });
 
@@ -174,7 +176,8 @@ describe('tagsHandler', () => {
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toBe('Name is required');
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.details?.name).toBe('Required');
     });
 
     it('should return 409 when tag already exists', async () => {
@@ -193,7 +196,8 @@ describe('tagsHandler', () => {
 
       expect(res.status).toBe(409);
       const data = await res.json();
-      expect(data.error).toBe('Tag with this name or slug already exists');
+      expect(data.error.code).toBe('CONFLICT');
+      expect(data.error.message).toBe('Tag with this name or slug already exists');
     });
   });
 
@@ -252,7 +256,8 @@ describe('tagsHandler', () => {
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toBe('Name is required');
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.details?.name).toBe('Required');
     });
 
     it('should return 404 when tag not found', async () => {
@@ -271,7 +276,8 @@ describe('tagsHandler', () => {
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe('Tag not found');
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Tag not found');
     });
 
     it('should return 409 when duplicate name or slug', async () => {
@@ -305,7 +311,8 @@ describe('tagsHandler', () => {
 
       expect(res.status).toBe(409);
       const data = await res.json();
-      expect(data.error).toBe('Tag with this name or slug already exists');
+      expect(data.error.code).toBe('CONFLICT');
+      expect(data.error.message).toBe('Tag with this name or slug already exists');
     });
   });
 
@@ -337,7 +344,8 @@ describe('tagsHandler', () => {
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe('Tag not found');
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Tag not found');
     });
   });
 });

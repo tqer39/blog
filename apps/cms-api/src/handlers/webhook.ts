@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { internalError, unauthorized } from '../lib/errors';
 
 interface WebhookEnv {
   VERCEL_DEPLOY_HOOK_URL?: string;
@@ -13,7 +14,7 @@ webhookHandler.post('/rebuild', async (c) => {
   const deployHookUrl = c.env.VERCEL_DEPLOY_HOOK_URL;
 
   if (!deployHookUrl) {
-    return c.json({ error: 'VERCEL_DEPLOY_HOOK_URL not configured' }, 500);
+    internalError('VERCEL_DEPLOY_HOOK_URL not configured');
   }
 
   // Verify webhook secret if configured
@@ -21,7 +22,7 @@ webhookHandler.post('/rebuild', async (c) => {
   if (secret) {
     const authHeader = c.req.header('X-Webhook-Secret');
     if (authHeader !== secret) {
-      return c.json({ error: 'Unauthorized' }, 401);
+      unauthorized('Invalid webhook secret');
     }
   }
 
@@ -35,13 +36,8 @@ webhookHandler.post('/rebuild', async (c) => {
 
     if (!response.ok) {
       const text = await response.text();
-      return c.json(
-        {
-          error: 'Failed to trigger rebuild',
-          details: text,
-        },
-        500
-      );
+      console.error('Vercel API error:', text);
+      internalError('Failed to trigger rebuild');
     }
 
     const result = await response.json();
@@ -52,13 +48,8 @@ webhookHandler.post('/rebuild', async (c) => {
       job: result,
     });
   } catch (error) {
-    return c.json(
-      {
-        error: 'Failed to trigger rebuild',
-        details: error instanceof Error ? error.message : 'Unknown error',
-      },
-      500
-    );
+    console.error('Error triggering rebuild:', error);
+    internalError('Failed to trigger rebuild');
   }
 });
 

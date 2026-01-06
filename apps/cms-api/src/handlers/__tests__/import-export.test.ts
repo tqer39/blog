@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Env } from '../../index';
+import { withErrorHandler } from '../../test/helpers';
 import { importExportHandler } from '../import-export';
 
 function createMockDB() {
@@ -22,7 +23,7 @@ function createTestApp(mockDB: ReturnType<typeof createMockDB>) {
 
   app.route('/import', importExportHandler);
   app.route('/export', importExportHandler);
-  return app;
+  return withErrorHandler(app);
 }
 
 const validMarkdown = `---
@@ -164,7 +165,8 @@ describe('importExportHandler', () => {
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toBe('Content is required');
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.details?.content).toBe('Required');
     });
 
     it('should return 400 for invalid markdown format', async () => {
@@ -177,7 +179,8 @@ describe('importExportHandler', () => {
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toContain('Invalid markdown format');
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.message).toContain('Invalid markdown format');
     });
 
     it('should return 400 when title is missing in frontmatter', async () => {
@@ -197,7 +200,8 @@ Content without title.`;
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toBe('Title is required in frontmatter');
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.details?.title).toBe('Required in frontmatter');
     });
 
     it('should reuse existing tags', async () => {
@@ -300,7 +304,8 @@ Content without title.`;
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe('Article not found');
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Article not found');
     });
 
     it('should use created_at date for drafts without published_at', async () => {

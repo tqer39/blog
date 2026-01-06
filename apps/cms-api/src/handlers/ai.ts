@@ -1,6 +1,7 @@
 import { generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
+import { internalError, validationError } from '../lib/errors';
 
 export const aiHandler = new Hono<{ Bindings: Env }>();
 
@@ -29,14 +30,17 @@ interface GenerateImageResponse {
 aiHandler.post('/generate-metadata', async (c) => {
   const apiKey = c.env.OPENAI_API_KEY;
   if (!apiKey) {
-    return c.json({ error: 'OpenAI API key not configured' }, 500);
+    internalError('OpenAI API key not configured');
   }
 
   const body = await c.req.json<GenerateMetadataRequest>();
   const { title, content, existingTags } = body;
 
   if (!title || !content) {
-    return c.json({ error: 'Title and content are required' }, 400);
+    validationError('Invalid input', {
+      ...(title ? {} : { title: 'Required' }),
+      ...(content ? {} : { content: 'Required' }),
+    });
   }
 
   // Truncate content if too long (keep first 3000 chars)
@@ -87,7 +91,7 @@ ${existingTags?.length ? `Existing tags in the system: ${existingTags.join(', ')
     if (!response.ok) {
       const error = await response.text();
       console.error('OpenAI API error:', error);
-      return c.json({ error: 'Failed to generate metadata' }, 500);
+      internalError('Failed to generate metadata');
     }
 
     const data = await response.json<{
@@ -100,7 +104,7 @@ ${existingTags?.length ? `Existing tags in the system: ${existingTags.join(', ')
     return c.json(result);
   } catch (error) {
     console.error('Error generating metadata:', error);
-    return c.json({ error: 'Failed to generate metadata' }, 500);
+    internalError('Failed to generate metadata');
   }
 });
 
@@ -108,14 +112,14 @@ ${existingTags?.length ? `Existing tags in the system: ${existingTags.join(', ')
 aiHandler.post('/generate-image', async (c) => {
   const apiKey = c.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return c.json({ error: 'Gemini API key not configured' }, 500);
+    internalError('Gemini API key not configured');
   }
 
   const body = await c.req.json<GenerateImageRequest>();
   const { prompt, title } = body;
 
   if (!prompt) {
-    return c.json({ error: 'Prompt is required' }, 400);
+    validationError('Invalid input', { prompt: 'Required' });
   }
 
   // Create a descriptive prompt for header image
@@ -147,7 +151,7 @@ aiHandler.post('/generate-image', async (c) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Gemini API error:', errorText);
-      return c.json({ error: 'Failed to generate image' }, 500);
+      internalError('Failed to generate image');
     }
 
     const data = await response.json<{
@@ -155,7 +159,7 @@ aiHandler.post('/generate-image', async (c) => {
     }>();
 
     if (!data.predictions || data.predictions.length === 0) {
-      return c.json({ error: 'No image generated' }, 500);
+      internalError('No image generated');
     }
 
     const prediction = data.predictions[0];
@@ -207,7 +211,7 @@ aiHandler.post('/generate-image', async (c) => {
     return c.json(result, 201);
   } catch (error) {
     console.error('Error generating image:', error);
-    return c.json({ error: 'Failed to generate image' }, 500);
+    internalError('Failed to generate image');
   }
 });
 

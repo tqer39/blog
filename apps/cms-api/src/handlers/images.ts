@@ -2,6 +2,7 @@ import type { Image, ImageUploadResponse } from '@blog/cms-types';
 import { generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
+import { notFound, validationError } from '../lib/errors';
 
 export const imagesHandler = new Hono<{ Bindings: Env }>();
 
@@ -16,21 +17,19 @@ imagesHandler.post('/', async (c) => {
   const altText = formData.get('altText') as string | null;
 
   if (!file) {
-    return c.json({ error: 'No file provided' }, 400);
+    validationError('Invalid input', { file: 'Required' });
   }
 
   if (!ALLOWED_TYPES.includes(file.type)) {
-    return c.json(
-      { error: `Invalid file type. Allowed: ${ALLOWED_TYPES.join(', ')}` },
-      400
-    );
+    validationError('Invalid input', {
+      file: `Invalid file type. Allowed: ${ALLOWED_TYPES.join(', ')}`,
+    });
   }
 
   if (file.size > MAX_SIZE) {
-    return c.json(
-      { error: `File too large. Max size: ${MAX_SIZE / 1024 / 1024}MB` },
-      400
-    );
+    validationError('Invalid input', {
+      file: `File too large. Max size: ${MAX_SIZE / 1024 / 1024}MB`,
+    });
   }
 
   const now = new Date();
@@ -88,7 +87,7 @@ imagesHandler.get('/file/*', async (c) => {
   const object = await c.env.R2_BUCKET.get(r2Key);
 
   if (!object) {
-    return c.json({ error: 'Image not found' }, 404);
+    notFound('Image not found');
   }
 
   const headers = new Headers();
@@ -110,7 +109,7 @@ imagesHandler.get('/:id', async (c) => {
     .first();
 
   if (!row) {
-    return c.json({ error: 'Image not found' }, 404);
+    notFound('Image not found');
   }
 
   const image = mapRowToImage(row, c.env);
@@ -127,7 +126,7 @@ imagesHandler.delete('/:id', async (c) => {
     .first<{ r2_key: string }>();
 
   if (!row) {
-    return c.json({ error: 'Image not found' }, 404);
+    notFound('Image not found');
   }
 
   // Delete from R2

@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Env } from '../../index';
+import { withErrorHandler } from '../../test/helpers';
 import { articlesHandler } from '../articles';
 
 // Mock generateId to return predictable values
@@ -30,7 +31,7 @@ function createTestApp(mockDB: ReturnType<typeof createMockDB>) {
   });
 
   app.route('/articles', articlesHandler);
-  return app;
+  return withErrorHandler(app);
 }
 
 const sampleArticle = {
@@ -165,7 +166,8 @@ describe('articlesHandler', () => {
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe('Article not found');
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Article not found');
     });
   });
 
@@ -221,7 +223,8 @@ describe('articlesHandler', () => {
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toBe('Title and content are required');
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.details?.title).toBe('Required');
     });
 
     it('should return 400 when content is missing', async () => {
@@ -234,7 +237,8 @@ describe('articlesHandler', () => {
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toBe('Title and content are required');
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.details?.content).toBe('Required');
     });
 
     it('should return 409 when hash already exists', async () => {
@@ -256,7 +260,8 @@ describe('articlesHandler', () => {
 
       expect(res.status).toBe(409);
       const data = await res.json();
-      expect(data.error).toBe('Article with this hash already exists');
+      expect(data.error.code).toBe('CONFLICT');
+      expect(data.error.message).toBe('Article with this hash already exists');
     });
   });
 
@@ -292,7 +297,8 @@ describe('articlesHandler', () => {
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe('Article not found');
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Article not found');
     });
   });
 
@@ -350,7 +356,8 @@ describe('articlesHandler', () => {
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe('Article not found');
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Article not found');
     });
   });
 

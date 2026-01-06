@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { describe, expect, it } from 'vitest';
 import type { Env } from '../../index';
+import { withErrorHandler } from '../../test/helpers';
 import { authMiddleware } from '../auth';
 
 function createTestApp(apiKey = 'test-api-key') {
@@ -18,7 +19,7 @@ function createTestApp(apiKey = 'test-api-key') {
   // Test route
   app.get('/protected/test', (c) => c.json({ success: true }));
 
-  return app;
+  return withErrorHandler(app);
 }
 
 describe('authMiddleware', () => {
@@ -39,7 +40,8 @@ describe('authMiddleware', () => {
 
     expect(res.status).toBe(401);
     const data = await res.json();
-    expect(data.error).toBe('Unauthorized: Missing or invalid token');
+    expect(data.error.code).toBe('UNAUTHORIZED');
+    expect(data.error.message).toBe('Missing or invalid token');
   });
 
   it('should reject request without Bearer prefix', async () => {
@@ -50,7 +52,8 @@ describe('authMiddleware', () => {
 
     expect(res.status).toBe(401);
     const data = await res.json();
-    expect(data.error).toBe('Unauthorized: Missing or invalid token');
+    expect(data.error.code).toBe('UNAUTHORIZED');
+    expect(data.error.message).toBe('Missing or invalid token');
   });
 
   it('should reject request with invalid API key', async () => {
@@ -61,7 +64,8 @@ describe('authMiddleware', () => {
 
     expect(res.status).toBe(401);
     const data = await res.json();
-    expect(data.error).toBe('Unauthorized: Invalid API key');
+    expect(data.error.code).toBe('UNAUTHORIZED');
+    expect(data.error.message).toBe('Invalid API key');
   });
 
   it('should reject request with empty Bearer token', async () => {
@@ -72,7 +76,8 @@ describe('authMiddleware', () => {
 
     expect(res.status).toBe(401);
     const data = await res.json();
-    // Empty token after "Bearer " is treated as missing token
-    expect(data.error).toBe('Unauthorized: Missing or invalid token');
+    // Empty token after "Bearer " is treated as missing/invalid
+    expect(data.error.code).toBe('UNAUTHORIZED');
+    expect(data.error.message).toBe('Missing or invalid token');
   });
 });

@@ -1,6 +1,7 @@
 import { generateHash, generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
+import { notFound, validationError } from '../lib/errors';
 
 export const importExportHandler = new Hono<{ Bindings: Env }>();
 
@@ -13,7 +14,7 @@ importExportHandler.post('/markdown', async (c) => {
   }>();
 
   if (!body.content) {
-    return c.json({ error: 'Content is required' }, 400);
+    validationError('Invalid input', { content: 'Required' });
   }
 
   // Parse frontmatter from markdown
@@ -22,10 +23,9 @@ importExportHandler.post('/markdown', async (c) => {
   );
 
   if (!frontmatterMatch) {
-    return c.json(
-      { error: 'Invalid markdown format. Expected YAML frontmatter.' },
-      400
-    );
+    validationError('Invalid markdown format. Expected YAML frontmatter.', {
+      content: 'Must contain YAML frontmatter (---...---)',
+    });
   }
 
   const [, frontmatterRaw, markdownContent] = frontmatterMatch;
@@ -62,7 +62,7 @@ importExportHandler.post('/markdown', async (c) => {
   const date = frontmatter.date as string | undefined;
 
   if (!title) {
-    return c.json({ error: 'Title is required in frontmatter' }, 400);
+    validationError('Invalid input', { title: 'Required in frontmatter' });
   }
 
   const id = generateId();
@@ -151,7 +151,7 @@ importExportHandler.get('/:hash', async (c) => {
     }>();
 
   if (!article) {
-    return c.json({ error: 'Article not found' }, 404);
+    notFound('Article not found');
   }
 
   // Get tags

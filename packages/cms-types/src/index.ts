@@ -1,3 +1,6 @@
+// Error types
+export * from './error';
+
 // Article types
 export type ArticleStatus = 'draft' | 'published';
 

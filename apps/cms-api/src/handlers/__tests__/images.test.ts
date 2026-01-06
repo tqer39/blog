@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Env } from '../../index';
+import { withErrorHandler } from '../../test/helpers';
 import { imagesHandler } from '../images';
 
 // Mock generateId to return predictable values
@@ -46,7 +47,7 @@ function createTestApp(
   });
 
   app.route('/images', imagesHandler);
-  return app;
+  return withErrorHandler(app);
 }
 
 function createMockFile(name: string, type: string, size: number): File {
@@ -115,7 +116,8 @@ describe('imagesHandler', () => {
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toBe('No file provided');
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.details?.file).toBe('Required');
     });
 
     it('should return 400 for invalid file type', async () => {
@@ -131,7 +133,8 @@ describe('imagesHandler', () => {
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toContain('Invalid file type');
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.details?.file).toContain('Invalid file type');
     });
 
     it('should return 400 for file too large', async () => {
@@ -148,7 +151,8 @@ describe('imagesHandler', () => {
 
       expect(res.status).toBe(400);
       const data = await res.json();
-      expect(data.error).toContain('File too large');
+      expect(data.error.code).toBe('VALIDATION_ERROR');
+      expect(data.error.details?.file).toContain('File too large');
     });
 
     it('should accept all allowed image types', async () => {
@@ -216,7 +220,8 @@ describe('imagesHandler', () => {
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe('Image not found');
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Image not found');
     });
   });
 
@@ -259,7 +264,8 @@ describe('imagesHandler', () => {
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe('Image not found');
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Image not found');
     });
   });
 
@@ -327,7 +333,8 @@ describe('imagesHandler', () => {
 
       expect(res.status).toBe(404);
       const data = await res.json();
-      expect(data.error).toBe('Image not found');
+      expect(data.error.code).toBe('NOT_FOUND');
+      expect(data.error.message).toBe('Image not found');
     });
   });
 

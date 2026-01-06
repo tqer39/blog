@@ -8,6 +8,7 @@ import { imagesHandler } from './handlers/images';
 import { importExportHandler } from './handlers/import-export';
 import { tagsHandler } from './handlers/tags';
 import { webhookHandler } from './handlers/webhook';
+import { ApiException } from './lib/errors';
 import { authMiddleware } from './middleware/auth';
 import { rateLimitMiddleware } from './middleware/rateLimit';
 
@@ -58,16 +59,51 @@ v1.route('/webhook', webhookHandler);
 app.route('/v1', v1);
 
 // 404 handler
-app.notFound((c) => c.json({ error: 'Not Found' }, 404));
+app.notFound((c) =>
+  c.json(
+    {
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Not Found',
+      },
+    },
+    404
+  )
+);
 
 // Error handler
 app.onError((err, c) => {
   console.error('Error:', err);
+
+  // Handle structured API exceptions
+  if (err instanceof ApiException) {
+    return c.json(
+      {
+        error: {
+          code: err.code,
+          message: err.message,
+          ...(err.details && { details: err.details }),
+        },
+      },
+      err.status as 400 | 401 | 404 | 409 | 500
+    );
+  }
+
+  // Handle unexpected errors
   const message =
     c.env.ENVIRONMENT === 'production'
-      ? 'Internal Server Error'
-      : err.message || 'Internal Server Error';
-  return c.json({ error: message }, 500);
+      ? 'An unexpected error occurred'
+      : err.message || 'An unexpected error occurred';
+
+  return c.json(
+    {
+      error: {
+        code: 'INTERNAL_ERROR',
+        message,
+      },
+    },
+    500
+  );
 });
 
 export default app;

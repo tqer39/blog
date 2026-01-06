@@ -2,6 +2,7 @@ import type { Tag, TagInput, TagWithCount } from '@blog/cms-types';
 import { generateId, slugify } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
+import { conflict, notFound, validationError } from '../lib/errors';
 
 export const tagsHandler = new Hono<{ Bindings: Env }>();
 
@@ -29,7 +30,7 @@ tagsHandler.get('/:slug', async (c) => {
     .first();
 
   if (!row) {
-    return c.json({ error: 'Tag not found' }, 404);
+    notFound('Tag not found');
   }
 
   return c.json(mapRowToTag(row));
@@ -40,7 +41,7 @@ tagsHandler.post('/', async (c) => {
   const input = await c.req.json<TagInput>();
 
   if (!input.name) {
-    return c.json({ error: 'Name is required' }, 400);
+    validationError('Invalid input', { name: 'Required' });
   }
 
   const id = generateId();
@@ -58,10 +59,7 @@ tagsHandler.post('/', async (c) => {
     return c.json(mapRowToTag(row!), 201);
   } catch (error) {
     if (String(error).includes('UNIQUE constraint failed')) {
-      return c.json(
-        { error: 'Tag with this name or slug already exists' },
-        409
-      );
+      conflict('Tag with this name or slug already exists');
     }
     throw error;
   }
@@ -73,7 +71,7 @@ tagsHandler.put('/:slug', async (c) => {
   const input = await c.req.json<TagInput>();
 
   if (!input.name) {
-    return c.json({ error: 'Name is required' }, 400);
+    validationError('Invalid input', { name: 'Required' });
   }
 
   const existing = await c.env.DB.prepare('SELECT * FROM tags WHERE slug = ?')
@@ -81,7 +79,7 @@ tagsHandler.put('/:slug', async (c) => {
     .first();
 
   if (!existing) {
-    return c.json({ error: 'Tag not found' }, 404);
+    notFound('Tag not found');
   }
 
   const newSlug = input.slug || slugify(input.name);
@@ -98,10 +96,7 @@ tagsHandler.put('/:slug', async (c) => {
     return c.json(mapRowToTag(row!));
   } catch (error) {
     if (String(error).includes('UNIQUE constraint failed')) {
-      return c.json(
-        { error: 'Tag with this name or slug already exists' },
-        409
-      );
+      conflict('Tag with this name or slug already exists');
     }
     throw error;
   }
@@ -116,7 +111,7 @@ tagsHandler.delete('/:slug', async (c) => {
     .run();
 
   if (result.meta.changes === 0) {
-    return c.json({ error: 'Tag not found' }, 404);
+    notFound('Tag not found');
   }
 
   return c.json({ success: true });
