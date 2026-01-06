@@ -60,14 +60,7 @@ describe('API Client', () => {
 
         const result = await getArticles();
 
-        expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining('/articles'),
-          expect.objectContaining({
-            headers: expect.objectContaining({
-              Authorization: expect.stringContaining('Bearer'),
-            }),
-          })
-        );
+        expect(mockFetch).toHaveBeenCalledWith('/api/articles', {});
         expect(result.articles).toHaveLength(1);
       });
 
