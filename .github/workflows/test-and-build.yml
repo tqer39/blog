@@ -164,3 +164,20 @@ jobs:
           name: blog-e2e-report
           path: apps/blog/playwright-report/
           retention-days: 30
+
+  notify-failure:
+    name: Notify Failure
+    runs-on: ubuntu-latest
+    needs: [lint, unit-test, build, e2e-test]
+    if: failure()
+    steps:
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: "#ntf_gh_private-lab"
+          SLACK_COLOR: danger
+          SLACK_TITLE: "CI Failed"
+          SLACK_MESSAGE: "Test or build failed"
+          SLACK_USERNAME: github-bot
+          SLACK_ICON_EMOJI: ":x:"
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
