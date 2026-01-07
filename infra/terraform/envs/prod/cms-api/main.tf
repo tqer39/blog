@@ -10,7 +10,7 @@ module "cms_d1" {
   source = "../../../modules/cloudflare-d1"
 
   account_id    = var.cloudflare_account_id
-  database_name = "blog-cms"
+  database_name = "blog-cms-prod"
 }
 
 # R2 Bucket for image storage
@@ -18,7 +18,7 @@ module "cms_r2" {
   source = "../../../modules/cloudflare-r2"
 
   account_id  = var.cloudflare_account_id
-  bucket_name = "blog-images"
+  bucket_name = "blog-images-prod"
   location    = "apac"
 }
 
