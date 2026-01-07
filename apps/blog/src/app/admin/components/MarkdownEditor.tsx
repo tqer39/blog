@@ -1,5 +1,20 @@
 'use client';
 
+import type { ContinuationSuggestion } from '@blog/cms-types';
+import {
+  Button,
+  FullscreenModal,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Separator,
+  ToggleGroup,
+  ToggleGroupItem,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@blog/ui';
 import {
   Bold,
   Code,
@@ -10,34 +25,28 @@ import {
   Italic,
   Link,
   List,
+  Loader2,
   Maximize2,
   Pencil,
+  Wand2,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArticleContent } from '@/components/ArticleContent';
-import {
-  Button,
-  FullscreenModal,
-  Separator,
-  ToggleGroup,
-  ToggleGroupItem,
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@blog/ui';
+import { suggestContinuation } from '@/lib/api/client';
 import { EmojiSuggester } from './EmojiSuggester';
 
 interface MarkdownEditorProps {
   value: string;
   onChange: (value: string) => void;
   onImageUpload: (file: File) => Promise<string>;
+  title?: string;
 }
 
 export function MarkdownEditor({
   value,
   onChange,
   onImageUpload,
+  title,
 }: MarkdownEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -52,6 +61,12 @@ export function MarkdownEditor({
   const fullscreenContainerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const fullscreenTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Continuation suggestion state
+  const [isSuggesting, setIsSuggesting] = useState(false);
+  const [suggestions, setSuggestions] = useState<ContinuationSuggestion[]>([]);
+  const [suggestionError, setSuggestionError] = useState<string | null>(null);
+  const [isSuggestionOpen, setIsSuggestionOpen] = useState(false);
 
   const insertTextAtCursor = useCallback(
     (text: string) => {
@@ -186,6 +201,46 @@ export function MarkdownEditor({
     e.preventDefault();
     setIsFullscreenDragging(true);
   }, []);
+
+  // Handle continuation suggestion
+  const handleSuggestContinuation = useCallback(async () => {
+    const textarea = textareaRef.current;
+    if (!textarea || !title?.trim()) {
+      setSuggestionError('タイトルを入力してください');
+      return;
+    }
+
+    const cursorPosition = textarea.selectionStart;
+
+    setIsSuggesting(true);
+    setSuggestionError(null);
+    setSuggestions([]);
+    setIsSuggestionOpen(true);
+
+    try {
+      const result = await suggestContinuation({
+        title: title.trim(),
+        content: value,
+        cursorPosition,
+      });
+      setSuggestions(result.suggestions);
+    } catch (err) {
+      setSuggestionError(
+        err instanceof Error ? err.message : 'Failed to generate suggestions'
+      );
+    } finally {
+      setIsSuggesting(false);
+    }
+  }, [title, value]);
+
+  const handleAcceptSuggestion = useCallback(
+    (text: string) => {
+      insertTextAtCursor(text);
+      setIsSuggestionOpen(false);
+      setSuggestions([]);
+    },
+    [insertTextAtCursor]
+  );
 
   useEffect(() => {
     if (!isDragging) return;
@@ -333,6 +388,82 @@ export function MarkdownEditor({
               </TooltipTrigger>
               <TooltipContent>Link</TooltipContent>
             </Tooltip>
+
+            <Separator orientation="vertical" className="mx-1 h-6" />
+
+            {/* AI Continuation Button */}
+            <Popover open={isSuggestionOpen} onOpenChange={setIsSuggestionOpen}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={handleSuggestContinuation}
+                      disabled={isSuggesting || !title?.trim()}
+                    >
+                      {isSuggesting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Wand2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>AI 続き提案</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-96 p-0" align="start">
+                <div className="border-b px-4 py-3">
+                  <h4 className="font-medium">続きの提案</h4>
+                  <p className="text-xs text-muted-foreground">
+                    クリックして挿入
+                  </p>
+                </div>
+                <div className="max-h-80 overflow-y-auto p-2">
+                  {isSuggesting && (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                    </div>
+                  )}
+                  {suggestionError && (
+                    <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+                      {suggestionError}
+                    </div>
+                  )}
+                  {!isSuggesting && suggestions.length > 0 && (
+                    <div className="space-y-2">
+                      {suggestions.map((suggestion, index) => (
+                        <button
+                          key={`suggestion-${index}-${suggestion.text.slice(0, 20)}`}
+                          type="button"
+                          className="w-full rounded-md border p-3 text-left text-sm transition-colors hover:bg-muted"
+                          onClick={() =>
+                            handleAcceptSuggestion(suggestion.text)
+                          }
+                        >
+                          <p className="line-clamp-4 whitespace-pre-wrap">
+                            {suggestion.text}
+                          </p>
+                          <div className="mt-2 flex items-center justify-between">
+                            <span className="text-xs text-muted-foreground">
+                              確信度: {Math.round(suggestion.confidence * 100)}%
+                            </span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {!isSuggesting &&
+                    !suggestionError &&
+                    suggestions.length === 0 && (
+                      <div className="py-8 text-center text-sm text-muted-foreground">
+                        ボタンをクリックして提案を生成
+                      </div>
+                    )}
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="flex items-center gap-2">

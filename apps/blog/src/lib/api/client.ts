@@ -3,6 +3,10 @@ import type {
   ArticleInput,
   ArticleListResponse,
   ImageUploadResponse,
+  ReviewArticleRequest,
+  ReviewArticleResponse,
+  SuggestContinuationRequest,
+  SuggestContinuationResponse,
   Tag,
   TagInput,
   TagListResponse,
@@ -149,6 +153,26 @@ export async function generateImage(
   request: GenerateImageRequest
 ): Promise<GenerateImageResponse> {
   return fetchApi('/ai/generate-image', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export async function reviewArticle(
+  request: ReviewArticleRequest
+): Promise<ReviewArticleResponse> {
+  return fetchApi('/ai/review-article', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export async function suggestContinuation(
+  request: SuggestContinuationRequest
+): Promise<SuggestContinuationResponse> {
+  return fetchApi('/ai/suggest-continuation', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),

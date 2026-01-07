@@ -22,6 +22,7 @@ export interface Env {
   WEBHOOK_SECRET?: string;
   OPENAI_API_KEY?: string;
   GEMINI_API_KEY?: string;
+  ANTHROPIC_API_KEY?: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();

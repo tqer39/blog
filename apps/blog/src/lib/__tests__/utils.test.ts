@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import { cn } from '@blog/utils';
+import { describe, expect, it } from 'vitest';
 
 describe('utils', () => {
   describe('cn', () => {

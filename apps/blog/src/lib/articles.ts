@@ -1,12 +1,6 @@
 import type { Article, ArticleListResponse, Tag } from '@blog/cms-types';
 import { DEFAULT_API_URL } from '@blog/config';
-import {
-  createFetchClient,
-  err,
-  ok,
-  toError,
-  type Result,
-} from '@blog/utils';
+import { createFetchClient, err, ok, type Result, toError } from '@blog/utils';
 
 const API_URL = process.env.CMS_API_URL || DEFAULT_API_URL;
 const API_KEY = process.env.CMS_API_KEY || '';

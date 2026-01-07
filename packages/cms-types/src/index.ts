@@ -93,3 +93,47 @@ export interface ArticleFilters extends PaginationParams {
   status?: ArticleStatus;
   tag?: string;
 }
+
+// AI Review types
+export type ReviewCategory =
+  | 'clarity'
+  | 'structure'
+  | 'accuracy'
+  | 'grammar'
+  | 'style';
+export type ReviewSeverity = 'info' | 'warning' | 'error';
+
+export interface ReviewItem {
+  category: ReviewCategory;
+  severity: ReviewSeverity;
+  location?: string;
+  issue: string;
+  suggestion: string;
+}
+
+export interface ReviewArticleRequest {
+  title: string;
+  content: string;
+}
+
+export interface ReviewArticleResponse {
+  summary: string;
+  overallScore: number;
+  items: ReviewItem[];
+}
+
+// AI Continuation types
+export interface SuggestContinuationRequest {
+  title: string;
+  content: string;
+  cursorPosition: number;
+}
+
+export interface ContinuationSuggestion {
+  text: string;
+  confidence: number;
+}
+
+export interface SuggestContinuationResponse {
+  suggestions: ContinuationSuggestion[];
+}

@@ -1,18 +1,18 @@
 // Article fixtures
 export {
+  createArticle,
+  createArticles,
   sampleArticle,
   sampleArticle2,
   sampleArticleRow,
   sampleDraftArticle,
-  createArticle,
-  createArticles,
 } from './articles';
 
 // Tag fixtures
 export {
+  createTag,
+  createTags,
   sampleTag,
   sampleTagRow,
   sampleTags,
-  createTag,
-  createTags,
 } from './tags';

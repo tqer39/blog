@@ -1,3 +1,10 @@
+import type {
+  ReviewArticleRequest,
+  ReviewArticleResponse,
+  ReviewItem,
+  SuggestContinuationRequest,
+  SuggestContinuationResponse,
+} from '@blog/cms-types';
 import { generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
@@ -25,6 +32,58 @@ interface GenerateImageResponse {
   id: string;
   url: string;
 }
+
+// Anthropic API configuration
+const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+const ANTHROPIC_MODEL = 'claude-sonnet-4-20250514';
+
+// Japanese system prompts for Claude
+const REVIEW_SYSTEM_PROMPT = `あなたは日本語の技術ブログ記事をレビューする専門家です。
+以下の観点からフィードバックを提供してください：
+
+1. clarity（明確さ）: 記事の論理的な流れ、説明のわかりやすさ
+2. structure（構成）: 段落構成、見出しの使い方、情報の整理
+3. accuracy（正確性）: 技術的な内容の正確さ、コード例の妥当性
+4. grammar（文法）: 誤字脱字、文法ミス、表記揺れ
+5. style（スタイル）: 文体の一貫性、冗長な表現
+
+このブログは「未来の自分への記録」として書かれています。
+一般読者向けの過度な説明は不要ですが、数ヶ月後の自分が読み返して理解できる程度の明確さは必要です。
+
+必ず以下のJSON形式のみで回答してください（他の文章は含めないでください）：
+{
+  "summary": "全体的な評価（2-3文）",
+  "overallScore": 1から10の数値,
+  "items": [
+    {
+      "category": "clarity" | "structure" | "accuracy" | "grammar" | "style",
+      "severity": "info" | "warning" | "error",
+      "location": "問題箇所の引用または位置（省略可）",
+      "issue": "問題点の説明",
+      "suggestion": "改善案"
+    }
+  ]
+}`;
+
+const CONTINUATION_SYSTEM_PROMPT = `あなたは日本語の技術ブログ記事の執筆を支援するアシスタントです。
+記事の続きを3つ提案してください。
+
+コンテキスト：
+- このブログは個人の決定ログとして機能しています
+- 対象読者は数ヶ月後の自分自身です
+- 結論と「なぜそうしたか」を最短距離で伝えることが重要です
+- 技術記事の場合：結論 → 前提 → 却下した選択肢 → 実装
+- 過度な装飾や一般読者向けの説明は不要です
+
+必ず以下のJSON形式のみで回答してください（他の文章は含めないでください）：
+{
+  "suggestions": [
+    {
+      "text": "続きのテキスト（100-300文字程度）",
+      "confidence": 0.0から1.0
+    }
+  ]
+}`;
 
 // Generate article metadata (description + tags) using OpenAI
 aiHandler.post('/generate-metadata', async (c) => {
@@ -224,3 +283,182 @@ function getPublicUrl(env: Env, r2Key: string): string {
   }
   return `https://cdn.tqer39.dev/${r2Key}`;
 }
+
+// Review article using Claude
+aiHandler.post('/review-article', async (c) => {
+  const apiKey = c.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    internalError('Anthropic API key not configured');
+  }
+
+  const body = await c.req.json<ReviewArticleRequest>();
+  const { title, content } = body;
+
+  if (!title || !content) {
+    validationError('Invalid input', {
+      ...(title ? {} : { title: 'Required' }),
+      ...(content ? {} : { content: 'Required' }),
+    });
+  }
+
+  // Truncate content if too long (keep first 30000 chars)
+  const truncatedContent = content.slice(0, 30000);
+
+  const userPrompt = `以下の記事をレビューしてください。
+
+タイトル: ${title}
+
+本文:
+${truncatedContent}`;
+
+  try {
+    const response = await fetch(ANTHROPIC_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey as string,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: ANTHROPIC_MODEL,
+        max_tokens: 4096,
+        system: REVIEW_SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: userPrompt }],
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Anthropic API error:', error);
+      internalError('Failed to review article');
+    }
+
+    const data = await response.json<{
+      content: Array<{ type: string; text: string }>;
+    }>();
+
+    const textContent = data.content.find((c) => c.type === 'text');
+    if (!textContent) {
+      internalError('No text response from Claude');
+    }
+
+    // Parse JSON from response
+    const jsonMatch = textContent.text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.error('Failed to parse JSON from response:', textContent.text);
+      internalError('Failed to parse review response');
+    }
+
+    const result = JSON.parse(jsonMatch[0]) as ReviewArticleResponse;
+
+    // Validate and sanitize the response
+    const sanitizedResult: ReviewArticleResponse = {
+      summary: result.summary || 'レビュー完了',
+      overallScore: Math.min(10, Math.max(1, result.overallScore || 5)),
+      items: (result.items || []).map((item: ReviewItem) => ({
+        category: item.category || 'style',
+        severity: item.severity || 'info',
+        location: item.location,
+        issue: item.issue || '',
+        suggestion: item.suggestion || '',
+      })),
+    };
+
+    return c.json(sanitizedResult);
+  } catch (error) {
+    console.error('Error reviewing article:', error);
+    internalError('Failed to review article');
+  }
+});
+
+// Suggest continuation using Claude
+aiHandler.post('/suggest-continuation', async (c) => {
+  const apiKey = c.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    internalError('Anthropic API key not configured');
+  }
+
+  const body = await c.req.json<SuggestContinuationRequest>();
+  const { title, content, cursorPosition } = body;
+
+  if (!title || content === undefined || cursorPosition === undefined) {
+    validationError('Invalid input', {
+      ...(title ? {} : { title: 'Required' }),
+      ...(content === undefined ? { content: 'Required' } : {}),
+      ...(cursorPosition === undefined ? { cursorPosition: 'Required' } : {}),
+    });
+  }
+
+  // Extract context around cursor position
+  const contextBefore = content.slice(
+    Math.max(0, cursorPosition - 2000),
+    cursorPosition
+  );
+  const contextAfter = content.slice(cursorPosition, cursorPosition + 500);
+
+  const userPrompt = `以下の記事の続きを提案してください。
+
+タイトル: ${title}
+
+カーソル位置より前の文章:
+${contextBefore}
+
+[ここに続きを挿入]
+
+カーソル位置より後の文章:
+${contextAfter || '（なし）'}`;
+
+  try {
+    const response = await fetch(ANTHROPIC_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey as string,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: ANTHROPIC_MODEL,
+        max_tokens: 2048,
+        system: CONTINUATION_SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: userPrompt }],
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Anthropic API error:', error);
+      internalError('Failed to suggest continuation');
+    }
+
+    const data = await response.json<{
+      content: Array<{ type: string; text: string }>;
+    }>();
+
+    const textContent = data.content.find((c) => c.type === 'text');
+    if (!textContent) {
+      internalError('No text response from Claude');
+    }
+
+    // Parse JSON from response
+    const jsonMatch = textContent.text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.error('Failed to parse JSON from response:', textContent.text);
+      internalError('Failed to parse continuation response');
+    }
+
+    const result = JSON.parse(jsonMatch[0]) as SuggestContinuationResponse;
+
+    // Validate and sanitize the response
+    const sanitizedResult: SuggestContinuationResponse = {
+      suggestions: (result.suggestions || []).slice(0, 3).map((s) => ({
+        text: s.text || '',
+        confidence: Math.min(1, Math.max(0, s.confidence || 0.5)),
+      })),
+    };
+
+    return c.json(sanitizedResult);
+  } catch (error) {
+    console.error('Error suggesting continuation:', error);
+    internalError('Failed to suggest continuation');
+  }
+});

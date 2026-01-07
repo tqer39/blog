@@ -3,11 +3,11 @@
  * with CMS API specific bindings
  */
 export {
-  createMockStatement,
-  createMockDB,
-  createMockR2Bucket,
-  createMockEnv,
   authHeader,
+  createMockDB,
+  createMockEnv,
+  createMockR2Bucket,
+  createMockStatement,
   jsonAuthHeaders,
   sampleArticle,
   sampleArticle2,

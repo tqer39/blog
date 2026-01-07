@@ -1,9 +1,10 @@
 'use client';
 
-import type { Article, ArticleInput } from '@blog/cms-types';
-import { ImageIcon, Sparkles, X } from 'lucide-react';
-import Image from 'next/image';
-import { useRef, useState } from 'react';
+import type {
+  Article,
+  ArticleInput,
+  ReviewArticleResponse,
+} from '@blog/cms-types';
 import {
   Alert,
   AlertDescription,
@@ -13,13 +14,18 @@ import {
   Label,
   Textarea,
 } from '@blog/ui';
+import { ImageIcon, MessageSquare, Sparkles, X } from 'lucide-react';
+import Image from 'next/image';
+import { useRef, useState } from 'react';
 import {
   generateImage,
   generateMetadata,
   getTags,
+  reviewArticle,
   uploadImage,
 } from '@/lib/api/client';
 import { MarkdownEditor } from './MarkdownEditor';
+import { ReviewPanel } from './ReviewPanel';
 import { TagSelector } from './TagSelector';
 
 interface ArticleEditorProps {
@@ -55,6 +61,11 @@ export function ArticleEditor({
   const [imagePrompt, setImagePrompt] = useState('');
   const [showImagePrompt, setShowImagePrompt] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isReviewing, setIsReviewing] = useState(false);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [reviewResult, setReviewResult] =
+    useState<ReviewArticleResponse | null>(null);
+  const [reviewError, setReviewError] = useState<string | null>(null);
   const headerImageInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = async (file: File): Promise<string> => {
@@ -149,6 +160,31 @@ export function ArticleEditor({
     }
   };
 
+  const handleReviewArticle = async () => {
+    if (!title.trim() || !content.trim()) {
+      setError('Title and content are required to review');
+      return;
+    }
+
+    setIsReviewing(true);
+    setReviewError(null);
+    setIsReviewOpen(true);
+
+    try {
+      const result = await reviewArticle({
+        title: title.trim(),
+        content,
+      });
+      setReviewResult(result);
+    } catch (err) {
+      setReviewError(
+        err instanceof Error ? err.message : 'Failed to review article'
+      );
+    } finally {
+      setIsReviewing(false);
+    }
+  };
+
   const handleSave = async () => {
     if (!title.trim()) {
       setError('Title is required');
@@ -199,6 +235,19 @@ export function ArticleEditor({
               {status === 'published' ? 'Published' : 'Draft'}
             </Badge>
           </div>
+
+          {/* AI Review button */}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleReviewArticle}
+            disabled={isReviewing || !title.trim() || !content.trim()}
+            className="gap-1.5"
+          >
+            <MessageSquare className="h-4 w-4" />
+            {isReviewing ? 'Reviewing...' : 'AI Review'}
+          </Button>
 
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>
@@ -381,9 +430,19 @@ export function ArticleEditor({
             value={content}
             onChange={setContent}
             onImageUpload={handleImageUpload}
+            title={title}
           />
         </div>
       </div>
+
+      {/* Review Panel */}
+      <ReviewPanel
+        isOpen={isReviewOpen}
+        onClose={() => setIsReviewOpen(false)}
+        review={reviewResult}
+        isLoading={isReviewing}
+        error={reviewError}
+      />
     </div>
   );
 }

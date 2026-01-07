@@ -26,10 +26,11 @@ This document describes how to obtain and configure secrets.
 
 ### AI Service Secrets
 
-| Secret           | How to Obtain        | Where to Set                      |
-| ---------------- | -------------------- | --------------------------------- |
-| `OPENAI_API_KEY` | OpenAI Platform      | Cloudflare Workers + GitHub       |
-| `GEMINI_API_KEY` | Google AI Studio     | Cloudflare Workers                |
+| Secret              | How to Obtain    | Where to Set              |
+| ------------------- | ---------------- | ------------------------- |
+| `OPENAI_API_KEY`    | OpenAI Platform  | Cloudflare Workers+GitHub |
+| `GEMINI_API_KEY`    | Google AI Studio | Cloudflare Workers        |
+| `ANTHROPIC_API_KEY` | Anthropic Console| Cloudflare Workers        |
 
 ### Other Third-party Secrets (GitHub Secrets)
 
@@ -74,6 +75,7 @@ cd apps/cms-api
 # Set secrets interactively
 pnpm wrangler secret put OPENAI_API_KEY
 pnpm wrangler secret put GEMINI_API_KEY
+pnpm wrangler secret put ANTHROPIC_API_KEY
 pnpm wrangler secret put AUTH_SECRET
 pnpm wrangler secret put ADMIN_PASSWORD_HASH
 ```
@@ -104,6 +106,7 @@ Create `apps/cms-api/.dev.vars`:
 ```bash
 OPENAI_API_KEY=sk-...
 GEMINI_API_KEY=...
+ANTHROPIC_API_KEY=sk-ant-...
 AUTH_SECRET=your-local-secret
 ADMIN_PASSWORD_HASH=$2b$12$...
 ```
