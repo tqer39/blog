@@ -1,6 +1,6 @@
 # Secrets Configuration
 
-[Japanese](SECRETS.ja.md)
+[🇯🇵 日本語版](./SECRETS.ja.md)
 
 This document describes how to obtain and configure secrets.
 
