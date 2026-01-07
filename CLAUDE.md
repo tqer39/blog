@@ -186,7 +186,7 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
 | Secret               | Description                  |
 | -------------------- | ---------------------------- |
-| `SLACK_WEBHOOK_DEV`  | Slack notification webhook   |
+| `SLACK_WEBHOOK`      | Slack notification webhook   |
 | `CODECOV_TOKEN`      | Codecov coverage token       |
 | `GEMINI_API_KEY`     | Google Gemini API key        |
 | `OPENAI_API_KEY`     | OpenAI API key for PR desc   |

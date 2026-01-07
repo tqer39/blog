@@ -36,7 +36,7 @@ This document describes how to obtain and configure secrets.
 
 | Secret             | How to Obtain                    |
 | ------------------ | -------------------------------- |
-| `SLACK_WEBHOOK_DEV`| Slack API > Incoming Webhooks    |
+| `SLACK_WEBHOOK`    | Slack API > Incoming Webhooks    |
 | `CODECOV_TOKEN`    | Codecov > Repository Settings    |
 
 ### GitHub App Secrets (GitHub Secrets)

@@ -36,7 +36,7 @@
 
 | シークレット        | 取得方法                      |
 | ------------------- | ----------------------------- |
-| `SLACK_WEBHOOK_DEV` | Slack API > Incoming Webhooks |
+| `SLACK_WEBHOOK`     | Slack API > Incoming Webhooks |
 | `CODECOV_TOKEN`     | Codecov > リポジトリ設定      |
 
 ### GitHub App 関連 (GitHub Secrets)
