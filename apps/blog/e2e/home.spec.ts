@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test';
 import { ArticlesListPage, HomePage } from '@blog/test-utils/e2e';
+import { expect, test } from '@playwright/test';
 
 test.describe('Home Page', () => {
   test('should display the blog title', async ({ page }) => {

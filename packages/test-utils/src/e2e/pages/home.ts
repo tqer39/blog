@@ -15,7 +15,10 @@ export class HomePage {
   constructor(page: Page) {
     this.page = page;
     this.title = page.locator('h1');
-    this.articlesLink = page.getByRole('link', { name: 'Articles', exact: true });
+    this.articlesLink = page.getByRole('link', {
+      name: 'Articles',
+      exact: true,
+    });
     this.logoLink = page.getByRole('link', { name: 'tB' });
     this.themeToggle = page.getByRole('button', { name: 'Toggle theme' });
     this.articleCards = page.locator('article');

@@ -197,7 +197,9 @@ describe('tagsHandler', () => {
       expect(res.status).toBe(409);
       const data = await res.json();
       expect(data.error.code).toBe('CONFLICT');
-      expect(data.error.message).toBe('Tag with this name or slug already exists');
+      expect(data.error.message).toBe(
+        'Tag with this name or slug already exists'
+      );
     });
   });
 
@@ -312,7 +314,9 @@ describe('tagsHandler', () => {
       expect(res.status).toBe(409);
       const data = await res.json();
       expect(data.error.code).toBe('CONFLICT');
-      expect(data.error.message).toBe('Tag with this name or slug already exists');
+      expect(data.error.message).toBe(
+        'Tag with this name or slug already exists'
+      );
     });
   });
 

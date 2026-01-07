@@ -21,7 +21,9 @@ export class ArticlesListPage {
     this.searchInput = page.getByPlaceholder('Search');
     this.clearSearchButton = page.getByRole('link', { name: 'クリア' });
     this.pagination = page.locator('[data-pagination]');
-    this.noArticlesMessage = page.getByText(/No articles|検索結果が見つかりませんでした/);
+    this.noArticlesMessage = page.getByText(
+      /No articles|検索結果が見つかりませんでした/
+    );
   }
 
   async goto(page = 1) {

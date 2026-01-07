@@ -1,1 +1,1 @@
-export { DEFAULT_API_URL, ARTICLES_PER_PAGE } from './constants';
+export { ARTICLES_PER_PAGE, DEFAULT_API_URL } from './constants';

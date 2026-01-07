@@ -1,4 +1,10 @@
 // shadcn/ui components
+
+// Generic components
+export { CodeBlock } from './components/CodeBlock';
+export { FullscreenModal } from './components/FullscreenModal';
+export { Mermaid } from './components/Mermaid';
+export { MermaidClient } from './components/MermaidClient';
 export * from './components/ui/alert';
 export * from './components/ui/badge';
 export * from './components/ui/button';
@@ -15,9 +21,3 @@ export * from './components/ui/textarea';
 export * from './components/ui/toggle';
 export * from './components/ui/toggle-group';
 export * from './components/ui/tooltip';
-
-// Generic components
-export { CodeBlock } from './components/CodeBlock';
-export { FullscreenModal } from './components/FullscreenModal';
-export { Mermaid } from './components/Mermaid';
-export { MermaidClient } from './components/MermaidClient';

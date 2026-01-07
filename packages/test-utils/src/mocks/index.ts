@@ -1,8 +1,8 @@
 // Database mocks
 export {
-  createMockStatement,
   createMockDB,
   createMockR2Bucket,
+  createMockStatement,
   type MockStatementOptions,
 } from './db';
 

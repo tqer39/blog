@@ -185,7 +185,7 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 
 | Secret               | 説明                             |
 | -------------------- | -------------------------------- |
-| `SLACK_WEBHOOK_DEV`  | Slack 通知 Webhook               |
+| `SLACK_WEBHOOK`      | Slack 通知 Webhook               |
 | `CODECOV_TOKEN`      | Codecov カバレッジトークン       |
 | `GEMINI_API_KEY`     | Google Gemini API キー           |
 | `OPENAI_API_KEY`     | OpenAI API キー（PR 説明生成用） |

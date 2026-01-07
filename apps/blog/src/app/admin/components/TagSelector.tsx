@@ -1,8 +1,8 @@
 'use client';
 
+import { Badge, Button, Input, Label } from '@blog/ui';
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Badge, Button, Input, Label } from '@blog/ui';
 import { createTag, getTags } from '@/lib/api/client';
 
 interface TagSelectorProps {

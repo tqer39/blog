@@ -1,7 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import {
   Alert,
   AlertDescription,
@@ -13,6 +11,8 @@ import {
   Input,
   Label,
 } from '@blog/ui';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();

@@ -1,13 +1,12 @@
 'use client';
 
+import { CodeBlock, Mermaid } from '@blog/ui';
 import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
-
-import { CodeBlock, Mermaid } from '@blog/ui';
 
 interface ArticleContentProps {
   content: string;

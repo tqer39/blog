@@ -1,8 +1,8 @@
 'use client';
 
+import { Button } from '@blog/ui';
 import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@blog/ui';
 
 export function LogoutButton() {
   const router = useRouter();

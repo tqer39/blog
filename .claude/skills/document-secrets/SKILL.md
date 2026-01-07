@@ -66,7 +66,7 @@ GitHub Secrets が追加された際に、関連ドキュメントを更新す�
 | Secret | Description |
 | ------ | ----------- |
 | OPENAI_API_KEY | OpenAI API key for PR desc |
-| SLACK_WEBHOOK_DEV | Slack notification webhook |
+| SLACK_WEBHOOK | Slack notification webhook |
 ```
 
 ### 追加後（GEMINI_API_KEY を追加）
@@ -78,7 +78,7 @@ GitHub Secrets が追加された際に、関連ドキュメントを更新す�
 | ------ | ----------- |
 | GEMINI_API_KEY | Google Gemini API key for image generation |
 | OPENAI_API_KEY | OpenAI API key for PR desc |
-| SLACK_WEBHOOK_DEV | Slack notification webhook |
+| SLACK_WEBHOOK | Slack notification webhook |
 ```
 
 ## 注意事項

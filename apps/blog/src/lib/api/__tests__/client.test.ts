@@ -10,6 +10,8 @@ import {
   getArticles,
   getTags,
   publishArticle,
+  reviewArticle,
+  suggestContinuation,
   unpublishArticle,
   updateArticle,
   uploadImage,
@@ -60,7 +62,9 @@ describe('API Client', () => {
 
         const result = await getArticles();
 
-        expect(mockFetch).toHaveBeenCalledWith('/api/articles', { headers: {} });
+        expect(mockFetch).toHaveBeenCalledWith('/api/articles', {
+          headers: {},
+        });
         expect(result.articles).toHaveLength(1);
       });
 
@@ -367,6 +371,64 @@ describe('API Client', () => {
       });
 
       await expect(getArticle('test')).rejects.toThrow('Unknown error');
+    });
+  });
+
+  describe('AI', () => {
+    describe('reviewArticle', () => {
+      it('should review an article', async () => {
+        mockFetch.mockResolvedValue({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              summary: 'Good article',
+              overallScore: 85,
+              items: [],
+            }),
+        });
+
+        const result = await reviewArticle({
+          title: 'Test Article',
+          content: '# Test Content',
+        });
+
+        expect(mockFetch).toHaveBeenCalledWith(
+          expect.stringContaining('/ai/review-article'),
+          expect.objectContaining({
+            method: 'POST',
+            headers: expect.objectContaining({
+              'Content-Type': 'application/json',
+            }),
+          })
+        );
+        expect(result.overallScore).toBe(85);
+      });
+    });
+
+    describe('suggestContinuation', () => {
+      it('should suggest continuation', async () => {
+        mockFetch.mockResolvedValue({
+          ok: true,
+          json: () =>
+            Promise.resolve({
+              suggestions: [{ text: 'Continue here', confidence: 0.9 }],
+            }),
+        });
+
+        const result = await suggestContinuation({
+          title: 'Test Article',
+          content: '# Test',
+          cursorPosition: 10,
+        });
+
+        expect(mockFetch).toHaveBeenCalledWith(
+          expect.stringContaining('/ai/suggest-continuation'),
+          expect.objectContaining({
+            method: 'POST',
+          })
+        );
+        expect(result.suggestions).toHaveLength(1);
+      });
     });
   });
 });

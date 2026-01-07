@@ -1,6 +1,6 @@
 # シークレット設定ガイド
 
-[English](SECRETS.md)
+[🇺🇸 English](./SECRETS.md)
 
 このドキュメントでは、シークレットの取得方法と設定場所を説明します。
 
@@ -26,16 +26,17 @@
 
 ### AI サービス関連
 
-| シークレット     | 取得方法         | 設定場所                 |
-| ---------------- | ---------------- | ------------------------ |
-| `OPENAI_API_KEY` | OpenAI Platform  | Cloudflare + GitHub      |
-| `GEMINI_API_KEY` | Google AI Studio | Cloudflare Workers       |
+| シークレット        | 取得方法         | 設定場所                |
+| ------------------- | ---------------- | ----------------------- |
+| `OPENAI_API_KEY`    | OpenAI Platform  | Cloudflare+GitHub       |
+| `GEMINI_API_KEY`    | Google AI Studio | Cloudflare Workers      |
+| `ANTHROPIC_API_KEY` | Anthropic Console| Cloudflare Workers      |
 
 ### その他サードパーティ (GitHub Secrets)
 
 | シークレット        | 取得方法                      |
 | ------------------- | ----------------------------- |
-| `SLACK_WEBHOOK_DEV` | Slack API > Incoming Webhooks |
+| `SLACK_WEBHOOK`     | Slack API > Incoming Webhooks |
 | `CODECOV_TOKEN`     | Codecov > リポジトリ設定      |
 
 ### GitHub App 関連 (GitHub Secrets)
@@ -74,6 +75,7 @@ cd apps/cms-api
 # 対話形式でシークレットを設定
 pnpm wrangler secret put OPENAI_API_KEY
 pnpm wrangler secret put GEMINI_API_KEY
+pnpm wrangler secret put ANTHROPIC_API_KEY
 pnpm wrangler secret put AUTH_SECRET
 pnpm wrangler secret put ADMIN_PASSWORD_HASH
 ```
@@ -104,6 +106,7 @@ CMS_API_KEY=dev-api-key
 ```bash
 OPENAI_API_KEY=sk-...
 GEMINI_API_KEY=...
+ANTHROPIC_API_KEY=sk-ant-...
 AUTH_SECRET=your-local-secret
 ADMIN_PASSWORD_HASH=$2b$12$...
 ```

@@ -1,2 +1,2 @@
 // Page Objects
-export { HomePage, ArticlePage, ArticlesListPage } from './pages';
+export { ArticlePage, ArticlesListPage, HomePage } from './pages';
