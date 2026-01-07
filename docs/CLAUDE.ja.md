@@ -174,12 +174,13 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 
 ### インフラ Secrets
 
-| Secret                  | 説明                     |
-| ----------------------- | ------------------------ |
-| `VERCEL_API_TOKEN`      | Vercel デプロイトークン  |
-| `CLOUDFLARE_API_TOKEN`  | CloudFlare API トークン  |
-| `CLOUDFLARE_ACCOUNT_ID` | CloudFlare アカウント ID |
-| `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS ゾーン ID |
+| Secret                  | 説明                                      |
+| ----------------------- | ----------------------------------------- |
+| `VERCEL_API_TOKEN`      | Vercel デプロイトークン                   |
+| `CLOUDFLARE_API_TOKEN`  | CloudFlare API トークン                   |
+| `CLOUDFLARE_ACCOUNT_ID` | CloudFlare アカウント ID                  |
+| `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS ゾーン ID                  |
+| `D1_DATABASE_ID`        | CloudFlare D1 データベース ID (cms-api)   |
 
 ### サードパーティ Secrets
 

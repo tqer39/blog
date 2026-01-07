@@ -175,12 +175,13 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
 ### Infrastructure Secrets
 
-| Secret                  | Description             |
-| ----------------------- | ----------------------- |
-| `VERCEL_API_TOKEN`      | Vercel deployment token |
-| `CLOUDFLARE_API_TOKEN`  | CloudFlare API token    |
-| `CLOUDFLARE_ACCOUNT_ID` | CloudFlare account ID   |
-| `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS zone ID  |
+| Secret                  | Description                           |
+| ----------------------- | ------------------------------------- |
+| `VERCEL_API_TOKEN`      | Vercel deployment token               |
+| `CLOUDFLARE_API_TOKEN`  | CloudFlare API token                  |
+| `CLOUDFLARE_ACCOUNT_ID` | CloudFlare account ID                 |
+| `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS zone ID                |
+| `D1_DATABASE_ID`        | CloudFlare D1 database ID (cms-api)   |
 
 ### Third-party Service Secrets
 
