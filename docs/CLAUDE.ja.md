@@ -170,6 +170,28 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 - **ドメイン**: blog.tqer39.dev（CloudFlare DNS CNAME で Vercel へ）
 - **CI/CD**: GitHub Actions
 
+### CI/CD カバレッジ
+
+| リソース         | Terraform | CI/CD ワークフロー | 備考           |
+| ---------------- | --------- | ------------------ | -------------- |
+| D1 Database      | cms-api   | terraform.yml      |                |
+| R2 Bucket        | cms-api   | terraform.yml      |                |
+| Worker (cms-api) | -         | deploy-cms-api.yml | wrangler       |
+| D1 Migration     | -         | db-migrate.yml     | migrations/**  |
+| DNS Record       | frontend  | terraform.yml      |                |
+| Vercel Project   | frontend  | terraform.yml      |                |
+| Blog App         | -         | Vercel 自動        | GitHub 連携    |
+| IAM Role         | bootstrap | ローカルのみ       | 初回のみ       |
+
+### ワークフロー
+
+| ワークフロー         | トリガー           | 説明              |
+| -------------------- | ------------------ | ----------------- |
+| `test-and-build.yml` | main への Push/PR  | Lint, test, E2E   |
+| `terraform.yml`      | infra/** 変更      | Terraform apply   |
+| `deploy-cms-api.yml` | cms-api/** 変更    | Worker デプロイ   |
+| `db-migrate.yml`     | migrations/** 変更 | D1 マイグレ       |
+
 ## 必要な GitHub Secrets
 
 ### インフラ Secrets

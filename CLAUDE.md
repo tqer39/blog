@@ -171,6 +171,28 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 - **Domain**: blog.tqer39.dev (CloudFlare DNS CNAME to Vercel)
 - **CI/CD**: GitHub Actions
 
+### CI/CD Coverage
+
+| Resource         | Terraform | CI/CD Workflow     | Notes              |
+| ---------------- | --------- | ------------------ | ------------------ |
+| D1 Database      | cms-api   | terraform.yml      |                    |
+| R2 Bucket        | cms-api   | terraform.yml      |                    |
+| Worker (cms-api) | -         | deploy-cms-api.yml | via wrangler       |
+| D1 Migration     | -         | db-migrate.yml     | migrations/**      |
+| DNS Record       | frontend  | terraform.yml      |                    |
+| Vercel Project   | frontend  | terraform.yml      |                    |
+| Blog App         | -         | Vercel auto-deploy | GitHub integration |
+| IAM Role         | bootstrap | Local only         | Initial setup      |
+
+### Workflows
+
+| Workflow             | Trigger              | Description        |
+| -------------------- | -------------------- | ------------------ |
+| `test-and-build.yml` | Push/PR to main      | Lint, test, E2E    |
+| `terraform.yml`      | infra/** changes     | Terraform apply    |
+| `deploy-cms-api.yml` | cms-api/** changes   | Worker deployment  |
+| `db-migrate.yml`     | migrations/** change | D1 migrations      |
+
 ## GitHub Secrets Required
 
 ### Infrastructure Secrets
