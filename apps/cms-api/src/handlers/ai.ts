@@ -26,12 +26,21 @@ interface GenerateMetadataResponse {
 interface GenerateImageRequest {
   prompt: string;
   title?: string;
+  model?: 'gemini-2.5-flash-image' | 'gemini-3-pro-image-preview';
 }
 
 interface GenerateImageResponse {
   id: string;
   url: string;
 }
+
+// Nano Banana (Gemini Image) models
+const NANO_BANANA_MODELS = {
+  'gemini-2.5-flash-image': 'gemini-2.5-flash-image',
+  'gemini-3-pro-image-preview': 'gemini-3-pro-image-preview',
+} as const;
+
+const DEFAULT_IMAGE_MODEL = 'gemini-2.5-flash-image';
 
 // Anthropic API configuration
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
@@ -167,7 +176,7 @@ ${existingTags?.length ? `Existing tags in the system: ${existingTags.join(', ')
   }
 });
 
-// Generate header image using Gemini (Imagen)
+// Generate header image using Nano Banana (Gemini Image)
 aiHandler.post('/generate-image', async (c) => {
   const apiKey = c.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -175,10 +184,17 @@ aiHandler.post('/generate-image', async (c) => {
   }
 
   const body = await c.req.json<GenerateImageRequest>();
-  const { prompt, title } = body;
+  const { prompt, title, model = DEFAULT_IMAGE_MODEL } = body;
 
   if (!prompt) {
     validationError('Invalid input', { prompt: 'Required' });
+  }
+
+  // Validate model
+  if (!NANO_BANANA_MODELS[model]) {
+    validationError('Invalid model', {
+      model: `Must be one of: ${Object.keys(NANO_BANANA_MODELS).join(', ')}`,
+    });
   }
 
   // Create a descriptive prompt for header image
@@ -187,21 +203,23 @@ aiHandler.post('/generate-image', async (c) => {
     : `${prompt}. Style: clean, minimal, modern illustration suitable for a blog header.`;
 
   try {
-    // Use Gemini's Imagen API for image generation
+    // Use Nano Banana (Gemini Image) API for image generation
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
         },
         body: JSON.stringify({
-          instances: [{ prompt: imagePrompt }],
-          parameters: {
-            sampleCount: 1,
-            aspectRatio: '16:9',
-            personGeneration: 'dont_allow',
-            safetyFilterLevel: 'block_low_and_above',
+          contents: [
+            {
+              parts: [{ text: imagePrompt }],
+            },
+          ],
+          generationConfig: {
+            responseModalities: ['IMAGE'],
           },
         }),
       }
@@ -214,16 +232,29 @@ aiHandler.post('/generate-image', async (c) => {
     }
 
     const data = await response.json<{
-      predictions: Array<{ bytesBase64Encoded: string; mimeType: string }>;
+      candidates: Array<{
+        content: {
+          parts: Array<{
+            inlineData?: { mimeType: string; data: string };
+            text?: string;
+          }>;
+        };
+      }>;
     }>();
 
-    if (!data.predictions || data.predictions.length === 0) {
+    if (!data.candidates || data.candidates.length === 0) {
       internalError('No image generated');
     }
 
-    const prediction = data.predictions[0];
-    const imageData = prediction.bytesBase64Encoded;
-    const mimeType = prediction.mimeType || 'image/png';
+    const parts = data.candidates[0].content.parts;
+    const imagePart = parts.find((p) => p.inlineData);
+
+    if (!imagePart?.inlineData) {
+      internalError('No image data in response');
+    }
+
+    const imageData = imagePart.inlineData.data;
+    const mimeType = imagePart.inlineData.mimeType || 'image/png';
 
     // Convert base64 to binary
     const binaryData = Uint8Array.from(atob(imageData), (c) => c.charCodeAt(0));

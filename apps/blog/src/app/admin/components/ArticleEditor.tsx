@@ -23,6 +23,7 @@ import {
   getTags,
   reviewArticle,
   uploadImage,
+  type ImageModel,
 } from '@/lib/api/client';
 import { MarkdownEditor } from './MarkdownEditor';
 import { ReviewPanel } from './ReviewPanel';
@@ -59,7 +60,10 @@ export function ArticleEditor({
   const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [imagePrompt, setImagePrompt] = useState('');
+  const [imageModel, setImageModel] = useState<ImageModel>('gemini-2.5-flash-image');
   const [showImagePrompt, setShowImagePrompt] = useState(false);
+  const [useArticleContent, setUseArticleContent] = useState(true);
+  const [promptMode, setPromptMode] = useState<'append' | 'override'>('append');
   const [error, setError] = useState<string | null>(null);
   const [isReviewing, setIsReviewing] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
@@ -135,9 +139,31 @@ export function ArticleEditor({
   };
 
   const handleGenerateImage = async () => {
-    if (!imagePrompt.trim()) {
-      setError('Please enter a prompt for image generation');
-      return;
+    // Build prompt based on settings
+    let finalPrompt = '';
+
+    if (useArticleContent) {
+      // Build prompt from article content (title + description)
+      const articlePrompt = `${title.trim()}${description.trim() ? `: ${description.trim()}` : ''}`;
+
+      if (!articlePrompt && !imagePrompt.trim()) {
+        setError('タイトルまたはカスタムプロンプトを入力してください');
+        return;
+      }
+
+      if (promptMode === 'override' && imagePrompt.trim()) {
+        finalPrompt = imagePrompt.trim();
+      } else if (imagePrompt.trim()) {
+        finalPrompt = `${articlePrompt}. ${imagePrompt.trim()}`;
+      } else {
+        finalPrompt = articlePrompt;
+      }
+    } else {
+      if (!imagePrompt.trim()) {
+        setError('カスタムプロンプトを入力してください');
+        return;
+      }
+      finalPrompt = imagePrompt.trim();
     }
 
     setIsGeneratingImage(true);
@@ -145,13 +171,13 @@ export function ArticleEditor({
 
     try {
       const result = await generateImage({
-        prompt: imagePrompt.trim(),
+        prompt: finalPrompt,
         title: title.trim() || undefined,
+        model: imageModel,
       });
 
       setHeaderImageId(result.id);
       setHeaderImageUrl(result.url);
-      setShowImagePrompt(false);
       setImagePrompt('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate image');
@@ -322,97 +348,154 @@ export function ArticleEditor({
         </div>
 
         {/* Header Image */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label>Header Image</Label>
-          {headerImageUrl ? (
-            <div className="relative inline-block">
-              <Image
-                src={headerImageUrl}
-                alt="Header preview"
-                width={400}
-                height={200}
-                className="max-h-48 rounded-lg border object-cover"
-                unoptimized
-              />
-              <button
-                type="button"
-                onClick={handleRemoveHeaderImage}
-                aria-label="Remove header image"
-                className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          ) : showImagePrompt ? (
+
+          {/* Preview Area (always visible) */}
+          <div className="relative">
+            {headerImageUrl ? (
+              <div className="relative inline-block">
+                <Image
+                  src={headerImageUrl}
+                  alt="Header preview"
+                  width={400}
+                  height={200}
+                  className="max-h-48 rounded-lg border object-cover"
+                  unoptimized
+                />
+                <button
+                  type="button"
+                  onClick={handleRemoveHeaderImage}
+                  aria-label="Remove header image"
+                  className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/10">
+                <div className="text-center text-muted-foreground/50">
+                  <ImageIcon className="mx-auto h-8 w-8" />
+                  <span className="mt-1 block text-xs">No image</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => headerImageInputRef.current?.click()}
+              disabled={isUploadingHeader}
+            >
+              <ImageIcon className="mr-1.5 h-4 w-4" />
+              {isUploadingHeader ? 'Uploading...' : 'Upload'}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowImagePrompt(!showImagePrompt)}
+              className="gap-1.5"
+            >
+              <Sparkles className="h-4 w-4" />
+              AI Generate
+            </Button>
+          </div>
+
+          {/* AI Generate Options (collapsible) */}
+          {showImagePrompt && (
             <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
+              {/* Use article content checkbox */}
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={useArticleContent}
+                  onChange={(e) => setUseArticleContent(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300"
+                />
+                記事の内容をプロンプトとして使用
+              </label>
+
+              {/* Custom prompt input */}
               <div className="space-y-2">
                 <Label htmlFor="imagePrompt" className="text-sm">
-                  Image Prompt
+                  カスタムプロンプト {useArticleContent ? '(オプション)' : '(必須)'}
                 </Label>
                 <Textarea
                   id="imagePrompt"
                   value={imagePrompt}
                   onChange={(e) => setImagePrompt(e.target.value)}
-                  placeholder="Describe the image you want to generate..."
+                  placeholder={
+                    useArticleContent
+                      ? '追加の指示があれば入力...'
+                      : '生成したい画像を説明してください...'
+                  }
                   rows={2}
                 />
               </div>
-              <div className="flex gap-2">
+
+              {/* Prompt mode (only shown when article content is used and custom prompt exists) */}
+              {useArticleContent && imagePrompt.trim() && (
+                <div className="flex items-center gap-4 text-sm">
+                  <span className="text-muted-foreground">モード:</span>
+                  <label className="flex items-center gap-1.5">
+                    <input
+                      type="radio"
+                      name="promptMode"
+                      value="append"
+                      checked={promptMode === 'append'}
+                      onChange={() => setPromptMode('append')}
+                      className="h-4 w-4"
+                    />
+                    追加
+                  </label>
+                  <label className="flex items-center gap-1.5">
+                    <input
+                      type="radio"
+                      name="promptMode"
+                      value="override"
+                      checked={promptMode === 'override'}
+                      onChange={() => setPromptMode('override')}
+                      className="h-4 w-4"
+                    />
+                    上書き
+                  </label>
+                </div>
+              )}
+
+              {/* Model selection and Generate button */}
+              <div className="flex items-center gap-2">
+                <select
+                  id="imageModel"
+                  value={imageModel}
+                  onChange={(e) => setImageModel(e.target.value as ImageModel)}
+                  className="rounded-md border border-input bg-background px-3 py-1.5 text-sm"
+                >
+                  <option value="gemini-2.5-flash-image">2.5 Flash</option>
+                  <option value="gemini-3-pro-image-preview">3 Pro</option>
+                </select>
                 <Button
                   type="button"
                   size="sm"
                   onClick={handleGenerateImage}
-                  disabled={isGeneratingImage || !imagePrompt.trim()}
+                  disabled={
+                    isGeneratingImage ||
+                    (!useArticleContent && !imagePrompt.trim()) ||
+                    (useArticleContent && !title.trim() && !imagePrompt.trim())
+                  }
                   className="gap-1.5"
                 >
                   <Sparkles className="h-4 w-4" />
                   {isGeneratingImage ? 'Generating...' : 'Generate'}
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setShowImagePrompt(false);
-                    setImagePrompt('');
-                  }}
-                >
-                  Cancel
-                </Button>
               </div>
             </div>
-          ) : (
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => headerImageInputRef.current?.click()}
-                className="flex h-32 flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50"
-              >
-                {isUploadingHeader ? (
-                  <span className="text-sm text-muted-foreground">
-                    Uploading...
-                  </span>
-                ) : (
-                  <>
-                    <ImageIcon className="h-8 w-8 text-muted-foreground/50" />
-                    <span className="mt-2 text-sm text-muted-foreground">
-                      Upload image
-                    </span>
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowImagePrompt(true)}
-                className="flex h-32 w-32 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50"
-              >
-                <Sparkles className="h-8 w-8 text-muted-foreground/50" />
-                <span className="mt-2 text-sm text-muted-foreground">
-                  AI Generate
-                </span>
-              </button>
-            </div>
           )}
+
           <input
             ref={headerImageInputRef}
             type="file"

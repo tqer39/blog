@@ -129,9 +129,12 @@ export interface GenerateMetadataResponse {
   tags: string[];
 }
 
+export type ImageModel = 'gemini-2.5-flash-image' | 'gemini-3-pro-image-preview';
+
 export interface GenerateImageRequest {
   prompt: string;
   title?: string;
+  model?: ImageModel;
 }
 
 export interface GenerateImageResponse {
