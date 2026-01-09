@@ -22,17 +22,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: ./.github/actions/setup-node
         with:
-          node-version: "25"
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+          working-directory: apps/cms-api
 
       - name: Run migrations
         env:

@@ -50,51 +50,14 @@ jobs:
       WORKING_DIRECTORY: infra/terraform/envs/prod/cms-api
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5
+      - name: Setup Terraform Environment
+        uses: ./.github/actions/setup-terraform-env
         with:
-          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
+          aws-account-id: ${{ env.AWS_ACCOUNT_ID }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Verify AWS Credentials
-        run: aws sts get-caller-identity
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Terraform Format Check
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform fmt -check -recursive -diff
-
-      - name: Terraform Init
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform init -upgrade
-
-      - name: Terraform Validate
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform validate -no-color
-
-      - name: Cache tfcmt
-        id: cache-tfcmt
-        uses: actions/cache@v5
-        with:
-          path: ~/bin/tfcmt
-          key: tfcmt-${{ runner.os }}-v4.14.12
-
-      - name: Setup tfcmt
-        if: steps.cache-tfcmt.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p ~/bin
-          curl -fsSL https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.14.12/tfcmt_linux_amd64.tar.gz | tar -xz -C ~/bin tfcmt
-          chmod +x ~/bin/tfcmt
-
-      - name: Add tfcmt to PATH
-        run: echo "$HOME/bin" >> $GITHUB_PATH
+          oidc-iam-role: ${{ env.OIDC_IAM_ROLE }}
+          terraform-version: ${{ env.TF_VERSION }}
+          working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Terraform Plan
         id: plan
@@ -188,51 +151,14 @@ jobs:
       WORKING_DIRECTORY: infra/terraform/envs/prod/frontend
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5
+      - name: Setup Terraform Environment
+        uses: ./.github/actions/setup-terraform-env
         with:
-          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
+          aws-account-id: ${{ env.AWS_ACCOUNT_ID }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Verify AWS Credentials
-        run: aws sts get-caller-identity
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Terraform Format Check
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform fmt -check -recursive -diff
-
-      - name: Terraform Init
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform init -upgrade
-
-      - name: Terraform Validate
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform validate -no-color
-
-      - name: Cache tfcmt
-        id: cache-tfcmt
-        uses: actions/cache@v5
-        with:
-          path: ~/bin/tfcmt
-          key: tfcmt-${{ runner.os }}-v4.14.12
-
-      - name: Setup tfcmt
-        if: steps.cache-tfcmt.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p ~/bin
-          curl -fsSL https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.14.12/tfcmt_linux_amd64.tar.gz | tar -xz -C ~/bin tfcmt
-          chmod +x ~/bin/tfcmt
-
-      - name: Add tfcmt to PATH
-        run: echo "$HOME/bin" >> $GITHUB_PATH
+          oidc-iam-role: ${{ env.OIDC_IAM_ROLE }}
+          terraform-version: ${{ env.TF_VERSION }}
+          working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Terraform Plan
         id: plan
