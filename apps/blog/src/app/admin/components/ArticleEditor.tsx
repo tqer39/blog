@@ -9,7 +9,6 @@ import type {
 import {
   Alert,
   AlertDescription,
-  Badge,
   Button,
   Input,
   Label,
@@ -310,15 +309,19 @@ export function ArticleEditor({
           {/* Status toggle */}
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Status:</span>
-            <Badge
-              variant={status === 'published' ? 'default' : 'secondary'}
-              className="cursor-pointer"
+            <button
+              type="button"
+              className={`inline-flex cursor-pointer items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors ${
+                status === 'published'
+                  ? 'bg-emerald-500/20 text-emerald-700 ring-1 ring-inset ring-emerald-500/40 hover:bg-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-400/30'
+                  : 'bg-amber-500/20 text-amber-700 ring-1 ring-inset ring-amber-500/40 hover:bg-amber-500/30 dark:bg-amber-500/20 dark:text-amber-300 dark:ring-amber-400/30'
+              }`}
               onClick={() =>
                 setStatus(status === 'draft' ? 'published' : 'draft')
               }
             >
               {status === 'published' ? 'Published' : 'Draft'}
-            </Badge>
+            </button>
           </div>
 
           {/* AI Review button */}
@@ -357,8 +360,8 @@ export function ArticleEditor({
             disabled={isSaving}
             className={
               saveSuccess
-                ? 'bg-green-600 hover:bg-green-600 transition-colors'
-                : ''
+                ? 'bg-green-600 hover:bg-green-600 transition-colors shadow-md'
+                : 'shadow-md hover:shadow-lg transition-shadow'
             }
           >
             {isSaving ? (
@@ -564,6 +567,7 @@ export function ArticleEditor({
                   value={imageModel}
                   onChange={(e) => setImageModel(e.target.value as ImageModel)}
                   className="rounded-md border border-input bg-background px-3 py-1.5 text-sm"
+                  aria-label="画像生成モデルを選択"
                 >
                   <option value="gemini-2.5-flash-image">2.5 Flash</option>
                   <option value="gemini-3-pro-image-preview">3 Pro</option>

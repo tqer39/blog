@@ -105,7 +105,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="flex gap-4">
-        <Button asChild>
+        <Button asChild className="shadow-md hover:shadow-lg transition-shadow">
           <Link href="/admin/articles/new">New Article</Link>
         </Button>
         <Button variant="outline" asChild>
