@@ -20,6 +20,7 @@ import {
 } from '@blog/ui';
 import {
   Check,
+  Eye,
   ImageIcon,
   ListTree,
   MessageSquare,
@@ -37,6 +38,7 @@ import {
   reviewArticle,
   uploadImage,
 } from '@/lib/api/client';
+import { ArticlePreview } from './ArticlePreview';
 import { MarkdownEditor } from './MarkdownEditor';
 import { ReviewPanel } from './ReviewPanel';
 import { TagSelector } from './TagSelector';
@@ -85,6 +87,7 @@ export function ArticleEditor({
     useState<ReviewArticleResponse | null>(null);
   const [reviewError, setReviewError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isGeneratingOutline, setIsGeneratingOutline] = useState(false);
   const headerImageInputRef = useRef<HTMLInputElement>(null);
 
@@ -329,6 +332,18 @@ export function ArticleEditor({
           >
             <MessageSquare className="h-4 w-4" />
             {isReviewing ? 'Reviewing...' : 'AI Review'}
+          </Button>
+
+          {/* Preview button */}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setIsPreviewOpen(true)}
+            className="gap-1.5"
+          >
+            <Eye className="h-4 w-4" />
+            Preview
           </Button>
 
           {onCancel && (
@@ -659,6 +674,15 @@ export function ArticleEditor({
         review={reviewResult}
         isLoading={isReviewing}
         error={reviewError}
+      />
+      <ArticlePreview
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        title={title}
+        content={content}
+        tags={tags}
+        headerImageUrl={headerImageUrl}
+        publishedAt={initialData?.publishedAt}
       />
     </div>
   );
