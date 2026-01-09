@@ -27,17 +27,20 @@ export function useAIModelSettings() {
   }, []);
 
   // Save settings to localStorage
-  const updateSettings = useCallback((newSettings: Partial<AIModelSettings>) => {
-    setSettings((prev) => {
-      const updated = { ...prev, ...newSettings };
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      } catch (e) {
-        console.error('Failed to save AI model settings:', e);
-      }
-      return updated;
-    });
-  }, []);
+  const updateSettings = useCallback(
+    (newSettings: Partial<AIModelSettings>) => {
+      setSettings((prev) => {
+        const updated = { ...prev, ...newSettings };
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        } catch (e) {
+          console.error('Failed to save AI model settings:', e);
+        }
+        return updated;
+      });
+    },
+    []
+  );
 
   // Reset to defaults
   const resetSettings = useCallback(() => {

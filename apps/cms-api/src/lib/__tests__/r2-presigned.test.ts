@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { generatePresignedUrl, getPublicUrl } from '../r2-presigned';
 import type { Env } from '../../index';
+import { generatePresignedUrl, getPublicUrl } from '../r2-presigned';
 
 // Mock aws4fetch
 vi.mock('aws4fetch', () => ({

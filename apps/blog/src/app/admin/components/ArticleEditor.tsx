@@ -37,9 +37,9 @@ import {
 } from '@/lib/api/client';
 import { AISettingsPopover } from './AISettingsPopover';
 import { ArticlePreview } from './ArticlePreview';
-import { SplitButton } from './SplitButton';
 import { MarkdownEditor } from './MarkdownEditor';
 import { ReviewPanel } from './ReviewPanel';
+import { SplitButton } from './SplitButton';
 import { TagSelector } from './TagSelector';
 
 interface ArticleEditorProps {
@@ -432,7 +432,9 @@ export function ArticleEditor({
             <Label>Description & Tags</Label>
             <SplitButton
               onClick={handleGenerateMetadata}
-              disabled={isGeneratingMetadata || !title.trim() || !content.trim()}
+              disabled={
+                isGeneratingMetadata || !title.trim() || !content.trim()
+              }
               modelType="openai"
               modelValue={aiSettings.metadata}
               onModelChange={(v) =>

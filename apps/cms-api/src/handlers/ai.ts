@@ -754,8 +754,12 @@ aiHandler.post('/transform-text', async (c) => {
   }
 
   const body = await c.req.json<TransformTextRequest>();
-  const { text, action, targetLanguage, model = DEFAULT_ANTHROPIC_MODEL } =
-    body;
+  const {
+    text,
+    action,
+    targetLanguage,
+    model = DEFAULT_ANTHROPIC_MODEL,
+  } = body;
 
   if (!text?.trim()) {
     validationError('Invalid input', { text: 'Required' });

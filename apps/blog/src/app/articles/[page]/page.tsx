@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
 import { X } from 'lucide-react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -141,52 +141,54 @@ export default async function ArticlesPage({
     <>
       <JsonLd data={breadcrumbJsonLd} />
       <div className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold">All Articles</h1>
+        <h1 className="mb-8 text-3xl font-bold">All Articles</h1>
 
-      {searchQuery && (
-        <div className="mb-6 flex items-center gap-2 rounded-lg bg-stone-100 px-4 py-3 dark:bg-stone-800">
-          <span className="text-stone-600 dark:text-stone-400">
-            「
-            <span className="font-medium text-stone-900 dark:text-stone-100">
-              {searchQuery}
+        {searchQuery && (
+          <div className="mb-6 flex items-center gap-2 rounded-lg bg-stone-100 px-4 py-3 dark:bg-stone-800">
+            <span className="text-stone-600 dark:text-stone-400">
+              「
+              <span className="font-medium text-stone-900 dark:text-stone-100">
+                {searchQuery}
+              </span>
+              」の検索結果
+              <span className="ml-2 text-sm">
+                ({filteredArticles.length}件)
+              </span>
             </span>
-            」の検索結果
-            <span className="ml-2 text-sm">({filteredArticles.length}件)</span>
-          </span>
-          <Link
-            href={clearSearchUrl}
-            className="ml-auto flex items-center gap-1 rounded-md px-2 py-1 text-sm text-stone-500 transition-colors hover:bg-stone-200 hover:text-stone-700 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-200"
-          >
-            <X className="h-4 w-4" />
-            クリア
-          </Link>
-        </div>
-      )}
-
-      <Suspense fallback={null}>
-        <ArticleTagSelector allTags={allTags} />
-      </Suspense>
-
-      {articles.length === 0 ? (
-        <p className="text-stone-600 dark:text-stone-400">
-          {searchQuery
-            ? '検索結果が見つかりませんでした。'
-            : selectedTags.length > 0
-              ? 'No articles match the selected tags.'
-              : 'No articles on this page.'}
-        </p>
-      ) : (
-        <>
-          <div className="space-y-8">
-            {articles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
+            <Link
+              href={clearSearchUrl}
+              className="ml-auto flex items-center gap-1 rounded-md px-2 py-1 text-sm text-stone-500 transition-colors hover:bg-stone-200 hover:text-stone-700 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-200"
+            >
+              <X className="h-4 w-4" />
+              クリア
+            </Link>
           </div>
-          {selectedTags.length === 0 && !searchQuery && (
-            <Pagination currentPage={page} totalPages={totalPages} />
-          )}
-        </>
-      )}
+        )}
+
+        <Suspense fallback={null}>
+          <ArticleTagSelector allTags={allTags} />
+        </Suspense>
+
+        {articles.length === 0 ? (
+          <p className="text-stone-600 dark:text-stone-400">
+            {searchQuery
+              ? '検索結果が見つかりませんでした。'
+              : selectedTags.length > 0
+                ? 'No articles match the selected tags.'
+                : 'No articles on this page.'}
+          </p>
+        ) : (
+          <>
+            <div className="space-y-8">
+              {articles.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+            {selectedTags.length === 0 && !searchQuery && (
+              <Pagination currentPage={page} totalPages={totalPages} />
+            )}
+          </>
+        )}
       </div>
     </>
   );

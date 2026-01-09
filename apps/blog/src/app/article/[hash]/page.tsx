@@ -10,10 +10,7 @@ import { JsonLd } from '@/components/JsonLd';
 import { TableOfContents } from '@/components/TableOfContents';
 import { TagLink } from '@/components/TagLink';
 import { getAllArticles, getArticleByHash } from '@/lib/articles';
-import {
-  generateArticleJsonLd,
-  generateBreadcrumbJsonLd,
-} from '@/lib/jsonld';
+import { generateArticleJsonLd, generateBreadcrumbJsonLd } from '@/lib/jsonld';
 import { calculateReadingTime } from '@/lib/readingTime';
 
 interface ArticlePageProps {

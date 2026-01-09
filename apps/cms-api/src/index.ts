@@ -10,6 +10,7 @@ import { tagsHandler } from './handlers/tags';
 import { webhookHandler } from './handlers/webhook';
 import { ApiException } from './lib/errors';
 import { authMiddleware } from './middleware/auth';
+import { basicAuthMiddleware } from './middleware/basicAuth';
 import { rateLimitMiddleware } from './middleware/rateLimit';
 
 export interface Env {
@@ -28,12 +29,17 @@ export interface Env {
   OPENAI_API_KEY?: string;
   GEMINI_API_KEY?: string;
   ANTHROPIC_API_KEY?: string;
+  // Basic Auth for dev environment
+  BASIC_AUTH_ENABLED?: string;
+  BASIC_AUTH_USER?: string;
+  BASIC_AUTH_PASS?: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();
 
 // Middleware
 app.use('*', logger());
+app.use('*', basicAuthMiddleware);
 app.use('*', rateLimitMiddleware);
 app.use(
   '*',
@@ -42,6 +48,7 @@ app.use(
       'http://localhost:3000',
       'http://localhost:3100',
       'https://blog.tqer39.dev',
+      'https://blog-dev.tqer39.dev',
     ],
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowHeaders: ['Content-Type', 'Authorization'],

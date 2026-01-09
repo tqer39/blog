@@ -1,12 +1,10 @@
 ---
-name: Deploy CMS API
+name: Deploy CMS API (Prod)
 
 on:
   push:
-    branches: [main]
-    paths:
-      - "apps/cms-api/**"
-      - ".github/workflows/deploy-cms-api.yml"
+    tags:
+      - "v*.*.*"
   workflow_dispatch:
 
 concurrency:
@@ -15,8 +13,9 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy Worker
+    name: Deploy Worker (Prod)
     runs-on: ubuntu-latest
+    environment: production
     defaults:
       run:
         working-directory: apps/cms-api
@@ -37,7 +36,7 @@ jobs:
 
       - name: Update wrangler.toml with D1 database ID
         env:
-          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
+          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID_PROD }}
         run: |
           sed -i "s/database_id = \"to-be-set-by-terraform\"/database_id = \"$D1_DATABASE_ID\"/" wrangler.toml
 
@@ -52,5 +51,5 @@ jobs:
         uses: ./.github/actions/slack-deploy-failure
         with:
           slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
-          title: "CMS API Deploy Failed"
-          message: "Worker deployment failed on main branch"
+          title: "CMS API Deploy Failed (Prod)"
+          message: "Worker deployment failed for tag ${{ github.ref_name }}"

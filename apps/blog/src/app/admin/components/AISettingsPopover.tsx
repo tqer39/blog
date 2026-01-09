@@ -42,10 +42,11 @@ export const ANTHROPIC_MODELS: { value: AnthropicModel; label: string }[] = [
   { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku (Fast)' },
 ];
 
-export const GEMINI_IMAGE_MODELS: { value: GeminiImageModel; label: string }[] = [
-  { value: 'gemini-2.5-flash-image', label: '2.5 Flash (Fast)' },
-  { value: 'gemini-3-pro-image-preview', label: '3 Pro (Best)' },
-];
+export const GEMINI_IMAGE_MODELS: { value: GeminiImageModel; label: string }[] =
+  [
+    { value: 'gemini-2.5-flash-image', label: '2.5 Flash (Fast)' },
+    { value: 'gemini-3-pro-image-preview', label: '3 Pro (Best)' },
+  ];
 
 export function AISettingsPopover({
   settings,
@@ -201,7 +202,9 @@ export function AISettingsPopover({
 
           {/* Continuation Suggestion */}
           <div className="space-y-2">
-            <Label className="text-xs text-muted-foreground">Continuation</Label>
+            <Label className="text-xs text-muted-foreground">
+              Continuation
+            </Label>
             <Select
               value={settings.continuation}
               onValueChange={(v) =>

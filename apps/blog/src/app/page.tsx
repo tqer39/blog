@@ -17,30 +17,30 @@ export default async function HomePage() {
     <>
       <JsonLd data={websiteJsonLd} />
       <div className="mx-auto max-w-4xl px-4 py-8">
-      <section>
-        <h1 className="mb-8 text-3xl font-bold">Latest Articles</h1>
-        {articles.length === 0 ? (
-          <p className="text-stone-600 dark:text-stone-400">
-            No articles yet. Stay tuned!
-          </p>
-        ) : (
-          <div className="space-y-8">
-            {articles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
-          </div>
-        )}
-        {articles.length > 0 && (
-          <div className="mt-8">
-            <Link
-              href="/articles"
-              className="text-blue-600 hover:underline dark:text-blue-400"
-            >
-              View all articles
-            </Link>
-          </div>
-        )}
-      </section>
+        <section>
+          <h1 className="mb-8 text-3xl font-bold">Latest Articles</h1>
+          {articles.length === 0 ? (
+            <p className="text-stone-600 dark:text-stone-400">
+              No articles yet. Stay tuned!
+            </p>
+          ) : (
+            <div className="space-y-8">
+              {articles.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          )}
+          {articles.length > 0 && (
+            <div className="mt-8">
+              <Link
+                href="/articles"
+                className="text-blue-600 hover:underline dark:text-blue-400"
+              >
+                View all articles
+              </Link>
+            </div>
+          )}
+        </section>
       </div>
     </>
   );

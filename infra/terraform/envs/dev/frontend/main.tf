@@ -1,6 +1,6 @@
 locals {
   config      = yamldecode(file("${path.module}/../../../config.yml"))
-  environment = local.config.environments.prod
+  environment = local.config.environments.dev
   domain      = "${local.environment.subdomain}.${local.config.project.domain}"
 }
 
@@ -13,11 +13,11 @@ module "cloudflare_dns" {
   repository = local.config.project.repository
 }
 
-# Vercel Project
+# Vercel Project (dev)
 module "vercel_project" {
   source = "../../../modules/vercel-project"
 
-  project_name     = local.config.project.name
+  project_name     = "${local.config.project.name}-dev"
   organization     = local.config.project.organization
   repository       = local.config.project.repository
   framework        = local.environment.vercel.framework
@@ -29,7 +29,7 @@ module "vercel_project" {
   environment_variables = [
     {
       key    = "CMS_API_URL"
-      value  = "https://cms-api.tqer39.workers.dev"
+      value  = "https://cms-api-dev.tqer39.workers.dev"
       target = ["production", "preview", "development"]
     },
     {
