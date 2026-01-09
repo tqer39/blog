@@ -118,7 +118,7 @@ CI/CD 自動化用のサービスアカウントを作成:
 op signin
 
 # サービスアカウント作成（対話形式）
-op service-account create "blog-ci" --vault blog-secrets
+op service-account create "blog-ci" --vault blog-secrets:read_items
 
 # または 1Password Web から:
 # 1. Settings > Developer > Service Accounts
