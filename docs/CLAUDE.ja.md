@@ -60,6 +60,10 @@
 
 Turborepo + pnpm workspaces で管理された個人ブログサービスのモノレポです。
 
+- **ディレクトリ構造**: [README.ja.md](README.ja.md) 参照
+- **開発コマンド**: `just --list` を実行
+- **GitHub Secrets**: [SECRETS.ja.md](SECRETS.ja.md) 参照
+
 ## 環境構成
 
 ```text
@@ -109,109 +113,16 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 | API Key    | CMS API `/v1/*` | 全環境      | API 認証           |
 | Password   | Admin UI        | 全環境      | 管理者ログイン     |
 
-## 開発コマンド
-
-### セットアップ
-
-| コマンド         | 説明                                              |
-| ---------------- | ------------------------------------------------- |
-| `make bootstrap` | Homebrew と Brewfile パッケージのインストール     |
-| `just setup`     | mise、direnv、pre-commit フックのセットアップ     |
-| `just deps`      | pnpm 依存関係のインストール                       |
-| `just bootstrap` | フルセットアップ (deps + reset + migrate + seed)  |
-
-### 開発
-
-| コマンド                | 説明                                |
-| ----------------------- | ----------------------------------- |
-| `just dev-all`          | 全サービス起動（API + Blog）        |
-| `just dev-api`          | CMS API サーバー起動（ポート 8787） |
-| `just dev-blog`         | Blog アプリ起動（ポート 3100）      |
-| `just kill-port <port>` | 指定ポートのプロセスを終了          |
-
-### データベース
-
-| コマンド          | 説明                               |
-| ----------------- | ---------------------------------- |
-| `just db-reset`   | ローカル D1 データベースをリセット |
-| `just db-migrate` | 全 D1 マイグレーションを実行       |
-| `just db-seed`    | サンプルデータを投入               |
-
-### コード品質
-
-| コマンド      | 説明                       |
-| ------------- | -------------------------- |
-| `just lint`   | Biome リンター実行         |
-| `just format` | Biome フォーマッター実行   |
-| `just check`  | Biome チェック実行         |
-| `prek run -a` | 全 pre-commit フック実行   |
-
-### テスト
-
-| コマンド      | 説明                          |
-| ------------- | ----------------------------- |
-| `just test`   | ユニットテスト実行            |
-| `just e2e`    | Playwright E2E テスト実行     |
-| `just e2e-ui` | E2E テスト（UI モード）実行   |
-
-### ビルド
-
-| コマンド     | 説明                 |
-| ------------ | -------------------- |
-| `pnpm build` | 全パッケージをビルド |
-
-### Terraform
-
-| コマンド                             | 説明                        |
-| ------------------------------------ | --------------------------- |
-| `just tf -chdir=prod/bootstrap plan` | bootstrap の Terraform plan |
-| `just tf -chdir=prod/main plan`      | main の Terraform plan      |
-
-> **Note**: `bootstrap` は CI/CD を使用する前に、初回のみローカルからデプロイする必要があります。
-
-## ディレクトリ構造
-
-```text
-/
-├── apps/
-│   ├── blog/                  # Next.js ブログアプリ (@blog/web)
-│   │   ├── src/app/           # App Router ページ
-│   │   ├── src/components/    # React コンポーネント
-│   │   └── e2e/               # Playwright テスト
-│   └── cms-api/               # Hono CMS API (@blog/cms-api)
-│       ├── src/handlers/      # API ハンドラー
-│       └── migrations/        # D1 マイグレーション
-├── packages/
-│   ├── cms-types/             # 共有 TypeScript 型
-│   ├── ui/                    # 共有 UI コンポーネント
-│   ├── config/                # 共有設定
-│   └── utils/                 # 共有ユーティリティ
-├── infra/terraform/           # Terraform IaC
-│   ├── modules/               # Terraform モジュール
-│   └── envs/
-│       ├── dev/               # 開発環境
-│       │   ├── cms-api/
-│       │   └── frontend/
-│       └── prod/              # 本番環境
-│           ├── bootstrap/
-│           ├── cms-api/
-│           └── frontend/
-├── docs/                      # ドキュメント
-├── turbo.json                 # Turborepo 設定
-├── pnpm-workspace.yaml        # pnpm ワークスペース設定
-└── justfile                   # タスクランナーコマンド
-```
-
 ## パッケージ名
 
-| ディレクトリ         | パッケージ名      | 説明                    |
-| -------------------- | ----------------- | ----------------------- |
-| `apps/blog`          | `@blog/web`       | Next.js ブログアプリ    |
-| `apps/cms-api`       | `@blog/cms-api`   | Hono CMS API            |
-| `packages/cms-types` | `@blog/cms-types` | 共有 TypeScript 型      |
-| `packages/ui`        | `@blog/ui`        | 共有 UI コンポーネント  |
-| `packages/config`    | `@blog/config`    | 共有設定                |
-| `packages/utils`     | `@blog/utils`     | 共有ユーティリティ      |
+| ディレクトリ         | パッケージ名       |
+| -------------------- | ------------------ |
+| `apps/blog`          | `@blog/web`        |
+| `apps/cms-api`       | `@blog/cms-api`    |
+| `packages/cms-types` | `@blog/cms-types`  |
+| `packages/ui`        | `@blog/ui`         |
+| `packages/config`    | `@blog/config`     |
+| `packages/utils`     | `@blog/utils`      |
 
 ## 主要な技術選定
 
@@ -226,82 +137,13 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 - **フォーマッター/リンター**: Biome（ESLint/Prettier ではない）
 - **E2E テスト**: Playwright
 - **IaC**: Terraform（AWS + CloudFlare + Vercel）
+- **シークレット管理**: 1Password + GitHub Secrets
 
 ## デプロイ
 
-- **ホスティング**: Vercel
-- **ドメイン**: blog.tqer39.dev（CloudFlare DNS CNAME で Vercel へ）
+- **ホスティング**: Vercel (blog)、Cloudflare Workers (cms-api)
+- **ドメイン**: blog.tqer39.dev（CloudFlare DNS）
 - **CI/CD**: GitHub Actions
-
-### CI/CD カバレッジ
-
-| リソース         | Terraform | CI/CD ワークフロー   | 環境      |
-| ---------------- | --------- | -------------------- | --------- |
-| D1 Database      | cms-api   | terraform-*.yml      | 環境別    |
-| R2 Bucket        | cms-api   | terraform-*.yml      | 環境別    |
-| Worker (cms-api) | -         | deploy-cms-api-*.yml | 環境別    |
-| D1 Migration     | -         | db-migrate-*.yml     | 環境別    |
-| DNS Record       | frontend  | terraform-*.yml      | 環境別    |
-| Vercel Project   | frontend  | terraform-*.yml      | 環境別    |
-| Blog App         | -         | Vercel 自動          | 環境別    |
-| IAM Role         | bootstrap | ローカルのみ         | 初回のみ  |
-
-### ワークフロー
-
-| ワークフロー                  | トリガー           | 説明             |
-| ----------------------------- | ------------------ | ---------------- |
-| `test-and-build.yml`          | main への Push/PR  | Lint, test, E2E  |
-| `terraform-dev.yml`           | envs/dev/** 変更   | Dev Terraform    |
-| `terraform-prod.yml`          | envs/prod/** 変更  | Prod Terraform   |
-| `deploy-cms-api-dev.yml`      | main push          | Dev Worker       |
-| `deploy-cms-api-prod.yml`     | タグ v*.*.*        | Prod Worker      |
-| `db-migrate-dev.yml`          | main push          | Dev D1 マイグレ  |
-| `db-migrate-prod.yml`         | タグ v*.*.*        | Prod D1 マイグレ |
-| `release.yml`                 | 手動               | リリース作成     |
-| `generate-pr-description.yml` | PR 作成時          | OpenAI PR 説明   |
-| `sync-secrets.yml`            | workflow_dispatch  | 1Password 同期   |
-
-## 必要な GitHub Secrets
-
-### インフラ Secrets
-
-| Secret                  | 説明                           |
-| ----------------------- | ------------------------------ |
-| `VERCEL_API_TOKEN`      | Vercel デプロイトークン        |
-| `CLOUDFLARE_API_TOKEN`  | CloudFlare API トークン        |
-| `CLOUDFLARE_ACCOUNT_ID` | CloudFlare アカウント ID       |
-| `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS ゾーン ID       |
-| `D1_DATABASE_ID_DEV`    | D1 ID（開発環境）              |
-| `D1_DATABASE_ID_PROD`   | D1 ID（本番環境）              |
-| `R2_ACCESS_KEY_ID`      | R2 アクセスキー（署名 URL 用） |
-| `R2_SECRET_ACCESS_KEY`  | R2 シークレットキー            |
-| `R2_BUCKET_NAME`        | R2 バケット名                  |
-
-### 開発環境 Secrets
-
-| Secret            | 説明                              |
-| ----------------- | --------------------------------- |
-| `BASIC_AUTH_USER` | Basic 認証ユーザー名（dev のみ）  |
-| `BASIC_AUTH_PASS` | Basic 認証パスワード（dev のみ）  |
-
-### サードパーティ Secrets
-
-| Secret                     | 説明                                 |
-| -------------------------- | ------------------------------------ |
-| `ANTHROPIC_API_KEY`        | Anthropic API キー（AI 機能用）      |
-| `CODECOV_TOKEN`            | Codecov カバレッジトークン           |
-| `GEMINI_API_KEY`           | Google Gemini API キー               |
-| `OPENAI_API_KEY`           | OpenAI API キー（PR 説明生成用）     |
-| `OP_SERVICE_ACCOUNT_TOKEN` | 1Password Service Account トークン   |
-| `SLACK_WEBHOOK_DEV`        | Slack Webhook（dev 用）              |
-| `SLACK_WEBHOOK_PROD`       | Slack Webhook（prod 用）             |
-
-### GitHub App Secrets
-
-| Secret                | 説明                        |
-| --------------------- | --------------------------- |
-| `GHA_APP_ID`          | GitHub App ID               |
-| `GHA_APP_PRIVATE_KEY` | GitHub App プライベートキー |
 
 ## ツール管理
 
@@ -309,4 +151,3 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 - **mise**: Node.js、pnpm、Terraform（.mise.toml 参照）
 - **just**: タスクランナー（justfile 参照）
 - **prek**: Pre-commit フック
-- **Claude Code**: AI 支援開発（CLAUDE.md 参照）
