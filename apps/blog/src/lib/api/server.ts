@@ -5,6 +5,8 @@ import type {
   GenerateOutlineRequest,
   GenerateOutlineResponse,
   ImageUploadResponse,
+  ReviewArticleRequest,
+  ReviewArticleResponse,
   Tag,
   TagInput,
   TagListResponse,
@@ -178,6 +180,16 @@ export async function transformText(
   request: TransformTextRequest
 ): Promise<TransformTextResponse> {
   return fetchApi('/ai/transform-text', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export async function reviewArticle(
+  request: ReviewArticleRequest
+): Promise<ReviewArticleResponse> {
+  return fetchApi('/ai/review-article', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
