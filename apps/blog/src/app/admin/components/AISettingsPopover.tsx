@@ -27,22 +27,22 @@ interface AISettingsPopoverProps {
   onReset: () => void;
 }
 
-// Model options with display labels
-const OPENAI_MODELS: { value: OpenAIModel; label: string }[] = [
+// Model options with display labels (exported for reuse)
+export const OPENAI_MODELS: { value: OpenAIModel; label: string }[] = [
   { value: 'gpt-4o-mini', label: 'GPT-4o Mini (Fast)' },
   { value: 'gpt-4o', label: 'GPT-4o (Best)' },
   { value: 'gpt-4-turbo', label: 'GPT-4 Turbo' },
   { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo (Economy)' },
 ];
 
-const ANTHROPIC_MODELS: { value: AnthropicModel; label: string }[] = [
+export const ANTHROPIC_MODELS: { value: AnthropicModel; label: string }[] = [
   { value: 'claude-sonnet-4-20250514', label: 'Claude 4 Sonnet (Latest)' },
   { value: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet' },
   { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus (Best)' },
   { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku (Fast)' },
 ];
 
-const GEMINI_IMAGE_MODELS: { value: GeminiImageModel; label: string }[] = [
+export const GEMINI_IMAGE_MODELS: { value: GeminiImageModel; label: string }[] = [
   { value: 'gemini-2.5-flash-image', label: '2.5 Flash (Fast)' },
   { value: 'gemini-3-pro-image-preview', label: '3 Pro (Best)' },
 ];

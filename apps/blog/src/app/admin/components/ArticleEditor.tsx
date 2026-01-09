@@ -1,9 +1,11 @@
 'use client';
 
 import type {
+  AnthropicModel,
   Article,
   ArticleCategory,
   ArticleInput,
+  OpenAIModel,
   ReviewArticleResponse,
 } from '@blog/cms-types';
 import {
@@ -39,6 +41,7 @@ import {
 } from '@/lib/api/client';
 import { AISettingsPopover } from './AISettingsPopover';
 import { ArticlePreview } from './ArticlePreview';
+import { InlineModelSelect } from './InlineModelSelect';
 import { MarkdownEditor } from './MarkdownEditor';
 import { ReviewPanel } from './ReviewPanel';
 import { TagSelector } from './TagSelector';
@@ -417,19 +420,28 @@ export function ArticleEditor({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Label>Description & Tags</Label>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleGenerateMetadata}
-              disabled={
-                isGeneratingMetadata || !title.trim() || !content.trim()
-              }
-              className="gap-1.5"
-            >
-              <Sparkles className="h-4 w-4" />
-              {isGeneratingMetadata ? 'Generating...' : 'AI Generate'}
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleGenerateMetadata}
+                disabled={
+                  isGeneratingMetadata || !title.trim() || !content.trim()
+                }
+                className="gap-1.5"
+              >
+                <Sparkles className="h-4 w-4" />
+                {isGeneratingMetadata ? 'Generating...' : 'AI Generate'}
+              </Button>
+              <InlineModelSelect
+                type="openai"
+                value={aiSettings.metadata}
+                onChange={(v) =>
+                  updateAISettings({ metadata: v as OpenAIModel })
+                }
+              />
+            </div>
           </div>
           <div className="space-y-2">
             <Label
@@ -607,63 +619,72 @@ export function ArticleEditor({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label>Content</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={isGeneratingOutline || !title.trim()}
-                  className="gap-1.5"
-                >
-                  <ListTree className="h-4 w-4" />
-                  {isGeneratingOutline ? 'Generating...' : 'AI Outline'}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-48 p-2" align="end">
-                <div className="space-y-1">
-                  <p className="mb-2 text-xs text-muted-foreground">
-                    カテゴリを選択
-                  </p>
+            <div className="flex items-center gap-1">
+              <Popover>
+                <PopoverTrigger asChild>
                   <Button
-                    variant="ghost"
+                    type="button"
+                    variant="outline"
                     size="sm"
-                    className="w-full justify-start"
-                    onClick={() => handleGenerateOutline('tech')}
-                    disabled={isGeneratingOutline}
+                    disabled={isGeneratingOutline || !title.trim()}
+                    className="gap-1.5"
                   >
-                    技術記事
+                    <ListTree className="h-4 w-4" />
+                    {isGeneratingOutline ? 'Generating...' : 'AI Outline'}
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full justify-start"
-                    onClick={() => handleGenerateOutline('life')}
-                    disabled={isGeneratingOutline}
-                  >
-                    経験・ライフ
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full justify-start"
-                    onClick={() => handleGenerateOutline('books')}
-                    disabled={isGeneratingOutline}
-                  >
-                    読書記録
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full justify-start text-muted-foreground"
-                    onClick={() => handleGenerateOutline()}
-                    disabled={isGeneratingOutline}
-                  >
-                    自動判定
-                  </Button>
-                </div>
-              </PopoverContent>
-            </Popover>
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-2" align="end">
+                  <div className="space-y-1">
+                    <p className="mb-2 text-xs text-muted-foreground">
+                      カテゴリを選択
+                    </p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => handleGenerateOutline('tech')}
+                      disabled={isGeneratingOutline}
+                    >
+                      技術記事
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => handleGenerateOutline('life')}
+                      disabled={isGeneratingOutline}
+                    >
+                      経験・ライフ
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() => handleGenerateOutline('books')}
+                      disabled={isGeneratingOutline}
+                    >
+                      読書記録
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start text-muted-foreground"
+                      onClick={() => handleGenerateOutline()}
+                      disabled={isGeneratingOutline}
+                    >
+                      自動判定
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              <InlineModelSelect
+                type="anthropic"
+                value={aiSettings.outline}
+                onChange={(v) =>
+                  updateAISettings({ outline: v as AnthropicModel })
+                }
+              />
+            </div>
           </div>
           <MarkdownEditor
             value={content}
