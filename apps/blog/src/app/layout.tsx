@@ -2,6 +2,7 @@ import './globals.css';
 
 import type { Metadata } from 'next';
 import { BIZ_UDGothic } from 'next/font/google';
+import Script from 'next/script';
 
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
@@ -16,6 +17,7 @@ const bizUDGothic = BIZ_UDGothic({
 });
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -56,6 +58,22 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja" suppressHydrationWarning>
+      {GA_ID && (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            strategy="afterInteractive"
+          />
+          <Script id="ga-init" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_ID}');
+            `}
+          </Script>
+        </>
+      )}
       <body
         className={`${bizUDGothic.variable} font-sans flex min-h-screen flex-col bg-background text-foreground`}
         suppressHydrationWarning
