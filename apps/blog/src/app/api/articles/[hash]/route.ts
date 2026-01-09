@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { deleteArticle, getArticle, updateArticle } from '@/lib/api/server';
-import { requireAuth } from '@/lib/auth';
+import { requireAuth, requireAuthWithCsrf } from '@/lib/auth';
 
 interface RouteContext {
   params: Promise<{ hash: string }>;
@@ -22,7 +22,8 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 }
 
 export async function PUT(request: NextRequest, context: RouteContext) {
-  const authError = await requireAuth();
+  const csrfToken = request.headers.get('X-CSRF-Token');
+  const authError = await requireAuthWithCsrf(csrfToken);
   if (authError) return authError;
 
   try {
@@ -37,8 +38,9 @@ export async function PUT(request: NextRequest, context: RouteContext) {
   }
 }
 
-export async function DELETE(_request: NextRequest, context: RouteContext) {
-  const authError = await requireAuth();
+export async function DELETE(request: NextRequest, context: RouteContext) {
+  const csrfToken = request.headers.get('X-CSRF-Token');
+  const authError = await requireAuthWithCsrf(csrfToken);
   if (authError) return authError;
 
   try {

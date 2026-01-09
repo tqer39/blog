@@ -35,7 +35,36 @@ export type {
 
 import { createFetchClient } from '@blog/utils';
 
-const fetchApi = createFetchClient({ baseUrl: '/api' });
+const baseFetchApi = createFetchClient({ baseUrl: '/api' });
+
+/**
+ * Get CSRF token from cookie
+ */
+function getCsrfToken(): string | null {
+  if (typeof document === 'undefined') return null;
+
+  const match = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+/**
+ * Fetch API wrapper that automatically adds CSRF token for mutating requests
+ */
+async function fetchApi<T>(path: string, options?: RequestInit): Promise<T> {
+  const method = options?.method?.toUpperCase() || 'GET';
+  const isMutating = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method);
+
+  if (isMutating) {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      const headers = new Headers(options?.headers);
+      headers.set('X-CSRF-Token', csrfToken);
+      options = { ...options, headers };
+    }
+  }
+
+  return baseFetchApi(path, options);
+}
 
 // Articles
 export async function getArticles(params?: {

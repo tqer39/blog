@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { getSiteSettings, updateSiteSettings } from '@/lib/api/server';
-import { requireAuth } from '@/lib/auth';
+import { requireAuth, requireAuthWithCsrf } from '@/lib/auth';
 
 export async function GET() {
   const authError = await requireAuth();
@@ -17,7 +17,8 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  const authError = await requireAuth();
+  const csrfToken = request.headers.get('X-CSRF-Token');
+  const authError = await requireAuthWithCsrf(csrfToken);
   if (authError) return authError;
 
   try {

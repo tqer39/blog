@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server';
-import { getClearSessionCookieConfig } from '@/lib/auth';
+import {
+  getClearCsrfTokenCookieConfig,
+  getClearSessionCookieConfig,
+} from '@/lib/auth';
 
 export async function POST() {
-  const cookieConfig = getClearSessionCookieConfig();
+  const sessionCookieConfig = getClearSessionCookieConfig();
+  const csrfCookieConfig = getClearCsrfTokenCookieConfig();
+
   const response = NextResponse.json({ success: true });
-  response.cookies.set(cookieConfig);
+  response.cookies.set(sessionCookieConfig);
+  response.cookies.set(csrfCookieConfig);
+
   return response;
 }

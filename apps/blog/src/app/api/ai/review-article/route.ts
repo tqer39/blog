@@ -1,9 +1,10 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { reviewArticle } from '@/lib/api/server';
-import { requireAuth } from '@/lib/auth';
+import { requireAuthWithCsrf } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
-  const authError = await requireAuth();
+  const csrfToken = request.headers.get('X-CSRF-Token');
+  const authError = await requireAuthWithCsrf(csrfToken);
   if (authError) return authError;
 
   try {

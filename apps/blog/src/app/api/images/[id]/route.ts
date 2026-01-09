@@ -1,13 +1,14 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { deleteImage } from '@/lib/api/server';
-import { requireAuth } from '@/lib/auth';
+import { requireAuthWithCsrf } from '@/lib/auth';
 
 interface RouteContext {
   params: Promise<{ id: string }>;
 }
 
-export async function DELETE(_request: NextRequest, context: RouteContext) {
-  const authError = await requireAuth();
+export async function DELETE(request: NextRequest, context: RouteContext) {
+  const csrfToken = request.headers.get('X-CSRF-Token');
+  const authError = await requireAuthWithCsrf(csrfToken);
   if (authError) return authError;
 
   try {

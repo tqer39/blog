@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { createArticle, getArticles } from '@/lib/api/server';
-import { requireAuth } from '@/lib/auth';
+import { requireAuth, requireAuthWithCsrf } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   const authError = await requireAuth();
@@ -27,7 +27,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const authError = await requireAuth();
+  const csrfToken = request.headers.get('X-CSRF-Token');
+  const authError = await requireAuthWithCsrf(csrfToken);
   if (authError) return authError;
 
   try {
