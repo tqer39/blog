@@ -246,7 +246,6 @@ just db-migrate
    | Field        | Description                                  |
    | ------------ | -------------------------------------------- |
    | Title        | Article title                                |
-   | Slug         | URL slug (auto-generated from title)         |
    | Description  | SEO description (100-160 chars recommended)  |
    | Tags         | Select or add new tags                       |
    | Header Image | Upload header image (optional)               |
@@ -266,7 +265,7 @@ Or use Publish/Unpublish buttons from the article list.
 Published articles available at:
 
 ```text
-http://localhost:3100/article/{slug}
+http://localhost:3100/articles/{hash}
 ```
 
 ### Admin URLs
@@ -276,7 +275,7 @@ http://localhost:3100/article/{slug}
 | <http://localhost:3100/admin>                      | Dashboard    |
 | <http://localhost:3100/admin/articles>             | Article list |
 | <http://localhost:3100/admin/articles/new>         | New article  |
-| <http://localhost:3100/admin/articles/{slug}/edit> | Edit article |
+| <http://localhost:3100/admin/articles/{hash}/edit> | Edit article |
 
 ### Markdown Syntax
 

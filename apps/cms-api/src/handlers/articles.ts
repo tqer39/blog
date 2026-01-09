@@ -3,7 +3,7 @@ import type {
   ArticleInput,
   ArticleListResponse,
 } from '@blog/cms-types';
-import { generateHash, generateId, slugify } from '@blog/utils';
+import { generateHash, generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
 import { conflict, notFound, validationError } from '../lib/errors';
@@ -30,7 +30,7 @@ articlesHandler.get('/', async (c) => {
       JOIN article_tags at ON a.id = at.article_id
       JOIN tags t ON at.tag_id = t.id
     `;
-    conditions.push('t.slug = ?');
+    conditions.push('t.name = ?');
     params.push(tag);
   }
 
@@ -447,17 +447,16 @@ async function syncArticleTags(
   const tagData = tagNames.map((name) => ({
     id: generateId(),
     name,
-    slug: slugify(name),
   }));
 
   // Use batch for tag upserts
   const tagInsertStatements = tagData.map((tag) =>
     db
       .prepare(
-        `INSERT INTO tags (id, name, slug) VALUES (?, ?, ?)
+        `INSERT INTO tags (id, name) VALUES (?, ?)
        ON CONFLICT (name) DO NOTHING`
       )
-      .bind(tag.id, tag.name, tag.slug)
+      .bind(tag.id, tag.name)
   );
 
   await db.batch(tagInsertStatements);

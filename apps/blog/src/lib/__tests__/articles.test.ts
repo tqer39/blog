@@ -45,19 +45,16 @@ const sampleTags: Tag[] = [
   {
     id: 'tag-1',
     name: 'javascript',
-    slug: 'javascript',
     createdAt: '2024-01-01T00:00:00Z',
   },
   {
     id: 'tag-2',
     name: 'typescript',
-    slug: 'typescript',
     createdAt: '2024-01-01T00:00:00Z',
   },
   {
     id: 'tag-3',
     name: 'testing',
-    slug: 'testing',
     createdAt: '2024-01-01T00:00:00Z',
   },
 ];

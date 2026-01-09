@@ -1,5 +1,5 @@
 import type { Tag, TagInput, TagWithCount } from '@blog/cms-types';
-import { generateId, slugify } from '@blog/utils';
+import { generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
 import { conflict, notFound, validationError } from '../lib/errors';
@@ -21,12 +21,12 @@ tagsHandler.get('/', async (c) => {
   return c.json({ tags });
 });
 
-// Get single tag by slug
-tagsHandler.get('/:slug', async (c) => {
-  const slug = c.req.param('slug');
+// Get single tag by id
+tagsHandler.get('/:id', async (c) => {
+  const id = c.req.param('id');
 
-  const row = await c.env.DB.prepare('SELECT * FROM tags WHERE slug = ?')
-    .bind(slug)
+  const row = await c.env.DB.prepare('SELECT * FROM tags WHERE id = ?')
+    .bind(id)
     .first();
 
   if (!row) {
@@ -45,11 +45,10 @@ tagsHandler.post('/', async (c) => {
   }
 
   const id = generateId();
-  const slug = input.slug || slugify(input.name);
 
   try {
-    await c.env.DB.prepare('INSERT INTO tags (id, name, slug) VALUES (?, ?, ?)')
-      .bind(id, input.name, slug)
+    await c.env.DB.prepare('INSERT INTO tags (id, name) VALUES (?, ?)')
+      .bind(id, input.name)
       .run();
 
     const row = await c.env.DB.prepare('SELECT * FROM tags WHERE id = ?')
@@ -59,55 +58,53 @@ tagsHandler.post('/', async (c) => {
     return c.json(mapRowToTag(row!), 201);
   } catch (error) {
     if (String(error).includes('UNIQUE constraint failed')) {
-      conflict('Tag with this name or slug already exists');
+      conflict('Tag with this name already exists');
     }
     throw error;
   }
 });
 
 // Update tag
-tagsHandler.put('/:slug', async (c) => {
-  const slug = c.req.param('slug');
+tagsHandler.put('/:id', async (c) => {
+  const id = c.req.param('id');
   const input = await c.req.json<TagInput>();
 
   if (!input.name) {
     validationError('Invalid input', { name: 'Required' });
   }
 
-  const existing = await c.env.DB.prepare('SELECT * FROM tags WHERE slug = ?')
-    .bind(slug)
+  const existing = await c.env.DB.prepare('SELECT * FROM tags WHERE id = ?')
+    .bind(id)
     .first();
 
   if (!existing) {
     notFound('Tag not found');
   }
 
-  const newSlug = input.slug || slugify(input.name);
-
   try {
-    await c.env.DB.prepare('UPDATE tags SET name = ?, slug = ? WHERE id = ?')
-      .bind(input.name, newSlug, existing.id)
+    await c.env.DB.prepare('UPDATE tags SET name = ? WHERE id = ?')
+      .bind(input.name, id)
       .run();
 
     const row = await c.env.DB.prepare('SELECT * FROM tags WHERE id = ?')
-      .bind(existing.id)
+      .bind(id)
       .first();
 
     return c.json(mapRowToTag(row!));
   } catch (error) {
     if (String(error).includes('UNIQUE constraint failed')) {
-      conflict('Tag with this name or slug already exists');
+      conflict('Tag with this name already exists');
     }
     throw error;
   }
 });
 
 // Delete tag
-tagsHandler.delete('/:slug', async (c) => {
-  const slug = c.req.param('slug');
+tagsHandler.delete('/:id', async (c) => {
+  const id = c.req.param('id');
 
-  const result = await c.env.DB.prepare('DELETE FROM tags WHERE slug = ?')
-    .bind(slug)
+  const result = await c.env.DB.prepare('DELETE FROM tags WHERE id = ?')
+    .bind(id)
     .run();
 
   if (result.meta.changes === 0) {
@@ -121,7 +118,6 @@ function mapRowToTag(row: Record<string, unknown>): Tag {
   return {
     id: row.id as string,
     name: row.name as string,
-    slug: row.slug as string,
     createdAt: row.created_at as string,
   };
 }
@@ -130,7 +126,6 @@ function mapRowToTagWithCount(row: Record<string, unknown>): TagWithCount {
   return {
     id: row.id as string,
     name: row.name as string,
-    slug: row.slug as string,
     createdAt: row.created_at as string,
     articleCount: (row.article_count as number) || 0,
   };

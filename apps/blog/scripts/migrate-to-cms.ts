@@ -26,7 +26,6 @@ interface OldFrontmatter {
 }
 
 interface ArticleInput {
-  slug: string;
   title: string;
   description?: string;
   content: string;
@@ -63,11 +62,10 @@ async function createArticle(input: ArticleInput): Promise<void> {
 }
 
 async function createTagIfNotExists(tagName: string): Promise<void> {
-  const slug = tagName.toLowerCase().replace(/\s+/g, '-');
   try {
     await fetchApi('/tags', {
       method: 'POST',
-      body: JSON.stringify({ name: tagName, slug }),
+      body: JSON.stringify({ name: tagName }),
     });
     console.log(`  Created tag: ${tagName}`);
   } catch (error) {
@@ -122,7 +120,6 @@ async function migrate(): Promise<void> {
 
   // Migrate articles
   for (const filename of files) {
-    const slug = filename.replace(/\.md$/, '');
     const filePath = path.join(contentsDir, filename);
     const fileContents = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContents);
@@ -135,7 +132,6 @@ async function migrate(): Promise<void> {
     console.log(`  Tags: ${frontmatter.tags.join(', ')}`);
 
     const input: ArticleInput = {
-      slug,
       title: frontmatter.title,
       description: frontmatter.description,
       content: content.trim(),

@@ -1,4 +1,4 @@
-import { generateId, slugify } from '@blog/utils';
+import { generateId } from '@blog/utils';
 import { describe, expect, it } from 'vitest';
 
 describe('generateId', () => {
@@ -11,39 +11,5 @@ describe('generateId', () => {
   it('should generate unique IDs', () => {
     const ids = new Set(Array.from({ length: 100 }, () => generateId()));
     expect(ids.size).toBe(100);
-  });
-});
-
-describe('slugify', () => {
-  it('should convert text to lowercase', () => {
-    expect(slugify('Hello World')).toBe('hello-world');
-  });
-
-  it('should replace spaces with hyphens', () => {
-    expect(slugify('hello world')).toBe('hello-world');
-  });
-
-  it('should replace underscores with hyphens', () => {
-    expect(slugify('hello_world')).toBe('hello-world');
-  });
-
-  it('should remove special characters', () => {
-    expect(slugify('hello@world!')).toBe('helloworld');
-  });
-
-  it('should collapse multiple hyphens', () => {
-    expect(slugify('hello---world')).toBe('hello-world');
-  });
-
-  it('should trim leading and trailing hyphens', () => {
-    expect(slugify('-hello-world-')).toBe('hello-world');
-  });
-
-  it('should handle empty string', () => {
-    expect(slugify('')).toBe('');
-  });
-
-  it('should trim whitespace', () => {
-    expect(slugify('  hello world  ')).toBe('hello-world');
   });
 });

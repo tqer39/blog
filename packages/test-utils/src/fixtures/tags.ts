@@ -6,7 +6,6 @@ import type { Tag } from '@blog/cms-types';
 export const sampleTagRow = {
   id: 'test-tag-id',
   name: 'javascript',
-  slug: 'javascript',
   created_at: '2024-01-01T00:00:00Z',
 };
 
@@ -16,7 +15,6 @@ export const sampleTagRow = {
 export const sampleTag: Tag = {
   id: 'test-tag-id',
   name: 'javascript',
-  slug: 'javascript',
   createdAt: '2024-01-01T00:00:00Z',
 };
 
@@ -27,19 +25,16 @@ export const sampleTags: Tag[] = [
   {
     id: 'tag-1',
     name: 'javascript',
-    slug: 'javascript',
     createdAt: '2024-01-01T00:00:00Z',
   },
   {
     id: 'tag-2',
     name: 'typescript',
-    slug: 'typescript',
     createdAt: '2024-01-01T00:00:00Z',
   },
   {
     id: 'tag-3',
     name: 'testing',
-    slug: 'testing',
     createdAt: '2024-01-01T00:00:00Z',
   },
 ];
@@ -61,7 +56,6 @@ export function createTags(names: string[]): Tag[] {
   return names.map((name, i) => ({
     id: `tag-${i + 1}`,
     name,
-    slug: name.toLowerCase().replace(/\s+/g, '-'),
     createdAt: '2024-01-01T00:00:00Z',
   }));
 }

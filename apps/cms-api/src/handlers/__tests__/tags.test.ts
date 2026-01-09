@@ -48,14 +48,12 @@ describe('tagsHandler', () => {
         {
           id: '1',
           name: 'JavaScript',
-          slug: 'javascript',
           created_at: '2024-01-01',
           article_count: 5,
         },
         {
           id: '2',
           name: 'TypeScript',
-          slug: 'typescript',
           created_at: '2024-01-02',
           article_count: 3,
         },
@@ -91,12 +89,11 @@ describe('tagsHandler', () => {
     });
   });
 
-  describe('GET /tags/:slug', () => {
-    it('should return a tag by slug', async () => {
+  describe('GET /tags/:id', () => {
+    it('should return a tag by id', async () => {
       const mockTag = {
         id: '1',
         name: 'JavaScript',
-        slug: 'javascript',
         created_at: '2024-01-01',
       };
 
@@ -107,12 +104,12 @@ describe('tagsHandler', () => {
       });
 
       const app = createTestApp(mockDB);
-      const res = await app.request('/tags/javascript');
+      const res = await app.request('/tags/1');
 
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.name).toBe('JavaScript');
-      expect(data.slug).toBe('javascript');
+      expect(data.id).toBe('1');
     });
 
     it('should return 404 when tag not found', async () => {
@@ -137,7 +134,6 @@ describe('tagsHandler', () => {
       const createdTag = {
         id: 'mock-id-123',
         name: 'React',
-        slug: 'react',
         created_at: '2024-01-01',
       };
 
@@ -163,7 +159,7 @@ describe('tagsHandler', () => {
       expect(res.status).toBe(201);
       const data = await res.json();
       expect(data.name).toBe('React');
-      expect(data.slug).toBe('react');
+      expect(data.id).toBe('mock-id-123');
     });
 
     it('should return 400 when name is missing', async () => {
@@ -197,24 +193,20 @@ describe('tagsHandler', () => {
       expect(res.status).toBe(409);
       const data = await res.json();
       expect(data.error.code).toBe('CONFLICT');
-      expect(data.error.message).toBe(
-        'Tag with this name or slug already exists'
-      );
+      expect(data.error.message).toBe('Tag with this name already exists');
     });
   });
 
-  describe('PUT /tags/:slug', () => {
+  describe('PUT /tags/:id', () => {
     it('should update a tag', async () => {
       const existingTag = {
         id: '1',
         name: 'JavaScript',
-        slug: 'javascript',
         created_at: '2024-01-01',
       };
       const updatedTag = {
         id: '1',
         name: 'JS',
-        slug: 'js',
         created_at: '2024-01-01',
       };
 
@@ -236,21 +228,20 @@ describe('tagsHandler', () => {
         });
 
       const app = createTestApp(mockDB);
-      const res = await app.request('/tags/javascript', {
+      const res = await app.request('/tags/1', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'JS', slug: 'js' }),
+        body: JSON.stringify({ name: 'JS' }),
       });
 
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.name).toBe('JS');
-      expect(data.slug).toBe('js');
     });
 
     it('should return 400 when name is missing', async () => {
       const app = createTestApp(mockDB);
-      const res = await app.request('/tags/javascript', {
+      const res = await app.request('/tags/1', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({}),
@@ -282,11 +273,10 @@ describe('tagsHandler', () => {
       expect(data.error.message).toBe('Tag not found');
     });
 
-    it('should return 409 when duplicate name or slug', async () => {
+    it('should return 409 when duplicate name', async () => {
       const existingTag = {
         id: '1',
         name: 'JavaScript',
-        slug: 'javascript',
         created_at: '2024-01-01',
       };
 
@@ -305,22 +295,20 @@ describe('tagsHandler', () => {
         });
 
       const app = createTestApp(mockDB);
-      const res = await app.request('/tags/javascript', {
+      const res = await app.request('/tags/1', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'TypeScript', slug: 'typescript' }),
+        body: JSON.stringify({ name: 'TypeScript' }),
       });
 
       expect(res.status).toBe(409);
       const data = await res.json();
       expect(data.error.code).toBe('CONFLICT');
-      expect(data.error.message).toBe(
-        'Tag with this name or slug already exists'
-      );
+      expect(data.error.message).toBe('Tag with this name already exists');
     });
   });
 
-  describe('DELETE /tags/:slug', () => {
+  describe('DELETE /tags/:id', () => {
     it('should delete a tag', async () => {
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
@@ -329,7 +317,7 @@ describe('tagsHandler', () => {
       });
 
       const app = createTestApp(mockDB);
-      const res = await app.request('/tags/javascript', { method: 'DELETE' });
+      const res = await app.request('/tags/1', { method: 'DELETE' });
 
       expect(res.status).toBe(200);
       const data = await res.json();

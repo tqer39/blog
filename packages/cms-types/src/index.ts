@@ -41,13 +41,11 @@ export interface ArticleListResponse {
 export interface Tag {
   id: string;
   name: string;
-  slug: string;
   createdAt: string;
 }
 
 export interface TagInput {
   name: string;
-  slug?: string;
 }
 
 export interface TagWithCount extends Tag {

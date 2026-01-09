@@ -17,8 +17,6 @@ export {
 export { generateHash, generateId } from './id';
 // Result type for error handling
 export { err, ok, type Result, toError } from './result';
-// Slug utilities
-export { slugify } from './slug';
 // Style utilities
 export { cn } from './style';
 // Validators

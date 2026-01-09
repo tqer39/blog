@@ -23,7 +23,7 @@ global.fetch = mockFetch;
 
 const sampleArticle: Article = {
   id: 'article-1',
-  slug: 'test-article',
+  hash: 'testhash123',
   title: 'Test Article',
   description: 'A test article',
   content: '# Test Content',
@@ -32,12 +32,13 @@ const sampleArticle: Article = {
   publishedAt: '2024-01-15T00:00:00Z',
   createdAt: '2024-01-01T00:00:00Z',
   updatedAt: '2024-01-15T00:00:00Z',
+  headerImageId: null,
+  headerImageUrl: null,
 };
 
 const sampleTag: Tag = {
   id: 'tag-1',
   name: 'JavaScript',
-  slug: 'javascript',
   createdAt: '2024-01-01T00:00:00Z',
 };
 
@@ -274,10 +275,10 @@ describe('API Client', () => {
           json: () => Promise.resolve({ success: true }),
         });
 
-        await deleteTag('javascript');
+        await deleteTag('tag-1');
 
         expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringContaining('/tags/javascript'),
+          expect.stringContaining('/tags/tag-1'),
           expect.objectContaining({ method: 'DELETE' })
         );
       });

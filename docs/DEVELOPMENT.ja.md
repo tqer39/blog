@@ -266,7 +266,7 @@ just db-migrate
 公開された記事は以下の URL で確認:
 
 ```text
-http://localhost:3100/article/{slug}
+http://localhost:3100/articles/{hash}
 ```
 
 ### Admin 画面 URL 一覧
@@ -276,7 +276,7 @@ http://localhost:3100/article/{slug}
 | <http://localhost:3100/admin>                      | ダッシュボード |
 | <http://localhost:3100/admin/articles>             | 記事一覧       |
 | <http://localhost:3100/admin/articles/new>         | 新規作成       |
-| <http://localhost:3100/admin/articles/{slug}/edit> | 記事編集       |
+| <http://localhost:3100/admin/articles/{hash}/edit> | 記事編集       |
 
 ### Markdown 記法
 

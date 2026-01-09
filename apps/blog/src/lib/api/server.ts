@@ -83,8 +83,8 @@ export async function getTags(): Promise<TagListResponse> {
   return fetchApi('/tags');
 }
 
-export async function getTag(slug: string): Promise<Tag> {
-  return fetchApi(`/tags/${slug}`);
+export async function getTag(id: string): Promise<Tag> {
+  return fetchApi(`/tags/${id}`);
 }
 
 export async function createTag(input: TagInput): Promise<Tag> {
@@ -95,16 +95,16 @@ export async function createTag(input: TagInput): Promise<Tag> {
   });
 }
 
-export async function updateTag(slug: string, input: TagInput): Promise<Tag> {
-  return fetchApi(`/tags/${slug}`, {
+export async function updateTag(id: string, input: TagInput): Promise<Tag> {
+  return fetchApi(`/tags/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   });
 }
 
-export async function deleteTag(slug: string): Promise<void> {
-  await fetchApi(`/tags/${slug}`, { method: 'DELETE' });
+export async function deleteTag(id: string): Promise<void> {
+  await fetchApi(`/tags/${id}`, { method: 'DELETE' });
 }
 
 // Images
