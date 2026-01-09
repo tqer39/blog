@@ -12,9 +12,6 @@ inputs:
   oidc-iam-role:
     description: OIDC IAM Role name
     required: true
-  terraform-version:
-    description: Terraform version
-    required: true
   working-directory:
     description: Terraform working directory
     required: true
@@ -24,6 +21,13 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v6
+
+    - name: Get Terraform version from mise
+      id: tf-version
+      shell: bash
+      run: |
+        TF_VERSION=$(grep '^terraform' .mise.toml | sed 's/.*= *"//' | sed 's/".*//')
+        echo "version=$TF_VERSION" >> $GITHUB_OUTPUT
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v5
@@ -38,7 +42,7 @@ runs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:
-        terraform_version: ${{ inputs.terraform-version }}
+        terraform_version: ${{ steps.tf-version.outputs.version }}
 
     - name: Terraform Format Check
       shell: bash

@@ -1,12 +1,7 @@
 import type { SiteSettings, SiteSettingsResponse } from '@blog/cms-types';
 import { DEFAULT_API_URL } from '@blog/config';
-import { createFetchClient } from '@blog/utils';
 
 const API_URL = process.env.CMS_API_URL || DEFAULT_API_URL;
-
-const fetchApi = createFetchClient({
-  baseUrl: API_URL,
-});
 
 // Default values (fallback when API is unavailable)
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
@@ -25,11 +20,19 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
  */
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
-    const data = await fetchApi<SiteSettingsResponse>('/settings', {
+    const response = await fetch(`${API_URL}/settings`, {
       next: { revalidate: 60 }, // 60 seconds cache
     });
+
+    if (!response.ok) {
+      console.error(`Failed to fetch site settings: HTTP ${response.status}`);
+      return DEFAULT_SITE_SETTINGS;
+    }
+
+    const data: SiteSettingsResponse = await response.json();
     return data.settings;
   } catch (error) {
+    // Network errors, parse errors, etc.
     console.error('Failed to fetch site settings:', error);
     return DEFAULT_SITE_SETTINGS;
   }

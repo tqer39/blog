@@ -60,7 +60,33 @@ app.use(
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
 // Public settings endpoint (no auth required for reading)
-app.get('/v1/settings', settingsHandler.fetch);
+app.get('/v1/settings', async (c) => {
+  const { results } = await c.env.DB.prepare(
+    'SELECT key, value, updated_at FROM site_settings'
+  ).all();
+
+  const settings: Record<string, string> = {};
+  let latestUpdatedAt = '';
+
+  for (const row of results || []) {
+    settings[row.key as string] = row.value as string;
+    const updatedAt = row.updated_at as string;
+    if (updatedAt > latestUpdatedAt) {
+      latestUpdatedAt = updatedAt;
+    }
+  }
+
+  return c.json(
+    {
+      settings,
+      updatedAt: latestUpdatedAt || null,
+    },
+    200,
+    {
+      'Cache-Control': 'public, max-age=60, s-maxage=60',
+    }
+  );
+});
 
 // Public image serving (no auth required, for local development)
 app.get('/v1/images/file/*', async (c) => {
