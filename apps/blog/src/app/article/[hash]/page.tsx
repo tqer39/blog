@@ -6,9 +6,14 @@ import { notFound } from 'next/navigation';
 
 import { ArticleContent } from '@/components/ArticleContent';
 import { ArticleNavigation } from '@/components/ArticleNavigation';
+import { JsonLd } from '@/components/JsonLd';
 import { TableOfContents } from '@/components/TableOfContents';
 import { TagLink } from '@/components/TagLink';
 import { getAllArticles, getArticleByHash } from '@/lib/articles';
+import {
+  generateArticleJsonLd,
+  generateBreadcrumbJsonLd,
+} from '@/lib/jsonld';
 import { calculateReadingTime } from '@/lib/readingTime';
 
 interface ArticlePageProps {
@@ -113,8 +118,20 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const displayDate = article.publishedAt || article.createdAt;
   const readingTime = calculateReadingTime(article.content);
 
+  const articleJsonLd = generateArticleJsonLd(article, BASE_URL);
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd(
+    [
+      { name: 'ホーム', url: '/' },
+      { name: '記事一覧', url: '/articles' },
+      { name: article.title },
+    ],
+    BASE_URL
+  );
+
   return (
     <>
+      <JsonLd data={articleJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <TableOfContents readingTime={readingTime} />
       <article className="mx-auto max-w-4xl px-4 py-8">
         {article.headerImageUrl && (

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { X } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -5,13 +6,58 @@ import { Suspense } from 'react';
 
 import { ArticleCard } from '@/components/ArticleCard';
 import { ArticleTagSelector } from '@/components/ArticleTagSelector';
+import { JsonLd } from '@/components/JsonLd';
 import { Pagination } from '@/components/Pagination';
 import { getAllArticles } from '@/lib/articles';
+import { generateBreadcrumbJsonLd } from '@/lib/jsonld';
 import { ARTICLES_PER_PAGE } from '@/lib/pagination';
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 
 interface ArticlesPageProps {
   params: Promise<{ page: string }>;
   searchParams: Promise<{ tags?: string | string[]; q?: string }>;
+}
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: ArticlesPageProps): Promise<Metadata> {
+  const { page: pageParam } = await params;
+  const { tags, q } = await searchParams;
+  const page = Number.parseInt(pageParam, 10);
+  const hasFilters = tags || q;
+
+  if (hasFilters) {
+    return {
+      title: '検索結果',
+      robots: {
+        index: false,
+        follow: true,
+      },
+    };
+  }
+
+  const title = page === 1 ? '記事一覧' : `記事一覧 - ページ${page}`;
+  const url = `${BASE_URL}/articles/${page}`;
+
+  return {
+    title,
+    description: `すべての記事を時系列で閲覧できます（ページ${page}）`,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title: `${title} | tB`,
+      description: `すべての記事を時系列で閲覧できます（ページ${page}）`,
+      url,
+      type: 'website',
+    },
+    robots: {
+      index: page <= 5,
+      follow: true,
+    },
+  };
 }
 
 export async function generateStaticParams() {
@@ -82,8 +128,19 @@ export default async function ArticlesPage({
       ? `/articles/${page}?${selectedTags.map((t) => `tags=${encodeURIComponent(t)}`).join('&')}`
       : `/articles/${page}`;
 
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd(
+    [
+      { name: 'ホーム', url: '/' },
+      { name: '記事一覧', url: '/articles' },
+      { name: `ページ${page}` },
+    ],
+    BASE_URL
+  );
+
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <>
+      <JsonLd data={breadcrumbJsonLd} />
+      <div className="mx-auto max-w-4xl px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold">All Articles</h1>
 
       {searchQuery && (
@@ -130,6 +187,7 @@ export default async function ArticlesPage({
           )}
         </>
       )}
-    </div>
+      </div>
+    </>
   );
 }

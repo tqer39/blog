@@ -1,14 +1,22 @@
 import Link from 'next/link';
 
 import { ArticleCard } from '@/components/ArticleCard';
+import { JsonLd } from '@/components/JsonLd';
 import { getAllArticles } from '@/lib/articles';
+import { generateWebSiteJsonLd } from '@/lib/jsonld';
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 
 export default async function HomePage() {
   const result = await getAllArticles();
   const articles = result.ok ? result.data.slice(0, 5) : [];
 
+  const websiteJsonLd = generateWebSiteJsonLd(BASE_URL);
+
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <>
+      <JsonLd data={websiteJsonLd} />
+      <div className="mx-auto max-w-4xl px-4 py-8">
       <section>
         <h1 className="mb-8 text-3xl font-bold">Latest Articles</h1>
         {articles.length === 0 ? (
@@ -33,6 +41,7 @@ export default async function HomePage() {
           </div>
         )}
       </section>
-    </div>
+      </div>
+    </>
   );
 }

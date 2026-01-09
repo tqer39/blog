@@ -11,7 +11,7 @@ code in this repository.
 
 - Personal log for future self-reference (not for general audience)
 - Public, but value to others is a byproduct
-- No SEO optimization, no viral targeting, no general reader optimization
+- No viral targeting, no general reader optimization
 
 ### Target Reader
 
@@ -44,10 +44,17 @@ All articles are "for my past self" - complaints are OK, but must end with insig
 
 ### What We Don't Do
 
-- SEO optimization
+- Content-level SEO (keyword stuffing, clickbait titles)
 - Overly detailed explanations for general readers
 - Design assuming SNS virality
 - Monitoring reaction counts or access numbers
+
+### Technical SEO (Acceptable)
+
+- Structured data (JSON-LD) for proper search engine understanding
+- Proper metadata for articles and pages
+- Canonical URLs and sitemap maintenance
+- robots.txt configuration
 
 ## Project Overview
 

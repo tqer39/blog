@@ -1,14 +1,50 @@
+import type { Metadata } from 'next';
 import { X } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { ArticleCard } from '@/components/ArticleCard';
 import { ArticleTagSelector } from '@/components/ArticleTagSelector';
+import { JsonLd } from '@/components/JsonLd';
 import { Pagination } from '@/components/Pagination';
 import { getAllArticles } from '@/lib/articles';
+import { generateBreadcrumbJsonLd } from '@/lib/jsonld';
 import { ARTICLES_PER_PAGE } from '@/lib/pagination';
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 
 interface ArticlesPageProps {
   searchParams: Promise<{ tags?: string | string[]; q?: string }>;
+}
+
+export async function generateMetadata({
+  searchParams,
+}: ArticlesPageProps): Promise<Metadata> {
+  const { tags, q } = await searchParams;
+  const hasFilters = tags || q;
+
+  if (hasFilters) {
+    return {
+      title: '検索結果',
+      robots: {
+        index: false,
+        follow: true,
+      },
+    };
+  }
+
+  return {
+    title: '記事一覧',
+    description: 'すべての記事を時系列で閲覧できます',
+    alternates: {
+      canonical: `${BASE_URL}/articles`,
+    },
+    openGraph: {
+      title: '記事一覧 | tB',
+      description: 'すべての記事を時系列で閲覧できます',
+      url: `${BASE_URL}/articles`,
+      type: 'website',
+    },
+  };
 }
 
 export default async function ArticlesPage({
@@ -52,8 +88,15 @@ export default async function ArticlesPage({
       ? `/articles?${selectedTags.map((t) => `tags=${encodeURIComponent(t)}`).join('&')}`
       : '/articles';
 
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd(
+    [{ name: 'ホーム', url: '/' }, { name: '記事一覧' }],
+    BASE_URL
+  );
+
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8">
+    <>
+      <JsonLd data={breadcrumbJsonLd} />
+      <div className="mx-auto max-w-4xl px-4 py-8">
       <h1 className="mb-8 text-3xl font-bold">All Articles</h1>
 
       {searchQuery && (
@@ -100,6 +143,7 @@ export default async function ArticlesPage({
           )}
         </>
       )}
-    </div>
+      </div>
+    </>
   );
 }
