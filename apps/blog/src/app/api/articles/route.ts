@@ -1,7 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { createArticle, getArticles } from '@/lib/api/server';
+import { requireAuth } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
+  const authError = await requireAuth();
+  if (authError) return authError;
+
   try {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || undefined;
@@ -23,6 +27,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const authError = await requireAuth();
+  if (authError) return authError;
+
   try {
     const input = await request.json();
     const result = await createArticle(input);

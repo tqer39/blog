@@ -1,7 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { uploadImage } from '@/lib/api/server';
+import { requireAuth } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
+  const authError = await requireAuth();
+  if (authError) return authError;
+
   try {
     const formData = await request.formData();
     const result = await uploadImage(formData);

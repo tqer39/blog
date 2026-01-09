@@ -1,11 +1,15 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { deleteArticle, getArticle, updateArticle } from '@/lib/api/server';
+import { requireAuth } from '@/lib/auth';
 
 interface RouteContext {
   params: Promise<{ hash: string }>;
 }
 
 export async function GET(_request: NextRequest, context: RouteContext) {
+  const authError = await requireAuth();
+  if (authError) return authError;
+
   try {
     const { hash } = await context.params;
     const result = await getArticle(hash);
@@ -18,6 +22,9 @@ export async function GET(_request: NextRequest, context: RouteContext) {
 }
 
 export async function PUT(request: NextRequest, context: RouteContext) {
+  const authError = await requireAuth();
+  if (authError) return authError;
+
   try {
     const { hash } = await context.params;
     const input = await request.json();
@@ -31,6 +38,9 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 }
 
 export async function DELETE(_request: NextRequest, context: RouteContext) {
+  const authError = await requireAuth();
+  if (authError) return authError;
+
   try {
     const { hash } = await context.params;
     await deleteArticle(hash);

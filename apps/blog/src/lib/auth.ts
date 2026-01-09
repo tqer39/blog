@@ -137,4 +137,19 @@ export function getClearSessionCookieConfig() {
   };
 }
 
+/**
+ * Require authentication for API routes
+ * Returns null if authenticated, or a 401 Response if not
+ */
+export async function requireAuth(): Promise<Response | null> {
+  const authenticated = await isAuthenticated();
+  if (!authenticated) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  return null;
+}
+
 export { COOKIE_NAME };

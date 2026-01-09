@@ -1,10 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import {
-  getSiteSettings,
-  updateSiteSettings,
-} from '@/lib/api/server';
+import { getSiteSettings, updateSiteSettings } from '@/lib/api/server';
+import { requireAuth } from '@/lib/auth';
 
 export async function GET() {
+  const authError = await requireAuth();
+  if (authError) return authError;
+
   try {
     const result = await getSiteSettings();
     return NextResponse.json(result);
@@ -16,6 +17,9 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
+  const authError = await requireAuth();
+  if (authError) return authError;
+
   try {
     const input = await request.json();
     const result = await updateSiteSettings(input);
