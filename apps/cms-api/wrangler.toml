@@ -5,7 +5,8 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ENVIRONMENT = "development"
-API_KEY = "dev-api-key"
+# API_KEY is set via .dev.vars for local development
+# See: https://developers.cloudflare.com/workers/configuration/secrets/
 
 [[d1_databases]]
 binding = "DB"

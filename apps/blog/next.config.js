@@ -1,3 +1,42 @@
+const isDev = process.env.NODE_ENV !== 'production';
+
+// Build CSP header based on environment
+const cspDirectives = {
+  'default-src': ["'self'"],
+  'script-src': [
+    "'self'",
+    'https://cdn.jsdelivr.net',
+    'https://www.googletagmanager.com',
+    // unsafe-eval and unsafe-inline only in development
+    ...(isDev ? ["'unsafe-eval'", "'unsafe-inline'"] : []),
+  ],
+  'style-src': [
+    "'self'",
+    // unsafe-inline only in development (needed for Mermaid SVG styles in production too)
+    "'unsafe-inline'",
+  ],
+  'img-src': [
+    "'self'",
+    'data:',
+    'https://cdn.tqer39.dev',
+    'https://picsum.photos',
+    ...(isDev ? ['http://localhost:8787'] : []),
+  ],
+  'font-src': ["'self'"],
+  'connect-src': [
+    "'self'",
+    'https://cdn.tqer39.dev',
+    'https://www.google-analytics.com',
+    'https://analytics.google.com',
+    ...(isDev ? ['http://localhost:*'] : []),
+  ],
+  'frame-ancestors': ["'none'"],
+};
+
+const cspHeader = Object.entries(cspDirectives)
+  .map(([key, values]) => `${key} ${values.join(' ')}`)
+  .join('; ');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -39,8 +78,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value:
-              "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://cdn.tqer39.dev https://picsum.photos http://localhost:8787; font-src 'self'; connect-src 'self' http://localhost:* https://cdn.tqer39.dev https://www.google-analytics.com https://analytics.google.com; frame-ancestors 'none';",
+            value: cspHeader,
           },
         ],
       },

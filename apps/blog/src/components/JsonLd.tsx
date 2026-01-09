@@ -1,5 +1,6 @@
 interface JsonLdProps {
-  data: Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- JSON-LD data can have various shapes
+  data: object;
 }
 
 export function JsonLd({ data }: JsonLdProps) {
