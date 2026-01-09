@@ -43,6 +43,21 @@ const NANO_BANANA_MODELS = {
 
 const DEFAULT_IMAGE_MODEL = 'gemini-2.5-flash-image';
 
+// Header image generation configuration
+const HEADER_IMAGE_CONFIG = {
+  width: 1200,
+  height: 630,
+  format: 'png',
+  systemPrompt: `Generate a blog header image with the following specifications:
+- Aspect ratio: 1200x630 pixels (OG image standard for social media)
+- Style: modern, clean, professional blog header illustration
+- Colors: harmonious color palette, not too saturated
+- Composition: balanced, leave space for potential text overlay
+- No text or letters in the image itself
+- Abstract or conceptual illustration preferred
+- High quality, visually appealing for social media preview`,
+};
+
 // Anthropic API configuration
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_MODEL = 'claude-sonnet-4-20250514';
@@ -198,10 +213,18 @@ aiHandler.post('/generate-image', async (c) => {
     });
   }
 
-  // Create a descriptive prompt for header image
-  const imagePrompt = title
-    ? `Create a modern, professional blog header image for an article titled "${title}". ${prompt}. Style: clean, minimal, tech-focused illustration with subtle gradients.`
-    : `${prompt}. Style: clean, minimal, modern illustration suitable for a blog header.`;
+  // Build 3-layer prompt: system instructions + article content + user prompt
+  const promptParts = [
+    // Layer 1: System instructions for header image specifications
+    HEADER_IMAGE_CONFIG.systemPrompt,
+    '',
+    // Layer 2: Article content (title)
+    title ? `Article title: "${title}"` : null,
+    // Layer 3: User's custom prompt
+    prompt ? `Additional context: ${prompt}` : null,
+  ].filter(Boolean);
+
+  const imagePrompt = promptParts.join('\n');
 
   try {
     // Use Nano Banana (Gemini Image) API for image generation
