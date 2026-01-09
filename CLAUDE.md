@@ -200,6 +200,7 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 | `deploy-cms-api.yml`            | cms-api/** changes   | Worker deploy    |
 | `db-migrate.yml`                | migrations/** change | D1 migrations    |
 | `generate-pr-description.yml`   | PR creation          | OpenAI PR desc   |
+| `sync-secrets.yml`              | workflow_dispatch    | 1Password sync   |
 
 ## GitHub Secrets Required
 
@@ -218,13 +219,14 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
 ### Third-party Service Secrets
 
-| Secret               | Description                  |
-| -------------------- | ---------------------------- |
-| `SLACK_WEBHOOK`      | Slack notification webhook   |
-| `CODECOV_TOKEN`      | Codecov coverage token       |
-| `GEMINI_API_KEY`     | Google Gemini API key        |
-| `OPENAI_API_KEY`     | OpenAI API key for PR desc   |
-| `ANTHROPIC_API_KEY`  | Anthropic API key for AI     |
+| Secret                    | Description                      |
+| ------------------------- | -------------------------------- |
+| `SLACK_WEBHOOK`           | Slack notification webhook       |
+| `CODECOV_TOKEN`           | Codecov coverage token           |
+| `GEMINI_API_KEY`          | Google Gemini API key            |
+| `OPENAI_API_KEY`          | OpenAI API key for PR desc       |
+| `ANTHROPIC_API_KEY`       | Anthropic API key for AI         |
+| `OP_SERVICE_ACCOUNT_TOKEN`| 1Password Service Account token  |
 
 ### GitHub App Secrets
 

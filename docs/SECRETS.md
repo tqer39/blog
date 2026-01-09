@@ -66,8 +66,25 @@ node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 
 ### Automated Sync from 1Password (Recommended)
 
-Sync all secrets from 1Password to GitHub Secrets and Cloudflare Workers with one
-command:
+#### Option A: GitHub Actions (Recommended)
+
+Run via GitHub Actions workflow:
+
+```bash
+# Prerequisites: Set up 1Password Service Account token
+gh secret set OP_SERVICE_ACCOUNT_TOKEN
+
+# Run workflow
+gh workflow run sync-secrets.yml -f target=both
+
+# Or sync targets individually
+gh workflow run sync-secrets.yml -f target=github
+gh workflow run sync-secrets.yml -f target=wrangler
+```
+
+#### Option B: Local Script
+
+Run locally with 1Password CLI:
 
 ```bash
 # Prerequisites

@@ -66,7 +66,25 @@ node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 
 ### 1Password からの自動同期（推奨）
 
-1Password から GitHub Secrets と Cloudflare Workers にシークレットを一括同期:
+#### 方法 A: GitHub Actions（推奨）
+
+GitHub Actions ワークフローで実行:
+
+```bash
+# 前提条件: 1Password Service Account トークンを設定
+gh secret set OP_SERVICE_ACCOUNT_TOKEN
+
+# ワークフロー実行
+gh workflow run sync-secrets.yml -f target=both
+
+# または個別に同期
+gh workflow run sync-secrets.yml -f target=github
+gh workflow run sync-secrets.yml -f target=wrangler
+```
+
+#### 方法 B: ローカルスクリプト
+
+1Password CLI を使ってローカルで実行:
 
 ```bash
 # 前提条件
