@@ -31,12 +31,14 @@ import {
   Loader2,
   Maximize2,
   Pencil,
+  Sparkles,
   Wand2,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArticleContent } from '@/components/ArticleContent';
 import { suggestContinuation } from '@/lib/api/client';
 import { EmojiSuggester } from './EmojiSuggester';
+import { InlineCompletion } from './InlineCompletion';
 import { TextTransformPopover } from './TextTransformPopover';
 
 interface MarkdownEditorProps {
@@ -73,6 +75,9 @@ export function MarkdownEditor({
   const [isSuggestionOpen, setIsSuggestionOpen] = useState(false);
   const [selectedLength, setSelectedLength] =
     useState<ContinuationLength>('medium');
+
+  // Inline completion state
+  const [inlineCompletionEnabled, setInlineCompletionEnabled] = useState(false);
 
   const insertTextAtCursor = useCallback(
     (text: string) => {
@@ -426,7 +431,7 @@ export function MarkdownEditor({
                       variant="ghost"
                       size="sm"
                       className="h-8 w-8 p-0"
-                      onClick={handleSuggestContinuation}
+                      onClick={() => handleSuggestContinuation()}
                       disabled={isSuggesting || !title?.trim()}
                     >
                       {isSuggesting ? (
@@ -520,6 +525,28 @@ export function MarkdownEditor({
                 </div>
               </PopoverContent>
             </Popover>
+
+            {/* Inline Completion Toggle */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={inlineCompletionEnabled ? 'default' : 'ghost'}
+                  size="sm"
+                  className="h-8 w-8 p-0"
+                  onClick={() =>
+                    setInlineCompletionEnabled(!inlineCompletionEnabled)
+                  }
+                  disabled={!title?.trim()}
+                >
+                  <Sparkles className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {inlineCompletionEnabled
+                  ? 'インライン補完 ON'
+                  : 'インライン補完 OFF'}
+              </TooltipContent>
+            </Tooltip>
           </div>
 
           <div className="flex items-center gap-2">
@@ -634,6 +661,15 @@ export function MarkdownEditor({
         textareaRef={textareaRef}
         value={value}
         onChange={onChange}
+      />
+
+      {/* Inline Completion */}
+      <InlineCompletion
+        textareaRef={textareaRef}
+        value={value}
+        onChange={onChange}
+        title={title}
+        enabled={inlineCompletionEnabled}
       />
 
       {/* Fullscreen Modal */}
