@@ -3,7 +3,6 @@
 import type {
   AnthropicModel,
   Article,
-  ArticleCategory,
   ArticleInput,
   OpenAIModel,
   ReviewArticleResponse,
@@ -14,9 +13,6 @@ import {
   Button,
   Input,
   Label,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Textarea,
 } from '@blog/ui';
 import {
@@ -41,7 +37,7 @@ import {
 } from '@/lib/api/client';
 import { AISettingsPopover } from './AISettingsPopover';
 import { ArticlePreview } from './ArticlePreview';
-import { InlineModelSelect } from './InlineModelSelect';
+import { SplitButton } from './SplitButton';
 import { MarkdownEditor } from './MarkdownEditor';
 import { ReviewPanel } from './ReviewPanel';
 import { TagSelector } from './TagSelector';
@@ -248,7 +244,7 @@ export function ArticleEditor({
     }
   };
 
-  const handleGenerateOutline = async (category?: ArticleCategory) => {
+  const handleGenerateOutline = async () => {
     if (!title.trim()) {
       setError('Title is required to generate outline');
       return;
@@ -260,7 +256,6 @@ export function ArticleEditor({
     try {
       const result = await generateOutline({
         title: title.trim(),
-        category,
         model: aiSettings.outline,
       });
       // Append outline to existing content or set as new content
@@ -342,18 +337,19 @@ export function ArticleEditor({
           />
 
           {/* AI Review button */}
-          <div className="flex items-center gap-1">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
+          <div className="flex items-center gap-2">
+            <SplitButton
               onClick={handleReviewArticle}
               disabled={isReviewing || !title.trim() || !content.trim()}
-              className="gap-1.5"
+              modelType="anthropic"
+              modelValue={aiSettings.review}
+              onModelChange={(v) =>
+                updateAISettings({ review: v as AnthropicModel })
+              }
             >
               <MessageSquare className="h-4 w-4" />
               {isReviewing ? 'Reviewing...' : 'AI Review'}
-            </Button>
+            </SplitButton>
             {reviewResult && !isReviewing && (
               <Button
                 type="button"
@@ -365,13 +361,6 @@ export function ArticleEditor({
                 前回の結果
               </Button>
             )}
-            <InlineModelSelect
-              type="anthropic"
-              value={aiSettings.review}
-              onChange={(v) =>
-                updateAISettings({ review: v as AnthropicModel })
-              }
-            />
           </div>
 
           {/* Preview button */}
@@ -441,28 +430,18 @@ export function ArticleEditor({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Label>Description & Tags</Label>
-            <div className="flex items-center gap-1">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleGenerateMetadata}
-                disabled={
-                  isGeneratingMetadata || !title.trim() || !content.trim()
-                }
-                className="gap-1.5"
-              >
-                <Sparkles className="h-4 w-4" />
-                {isGeneratingMetadata ? 'Generating...' : 'AI Generate'}
-              </Button>
-              <InlineModelSelect
-                type="openai"
-                value={aiSettings.metadata}
-                onChange={(v) =>
-                  updateAISettings({ metadata: v as OpenAIModel })
-                }
-              />
-            </div>
+            <SplitButton
+              onClick={handleGenerateMetadata}
+              disabled={isGeneratingMetadata || !title.trim() || !content.trim()}
+              modelType="openai"
+              modelValue={aiSettings.metadata}
+              onModelChange={(v) =>
+                updateAISettings({ metadata: v as OpenAIModel })
+              }
+            >
+              <Sparkles className="h-4 w-4" />
+              {isGeneratingMetadata ? 'Generating...' : 'AI Generate'}
+            </SplitButton>
           </div>
           <div className="space-y-2">
             <Label
@@ -640,72 +619,18 @@ export function ArticleEditor({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label>Content</Label>
-            <div className="flex items-center gap-1">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    disabled={isGeneratingOutline || !title.trim()}
-                    className="gap-1.5"
-                  >
-                    <ListTree className="h-4 w-4" />
-                    {isGeneratingOutline ? 'Generating...' : 'AI Outline'}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-48 p-2" align="end">
-                  <div className="space-y-1">
-                    <p className="mb-2 text-xs text-muted-foreground">
-                      カテゴリを選択
-                    </p>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={() => handleGenerateOutline('tech')}
-                      disabled={isGeneratingOutline}
-                    >
-                      技術記事
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={() => handleGenerateOutline('life')}
-                      disabled={isGeneratingOutline}
-                    >
-                      経験・ライフ
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={() => handleGenerateOutline('books')}
-                      disabled={isGeneratingOutline}
-                    >
-                      読書記録
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start text-muted-foreground"
-                      onClick={() => handleGenerateOutline()}
-                      disabled={isGeneratingOutline}
-                    >
-                      自動判定
-                    </Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
-              <InlineModelSelect
-                type="anthropic"
-                value={aiSettings.outline}
-                onChange={(v) =>
-                  updateAISettings({ outline: v as AnthropicModel })
-                }
-              />
-            </div>
+            <SplitButton
+              onClick={() => handleGenerateOutline()}
+              disabled={isGeneratingOutline || !title.trim()}
+              modelType="anthropic"
+              modelValue={aiSettings.outline}
+              onModelChange={(v) =>
+                updateAISettings({ outline: v as AnthropicModel })
+              }
+            >
+              <ListTree className="h-4 w-4" />
+              {isGeneratingOutline ? 'Generating...' : 'AI Outline'}
+            </SplitButton>
           </div>
           <MarkdownEditor
             value={content}
