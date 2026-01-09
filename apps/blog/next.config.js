@@ -1,3 +1,15 @@
+// Environment configuration (synced with packages/config/src/constants.ts)
+const PORTS = {
+  BLOG: 3100,
+  CMS_API: 3200,
+  R2_LOCAL: 9000,
+};
+const BASE_DOMAIN = 'tqer39.dev';
+const DOMAINS = {
+  CDN: `https://cdn.${BASE_DOMAIN}`,
+  CMS_API_LOCAL: `http://localhost:${PORTS.CMS_API}`,
+};
+
 const isDev = process.env.NODE_ENV !== 'production';
 
 // Build CSP header based on environment
@@ -18,14 +30,14 @@ const cspDirectives = {
   'img-src': [
     "'self'",
     'data:',
-    'https://cdn.tqer39.dev',
+    DOMAINS.CDN,
     'https://picsum.photos',
-    ...(isDev ? ['http://localhost:3200'] : []),
+    ...(isDev ? [DOMAINS.CMS_API_LOCAL] : []),
   ],
   'font-src': ["'self'"],
   'connect-src': [
     "'self'",
-    'https://cdn.tqer39.dev',
+    DOMAINS.CDN,
     'https://www.google-analytics.com',
     'https://analytics.google.com',
     ...(isDev ? ['http://localhost:*'] : []),
@@ -44,18 +56,18 @@ const nextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '9000',
+        port: String(PORTS.R2_LOCAL),
         pathname: '/blog-images/**',
       },
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '3200',
+        port: String(PORTS.CMS_API),
         pathname: '/v1/images/**',
       },
       {
         protocol: 'https',
-        hostname: 'cdn.tqer39.dev',
+        hostname: `cdn.${BASE_DOMAIN}`, // cdn.tqer39.dev
         pathname: '/**',
       },
     ],

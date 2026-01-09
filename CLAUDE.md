@@ -66,21 +66,31 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
 ## Environment Configuration
 
+For detailed environment configuration, see [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md).
+
+All environment constants are centralized in `packages/config/src/constants.ts`.
+
 ```text
-┌─────────────────────────────────────────────────────────────────────┐
-│                       3-Environment Structure                        │
-├───────────────┬───────────────────┬─────────────────────────────────┤
-│    Local      │       Dev         │             Prod                │
-├───────────────┼───────────────────┼─────────────────────────────────┤
-│ localhost     │ blog-dev.tqer39   │ blog.tqer39.dev                 │
-│ :3100/:3200   │ .dev              │                                 │
-├───────────────┼───────────────────┼─────────────────────────────────┤
-│ D1: local     │ blog-cms-dev      │ blog-cms-prod                   │
-│ R2: local     │ blog-images-dev   │ blog-images-prod                │
-├───────────────┼───────────────────┼─────────────────────────────────┤
-│ No Auth       │ Basic Auth        │ No Auth (public)                │
-│               │ + API Key         │ + API Key                       │
-└───────────────┴───────────────────┴─────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────┐
+│                         3-Environment Structure                            │
+├─────────────────┬─────────────────────────┬───────────────────────────────┤
+│      Local      │           Dev           │             Prod              │
+├─────────────────┼─────────────────────────┼───────────────────────────────┤
+│ Blog:           │ Blog:                   │ Blog:                         │
+│ localhost:3100  │ blog-dev.tqer39.dev     │ blog.tqer39.dev               │
+├─────────────────┼─────────────────────────┼───────────────────────────────┤
+│ CMS API:        │ CMS API:                │ CMS API:                      │
+│ localhost:3200  │ cms-api-dev.tqer39      │ cms-api.tqer39.workers.dev    │
+│                 │ .workers.dev            │                               │
+├─────────────────┼─────────────────────────┼───────────────────────────────┤
+│ CDN/R2:         │ CDN/R2:                 │ CDN/R2:                       │
+│ localhost:9000  │ cdn.tqer39.dev          │ cdn.tqer39.dev                │
+├─────────────────┼─────────────────────────┼───────────────────────────────┤
+│ D1: local       │ blog-cms-dev            │ blog-cms-prod                 │
+│ R2: local       │ blog-images-dev         │ blog-images-prod              │
+├─────────────────┼─────────────────────────┼───────────────────────────────┤
+│ No Auth         │ Basic Auth + API Key    │ No Auth (public) + API Key    │
+└─────────────────┴─────────────────────────┴───────────────────────────────┘
 ```
 
 ### Release Flow

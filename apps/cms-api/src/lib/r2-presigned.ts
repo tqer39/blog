@@ -1,3 +1,4 @@
+import { getCdnImageUrl, getLocalImageUrl } from '@blog/config';
 import { AwsClient } from 'aws4fetch';
 import type { Env } from '../index';
 
@@ -71,9 +72,9 @@ export async function getPublicUrl(env: Env, r2Key: string): Promise<string> {
 
   // Local development: serve via CMS API
   if (env.ENVIRONMENT === 'development') {
-    return `http://localhost:3200/v1/images/file/${r2Key}`;
+    return getLocalImageUrl(r2Key);
   }
 
   // Default production CDN
-  return `https://cdn.tqer39.dev/${r2Key}`;
+  return getCdnImageUrl(r2Key);
 }

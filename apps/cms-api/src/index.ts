@@ -1,3 +1,4 @@
+import { CORS_ORIGINS } from '@blog/config';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
@@ -45,12 +46,7 @@ app.use('*', rateLimitMiddleware);
 app.use(
   '*',
   cors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:3100',
-      'https://blog.tqer39.dev',
-      'https://blog-dev.tqer39.dev',
-    ],
+    origin: [...CORS_ORIGINS],
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowHeaders: ['Content-Type', 'Authorization'],
   })
