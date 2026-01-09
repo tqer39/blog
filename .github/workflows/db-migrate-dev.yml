@@ -1,5 +1,5 @@
 ---
-name: DB Migration
+name: DB Migration (Dev)
 
 on:
   push:
@@ -14,25 +14,19 @@ concurrency:
 
 jobs:
   migrate:
-    name: Run D1 Migrations
+    name: Run D1 Migrations (Dev)
     runs-on: ubuntu-latest
+    environment: development
     defaults:
       run:
         working-directory: apps/cms-api
     steps:
       - uses: actions/checkout@v6
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: ./.github/actions/setup-node
         with:
-          node-version: "25"
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+          working-directory: apps/cms-api
 
       - name: Run migrations
         env:
@@ -41,7 +35,7 @@ jobs:
         run: |
           for migration in migrations/*.sql; do
             echo "Applying: $migration"
-            pnpm wrangler d1 execute blog-cms-prod --remote --file="$migration" || echo "Warning: $migration may have already been applied"
+            pnpm wrangler d1 execute blog-cms-dev --remote --file="$migration" || echo "Warning: $migration may have already been applied"
           done
 
       - name: Slack Notification (Failure)
@@ -49,5 +43,5 @@ jobs:
         uses: ./.github/actions/slack-deploy-failure
         with:
           slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
-          title: "DB Migration Failed"
-          message: "D1 migration failed on main branch"
+          title: "DB Migration Failed (Dev)"
+          message: "D1 migration failed on dev environment"

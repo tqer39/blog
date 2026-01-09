@@ -17,6 +17,8 @@ export interface Article {
   tags: string[];
   headerImageId: string | null;
   headerImageUrl: string | null;
+  reviewResult?: ReviewArticleResponse | null;
+  reviewUpdatedAt?: string | null;
 }
 
 export interface ArticleInput {
@@ -94,6 +96,42 @@ export interface ArticleFilters extends PaginationParams {
   tag?: string;
 }
 
+// AI Model types (defined first as they're used in request types)
+export type OpenAIModel =
+  | 'gpt-4o-mini'
+  | 'gpt-4o'
+  | 'gpt-4-turbo'
+  | 'gpt-3.5-turbo';
+
+export type AnthropicModel =
+  | 'claude-sonnet-4-20250514'
+  | 'claude-3-5-sonnet-20241022'
+  | 'claude-3-opus-20240229'
+  | 'claude-3-haiku-20240307';
+
+export type GeminiImageModel =
+  | 'gemini-2.5-flash-image'
+  | 'gemini-3-pro-image-preview';
+
+// AI Model Settings
+export interface AIModelSettings {
+  metadata: OpenAIModel;
+  review: AnthropicModel;
+  outline: AnthropicModel;
+  transform: AnthropicModel;
+  continuation: AnthropicModel;
+  image: GeminiImageModel;
+}
+
+export const DEFAULT_AI_MODEL_SETTINGS: AIModelSettings = {
+  metadata: 'gpt-4o-mini',
+  review: 'claude-sonnet-4-20250514',
+  outline: 'claude-sonnet-4-20250514',
+  transform: 'claude-sonnet-4-20250514',
+  continuation: 'claude-sonnet-4-20250514',
+  image: 'gemini-2.5-flash-image',
+};
+
 // AI Review types
 export type ReviewCategory =
   | 'clarity'
@@ -114,6 +152,8 @@ export interface ReviewItem {
 export interface ReviewArticleRequest {
   title: string;
   content: string;
+  model?: AnthropicModel;
+  articleHash?: string;
 }
 
 export interface ReviewArticleResponse {
@@ -123,10 +163,14 @@ export interface ReviewArticleResponse {
 }
 
 // AI Continuation types
+export type ContinuationLength = 'short' | 'medium' | 'long';
+
 export interface SuggestContinuationRequest {
   title: string;
   content: string;
   cursorPosition: number;
+  length?: ContinuationLength;
+  model?: AnthropicModel;
 }
 
 export interface ContinuationSuggestion {
@@ -137,3 +181,81 @@ export interface ContinuationSuggestion {
 export interface SuggestContinuationResponse {
   suggestions: ContinuationSuggestion[];
 }
+
+// AI Outline types
+export type ArticleCategory = 'tech' | 'life' | 'books';
+
+export interface GenerateOutlineRequest {
+  title: string;
+  category?: ArticleCategory;
+  model?: AnthropicModel;
+}
+
+export interface GenerateOutlineResponse {
+  outline: string;
+}
+
+// AI Text Transform types
+export type TransformAction =
+  | 'rewrite'
+  | 'expand'
+  | 'summarize'
+  | 'translate'
+  | 'formal'
+  | 'casual';
+
+export type TransformLanguage = 'ja' | 'en';
+
+export interface TransformTextRequest {
+  text: string;
+  action: TransformAction;
+  targetLanguage?: TransformLanguage;
+  model?: AnthropicModel;
+}
+
+export interface TransformTextResponse {
+  result: string;
+}
+
+// AI Metadata types
+export interface GenerateMetadataRequest {
+  title: string;
+  content: string;
+  existingTags?: string[];
+  model?: OpenAIModel;
+}
+
+export interface GenerateMetadataResponse {
+  description: string;
+  tags: string[];
+}
+
+// AI Image types
+export interface GenerateImageRequest {
+  prompt: string;
+  title?: string;
+  model?: GeminiImageModel;
+}
+
+export interface GenerateImageResponse {
+  id: string;
+  url: string;
+}
+
+// Site Settings types
+export interface SiteSettings {
+  site_name: string;
+  site_description: string;
+  author_name: string;
+  footer_text: string;
+  social_github: string;
+  social_twitter: string;
+  social_bento: string;
+}
+
+export interface SiteSettingsResponse {
+  settings: SiteSettings;
+  updatedAt: string | null;
+}
+
+export type SiteSettingsInput = Partial<SiteSettings>;

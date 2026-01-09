@@ -1,0 +1,46 @@
+---
+name: DB Migration (Prod)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  migrate:
+    name: Run D1 Migrations (Prod)
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: apps/cms-api
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+        with:
+          working-directory: apps/cms-api
+
+      - name: Run migrations
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          for migration in migrations/*.sql; do
+            echo "Applying: $migration"
+            pnpm wrangler d1 execute blog-cms-prod --remote --file="$migration" || echo "Warning: $migration may have already been applied"
+          done
+
+      - name: Slack Notification (Failure)
+        if: failure()
+        uses: ./.github/actions/slack-deploy-failure
+        with:
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          title: "DB Migration Failed (Prod)"
+          message: "D1 migration failed on production environment"

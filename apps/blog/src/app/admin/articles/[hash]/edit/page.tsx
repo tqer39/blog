@@ -31,7 +31,6 @@ export default function EditArticlePage() {
 
   const handleSave = async (input: ArticleInput) => {
     await updateArticle(hash, input);
-    router.push('/admin/articles');
   };
 
   const handleCancel = () => {

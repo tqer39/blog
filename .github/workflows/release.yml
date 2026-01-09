@@ -1,0 +1,94 @@
+---
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (e.g., v1.2.3)"
+        required: true
+        type: string
+      description:
+        description: "Release description"
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate version format
+        run: |
+          VERSION="${{ inputs.version }}"
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version format. Use v1.2.3 format."
+            exit 1
+          fi
+
+      - name: Check if tag exists
+        run: |
+          if git rev-parse "${{ inputs.version }}" >/dev/null 2>&1; then
+            echo "::error::Tag ${{ inputs.version }} already exists"
+            exit 1
+          fi
+
+      - name: Get previous tag
+        id: previous_tag
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "tag=$PREV_TAG" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREV_TAG="${{ steps.previous_tag.outputs.tag }}"
+          if [ -z "$PREV_TAG" ]; then
+            COMMITS=$(git log --oneline --pretty=format:"- %s" | head -50)
+          else
+            COMMITS=$(git log --oneline --pretty=format:"- %s" ${PREV_TAG}..HEAD)
+          fi
+
+          # Create changelog file
+          cat > CHANGELOG_BODY.md << 'CHANGELOG_EOF'
+          ## What's Changed
+
+          ${{ inputs.description }}
+
+          ### Commits
+          CHANGELOG_EOF
+
+          echo "$COMMITS" >> CHANGELOG_BODY.md
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ inputs.version }}" \
+            --title "${{ inputs.version }}" \
+            --notes-file CHANGELOG_BODY.md \
+            --generate-notes
+
+      - name: Slack Notification (Success)
+        if: success()
+        continue-on-error: true
+        uses: ./.github/actions/slack-deploy-failure
+        with:
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          title: "Release Created: ${{ inputs.version }}"
+          message: "New release created. Production deployment will start automatically."
+
+      - name: Slack Notification (Failure)
+        if: failure()
+        uses: ./.github/actions/slack-deploy-failure
+        with:
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          title: "Release Creation Failed"
+          message: "Failed to create release ${{ inputs.version }}"

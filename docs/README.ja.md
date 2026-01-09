@@ -43,16 +43,23 @@ open http://localhost:3100
 
 ## 技術スタック
 
-| コンポーネント | 技術                         |
-| -------------- | ---------------------------- |
-| フロントエンド | Next.js 15（App Router）     |
-| バックエンド   | Hono on Cloudflare Workers   |
-| データベース   | Cloudflare D1（SQLite）      |
-| ストレージ     | Cloudflare R2                |
-| スタイリング   | Tailwind CSS                 |
-| モノレポ       | Turborepo + pnpm             |
-| IaC            | Terraform                    |
-| CI/CD          | GitHub Actions               |
+### Frontend
+
+[![Frontend](https://skillicons.dev/icons?i=nextjs,react,ts,tailwind)](https://skillicons.dev)
+
+### Backend & Infrastructure
+
+[![Backend](https://skillicons.dev/icons?i=cloudflare,sqlite,terraform,vercel,githubactions)](https://skillicons.dev)
+
+![Hono](https://img.shields.io/badge/Hono-E36002?style=for-the-badge&logo=hono&logoColor=white)
+
+### Development Tools
+
+[![Tools](https://skillicons.dev/icons?i=pnpm,vitest)](https://skillicons.dev)
+
+![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white)
+![Biome](https://img.shields.io/badge/Biome-60A5FA?style=for-the-badge&logo=biome&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-45ba4b?style=for-the-badge&logo=playwright&logoColor=white)
 
 ## プロジェクト構成
 

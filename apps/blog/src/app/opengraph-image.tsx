@@ -1,8 +1,7 @@
 import { ImageResponse } from 'next/og';
+import { getSiteSettings } from '@/lib/siteSettings';
 
 export const runtime = 'edge';
-
-export const alt = 'tB - 未来の自分に向けた技術ログ';
 
 export const size = {
   width: 1200,
@@ -11,7 +10,9 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default function OGImage() {
+export default async function OGImage() {
+  const settings = await getSiteSettings();
+
   return new ImageResponse(
     <div
       style={{
@@ -70,7 +71,7 @@ export default function OGImage() {
             letterSpacing: '-0.02em',
           }}
         >
-          tB
+          {settings.site_name}
         </span>
       </div>
       <span
@@ -79,11 +80,20 @@ export default function OGImage() {
           color: '#94A3B8',
         }}
       >
-        未来の自分に向けた技術ログ
+        {settings.site_description}
       </span>
     </div>,
     {
       ...size,
     }
   );
+}
+
+export async function generateImageMetadata() {
+  const settings = await getSiteSettings();
+  return [
+    {
+      alt: `${settings.site_name} - ${settings.site_description}`,
+    },
+  ];
 }

@@ -11,7 +11,7 @@
 
 - あとで読み返す自分のためのログ（一般読者向けではない）
 - 公開はしているが、他人への価値は副産物
-- SEO 最適化・バズ狙い・一般読者への最適化は一切しない
+- バズ狙い・一般読者への最適化は一切しない
 
 ### 想定読者
 
@@ -44,14 +44,70 @@
 
 ### やらないこと
 
-- SEO 最適化
+- コンテンツレベルの SEO（キーワード詰め込み、釣りタイトル）
 - 一般読者向けの丁寧すぎる説明
 - SNS 拡散前提の設計
 - 反応数・アクセス数の監視
 
+### 技術 SEO（許容）
+
+- 構造化データ（JSON-LD）による検索エンジンへの正確な情報提供
+- 記事・ページの適切なメタデータ
+- 正規 URL とサイトマップの維持管理
+- robots.txt の設定
+
 ## プロジェクト概要
 
 Turborepo + pnpm workspaces で管理された個人ブログサービスのモノレポです。
+
+## 環境構成
+
+```text
+┌─────────────────────────────────────────────────────────────────────┐
+│                         3 環境構成                                   │
+├───────────────┬───────────────────┬─────────────────────────────────┤
+│    Local      │       Dev         │             Prod                │
+├───────────────┼───────────────────┼─────────────────────────────────┤
+│ localhost     │ blog-dev.tqer39   │ blog.tqer39.dev                 │
+│ :3100/:8787   │ .dev              │                                 │
+├───────────────┼───────────────────┼─────────────────────────────────┤
+│ D1: local     │ blog-cms-dev      │ blog-cms-prod                   │
+│ R2: local     │ blog-images-dev   │ blog-images-prod                │
+├───────────────┼───────────────────┼─────────────────────────────────┤
+│ 認証なし      │ Basic 認証        │ 認証なし（公開）                │
+│               │ + API Key         │ + API Key                       │
+└───────────────┴───────────────────┴─────────────────────────────────┘
+```
+
+### リリースフロー
+
+```text
+[開発]
+  main マージ
+       ↓
+  deploy-cms-api-dev.yml (自動)
+  db-migrate-dev.yml (自動)
+       ↓
+  blog-dev.tqer39.dev
+
+[本番]
+  release.yml (手動)
+       ↓
+  GitHub Release + タグ (v1.2.3)
+       ↓
+  deploy-cms-api-prod.yml (タグトリガー)
+  db-migrate-prod.yml (タグトリガー)
+       ↓
+  blog.tqer39.dev
+```
+
+### 認証方式
+
+| 方式       | 対象            | 環境        | 用途               |
+| ---------- | --------------- | ----------- | ------------------ |
+| Basic 認証 | CMS API 全体    | Dev のみ    | 外部アクセス制限   |
+| API Key    | CMS API `/v1/*` | 全環境      | API 認証           |
+| Password   | Admin UI        | 全環境      | 管理者ログイン     |
 
 ## 開発コマンド
 
@@ -132,7 +188,14 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 │   └── utils/                 # 共有ユーティリティ
 ├── infra/terraform/           # Terraform IaC
 │   ├── modules/               # Terraform モジュール
-│   └── envs/prod/             # 環境設定
+│   └── envs/
+│       ├── dev/               # 開発環境
+│       │   ├── cms-api/
+│       │   └── frontend/
+│       └── prod/              # 本番環境
+│           ├── bootstrap/
+│           ├── cms-api/
+│           └── frontend/
 ├── docs/                      # ドキュメント
 ├── turbo.json                 # Turborepo 設定
 ├── pnpm-workspace.yaml        # pnpm ワークスペース設定
@@ -170,16 +233,56 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 - **ドメイン**: blog.tqer39.dev（CloudFlare DNS CNAME で Vercel へ）
 - **CI/CD**: GitHub Actions
 
+### CI/CD カバレッジ
+
+| リソース         | Terraform | CI/CD ワークフロー   | 環境      |
+| ---------------- | --------- | -------------------- | --------- |
+| D1 Database      | cms-api   | terraform-*.yml      | 環境別    |
+| R2 Bucket        | cms-api   | terraform-*.yml      | 環境別    |
+| Worker (cms-api) | -         | deploy-cms-api-*.yml | 環境別    |
+| D1 Migration     | -         | db-migrate-*.yml     | 環境別    |
+| DNS Record       | frontend  | terraform-*.yml      | 環境別    |
+| Vercel Project   | frontend  | terraform-*.yml      | 環境別    |
+| Blog App         | -         | Vercel 自動          | 環境別    |
+| IAM Role         | bootstrap | ローカルのみ         | 初回のみ  |
+
+### ワークフロー
+
+| ワークフロー                  | トリガー           | 説明             |
+| ----------------------------- | ------------------ | ---------------- |
+| `test-and-build.yml`          | main への Push/PR  | Lint, test, E2E  |
+| `terraform-dev.yml`           | envs/dev/** 変更   | Dev Terraform    |
+| `terraform-prod.yml`          | envs/prod/** 変更  | Prod Terraform   |
+| `deploy-cms-api-dev.yml`      | main push          | Dev Worker       |
+| `deploy-cms-api-prod.yml`     | タグ v*.*.*        | Prod Worker      |
+| `db-migrate-dev.yml`          | main push          | Dev D1 マイグレ  |
+| `db-migrate-prod.yml`         | タグ v*.*.*        | Prod D1 マイグレ |
+| `release.yml`                 | 手動               | リリース作成     |
+| `generate-pr-description.yml` | PR 作成時          | OpenAI PR 説明   |
+| `sync-secrets.yml`            | workflow_dispatch  | 1Password 同期   |
+
 ## 必要な GitHub Secrets
 
 ### インフラ Secrets
 
-| Secret                  | 説明                     |
-| ----------------------- | ------------------------ |
-| `VERCEL_API_TOKEN`      | Vercel デプロイトークン  |
-| `CLOUDFLARE_API_TOKEN`  | CloudFlare API トークン  |
-| `CLOUDFLARE_ACCOUNT_ID` | CloudFlare アカウント ID |
-| `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS ゾーン ID |
+| Secret                  | 説明                           |
+| ----------------------- | ------------------------------ |
+| `VERCEL_API_TOKEN`      | Vercel デプロイトークン        |
+| `CLOUDFLARE_API_TOKEN`  | CloudFlare API トークン        |
+| `CLOUDFLARE_ACCOUNT_ID` | CloudFlare アカウント ID       |
+| `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS ゾーン ID       |
+| `D1_DATABASE_ID_DEV`    | D1 ID（開発環境）              |
+| `D1_DATABASE_ID_PROD`   | D1 ID（本番環境）              |
+| `R2_ACCESS_KEY_ID`      | R2 アクセスキー（署名 URL 用） |
+| `R2_SECRET_ACCESS_KEY`  | R2 シークレットキー            |
+| `R2_BUCKET_NAME`        | R2 バケット名                  |
+
+### 開発環境 Secrets
+
+| Secret            | 説明                              |
+| ----------------- | --------------------------------- |
+| `BASIC_AUTH_USER` | Basic 認証ユーザー名（dev のみ）  |
+| `BASIC_AUTH_PASS` | Basic 認証パスワード（dev のみ）  |
 
 ### サードパーティ Secrets
 
@@ -189,6 +292,7 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 | `CODECOV_TOKEN`      | Codecov カバレッジトークン       |
 | `GEMINI_API_KEY`     | Google Gemini API キー           |
 | `OPENAI_API_KEY`     | OpenAI API キー（PR 説明生成用） |
+| `ANTHROPIC_API_KEY`  | Anthropic API キー（AI 機能用）  |
 
 ### GitHub App Secrets
 

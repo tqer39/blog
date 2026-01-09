@@ -1,31 +1,45 @@
 'use client';
 
 import type {
+  AnthropicModel,
   Article,
   ArticleInput,
+  OpenAIModel,
   ReviewArticleResponse,
 } from '@blog/cms-types';
 import {
   Alert,
   AlertDescription,
-  Badge,
   Button,
   Input,
   Label,
   Textarea,
 } from '@blog/ui';
-import { ImageIcon, MessageSquare, Sparkles, X } from 'lucide-react';
+import {
+  Check,
+  Eye,
+  ImageIcon,
+  ListTree,
+  MessageSquare,
+  Sparkles,
+  X,
+} from 'lucide-react';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useAIModelSettings } from '@/hooks/useAIModelSettings';
 import {
   generateImage,
   generateMetadata,
+  generateOutline,
   getTags,
   reviewArticle,
   uploadImage,
 } from '@/lib/api/client';
+import { AISettingsPopover } from './AISettingsPopover';
+import { ArticlePreview } from './ArticlePreview';
 import { MarkdownEditor } from './MarkdownEditor';
 import { ReviewPanel } from './ReviewPanel';
+import { SplitButton } from './SplitButton';
 import { TagSelector } from './TagSelector';
 
 interface ArticleEditorProps {
@@ -60,13 +74,33 @@ export function ArticleEditor({
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [imagePrompt, setImagePrompt] = useState('');
   const [showImagePrompt, setShowImagePrompt] = useState(false);
+  const {
+    settings: aiSettings,
+    updateSettings: updateAISettings,
+    resetSettings: resetAISettings,
+  } = useAIModelSettings();
+  const [useArticleContent, setUseArticleContent] = useState(true);
+  const [promptMode, setPromptMode] = useState<'append' | 'override'>('append');
   const [error, setError] = useState<string | null>(null);
   const [isReviewing, setIsReviewing] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [reviewResult, setReviewResult] =
-    useState<ReviewArticleResponse | null>(null);
+    useState<ReviewArticleResponse | null>(initialData?.reviewResult ?? null);
   const [reviewError, setReviewError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isGeneratingOutline, setIsGeneratingOutline] = useState(false);
   const headerImageInputRef = useRef<HTMLInputElement>(null);
+
+  // Reset save success indicator after 2 seconds
+  useEffect(() => {
+    if (saveSuccess) {
+      const timer = setTimeout(() => {
+        setSaveSuccess(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [saveSuccess]);
 
   const handleImageUpload = async (file: File): Promise<string> => {
     const result = await uploadImage(file, initialData?.id);
@@ -121,6 +155,7 @@ export function ArticleEditor({
         title: title.trim(),
         content,
         existingTags,
+        model: aiSettings.metadata,
       });
 
       setDescription(result.description);
@@ -135,9 +170,31 @@ export function ArticleEditor({
   };
 
   const handleGenerateImage = async () => {
-    if (!imagePrompt.trim()) {
-      setError('Please enter a prompt for image generation');
-      return;
+    // Build prompt based on settings
+    let finalPrompt = '';
+
+    if (useArticleContent) {
+      // Build prompt from article content (title + description)
+      const articlePrompt = `${title.trim()}${description.trim() ? `: ${description.trim()}` : ''}`;
+
+      if (!articlePrompt && !imagePrompt.trim()) {
+        setError('タイトルまたはカスタムプロンプトを入力してください');
+        return;
+      }
+
+      if (promptMode === 'override' && imagePrompt.trim()) {
+        finalPrompt = imagePrompt.trim();
+      } else if (imagePrompt.trim()) {
+        finalPrompt = `${articlePrompt}. ${imagePrompt.trim()}`;
+      } else {
+        finalPrompt = articlePrompt;
+      }
+    } else {
+      if (!imagePrompt.trim()) {
+        setError('カスタムプロンプトを入力してください');
+        return;
+      }
+      finalPrompt = imagePrompt.trim();
     }
 
     setIsGeneratingImage(true);
@@ -145,13 +202,13 @@ export function ArticleEditor({
 
     try {
       const result = await generateImage({
-        prompt: imagePrompt.trim(),
+        prompt: finalPrompt,
         title: title.trim() || undefined,
+        model: aiSettings.image,
       });
 
       setHeaderImageId(result.id);
       setHeaderImageUrl(result.url);
-      setShowImagePrompt(false);
       setImagePrompt('');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate image');
@@ -174,6 +231,8 @@ export function ArticleEditor({
       const result = await reviewArticle({
         title: title.trim(),
         content,
+        model: aiSettings.review,
+        articleHash: initialData?.hash,
       });
       setReviewResult(result);
     } catch (err) {
@@ -182,6 +241,35 @@ export function ArticleEditor({
       );
     } finally {
       setIsReviewing(false);
+    }
+  };
+
+  const handleGenerateOutline = async () => {
+    if (!title.trim()) {
+      setError('Title is required to generate outline');
+      return;
+    }
+
+    setIsGeneratingOutline(true);
+    setError(null);
+
+    try {
+      const result = await generateOutline({
+        title: title.trim(),
+        model: aiSettings.outline,
+      });
+      // Append outline to existing content or set as new content
+      if (content.trim()) {
+        setContent(`${content}\n\n${result.outline}`);
+      } else {
+        setContent(result.outline);
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Failed to generate outline'
+      );
+    } finally {
+      setIsGeneratingOutline(false);
     }
   };
 
@@ -207,6 +295,7 @@ export function ArticleEditor({
         status,
         headerImageId,
       });
+      setSaveSuccess(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save article');
     } finally {
@@ -225,28 +314,65 @@ export function ArticleEditor({
           {/* Status toggle */}
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">Status:</span>
-            <Badge
-              variant={status === 'published' ? 'default' : 'secondary'}
-              className="cursor-pointer"
+            <button
+              type="button"
+              className={`inline-flex cursor-pointer items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors ${
+                status === 'published'
+                  ? 'bg-emerald-500/20 text-emerald-700 ring-1 ring-inset ring-emerald-500/40 hover:bg-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-400/30'
+                  : 'bg-amber-500/20 text-amber-700 ring-1 ring-inset ring-amber-500/40 hover:bg-amber-500/30 dark:bg-amber-500/20 dark:text-amber-300 dark:ring-amber-400/30'
+              }`}
               onClick={() =>
                 setStatus(status === 'draft' ? 'published' : 'draft')
               }
             >
               {status === 'published' ? 'Published' : 'Draft'}
-            </Badge>
+            </button>
           </div>
 
+          {/* AI Settings */}
+          <AISettingsPopover
+            settings={aiSettings}
+            onSettingsChange={updateAISettings}
+            onReset={resetAISettings}
+          />
+
           {/* AI Review button */}
+          <div className="flex items-center gap-2">
+            <SplitButton
+              onClick={handleReviewArticle}
+              disabled={isReviewing || !title.trim() || !content.trim()}
+              modelType="anthropic"
+              modelValue={aiSettings.review}
+              onModelChange={(v) =>
+                updateAISettings({ review: v as AnthropicModel })
+              }
+            >
+              <MessageSquare className="h-4 w-4" />
+              {isReviewing ? 'Reviewing...' : 'AI Review'}
+            </SplitButton>
+            {reviewResult && !isReviewing && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsReviewOpen(true)}
+                className="gap-1.5 text-muted-foreground"
+              >
+                前回の結果
+              </Button>
+            )}
+          </div>
+
+          {/* Preview button */}
           <Button
             type="button"
             variant="outline"
             size="sm"
-            onClick={handleReviewArticle}
-            disabled={isReviewing || !title.trim() || !content.trim()}
+            onClick={() => setIsPreviewOpen(true)}
             className="gap-1.5"
           >
-            <MessageSquare className="h-4 w-4" />
-            {isReviewing ? 'Reviewing...' : 'AI Review'}
+            <Eye className="h-4 w-4" />
+            Preview
           </Button>
 
           {onCancel && (
@@ -254,8 +380,26 @@ export function ArticleEditor({
               Cancel
             </Button>
           )}
-          <Button type="button" onClick={handleSave} disabled={isSaving}>
-            {isSaving ? 'Saving...' : 'Save'}
+          <Button
+            type="button"
+            onClick={handleSave}
+            disabled={isSaving}
+            className={
+              saveSuccess
+                ? 'bg-green-600 hover:bg-green-600 transition-colors shadow-md'
+                : 'shadow-md hover:shadow-lg transition-shadow'
+            }
+          >
+            {isSaving ? (
+              'Saving...'
+            ) : saveSuccess ? (
+              <span className="flex items-center gap-1">
+                <Check className="h-4 w-4" />
+                Saved
+              </span>
+            ) : (
+              'Save'
+            )}
           </Button>
         </div>
       </div>
@@ -286,19 +430,20 @@ export function ArticleEditor({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Label>Description & Tags</Label>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
+            <SplitButton
               onClick={handleGenerateMetadata}
               disabled={
                 isGeneratingMetadata || !title.trim() || !content.trim()
               }
-              className="gap-1.5"
+              modelType="openai"
+              modelValue={aiSettings.metadata}
+              onModelChange={(v) =>
+                updateAISettings({ metadata: v as OpenAIModel })
+              }
             >
               <Sparkles className="h-4 w-4" />
               {isGeneratingMetadata ? 'Generating...' : 'AI Generate'}
-            </Button>
+            </SplitButton>
           </div>
           <div className="space-y-2">
             <Label
@@ -322,97 +467,146 @@ export function ArticleEditor({
         </div>
 
         {/* Header Image */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label>Header Image</Label>
-          {headerImageUrl ? (
-            <div className="relative inline-block">
-              <Image
-                src={headerImageUrl}
-                alt="Header preview"
-                width={400}
-                height={200}
-                className="max-h-48 rounded-lg border object-cover"
-                unoptimized
-              />
-              <button
-                type="button"
-                onClick={handleRemoveHeaderImage}
-                aria-label="Remove header image"
-                className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          ) : showImagePrompt ? (
+
+          {/* Preview Area (always visible) */}
+          <div className="relative">
+            {headerImageUrl ? (
+              <div className="relative inline-block">
+                <Image
+                  src={headerImageUrl}
+                  alt="Header preview"
+                  width={400}
+                  height={200}
+                  className="max-h-48 rounded-lg border object-cover"
+                  unoptimized
+                />
+                <button
+                  type="button"
+                  onClick={handleRemoveHeaderImage}
+                  aria-label="Remove header image"
+                  className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/10">
+                <div className="text-center text-muted-foreground/50">
+                  <ImageIcon className="mx-auto h-8 w-8" />
+                  <span className="mt-1 block text-xs">No image</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => headerImageInputRef.current?.click()}
+              disabled={isUploadingHeader}
+            >
+              <ImageIcon className="mr-1.5 h-4 w-4" />
+              {isUploadingHeader ? 'Uploading...' : 'Upload'}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowImagePrompt(!showImagePrompt)}
+              className="gap-1.5"
+            >
+              <Sparkles className="h-4 w-4" />
+              AI Generate
+            </Button>
+          </div>
+
+          {/* AI Generate Options (collapsible) */}
+          {showImagePrompt && (
             <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
+              {/* Use article content checkbox */}
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={useArticleContent}
+                  onChange={(e) => setUseArticleContent(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300"
+                />
+                記事の内容をプロンプトとして使用
+              </label>
+
+              {/* Custom prompt input */}
               <div className="space-y-2">
                 <Label htmlFor="imagePrompt" className="text-sm">
-                  Image Prompt
+                  カスタムプロンプト{' '}
+                  {useArticleContent ? '(オプション)' : '(必須)'}
                 </Label>
                 <Textarea
                   id="imagePrompt"
                   value={imagePrompt}
                   onChange={(e) => setImagePrompt(e.target.value)}
-                  placeholder="Describe the image you want to generate..."
+                  placeholder={
+                    useArticleContent
+                      ? '追加の指示があれば入力...'
+                      : '生成したい画像を説明してください...'
+                  }
                   rows={2}
                 />
               </div>
-              <div className="flex gap-2">
+
+              {/* Prompt mode (only shown when article content is used and custom prompt exists) */}
+              {useArticleContent && imagePrompt.trim() && (
+                <div className="flex items-center gap-4 text-sm">
+                  <span className="text-muted-foreground">モード:</span>
+                  <label className="flex items-center gap-1.5">
+                    <input
+                      type="radio"
+                      name="promptMode"
+                      value="append"
+                      checked={promptMode === 'append'}
+                      onChange={() => setPromptMode('append')}
+                      className="h-4 w-4"
+                    />
+                    追加
+                  </label>
+                  <label className="flex items-center gap-1.5">
+                    <input
+                      type="radio"
+                      name="promptMode"
+                      value="override"
+                      checked={promptMode === 'override'}
+                      onChange={() => setPromptMode('override')}
+                      className="h-4 w-4"
+                    />
+                    上書き
+                  </label>
+                </div>
+              )}
+
+              {/* Generate button */}
+              <div className="flex items-center gap-2">
                 <Button
                   type="button"
                   size="sm"
                   onClick={handleGenerateImage}
-                  disabled={isGeneratingImage || !imagePrompt.trim()}
+                  disabled={
+                    isGeneratingImage ||
+                    (!useArticleContent && !imagePrompt.trim()) ||
+                    (useArticleContent && !title.trim() && !imagePrompt.trim())
+                  }
                   className="gap-1.5"
                 >
                   <Sparkles className="h-4 w-4" />
                   {isGeneratingImage ? 'Generating...' : 'Generate'}
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setShowImagePrompt(false);
-                    setImagePrompt('');
-                  }}
-                >
-                  Cancel
-                </Button>
               </div>
             </div>
-          ) : (
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={() => headerImageInputRef.current?.click()}
-                className="flex h-32 flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50"
-              >
-                {isUploadingHeader ? (
-                  <span className="text-sm text-muted-foreground">
-                    Uploading...
-                  </span>
-                ) : (
-                  <>
-                    <ImageIcon className="h-8 w-8 text-muted-foreground/50" />
-                    <span className="mt-2 text-sm text-muted-foreground">
-                      Upload image
-                    </span>
-                  </>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowImagePrompt(true)}
-                className="flex h-32 w-32 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 hover:border-muted-foreground/50"
-              >
-                <Sparkles className="h-8 w-8 text-muted-foreground/50" />
-                <span className="mt-2 text-sm text-muted-foreground">
-                  AI Generate
-                </span>
-              </button>
-            </div>
           )}
+
           <input
             ref={headerImageInputRef}
             type="file"
@@ -425,12 +619,27 @@ export function ArticleEditor({
 
         {/* Content */}
         <div className="space-y-2">
-          <Label>Content</Label>
+          <div className="flex items-center justify-between">
+            <Label>Content</Label>
+            <SplitButton
+              onClick={() => handleGenerateOutline()}
+              disabled={isGeneratingOutline || !title.trim()}
+              modelType="anthropic"
+              modelValue={aiSettings.outline}
+              onModelChange={(v) =>
+                updateAISettings({ outline: v as AnthropicModel })
+              }
+            >
+              <ListTree className="h-4 w-4" />
+              {isGeneratingOutline ? 'Generating...' : 'AI Outline'}
+            </SplitButton>
+          </div>
           <MarkdownEditor
             value={content}
             onChange={setContent}
             onImageUpload={handleImageUpload}
             title={title}
+            aiSettings={aiSettings}
           />
         </div>
       </div>
@@ -442,6 +651,15 @@ export function ArticleEditor({
         review={reviewResult}
         isLoading={isReviewing}
         error={reviewError}
+      />
+      <ArticlePreview
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        title={title}
+        content={content}
+        tags={tags}
+        headerImageUrl={headerImageUrl}
+        publishedAt={initialData?.publishedAt}
       />
     </div>
   );

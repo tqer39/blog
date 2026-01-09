@@ -1,19 +1,70 @@
 import type {
   Article,
+  ArticleCategory,
   ArticleInput,
   ArticleListResponse,
+  ContinuationLength,
+  GeminiImageModel,
+  GenerateImageRequest,
+  GenerateImageResponse,
+  GenerateMetadataRequest,
+  GenerateMetadataResponse,
+  GenerateOutlineRequest,
+  GenerateOutlineResponse,
   ImageUploadResponse,
   ReviewArticleRequest,
   ReviewArticleResponse,
+  SiteSettingsInput,
+  SiteSettingsResponse,
   SuggestContinuationRequest,
   SuggestContinuationResponse,
   Tag,
   TagInput,
   TagListResponse,
+  TransformAction,
+  TransformTextRequest,
+  TransformTextResponse,
 } from '@blog/cms-types';
+
+export type {
+  ArticleCategory,
+  ContinuationLength,
+  GeminiImageModel as ImageModel,
+  TransformAction,
+};
+
 import { createFetchClient } from '@blog/utils';
 
-const fetchApi = createFetchClient({ baseUrl: '/api' });
+const baseFetchApi = createFetchClient({ baseUrl: '/api' });
+
+/**
+ * Get CSRF token from cookie
+ */
+function getCsrfToken(): string | null {
+  if (typeof document === 'undefined') return null;
+
+  const match = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+/**
+ * Fetch API wrapper that automatically adds CSRF token for mutating requests
+ */
+async function fetchApi<T>(path: string, options?: RequestInit): Promise<T> {
+  const method = options?.method?.toUpperCase() || 'GET';
+  const isMutating = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method);
+
+  if (isMutating) {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      const headers = new Headers(options?.headers);
+      headers.set('X-CSRF-Token', csrfToken);
+      options = { ...options, headers };
+    }
+  }
+
+  return baseFetchApi(path, options);
+}
 
 // Articles
 export async function getArticles(params?: {
@@ -118,27 +169,6 @@ export async function deleteImage(id: string): Promise<void> {
 }
 
 // AI
-export interface GenerateMetadataRequest {
-  title: string;
-  content: string;
-  existingTags?: string[];
-}
-
-export interface GenerateMetadataResponse {
-  description: string;
-  tags: string[];
-}
-
-export interface GenerateImageRequest {
-  prompt: string;
-  title?: string;
-}
-
-export interface GenerateImageResponse {
-  id: string;
-  url: string;
-}
-
 export async function generateMetadata(
   request: GenerateMetadataRequest
 ): Promise<GenerateMetadataResponse> {
@@ -176,5 +206,40 @@ export async function suggestContinuation(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
+  });
+}
+
+export async function generateOutline(
+  request: GenerateOutlineRequest
+): Promise<GenerateOutlineResponse> {
+  return fetchApi('/ai/generate-outline', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export async function transformText(
+  request: TransformTextRequest
+): Promise<TransformTextResponse> {
+  return fetchApi('/ai/transform-text', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+// Settings
+export async function getSiteSettings(): Promise<SiteSettingsResponse> {
+  return fetchApi('/settings');
+}
+
+export async function updateSiteSettings(
+  input: SiteSettingsInput
+): Promise<SiteSettingsResponse> {
+  return fetchApi('/settings', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
   });
 }

@@ -40,7 +40,7 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value:
-              "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://cdn.tqer39.dev https://picsum.photos; font-src 'self'; connect-src 'self' http://localhost:* https://cdn.tqer39.dev; frame-ancestors 'none';",
+              "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://cdn.tqer39.dev https://picsum.photos http://localhost:8787; font-src 'self'; connect-src 'self' http://localhost:* https://cdn.tqer39.dev https://www.google-analytics.com https://analytics.google.com; frame-ancestors 'none';",
           },
         ],
       },

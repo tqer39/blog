@@ -1,0 +1,79 @@
+---
+name: Setup Terraform Environment
+description: Setup AWS, Terraform, tfcmt and run fmt/init/validate
+
+inputs:
+  aws-account-id:
+    description: AWS Account ID
+    required: true
+  aws-region:
+    description: AWS Region
+    required: true
+  oidc-iam-role:
+    description: OIDC IAM Role name
+    required: true
+  working-directory:
+    description: Terraform working directory
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Get Terraform version from mise
+      id: tf-version
+      shell: bash
+      run: |
+        TF_VERSION=$(grep '^terraform' .mise.toml | sed 's/.*= *"//' | sed 's/".*//')
+        echo "version=$TF_VERSION" >> $GITHUB_OUTPUT
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v5
+      with:
+        role-to-assume: arn:aws:iam::${{ inputs.aws-account-id }}:role/${{ inputs.oidc-iam-role }}
+        aws-region: ${{ inputs.aws-region }}
+
+    - name: Verify AWS Credentials
+      shell: bash
+      run: aws sts get-caller-identity
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ steps.tf-version.outputs.version }}
+
+    - name: Terraform Format Check
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: terraform fmt -check -recursive -diff
+
+    - name: Terraform Init
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: terraform init -upgrade
+
+    - name: Terraform Validate
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: terraform validate -no-color
+
+    - name: Cache tfcmt
+      id: cache-tfcmt
+      uses: actions/cache@v5
+      with:
+        path: ~/bin/tfcmt
+        key: tfcmt-${{ runner.os }}-v4.14.12
+
+    - name: Setup tfcmt
+      if: steps.cache-tfcmt.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        mkdir -p ~/bin
+        curl -fsSL https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.14.12/tfcmt_linux_amd64.tar.gz | tar -xz -C ~/bin tfcmt
+        chmod +x ~/bin/tfcmt
+
+    - name: Add tfcmt to PATH
+      shell: bash
+      run: echo "$HOME/bin" >> $GITHUB_PATH

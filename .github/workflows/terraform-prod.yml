@@ -1,19 +1,21 @@
 ---
-name: Terraform
+name: Terraform (Prod)
 
 on:
   pull_request:
     branches:
       - main
     paths:
-      - "infra/terraform/**"
-      - ".github/workflows/terraform.yml"
+      - "infra/terraform/envs/prod/**"
+      - "infra/terraform/modules/**"
+      - ".github/workflows/terraform-prod.yml"
   push:
     branches:
       - main
     paths:
-      - "infra/terraform/**"
-      - ".github/workflows/terraform.yml"
+      - "infra/terraform/envs/prod/**"
+      - "infra/terraform/modules/**"
+      - ".github/workflows/terraform-prod.yml"
   workflow_dispatch:
     inputs:
       RUN_APPLY:
@@ -30,11 +32,10 @@ env:
   AWS_ACCOUNT_ID: "072693953877"
   AWS_REGION: ap-northeast-1
   OIDC_IAM_ROLE: prod-blog-deploy-role
-  TF_VERSION: "1.14.3"
   RUN_APPLY: ${{ inputs.RUN_APPLY || 'false' }}
 
 jobs:
-  # CloudFlare (cms-api) - no dependencies
+  # CloudFlare (cms-api)
   terraform-cloudflare-cms-api:
     name: CloudFlare (cms-api)
     runs-on: ubuntu-latest
@@ -48,51 +49,13 @@ jobs:
       WORKING_DIRECTORY: infra/terraform/envs/prod/cms-api
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5
+      - name: Setup Terraform Environment
+        uses: ./.github/actions/setup-terraform-env
         with:
-          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
+          aws-account-id: ${{ env.AWS_ACCOUNT_ID }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Verify AWS Credentials
-        run: aws sts get-caller-identity
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Terraform Format Check
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform fmt -check -recursive -diff
-
-      - name: Terraform Init
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform init -upgrade
-
-      - name: Terraform Validate
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform validate -no-color
-
-      - name: Cache tfcmt
-        id: cache-tfcmt
-        uses: actions/cache@v5
-        with:
-          path: ~/bin/tfcmt
-          key: tfcmt-${{ runner.os }}-v4.14.12
-
-      - name: Setup tfcmt
-        if: steps.cache-tfcmt.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p ~/bin
-          curl -fsSL https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.14.12/tfcmt_linux_amd64.tar.gz | tar -xz -C ~/bin tfcmt
-          chmod +x ~/bin/tfcmt
-
-      - name: Add tfcmt to PATH
-        run: echo "$HOME/bin" >> $GITHUB_PATH
+          oidc-iam-role: ${{ env.OIDC_IAM_ROLE }}
+          working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Terraform Plan
         id: plan
@@ -172,7 +135,7 @@ jobs:
           env: ${{ steps.deployment.outputs.env }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
-  # Vercel (frontend) - no dependencies
+  # Vercel (frontend)
   terraform-vercel:
     name: Vercel (frontend)
     runs-on: ubuntu-latest
@@ -186,51 +149,13 @@ jobs:
       WORKING_DIRECTORY: infra/terraform/envs/prod/frontend
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5
+      - name: Setup Terraform Environment
+        uses: ./.github/actions/setup-terraform-env
         with:
-          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
+          aws-account-id: ${{ env.AWS_ACCOUNT_ID }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Verify AWS Credentials
-        run: aws sts get-caller-identity
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - name: Terraform Format Check
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform fmt -check -recursive -diff
-
-      - name: Terraform Init
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform init -upgrade
-
-      - name: Terraform Validate
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: terraform validate -no-color
-
-      - name: Cache tfcmt
-        id: cache-tfcmt
-        uses: actions/cache@v5
-        with:
-          path: ~/bin/tfcmt
-          key: tfcmt-${{ runner.os }}-v4.14.12
-
-      - name: Setup tfcmt
-        if: steps.cache-tfcmt.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p ~/bin
-          curl -fsSL https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.14.12/tfcmt_linux_amd64.tar.gz | tar -xz -C ~/bin tfcmt
-          chmod +x ~/bin/tfcmt
-
-      - name: Add tfcmt to PATH
-        run: echo "$HOME/bin" >> $GITHUB_PATH
+          oidc-iam-role: ${{ env.OIDC_IAM_ROLE }}
+          working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Terraform Plan
         id: plan
@@ -315,7 +240,9 @@ jobs:
     name: Workflow Result
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [terraform-cloudflare-cms-api, terraform-vercel]
+    needs:
+      - terraform-cloudflare-cms-api
+      - terraform-vercel
     if: always()
     steps:
       - name: Check Results

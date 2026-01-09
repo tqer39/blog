@@ -9,8 +9,21 @@ aws:
   region: ap-northeast-1
 
 environments:
+  dev:
+    subdomain: blog-dev
+    cms_api:
+      database_name: blog-cms-dev
+      bucket_name: blog-images-dev
+    vercel:
+      framework: nextjs
+      root_directory: apps/blog
+      build_command: pnpm build
+      output_directory: .next
   prod:
     subdomain: blog
+    cms_api:
+      database_name: blog-cms-prod
+      bucket_name: blog-images-prod
     vercel:
       framework: nextjs
       root_directory: apps/blog

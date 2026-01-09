@@ -6,12 +6,21 @@
 
 ## 概要
 
-| 設定場所           | 用途               |
-| ------------------ | ------------------ |
-| GitHub Secrets     | CI/CD ワークフロー |
-| Cloudflare Workers | CMS API ランタイム |
-| Vercel             | ブログアプリ       |
-| ローカル           | 開発環境           |
+| 設定場所             | 用途               |
+| -------------------- | ------------------ |
+| GitHub Secrets       | CI/CD ワークフロー |
+| Cloudflare Workers   | CMS API ランタイム |
+| Vercel               | ブログアプリ       |
+| ローカル (.dev.vars) | ローカル開発       |
+
+## 環境別シークレット
+
+| シークレット   | Local     | Dev            | Prod             |
+| -------------- | --------- | -------------- | ---------------- |
+| D1 Database ID | local     | _DEV           | _PROD            |
+| R2 Bucket      | local     | blog-images-*  | blog-images-*    |
+| Basic Auth     | -         | BASIC_AUTH_*   | -                |
+| API Key        | .dev.vars | wrangler       | wrangler         |
 
 ## 必要なシークレット
 
@@ -22,6 +31,9 @@
 | `CLOUDFLARE_API_TOKEN`  | Cloudflare Dashboard > API Tokens       |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Dashboard > Account ID       |
 | `CLOUDFLARE_ZONE_ID`    | Cloudflare Dashboard > Zone > Zone ID   |
+| `R2_ACCESS_KEY_ID`      | Cloudflare R2 > Manage R2 API Tokens    |
+| `R2_SECRET_ACCESS_KEY`  | R2 API Token（作成時に表示）            |
+| `R2_BUCKET_NAME`        | Cloudflare R2 > バケット名              |
 | `VERCEL_API_TOKEN`      | Vercel Settings > Tokens                |
 
 ### AI サービス関連
@@ -61,23 +73,102 @@ node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 
 ## シークレットの設定方法
 
-### GitHub Secrets
+### 1Password からの自動同期（推奨）
+
+#### 方法 A: GitHub Actions（推奨）
+
+GitHub Actions ワークフローで実行:
+
+```bash
+# 前提条件: 1Password Service Account トークンを設定
+gh secret set OP_SERVICE_ACCOUNT_TOKEN
+
+# ワークフロー実行
+gh workflow run sync-secrets.yml -f target=both
+
+# または個別に同期
+gh workflow run sync-secrets.yml -f target=github
+gh workflow run sync-secrets.yml -f target=wrangler
+```
+
+#### 方法 B: ローカルスクリプト
+
+1Password CLI を使ってローカルで実行:
+
+```bash
+# 前提条件
+brew install 1password-cli  # 1Password CLI をインストール
+op signin                   # 1Password にサインイン
+
+# 全シークレットを同期
+just sync-secrets
+
+# または個別に同期
+just sync-secrets-github    # GitHub Secrets のみ
+just sync-secrets-wrangler  # Cloudflare Workers のみ
+just sync-secrets-dry-run   # 変更せずプレビュー
+```
+
+#### 1Password Vault の設定
+
+`blog-secrets` vault を作成し、以下のアイテムを登録。
+フィールドは特記なければ `password`。同期先: G=GitHub, W=Wrangler (staging/production)。
+
+| アイテム名 | 環境変数名 | 同期先 |
+| ---------- | ---------- | ------ |
+| cloudflare-api-token | CLOUDFLARE_API_TOKEN | G |
+| cloudflare-account-id | CLOUDFLARE_ACCOUNT_ID | G |
+| cloudflare-zone-id | CLOUDFLARE_ZONE_ID | G |
+| vercel-api-token | VERCEL_API_TOKEN | G |
+| d1-database-id-dev | D1_DATABASE_ID_DEV | G |
+| d1-database-id-prod | D1_DATABASE_ID_PROD | G |
+| r2-access-key-id | R2_ACCESS_KEY_ID | G+W |
+| r2-secret-access-key | R2_SECRET_ACCESS_KEY | G+W |
+| r2-bucket-name | R2_BUCKET_NAME | G+W |
+| basic-auth-user | BASIC_AUTH_USER | W (staging) |
+| basic-auth-pass | BASIC_AUTH_PASS | W (staging) |
+| openai-api-key | OPENAI_API_KEY | G+W |
+| gemini-api-key | GEMINI_API_KEY | W |
+| anthropic-api-key | ANTHROPIC_API_KEY | G+W |
+| auth-secret | AUTH_SECRET | W |
+| admin-password-hash | ADMIN_PASSWORD_HASH | W |
+| slack-webhook | SLACK_WEBHOOK | G |
+| codecov-token | CODECOV_TOKEN | G |
+| gha-app-id | GHA_APP_ID | G |
+| gha-app-private-key (field: private key) | GHA_APP_PRIVATE_KEY | G |
+
+### 手動設定: GitHub Secrets
 
 1. リポジトリの Settings > Secrets and variables > Actions
 2. 「New repository secret」をクリック
 3. 名前と値を入力
 
-### Cloudflare Workers
+### 手動設定: Cloudflare Workers
 
 ```bash
 cd apps/cms-api
 
-# 対話形式でシークレットを設定
+# staging (dev) 環境のシークレット設定
+pnpm wrangler secret put OPENAI_API_KEY --env staging
+pnpm wrangler secret put GEMINI_API_KEY --env staging
+pnpm wrangler secret put ANTHROPIC_API_KEY --env staging
+pnpm wrangler secret put AUTH_SECRET --env staging
+pnpm wrangler secret put ADMIN_PASSWORD_HASH --env staging
+pnpm wrangler secret put R2_ACCESS_KEY_ID --env staging
+pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env staging
+pnpm wrangler secret put R2_BUCKET_NAME --env staging
+pnpm wrangler secret put BASIC_AUTH_USER --env staging
+pnpm wrangler secret put BASIC_AUTH_PASS --env staging
+
+# production 環境のシークレット設定
 pnpm wrangler secret put OPENAI_API_KEY
 pnpm wrangler secret put GEMINI_API_KEY
 pnpm wrangler secret put ANTHROPIC_API_KEY
 pnpm wrangler secret put AUTH_SECRET
 pnpm wrangler secret put ADMIN_PASSWORD_HASH
+pnpm wrangler secret put R2_ACCESS_KEY_ID
+pnpm wrangler secret put R2_SECRET_ACCESS_KEY
+pnpm wrangler secret put R2_BUCKET_NAME
 ```
 
 または Cloudflare Dashboard から:

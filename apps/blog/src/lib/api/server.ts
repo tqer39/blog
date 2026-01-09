@@ -2,10 +2,18 @@ import type {
   Article,
   ArticleInput,
   ArticleListResponse,
+  GenerateOutlineRequest,
+  GenerateOutlineResponse,
   ImageUploadResponse,
+  ReviewArticleRequest,
+  ReviewArticleResponse,
+  SiteSettingsInput,
+  SiteSettingsResponse,
   Tag,
   TagInput,
   TagListResponse,
+  TransformTextRequest,
+  TransformTextResponse,
 } from '@blog/cms-types';
 import { DEFAULT_API_URL } from '@blog/config';
 import { createFetchClient } from '@blog/utils';
@@ -125,9 +133,14 @@ export interface GenerateMetadataResponse {
   tags: string[];
 }
 
+export type ImageModel =
+  | 'gemini-2.5-flash-image'
+  | 'gemini-3-pro-image-preview';
+
 export interface GenerateImageRequest {
   prompt: string;
   title?: string;
+  model?: ImageModel;
 }
 
 export interface GenerateImageResponse {
@@ -152,5 +165,50 @@ export async function generateImage(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
+  });
+}
+
+export async function generateOutline(
+  request: GenerateOutlineRequest
+): Promise<GenerateOutlineResponse> {
+  return fetchApi('/ai/generate-outline', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export async function transformText(
+  request: TransformTextRequest
+): Promise<TransformTextResponse> {
+  return fetchApi('/ai/transform-text', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export async function reviewArticle(
+  request: ReviewArticleRequest
+): Promise<ReviewArticleResponse> {
+  return fetchApi('/ai/review-article', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+// Settings
+export async function getSiteSettings(): Promise<SiteSettingsResponse> {
+  return fetchApi('/settings');
+}
+
+export async function updateSiteSettings(
+  input: SiteSettingsInput
+): Promise<SiteSettingsResponse> {
+  return fetchApi('/settings', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
   });
 }

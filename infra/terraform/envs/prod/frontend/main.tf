@@ -25,4 +25,17 @@ module "vercel_project" {
   build_command    = local.environment.vercel.build_command
   output_directory = local.environment.vercel.output_directory
   domain           = local.domain
+
+  environment_variables = [
+    {
+      key    = "CMS_API_URL"
+      value  = "https://cms-api.tqer39.workers.dev"
+      target = ["production", "preview", "development"]
+    },
+    {
+      key    = "NEXT_PUBLIC_SITE_URL"
+      value  = "https://${local.domain}"
+      target = ["production", "preview", "development"]
+    }
+  ]
 }

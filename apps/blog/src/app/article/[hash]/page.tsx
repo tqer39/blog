@@ -6,10 +6,13 @@ import { notFound } from 'next/navigation';
 
 import { ArticleContent } from '@/components/ArticleContent';
 import { ArticleNavigation } from '@/components/ArticleNavigation';
+import { JsonLd } from '@/components/JsonLd';
 import { TableOfContents } from '@/components/TableOfContents';
 import { TagLink } from '@/components/TagLink';
 import { getAllArticles, getArticleByHash } from '@/lib/articles';
+import { generateArticleJsonLd, generateBreadcrumbJsonLd } from '@/lib/jsonld';
 import { calculateReadingTime } from '@/lib/readingTime';
+import { getSiteSettings } from '@/lib/siteSettings';
 
 interface ArticlePageProps {
   params: Promise<{ hash: string }>;
@@ -29,7 +32,10 @@ export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
   const { hash } = await params;
-  const result = await getArticleByHash(hash);
+  const [result, settings] = await Promise.all([
+    getArticleByHash(hash),
+    getSiteSettings(),
+  ]);
 
   if (!result.ok || !result.data) {
     return { title: 'Article not found' };
@@ -58,11 +64,11 @@ export async function generateMetadata({
       title: article.title,
       description,
       url,
-      siteName: "tqer39's blog",
+      siteName: settings.site_name,
       type: 'article',
       publishedTime: article.publishedAt || undefined,
       modifiedTime: article.updatedAt,
-      authors: ['tqer39'],
+      authors: [settings.author_name],
       tags: article.tags,
       images: ogImages,
     },
@@ -80,9 +86,10 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { hash } = await params;
-  const [articleResult, allArticlesResult] = await Promise.all([
+  const [articleResult, allArticlesResult, settings] = await Promise.all([
     getArticleByHash(hash),
     getAllArticles(),
+    getSiteSettings(),
   ]);
 
   if (!articleResult.ok || !articleResult.data) {
@@ -113,8 +120,20 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const displayDate = article.publishedAt || article.createdAt;
   const readingTime = calculateReadingTime(article.content);
 
+  const articleJsonLd = generateArticleJsonLd(article, BASE_URL, settings);
+  const breadcrumbJsonLd = generateBreadcrumbJsonLd(
+    [
+      { name: 'ホーム', url: '/' },
+      { name: '記事一覧', url: '/articles' },
+      { name: article.title },
+    ],
+    BASE_URL
+  );
+
   return (
     <>
+      <JsonLd data={articleJsonLd} />
+      <JsonLd data={breadcrumbJsonLd} />
       <TableOfContents readingTime={readingTime} />
       <article className="mx-auto max-w-4xl px-4 py-8">
         {article.headerImageUrl && (

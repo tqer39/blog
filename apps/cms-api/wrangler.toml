@@ -16,8 +16,28 @@ database_id = "local"
 binding = "R2_BUCKET"
 bucket_name = "blog-images"
 
+# ==================== STAGING (Dev) ====================
+[env.staging]
+name = "cms-api-dev"
+vars = { ENVIRONMENT = "staging", BASIC_AUTH_ENABLED = "true" }
+# Set these secrets via:
+# wrangler secret put API_KEY --env staging
+# wrangler secret put BASIC_AUTH_USER --env staging
+# wrangler secret put BASIC_AUTH_PASS --env staging
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "blog-cms-dev"
+database_id = "to-be-set-by-terraform-dev"
+
+[[env.staging.r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "blog-images-dev"
+
+# ==================== PRODUCTION ====================
 [env.production]
-vars = { ENVIRONMENT = "production" }
+name = "cms-api"
+vars = { ENVIRONMENT = "production", BASIC_AUTH_ENABLED = "false" }
 # Set these secrets via: wrangler secret put API_KEY --env production
 # wrangler secret put VERCEL_DEPLOY_HOOK_URL --env production
 # wrangler secret put WEBHOOK_SECRET --env production

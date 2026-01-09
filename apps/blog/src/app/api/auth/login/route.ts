@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server';
-import { createSession, getSessionCookieConfig } from '@/lib/auth';
+import {
+  createSession,
+  generateCsrfToken,
+  getCsrfTokenCookieConfig,
+  getSessionCookieConfig,
+} from '@/lib/auth';
 import { verifyPassword } from '@/lib/password';
 
 // Get password hash from environment variable
@@ -32,11 +37,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
     }
 
-    const token = await createSession();
-    const cookieConfig = getSessionCookieConfig(token);
+    const sessionToken = await createSession();
+    const sessionCookieConfig = getSessionCookieConfig(sessionToken);
+
+    // Generate CSRF token
+    const csrfToken = generateCsrfToken();
+    const csrfCookieConfig = getCsrfTokenCookieConfig(csrfToken);
 
     const response = NextResponse.json({ success: true });
-    response.cookies.set(cookieConfig);
+    response.cookies.set(sessionCookieConfig);
+    response.cookies.set(csrfCookieConfig);
 
     return response;
   } catch (error) {
