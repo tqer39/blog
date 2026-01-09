@@ -8,7 +8,7 @@
 | -------------- | ------ | ----------------------------- | ---------------- |
 | Blog (Next.js) | 3100   | <http://localhost:3100>       | フロントエンド   |
 | Admin UI       | 3100   | <http://localhost:3100/admin> | 記事管理画面     |
-| CMS API        | 8787   | <http://localhost:8787>       | バックエンド API |
+| CMS API        | 3200   | <http://localhost:3200>       | バックエンド API |
 
 ## クイックスタート
 
@@ -77,7 +77,7 @@ open http://localhost:3100
 
 | 変数名        | 説明       | デフォルト                 |
 | ------------- | ---------- | -------------------------- |
-| `CMS_API_URL` | API の URL | `http://localhost:8787/v1` |
+| `CMS_API_URL` | API の URL | `http://localhost:3200/v1` |
 | `CMS_API_KEY` | API キー   | (なし)                     |
 
 ### CMS API (apps/cms-api)
@@ -123,7 +123,7 @@ apps/cms-api/.wrangler/state/
 | ------ | -------------------- | ------------------------------ |
 | 1      | R2 クレデンシャル    | 署名付き URL (1時間有効)       |
 | 2      | `R2_PUBLIC_URL`      | `{R2_PUBLIC_URL}/{r2Key}`      |
-| 3      | `ENVIRONMENT=dev`    | `localhost:8787/v1/images/..`  |
+| 3      | `ENVIRONMENT=dev`    | `localhost:3200/v1/images/..`  |
 | 4      | デフォルト           | `cdn.tqer39.dev/{r2Key}`       |
 
 ローカル開発では自動的にオプション 3 が使用されます。本番環境では
@@ -136,7 +136,7 @@ wrangler secrets で R2 API クレデンシャルを設定すると署名付き 
 ```bash
 # 使用中のポートを確認
 lsof -i :3100
-lsof -i :8787
+lsof -i :3200
 
 # プロセスを終了
 kill -9 <PID>

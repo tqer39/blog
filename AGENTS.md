@@ -9,7 +9,7 @@ Personal blog monorepo with Turborepo + pnpm workspaces.
 | App/Package          | Description                 | Port  |
 | -------------------- | --------------------------- | ----- |
 | `apps/blog`          | Next.js 15 blog frontend    | 3100  |
-| `apps/cms-api`       | Hono CMS API on CF Workers  | 8787  |
+| `apps/cms-api`       | Hono CMS API on CF Workers  | 3200  |
 | `packages/cms-types` | Shared TypeScript types     | -     |
 | `packages/ui`        | Shared UI components        | -     |
 | `packages/utils`     | Shared utilities            | -     |
@@ -46,7 +46,7 @@ docs/                     # Documentation
 | Command           | Description                              |
 | ----------------- | ---------------------------------------- |
 | `just dev-all`    | Start all services (API + Blog)          |
-| `just dev-api`    | Start CMS API only (port 8787)           |
+| `just dev-api`    | Start CMS API only (port 3200)           |
 | `just dev-blog`   | Start Blog only (port 3100)              |
 | `just bootstrap`  | Full setup: deps, reset, migrate, seed   |
 | `just db-migrate` | Run D1 migrations                        |

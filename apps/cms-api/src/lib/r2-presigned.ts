@@ -71,7 +71,7 @@ export async function getPublicUrl(env: Env, r2Key: string): Promise<string> {
 
   // Local development: serve via CMS API
   if (env.ENVIRONMENT === 'development') {
-    return `http://localhost:8787/v1/images/file/${r2Key}`;
+    return `http://localhost:3200/v1/images/file/${r2Key}`;
   }
 
   // Default production CDN

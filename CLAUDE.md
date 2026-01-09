@@ -73,7 +73,7 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 │    Local      │       Dev         │             Prod                │
 ├───────────────┼───────────────────┼─────────────────────────────────┤
 │ localhost     │ blog-dev.tqer39   │ blog.tqer39.dev                 │
-│ :3100/:8787   │ .dev              │                                 │
+│ :3100/:3200   │ .dev              │                                 │
 ├───────────────┼───────────────────┼─────────────────────────────────┤
 │ D1: local     │ blog-cms-dev      │ blog-cms-prod                   │
 │ R2: local     │ blog-images-dev   │ blog-images-prod                │

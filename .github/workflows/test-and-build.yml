@@ -140,7 +140,7 @@ jobs:
       - name: Wait for CMS API
         run: |
           for i in {1..30}; do
-            curl -s http://localhost:8787/v1/articles && break
+            curl -s http://localhost:3200/v1/articles && break
             echo "Waiting for API... ($i/30)"
             sleep 1
           done
@@ -148,13 +148,13 @@ jobs:
       - name: Seed database
         run: pnpm --filter @blog/cms-api seed
         env:
-          CMS_API_URL: http://localhost:8787/v1
+          CMS_API_URL: http://localhost:3200/v1
           CMS_API_KEY: dev-api-key
 
       - name: Run E2E tests
         run: pnpm e2e
         env:
-          CMS_API_URL: http://localhost:8787/v1
+          CMS_API_URL: http://localhost:3200/v1
           CMS_API_KEY: dev-api-key
 
       - name: Upload Playwright Report

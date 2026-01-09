@@ -5,7 +5,7 @@
 /**
  * Default CMS API URL for local development
  */
-export const DEFAULT_API_URL = 'http://localhost:8787/v1';
+export const DEFAULT_API_URL = 'http://localhost:3200/v1';
 
 /**
  * Number of articles to display per page

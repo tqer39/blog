@@ -374,7 +374,7 @@ describe('imagesHandler', () => {
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.url).toBe(
-        'http://localhost:8787/v1/images/file/images/2024/01/mock-image-id.jpg'
+        'http://localhost:3200/v1/images/file/images/2024/01/mock-image-id.jpg'
       );
     });
 

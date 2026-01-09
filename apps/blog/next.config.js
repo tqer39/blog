@@ -20,7 +20,7 @@ const cspDirectives = {
     'data:',
     'https://cdn.tqer39.dev',
     'https://picsum.photos',
-    ...(isDev ? ['http://localhost:8787'] : []),
+    ...(isDev ? ['http://localhost:3200'] : []),
   ],
   'font-src': ["'self'"],
   'connect-src': [
@@ -50,7 +50,7 @@ const nextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '8787',
+        port: '3200',
         pathname: '/v1/images/**',
       },
       {

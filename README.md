@@ -29,7 +29,7 @@ just setup
 just bootstrap
 
 # 4. Start development servers (in separate terminals)
-just dev-api   # CMS API on http://localhost:8787
+just dev-api   # CMS API on http://localhost:3200
 just dev-blog  # Blog on http://localhost:3100
 
 # 5. Access the blog

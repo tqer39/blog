@@ -134,7 +134,7 @@ describe('getPublicUrl', () => {
 
     const result = await getPublicUrl(env, 'images/2024/01/test.png');
     expect(result).toBe(
-      'http://localhost:8787/v1/images/file/images/2024/01/test.png'
+      'http://localhost:3200/v1/images/file/images/2024/01/test.png'
     );
   });
 

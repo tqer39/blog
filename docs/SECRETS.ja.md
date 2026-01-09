@@ -214,7 +214,7 @@ pnpm wrangler secret put R2_BUCKET_NAME
 ```bash
 AUTH_SECRET=your-local-secret
 ADMIN_PASSWORD_HASH=$2b$12$...
-CMS_API_URL=http://localhost:8787/v1
+CMS_API_URL=http://localhost:3200/v1
 CMS_API_KEY=dev-api-key
 ```
 

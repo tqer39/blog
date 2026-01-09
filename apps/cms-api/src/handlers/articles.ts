@@ -416,7 +416,7 @@ async function getHeaderImageUrlsBatch(
     if (env.R2_PUBLIC_URL) {
       url = `${env.R2_PUBLIC_URL}/${r2Key}`;
     } else if (env.ENVIRONMENT === 'development') {
-      url = `http://localhost:8787/v1/images/file/${r2Key}`;
+      url = `http://localhost:3200/v1/images/file/${r2Key}`;
     } else {
       url = `https://cdn.tqer39.dev/${r2Key}`;
     }
@@ -525,7 +525,7 @@ async function getHeaderImageUrl(
     return `${env.R2_PUBLIC_URL}/${image.r2_key}`;
   }
   if (env.ENVIRONMENT === 'development') {
-    return `http://localhost:8787/v1/images/file/${image.r2_key}`;
+    return `http://localhost:3200/v1/images/file/${image.r2_key}`;
   }
   return `https://cdn.tqer39.dev/${image.r2_key}`;
 }

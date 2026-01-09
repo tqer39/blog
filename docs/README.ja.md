@@ -29,7 +29,7 @@ just setup
 just bootstrap
 
 # 4. 開発サーバーを起動（別々のターミナルで）
-just dev-api   # CMS API: http://localhost:8787
+just dev-api   # CMS API: http://localhost:3200
 just dev-blog  # Blog: http://localhost:3100
 
 # 5. ブログにアクセス
