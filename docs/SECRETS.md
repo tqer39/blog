@@ -96,8 +96,7 @@ gh workflow run sync-secrets.yml -f target=wrangler
 Run locally with 1Password CLI:
 
 ```bash
-# Prerequisites
-brew install 1password-cli  # Install 1Password CLI
+# Prerequisites: 1password-cli is installed via Brewfile
 op signin                   # Sign in to 1Password
 
 # Sync all secrets

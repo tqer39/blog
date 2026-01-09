@@ -96,8 +96,7 @@ gh workflow run sync-secrets.yml -f target=wrangler
 1Password CLI を使ってローカルで実行:
 
 ```bash
-# 前提条件
-brew install 1password-cli  # 1Password CLI をインストール
+# 前提条件: 1password-cli は Brewfile でインストール済み
 op signin                   # 1Password にサインイン
 
 # 全シークレットを同期
