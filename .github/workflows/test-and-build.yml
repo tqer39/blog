@@ -175,6 +175,6 @@ jobs:
       - name: Slack Notification
         uses: ./.github/actions/slack-deploy-failure
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK_DEV }}
           title: "CI Failed"
           message: "Test or build failed"

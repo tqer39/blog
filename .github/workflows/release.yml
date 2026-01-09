@@ -81,7 +81,7 @@ jobs:
         continue-on-error: true
         uses: ./.github/actions/slack-deploy-failure
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK_PROD }}
           title: "Release Created: ${{ inputs.version }}"
           message: "New release created. Production deployment will start automatically."
 
@@ -89,6 +89,6 @@ jobs:
         if: failure()
         uses: ./.github/actions/slack-deploy-failure
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK_PROD }}
           title: "Release Creation Failed"
           message: "Failed to create release ${{ inputs.version }}"

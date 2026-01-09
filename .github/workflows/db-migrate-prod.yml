@@ -41,6 +41,6 @@ jobs:
         if: failure()
         uses: ./.github/actions/slack-deploy-failure
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK_PROD }}
           title: "DB Migration Failed (Prod)"
           message: "D1 migration failed on production environment"

@@ -93,7 +93,7 @@ jobs:
         continue-on-error: true
         uses: ./.github/actions/slack-deploy-failure
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK_DEV }}
           title: "Terraform Plan Error: cms-api-dev"
           message: "path: `${{ env.WORKING_DIRECTORY }}`"
 
@@ -193,7 +193,7 @@ jobs:
         continue-on-error: true
         uses: ./.github/actions/slack-deploy-failure
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK_DEV }}
           title: "Terraform Plan Error: frontend-dev"
           message: "path: `${{ env.WORKING_DIRECTORY }}`"
 
