@@ -14,16 +14,16 @@ import {
   Label,
   Textarea,
 } from '@blog/ui';
-import { ImageIcon, MessageSquare, Sparkles, X } from 'lucide-react';
+import { Check, ImageIcon, MessageSquare, Sparkles, X } from 'lucide-react';
 import Image from 'next/image';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   generateImage,
   generateMetadata,
   getTags,
+  type ImageModel,
   reviewArticle,
   uploadImage,
-  type ImageModel,
 } from '@/lib/api/client';
 import { MarkdownEditor } from './MarkdownEditor';
 import { ReviewPanel } from './ReviewPanel';
@@ -60,7 +60,9 @@ export function ArticleEditor({
   const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [imagePrompt, setImagePrompt] = useState('');
-  const [imageModel, setImageModel] = useState<ImageModel>('gemini-2.5-flash-image');
+  const [imageModel, setImageModel] = useState<ImageModel>(
+    'gemini-2.5-flash-image'
+  );
   const [showImagePrompt, setShowImagePrompt] = useState(false);
   const [useArticleContent, setUseArticleContent] = useState(true);
   const [promptMode, setPromptMode] = useState<'append' | 'override'>('append');
@@ -70,7 +72,18 @@ export function ArticleEditor({
   const [reviewResult, setReviewResult] =
     useState<ReviewArticleResponse | null>(null);
   const [reviewError, setReviewError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const headerImageInputRef = useRef<HTMLInputElement>(null);
+
+  // Reset save success indicator after 2 seconds
+  useEffect(() => {
+    if (saveSuccess) {
+      const timer = setTimeout(() => {
+        setSaveSuccess(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [saveSuccess]);
 
   const handleImageUpload = async (file: File): Promise<string> => {
     const result = await uploadImage(file, initialData?.id);
@@ -233,6 +246,7 @@ export function ArticleEditor({
         status,
         headerImageId,
       });
+      setSaveSuccess(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save article');
     } finally {
@@ -280,8 +294,26 @@ export function ArticleEditor({
               Cancel
             </Button>
           )}
-          <Button type="button" onClick={handleSave} disabled={isSaving}>
-            {isSaving ? 'Saving...' : 'Save'}
+          <Button
+            type="button"
+            onClick={handleSave}
+            disabled={isSaving}
+            className={
+              saveSuccess
+                ? 'bg-green-600 hover:bg-green-600 transition-colors'
+                : ''
+            }
+          >
+            {isSaving ? (
+              'Saving...'
+            ) : saveSuccess ? (
+              <span className="flex items-center gap-1">
+                <Check className="h-4 w-4" />
+                Saved
+              </span>
+            ) : (
+              'Save'
+            )}
           </Button>
         </div>
       </div>
@@ -423,7 +455,8 @@ export function ArticleEditor({
               {/* Custom prompt input */}
               <div className="space-y-2">
                 <Label htmlFor="imagePrompt" className="text-sm">
-                  カスタムプロンプト {useArticleContent ? '(オプション)' : '(必須)'}
+                  カスタムプロンプト{' '}
+                  {useArticleContent ? '(オプション)' : '(必須)'}
                 </Label>
                 <Textarea
                   id="imagePrompt"
