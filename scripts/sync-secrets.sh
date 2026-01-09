@@ -238,8 +238,9 @@ sync_all_secrets() {
 
     # Third-party service secrets (GitHub only)
     log_info "=== Third-party Service Secrets ==="
-    sync_secret "slack-webhook"  "SLACK_WEBHOOK"  "github"
-    sync_secret "codecov-token"  "CODECOV_TOKEN"  "github"
+    sync_secret "slack-webhook-dev"  "SLACK_WEBHOOK_DEV"  "github"
+    sync_secret "slack-webhook-prod" "SLACK_WEBHOOK_PROD" "github"
+    sync_secret "codecov-token"      "CODECOV_TOKEN"      "github"
     printf "\n"
 
     # GitHub App secrets (GitHub only)

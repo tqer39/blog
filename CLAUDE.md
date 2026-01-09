@@ -287,14 +287,15 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
 ### Third-party Service Secrets
 
-| Secret                    | Description                      |
-| ------------------------- | -------------------------------- |
-| `SLACK_WEBHOOK`           | Slack notification webhook       |
-| `CODECOV_TOKEN`           | Codecov coverage token           |
-| `GEMINI_API_KEY`          | Google Gemini API key            |
-| `OPENAI_API_KEY`          | OpenAI API key for PR desc       |
-| `ANTHROPIC_API_KEY`       | Anthropic API key for AI         |
-| `OP_SERVICE_ACCOUNT_TOKEN`| 1Password Service Account token  |
+| Secret                     | Description                      |
+| -------------------------- | -------------------------------- |
+| `ANTHROPIC_API_KEY`        | Anthropic API key for AI         |
+| `CODECOV_TOKEN`            | Codecov coverage token           |
+| `GEMINI_API_KEY`           | Google Gemini API key            |
+| `OPENAI_API_KEY`           | OpenAI API key for PR desc       |
+| `OP_SERVICE_ACCOUNT_TOKEN` | 1Password Service Account token  |
+| `SLACK_WEBHOOK_DEV`        | Slack webhook (dev)              |
+| `SLACK_WEBHOOK_PROD`       | Slack webhook (prod)             |
 
 ### GitHub App Secrets
 

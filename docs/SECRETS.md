@@ -46,10 +46,11 @@ This document describes how to obtain and configure secrets.
 
 ### Other Third-party Secrets (GitHub Secrets)
 
-| Secret             | How to Obtain                    |
-| ------------------ | -------------------------------- |
-| `SLACK_WEBHOOK`    | Slack API > Incoming Webhooks    |
-| `CODECOV_TOKEN`    | Codecov > Repository Settings    |
+| Secret              | How to Obtain                    |
+| ------------------- | -------------------------------- |
+| `SLACK_WEBHOOK_DEV` | Slack API > Incoming Webhooks    |
+| `SLACK_WEBHOOK_PROD`| Slack API > Incoming Webhooks    |
+| `CODECOV_TOKEN`     | Codecov > Repository Settings    |
 
 ### GitHub App Secrets (GitHub Secrets)
 
@@ -108,6 +109,31 @@ just sync-secrets-wrangler  # Cloudflare Workers only
 just sync-secrets-dry-run   # Preview without making changes
 ```
 
+#### 1Password Service Account Setup
+
+Create a service account for CI/CD automation:
+
+```bash
+# Sign in to 1Password
+op signin
+
+# Create service account (interactive)
+op service-account create "blog-ci" --vault blog-secrets
+
+# Or via 1Password web:
+# 1. Settings > Developer > Service Accounts
+# 2. Create new service account
+# 3. Grant access to "blog-secrets" vault
+# 4. Copy the token
+```
+
+Set the token in GitHub:
+
+```bash
+gh secret set OP_SERVICE_ACCOUNT_TOKEN
+# Paste the service account token when prompted
+```
+
 #### 1Password Vault Setup
 
 Create a vault named `blog-secrets` with the following items.
@@ -131,7 +157,8 @@ Field is `password` unless noted. Target: G=GitHub, W=Wrangler (staging/producti
 | anthropic-api-key | ANTHROPIC_API_KEY | G+W |
 | auth-secret | AUTH_SECRET | W |
 | admin-password-hash | ADMIN_PASSWORD_HASH | W |
-| slack-webhook | SLACK_WEBHOOK | G |
+| slack-webhook-dev | SLACK_WEBHOOK_DEV | G |
+| slack-webhook-prod | SLACK_WEBHOOK_PROD | G |
 | codecov-token | CODECOV_TOKEN | G |
 | gha-app-id | GHA_APP_ID | G |
 | gha-app-private-key (field: private key) | GHA_APP_PRIVATE_KEY | G |

@@ -286,13 +286,15 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 
 ### サードパーティ Secrets
 
-| Secret               | 説明                             |
-| -------------------- | -------------------------------- |
-| `SLACK_WEBHOOK`      | Slack 通知 Webhook               |
-| `CODECOV_TOKEN`      | Codecov カバレッジトークン       |
-| `GEMINI_API_KEY`     | Google Gemini API キー           |
-| `OPENAI_API_KEY`     | OpenAI API キー（PR 説明生成用） |
-| `ANTHROPIC_API_KEY`  | Anthropic API キー（AI 機能用）  |
+| Secret                     | 説明                                 |
+| -------------------------- | ------------------------------------ |
+| `ANTHROPIC_API_KEY`        | Anthropic API キー（AI 機能用）      |
+| `CODECOV_TOKEN`            | Codecov カバレッジトークン           |
+| `GEMINI_API_KEY`           | Google Gemini API キー               |
+| `OPENAI_API_KEY`           | OpenAI API キー（PR 説明生成用）     |
+| `OP_SERVICE_ACCOUNT_TOKEN` | 1Password Service Account トークン   |
+| `SLACK_WEBHOOK_DEV`        | Slack Webhook（dev 用）              |
+| `SLACK_WEBHOOK_PROD`       | Slack Webhook（prod 用）             |
 
 ### GitHub App Secrets
 

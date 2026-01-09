@@ -46,10 +46,11 @@
 
 ### その他サードパーティ (GitHub Secrets)
 
-| シークレット        | 取得方法                      |
-| ------------------- | ----------------------------- |
-| `SLACK_WEBHOOK`     | Slack API > Incoming Webhooks |
-| `CODECOV_TOKEN`     | Codecov > リポジトリ設定      |
+| シークレット         | 取得方法                      |
+| -------------------- | ----------------------------- |
+| `SLACK_WEBHOOK_DEV`  | Slack API > Incoming Webhooks |
+| `SLACK_WEBHOOK_PROD` | Slack API > Incoming Webhooks |
+| `CODECOV_TOKEN`      | Codecov > リポジトリ設定      |
 
 ### GitHub App 関連 (GitHub Secrets)
 
@@ -108,6 +109,31 @@ just sync-secrets-wrangler  # Cloudflare Workers のみ
 just sync-secrets-dry-run   # 変更せずプレビュー
 ```
 
+#### 1Password Service Account の作成
+
+CI/CD 自動化用のサービスアカウントを作成:
+
+```bash
+# 1Password にサインイン
+op signin
+
+# サービスアカウント作成（対話形式）
+op service-account create "blog-ci" --vault blog-secrets
+
+# または 1Password Web から:
+# 1. Settings > Developer > Service Accounts
+# 2. 新しいサービスアカウントを作成
+# 3. "blog-secrets" vault へのアクセス権を付与
+# 4. トークンをコピー
+```
+
+GitHub にトークンを設定:
+
+```bash
+gh secret set OP_SERVICE_ACCOUNT_TOKEN
+# プロンプトでサービスアカウントトークンを貼り付け
+```
+
 #### 1Password Vault の設定
 
 `blog-secrets` vault を作成し、以下のアイテムを登録。
@@ -131,7 +157,8 @@ just sync-secrets-dry-run   # 変更せずプレビュー
 | anthropic-api-key | ANTHROPIC_API_KEY | G+W |
 | auth-secret | AUTH_SECRET | W |
 | admin-password-hash | ADMIN_PASSWORD_HASH | W |
-| slack-webhook | SLACK_WEBHOOK | G |
+| slack-webhook-dev | SLACK_WEBHOOK_DEV | G |
+| slack-webhook-prod | SLACK_WEBHOOK_PROD | G |
 | codecov-token | CODECOV_TOKEN | G |
 | gha-app-id | GHA_APP_ID | G |
 | gha-app-private-key (field: private key) | GHA_APP_PRIVATE_KEY | G |
