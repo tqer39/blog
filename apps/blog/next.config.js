@@ -2,7 +2,7 @@
 const PORTS = {
   BLOG: 3100,
   CMS_API: 3200,
-  R2_LOCAL: 9000,
+  R2_LOCAL: 3300,
 };
 const BASE_DOMAIN = 'tqer39.dev';
 const DOMAINS = {

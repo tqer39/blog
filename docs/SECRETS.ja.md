@@ -150,6 +150,8 @@ gh secret set OP_SERVICE_ACCOUNT_TOKEN
 | r2-access-key-id | R2_ACCESS_KEY_ID | G+W |
 | r2-secret-access-key | R2_SECRET_ACCESS_KEY | G+W |
 | r2-bucket-name | R2_BUCKET_NAME | G+W |
+| r2-public-url-dev | R2_PUBLIC_URL | W (staging) |
+| r2-public-url-prod | R2_PUBLIC_URL | W (production) |
 | basic-auth-user | BASIC_AUTH_USER | W (staging) |
 | basic-auth-pass | BASIC_AUTH_PASS | W (staging) |
 | openai-api-key | OPENAI_API_KEY | G+W |
@@ -183,6 +185,7 @@ pnpm wrangler secret put ADMIN_PASSWORD_HASH --env staging
 pnpm wrangler secret put R2_ACCESS_KEY_ID --env staging
 pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env staging
 pnpm wrangler secret put R2_BUCKET_NAME --env staging
+pnpm wrangler secret put R2_PUBLIC_URL --env staging
 pnpm wrangler secret put BASIC_AUTH_USER --env staging
 pnpm wrangler secret put BASIC_AUTH_PASS --env staging
 
@@ -195,6 +198,7 @@ pnpm wrangler secret put ADMIN_PASSWORD_HASH
 pnpm wrangler secret put R2_ACCESS_KEY_ID
 pnpm wrangler secret put R2_SECRET_ACCESS_KEY
 pnpm wrangler secret put R2_BUCKET_NAME
+pnpm wrangler secret put R2_PUBLIC_URL
 ```
 
 または Cloudflare Dashboard から:

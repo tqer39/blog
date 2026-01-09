@@ -10,7 +10,7 @@
 
 | 環境 | Blog | CMS API | CDN |
 | ---- | ---- | ------- | --- |
-| Local | localhost:3100 | localhost:3200 | localhost:9000 |
+| Local | localhost:3100 | localhost:3200 | localhost:3300 |
 | Dev | blog-dev.tqer39.dev | cms-api-dev.workers.dev | cdn.tqer39.dev |
 | Prod | blog.tqer39.dev | cms-api.workers.dev | cdn.tqer39.dev |
 
@@ -20,7 +20,7 @@
 | -------- | ------ | ---- |
 | Blog (Next.js) | 3100 | フロントエンド |
 | CMS API (Hono) | 3200 | バックエンド API |
-| R2 Local | 9000 | R2 エミュレータ (MinIO) |
+| R2 Local | 3300 | R2 エミュレータ (MinIO) |
 
 ## ドメイン構造
 
