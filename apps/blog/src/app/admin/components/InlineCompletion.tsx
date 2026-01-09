@@ -158,7 +158,7 @@ export function InlineCompletion({
         console.debug('Inline completion error:', err.message);
       }
     }
-  }, [textareaRef, title, value, enabled]);
+  }, [textareaRef, title, value, enabled, model]);
 
   // Handle input changes with debounce
   useEffect(() => {
