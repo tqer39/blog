@@ -63,7 +63,8 @@
       "!**/dist",
       "!**/*.min.js",
       "!**/.wrangler",
-      "!**/coverage"
+      "!**/coverage",
+      "!**/playwright-report"
     ]
   }
 }
