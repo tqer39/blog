@@ -341,17 +341,26 @@ export function ArticleEditor({
           />
 
           {/* AI Review button */}
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={handleReviewArticle}
-            disabled={isReviewing || !title.trim() || !content.trim()}
-            className="gap-1.5"
-          >
-            <MessageSquare className="h-4 w-4" />
-            {isReviewing ? 'Reviewing...' : 'AI Review'}
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleReviewArticle}
+              disabled={isReviewing || !title.trim() || !content.trim()}
+              className="gap-1.5"
+            >
+              <MessageSquare className="h-4 w-4" />
+              {isReviewing ? 'Reviewing...' : 'AI Review'}
+            </Button>
+            <InlineModelSelect
+              type="anthropic"
+              value={aiSettings.review}
+              onChange={(v) =>
+                updateAISettings({ review: v as AnthropicModel })
+              }
+            />
+          </div>
 
           {/* Preview button */}
           <Button
