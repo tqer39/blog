@@ -5,8 +5,19 @@ import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
+
+// Custom sanitize schema: allow className on code/pre for syntax highlighting
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    code: [...(defaultSchema.attributes?.code || []), 'className'],
+    pre: [...(defaultSchema.attributes?.pre || []), 'className'],
+  },
+};
 
 interface ArticleContentProps {
   content: string;
@@ -43,6 +54,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
     <ReactMarkdown
       rehypePlugins={[
         rehypeRaw,
+        [rehypeSanitize, sanitizeSchema],
         rehypeSlug,
         [
           rehypeAutolinkHeadings,
