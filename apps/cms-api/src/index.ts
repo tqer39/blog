@@ -18,6 +18,11 @@ export interface Env {
   API_KEY: string;
   ENVIRONMENT: string;
   R2_PUBLIC_URL?: string;
+  // R2 Presigned URL credentials (for production)
+  CLOUDFLARE_ACCOUNT_ID?: string;
+  R2_ACCESS_KEY_ID?: string;
+  R2_SECRET_ACCESS_KEY?: string;
+  R2_BUCKET_NAME?: string;
   VERCEL_DEPLOY_HOOK_URL?: string;
   WEBHOOK_SECRET?: string;
   OPENAI_API_KEY?: string;

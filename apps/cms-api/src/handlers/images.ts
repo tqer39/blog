@@ -3,6 +3,7 @@ import { generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
 import { notFound, validationError } from '../lib/errors';
+import { getPublicUrl } from '../lib/r2-presigned';
 
 export const imagesHandler = new Hono<{ Bindings: Env }>();
 
@@ -67,7 +68,7 @@ imagesHandler.post('/', async (c) => {
     )
     .run();
 
-  const publicUrl = getPublicUrl(c.env, r2Key);
+  const publicUrl = await getPublicUrl(c.env, r2Key);
 
   const response: ImageUploadResponse = {
     id,
@@ -112,7 +113,7 @@ imagesHandler.get('/:id', async (c) => {
     notFound('Image not found');
   }
 
-  const image = mapRowToImage(row, c.env);
+  const image = await mapRowToImage(row, c.env);
 
   return c.json(image);
 });
@@ -148,8 +149,8 @@ imagesHandler.get('/article/:articleId', async (c) => {
     .bind(articleId)
     .all();
 
-  const images: Image[] = (results || []).map((row) =>
-    mapRowToImage(row, c.env)
+  const images: Image[] = await Promise.all(
+    (results || []).map((row) => mapRowToImage(row, c.env))
   );
 
   return c.json({ images });
@@ -170,18 +171,10 @@ function getExtensionFromMime(mimeType: string): string | null {
   return map[mimeType] || null;
 }
 
-function getPublicUrl(env: Env, r2Key: string): string {
-  if (env.R2_PUBLIC_URL) {
-    return `${env.R2_PUBLIC_URL}/${r2Key}`;
-  }
-  // Local development: serve via CMS API
-  if (env.ENVIRONMENT === 'development') {
-    return `http://localhost:8787/v1/images/file/${r2Key}`;
-  }
-  return `https://cdn.tqer39.dev/${r2Key}`;
-}
-
-function mapRowToImage(row: Record<string, unknown>, env: Env): Image {
+async function mapRowToImage(
+  row: Record<string, unknown>,
+  env: Env
+): Promise<Image> {
   const r2Key = row.r2_key as string;
   return {
     id: row.id as string,
@@ -193,6 +186,6 @@ function mapRowToImage(row: Record<string, unknown>, env: Env): Image {
     sizeBytes: row.size_bytes as number,
     altText: row.alt_text as string | null,
     createdAt: row.created_at as string,
-    url: getPublicUrl(env, r2Key),
+    url: await getPublicUrl(env, r2Key),
   };
 }

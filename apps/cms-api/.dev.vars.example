@@ -12,3 +12,10 @@
 
 # R2 Public URL (optional - for custom CDN domain)
 # R2_PUBLIC_URL=https://cdn.example.com
+
+# R2 Presigned URL credentials (for production)
+# Create API Token at: Cloudflare Dashboard > R2 > Manage R2 API Tokens
+# CLOUDFLARE_ACCOUNT_ID=your-account-id
+# R2_ACCESS_KEY_ID=your-access-key-id
+# R2_SECRET_ACCESS_KEY=your-secret-access-key
+# R2_BUCKET_NAME=blog-images-prod

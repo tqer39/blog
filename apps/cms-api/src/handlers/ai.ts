@@ -9,6 +9,7 @@ import { generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
 import { internalError, validationError } from '../lib/errors';
+import { getPublicUrl } from '../lib/r2-presigned';
 
 export const aiHandler = new Hono<{ Bindings: Env }>();
 
@@ -291,7 +292,7 @@ aiHandler.post('/generate-image', async (c) => {
       )
       .run();
 
-    const publicUrl = getPublicUrl(c.env, r2Key);
+    const publicUrl = await getPublicUrl(c.env, r2Key);
 
     const result: GenerateImageResponse = {
       id,
@@ -304,16 +305,6 @@ aiHandler.post('/generate-image', async (c) => {
     internalError('Failed to generate image');
   }
 });
-
-function getPublicUrl(env: Env, r2Key: string): string {
-  if (env.R2_PUBLIC_URL) {
-    return `${env.R2_PUBLIC_URL}/${r2Key}`;
-  }
-  if (env.ENVIRONMENT === 'development') {
-    return `http://localhost:8787/v1/images/file/${r2Key}`;
-  }
-  return `https://cdn.tqer39.dev/${r2Key}`;
-}
 
 // Review article using Claude
 aiHandler.post('/review-article', async (c) => {
