@@ -92,6 +92,9 @@ open http://localhost:3100
 | `R2_SECRET_ACCESS_KEY`   | R2 シークレット     | (なし)        |
 | `R2_BUCKET_NAME`         | R2 バケット名       | (なし)        |
 | `R2_PUBLIC_URL`          | R2 CDN URL          | (なし)        |
+| `OPENAI_API_KEY`         | OpenAI API キー     | (なし)        |
+| `GEMINI_API_KEY`         | Gemini API キー     | (なし)        |
+| `ANTHROPIC_API_KEY`      | Anthropic API キー  | (なし)        |
 
 ## 初期データ投入
 

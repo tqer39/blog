@@ -192,12 +192,13 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 
 ### ワークフロー
 
-| ワークフロー         | トリガー           | 説明              |
-| -------------------- | ------------------ | ----------------- |
-| `test-and-build.yml` | main への Push/PR  | Lint, test, E2E   |
-| `terraform.yml`      | infra/** 変更      | Terraform apply   |
-| `deploy-cms-api.yml` | cms-api/** 変更    | Worker デプロイ   |
-| `db-migrate.yml`     | migrations/** 変更 | D1 マイグレ       |
+| ワークフロー                    | トリガー           | 説明            |
+| ------------------------------- | ------------------ | --------------- |
+| `test-and-build.yml`            | main への Push/PR  | Lint, test, E2E |
+| `terraform.yml`                 | infra/** 変更      | Terraform apply |
+| `deploy-cms-api.yml`            | cms-api/** 変更    | Worker デプロイ |
+| `db-migrate.yml`                | migrations/** 変更 | D1 マイグレ     |
+| `generate-pr-description.yml`   | PR 作成時          | OpenAI PR 説明  |
 
 ## 必要な GitHub Secrets
 
@@ -222,6 +223,7 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 | `CODECOV_TOKEN`      | Codecov カバレッジトークン       |
 | `GEMINI_API_KEY`     | Google Gemini API キー           |
 | `OPENAI_API_KEY`     | OpenAI API キー（PR 説明生成用） |
+| `ANTHROPIC_API_KEY`  | Anthropic API キー（AI 機能用）  |
 
 ### GitHub App Secrets
 

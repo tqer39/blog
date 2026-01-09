@@ -193,12 +193,13 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
 ### Workflows
 
-| Workflow             | Trigger              | Description        |
-| -------------------- | -------------------- | ------------------ |
-| `test-and-build.yml` | Push/PR to main      | Lint, test, E2E    |
-| `terraform.yml`      | infra/** changes     | Terraform apply    |
-| `deploy-cms-api.yml` | cms-api/** changes   | Worker deployment  |
-| `db-migrate.yml`     | migrations/** change | D1 migrations      |
+| Workflow                        | Trigger              | Description      |
+| ------------------------------- | -------------------- | ---------------- |
+| `test-and-build.yml`            | Push/PR to main      | Lint, test, E2E  |
+| `terraform.yml`                 | infra/** changes     | Terraform apply  |
+| `deploy-cms-api.yml`            | cms-api/** changes   | Worker deploy    |
+| `db-migrate.yml`                | migrations/** change | D1 migrations    |
+| `generate-pr-description.yml`   | PR creation          | OpenAI PR desc   |
 
 ## GitHub Secrets Required
 
@@ -223,6 +224,7 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 | `CODECOV_TOKEN`      | Codecov coverage token       |
 | `GEMINI_API_KEY`     | Google Gemini API key        |
 | `OPENAI_API_KEY`     | OpenAI API key for PR desc   |
+| `ANTHROPIC_API_KEY`  | Anthropic API key for AI     |
 
 ### GitHub App Secrets
 
