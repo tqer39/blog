@@ -1,46 +1,80 @@
 # Repository Guidelines
 
-## プロジェクト構成とモジュール
+This file provides guidance to AI coding agents working with this repository.
 
-- `apps/blog/` は Next.js のブログ本体、`apps/cms-api/` は Hono ベースの CMS API です。
-- `packages/` に共有の型・UI・設定・ユーティリティ（例: `packages/utils/`）があります。
-- インフラは `infra/`、ドキュメントは `docs/`、自動化は `scripts/` に集約しています。
-- テストやカバレッジ出力は `**/__tests__/`、`apps/blog/e2e/`、`coverage/` を参照してください。
+## Project Overview
 
-## ビルド・テスト・開発コマンド
+Personal blog monorepo with Turborepo + pnpm workspaces.
 
-- `pnpm dev` / `pnpm build` / `pnpm lint` / `pnpm check` / `pnpm format` は
-  Turborepo 経由で全体を実行します。
-- `just dev-api` と `just dev-blog` は個別起動。`just dev-all` は同時起動。
-  API: `http://localhost:8787`、Blog: `http://localhost:3100`。
-- `just bootstrap` は依存導入 + DB リセット/マイグレーション/シードまで
-  一括実行します。
-- `pnpm test` は Vitest、`pnpm e2e` は E2E（Playwright）を起動します。
+| App/Package          | Description                 | Port  |
+| -------------------- | --------------------------- | ----- |
+| `apps/blog`          | Next.js 15 blog frontend    | 3100  |
+| `apps/cms-api`       | Hono CMS API on CF Workers  | 8787  |
+| `packages/cms-types` | Shared TypeScript types     | -     |
+| `packages/ui`        | Shared UI components        | -     |
+| `packages/utils`     | Shared utilities            | -     |
 
-## コーディングスタイルと命名
+## Key Technical Decisions
 
-- フォーマットは Biome（2 スペース、シングルクォート、セミコロン、行幅 80）。
-  `pnpm format` を優先してください。
-- TypeScript を標準とし、共有コードは `packages/*` に置きます。
-- テストは `__tests__` 配下、E2E は `apps/blog/e2e/*.spec.ts` の命名に従います。
+- **Monorepo**: Turborepo + pnpm workspaces
+- **Frontend**: Next.js 15 with App Router
+- **Backend**: Hono on Cloudflare Workers
+- **Database**: Cloudflare D1 (SQLite)
+- **Storage**: Cloudflare R2
+- **Formatter/Linter**: Biome (not ESLint/Prettier)
+- **Testing**: Vitest (unit), Playwright (E2E)
 
-## テスト指針
+## Directory Structure
 
-- ユニット/統合テストは Vitest、E2E は Playwright を使用します。
-- 追加機能は該当モジュールの `__tests__` にテストを追加してください。
-- カバレッジ確認は `just test-coverage` を利用します。
+```text
+apps/
+  blog/src/app/           # Next.js App Router pages
+  blog/src/components/    # React components
+  blog/e2e/               # Playwright E2E tests
+  cms-api/src/handlers/   # Hono API handlers
+  cms-api/migrations/     # D1 SQL migrations
+packages/
+  cms-types/              # Shared types
+  ui/                     # Shared components
+  utils/                  # Shared utilities
+infra/terraform/          # Terraform IaC
+docs/                     # Documentation
+```
 
-## コミット・PR ガイド
+## Essential Commands
 
-- コミットは `feat:` / `fix:` を含む短い要約が多いので、可能な範囲で
-  Conventional Commits を踏襲してください（日本語でも可）。
-- PR には目的、変更範囲、影響範囲を簡潔に記載し、UI 変更がある場合は
-  スクリーンショットを添付してください。
-- 依存や設定に触れる場合は、手順や影響（例: `.env` 追加項目）を明記します。
+| Command           | Description                              |
+| ----------------- | ---------------------------------------- |
+| `just dev-all`    | Start all services (API + Blog)          |
+| `just dev-api`    | Start CMS API only (port 8787)           |
+| `just dev-blog`   | Start Blog only (port 3100)              |
+| `just bootstrap`  | Full setup: deps, reset, migrate, seed   |
+| `just db-migrate` | Run D1 migrations                        |
+| `just test`       | Run Vitest unit tests                    |
+| `just e2e`        | Run Playwright E2E tests                 |
+| `pnpm build`      | Build all packages                       |
+| `just lint`       | Run Biome linter                         |
+| `just format`     | Run Biome formatter                      |
 
-## 設定とセキュリティ
+## Coding Style
 
-- 主要な環境変数は `.env.example` に記載されています。ローカルは
-  `.env.local` を使用してください。
-- シークレット同期は `just sync-secrets` 系コマンドを利用します（実行前に
-  内容を確認）。
+- **Formatter**: Biome (2 spaces, single quotes, semicolons, 80 char width)
+- **Language**: TypeScript throughout
+- **Tests**: `__tests__/` directories, E2E in `apps/blog/e2e/*.spec.ts`
+
+## Commit Guidelines
+
+- Use Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`)
+- Japanese commit messages are acceptable
+- PRs should include: purpose, scope, and impact
+
+## URL Design
+
+- Article URLs: `/articles/{ULID}` (no slugs)
+- ULID: 26 characters, time-sortable, permanent
+
+## Environment Variables
+
+- Local config: `.env.local`
+- Reference: `.env.example`
+- Secrets sync: `just sync-secrets` commands
