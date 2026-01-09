@@ -140,3 +140,15 @@ export interface ContinuationSuggestion {
 export interface SuggestContinuationResponse {
   suggestions: ContinuationSuggestion[];
 }
+
+// AI Outline types
+export type ArticleCategory = 'tech' | 'life' | 'books';
+
+export interface GenerateOutlineRequest {
+  title: string;
+  category?: ArticleCategory;
+}
+
+export interface GenerateOutlineResponse {
+  outline: string;
+}

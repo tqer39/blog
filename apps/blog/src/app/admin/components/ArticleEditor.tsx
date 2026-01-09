@@ -2,6 +2,7 @@
 
 import type {
   Article,
+  ArticleCategory,
   ArticleInput,
   ReviewArticleResponse,
 } from '@blog/cms-types';
@@ -12,14 +13,25 @@ import {
   Button,
   Input,
   Label,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Textarea,
 } from '@blog/ui';
-import { Check, ImageIcon, MessageSquare, Sparkles, X } from 'lucide-react';
+import {
+  Check,
+  ImageIcon,
+  ListTree,
+  MessageSquare,
+  Sparkles,
+  X,
+} from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import {
   generateImage,
   generateMetadata,
+  generateOutline,
   getTags,
   type ImageModel,
   reviewArticle,
@@ -73,6 +85,7 @@ export function ArticleEditor({
     useState<ReviewArticleResponse | null>(null);
   const [reviewError, setReviewError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isGeneratingOutline, setIsGeneratingOutline] = useState(false);
   const headerImageInputRef = useRef<HTMLInputElement>(null);
 
   // Reset save success indicator after 2 seconds
@@ -221,6 +234,35 @@ export function ArticleEditor({
       );
     } finally {
       setIsReviewing(false);
+    }
+  };
+
+  const handleGenerateOutline = async (category?: ArticleCategory) => {
+    if (!title.trim()) {
+      setError('Title is required to generate outline');
+      return;
+    }
+
+    setIsGeneratingOutline(true);
+    setError(null);
+
+    try {
+      const result = await generateOutline({
+        title: title.trim(),
+        category,
+      });
+      // Append outline to existing content or set as new content
+      if (content.trim()) {
+        setContent(`${content}\n\n${result.outline}`);
+      } else {
+        setContent(result.outline);
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Failed to generate outline'
+      );
+    } finally {
+      setIsGeneratingOutline(false);
     }
   };
 
@@ -541,7 +583,66 @@ export function ArticleEditor({
 
         {/* Content */}
         <div className="space-y-2">
-          <Label>Content</Label>
+          <div className="flex items-center justify-between">
+            <Label>Content</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={isGeneratingOutline || !title.trim()}
+                  className="gap-1.5"
+                >
+                  <ListTree className="h-4 w-4" />
+                  {isGeneratingOutline ? 'Generating...' : 'AI Outline'}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-48 p-2" align="end">
+                <div className="space-y-1">
+                  <p className="mb-2 text-xs text-muted-foreground">
+                    カテゴリを選択
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => handleGenerateOutline('tech')}
+                    disabled={isGeneratingOutline}
+                  >
+                    技術記事
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => handleGenerateOutline('life')}
+                    disabled={isGeneratingOutline}
+                  >
+                    経験・ライフ
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start"
+                    onClick={() => handleGenerateOutline('books')}
+                    disabled={isGeneratingOutline}
+                  >
+                    読書記録
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start text-muted-foreground"
+                    onClick={() => handleGenerateOutline()}
+                    disabled={isGeneratingOutline}
+                  >
+                    自動判定
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
           <MarkdownEditor
             value={content}
             onChange={setContent}

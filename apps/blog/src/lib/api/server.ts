@@ -2,6 +2,8 @@ import type {
   Article,
   ArticleInput,
   ArticleListResponse,
+  GenerateOutlineRequest,
+  GenerateOutlineResponse,
   ImageUploadResponse,
   Tag,
   TagInput,
@@ -125,7 +127,9 @@ export interface GenerateMetadataResponse {
   tags: string[];
 }
 
-export type ImageModel = 'gemini-2.5-flash-image' | 'gemini-3-pro-image-preview';
+export type ImageModel =
+  | 'gemini-2.5-flash-image'
+  | 'gemini-3-pro-image-preview';
 
 export interface GenerateImageRequest {
   prompt: string;
@@ -152,6 +156,16 @@ export async function generateImage(
   request: GenerateImageRequest
 ): Promise<GenerateImageResponse> {
   return fetchApi('/ai/generate-image', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export async function generateOutline(
+  request: GenerateOutlineRequest
+): Promise<GenerateOutlineResponse> {
+  return fetchApi('/ai/generate-outline', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),

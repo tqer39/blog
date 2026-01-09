@@ -1,8 +1,11 @@
 import type {
   Article,
+  ArticleCategory,
   ArticleInput,
   ArticleListResponse,
   ContinuationLength,
+  GenerateOutlineRequest,
+  GenerateOutlineResponse,
   ImageUploadResponse,
   ReviewArticleRequest,
   ReviewArticleResponse,
@@ -13,7 +16,7 @@ import type {
   TagListResponse,
 } from '@blog/cms-types';
 
-export type { ContinuationLength };
+export type { ArticleCategory, ContinuationLength };
 
 import { createFetchClient } from '@blog/utils';
 
@@ -182,6 +185,16 @@ export async function suggestContinuation(
   request: SuggestContinuationRequest
 ): Promise<SuggestContinuationResponse> {
   return fetchApi('/ai/suggest-continuation', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export async function generateOutline(
+  request: GenerateOutlineRequest
+): Promise<GenerateOutlineResponse> {
+  return fetchApi('/ai/generate-outline', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
