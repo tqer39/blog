@@ -310,3 +310,4 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 - **mise**: Node.js, pnpm, Terraform (see .mise.toml)
 - **just**: Task runner (see justfile)
 - **prek**: Pre-commit hooks
+- **Claude Code**: AI-assisted development (see CLAUDE.md)

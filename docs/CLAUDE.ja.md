@@ -309,3 +309,4 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 - **mise**: Node.js、pnpm、Terraform（.mise.toml 参照）
 - **just**: タスクランナー（justfile 参照）
 - **prek**: Pre-commit フック
+- **Claude Code**: AI 支援開発（CLAUDE.md 参照）
