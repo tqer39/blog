@@ -6,6 +6,7 @@ import { aiHandler } from './handlers/ai';
 import { articlesHandler } from './handlers/articles';
 import { imagesHandler } from './handlers/images';
 import { importExportHandler } from './handlers/import-export';
+import { settingsHandler } from './handlers/settings';
 import { tagsHandler } from './handlers/tags';
 import { webhookHandler } from './handlers/webhook';
 import { ApiException } from './lib/errors';
@@ -58,6 +59,9 @@ app.use(
 // Health check (no auth required)
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
+// Public settings endpoint (no auth required for reading)
+app.get('/v1/settings', settingsHandler.fetch);
+
 // Public image serving (no auth required, for local development)
 app.get('/v1/images/file/*', async (c) => {
   const r2Key = c.req.path.replace('/v1/images/file/', '');
@@ -90,6 +94,7 @@ v1.route('/images', imagesHandler);
 v1.route('/import', importExportHandler);
 v1.route('/export', importExportHandler);
 v1.route('/webhook', webhookHandler);
+v1.route('/settings', settingsHandler);
 
 app.route('/v1', v1);
 

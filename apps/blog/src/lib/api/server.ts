@@ -7,6 +7,8 @@ import type {
   ImageUploadResponse,
   ReviewArticleRequest,
   ReviewArticleResponse,
+  SiteSettingsInput,
+  SiteSettingsResponse,
   Tag,
   TagInput,
   TagListResponse,
@@ -193,5 +195,20 @@ export async function reviewArticle(
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
+  });
+}
+
+// Settings
+export async function getSiteSettings(): Promise<SiteSettingsResponse> {
+  return fetchApi('/settings');
+}
+
+export async function updateSiteSettings(
+  input: SiteSettingsInput
+): Promise<SiteSettingsResponse> {
+  return fetchApi('/settings', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
   });
 }

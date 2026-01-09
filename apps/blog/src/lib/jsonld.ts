@@ -1,4 +1,4 @@
-import type { Article } from '@blog/cms-types';
+import type { Article, SiteSettings } from '@blog/cms-types';
 
 // JSON-LD Types
 interface JsonLdPerson {
@@ -53,17 +53,13 @@ interface JsonLdWebSite {
   description?: string;
 }
 
-// Constants
-const SITE_NAME = 'tB';
-const SITE_DESCRIPTION = '未来の自分に向けた技術ログ';
-const AUTHOR_NAME = 'tqer39';
-
 /**
  * Generate Article JSON-LD for article pages
  */
 export function generateArticleJsonLd(
   article: Article,
-  baseUrl: string
+  baseUrl: string,
+  settings: SiteSettings
 ): JsonLdArticle {
   const articleUrl = `${baseUrl}/article/${article.hash}`;
 
@@ -77,12 +73,12 @@ export function generateArticleJsonLd(
     dateModified: article.updatedAt,
     author: {
       '@type': 'Person',
-      name: AUTHOR_NAME,
+      name: settings.author_name,
       url: baseUrl,
     },
     publisher: {
       '@type': 'Organization',
-      name: SITE_NAME,
+      name: settings.site_name,
       logo: {
         '@type': 'ImageObject',
         url: `${baseUrl}/icon.svg`,
@@ -122,12 +118,15 @@ export function generateBreadcrumbJsonLd(
 /**
  * Generate WebSite JSON-LD for homepage
  */
-export function generateWebSiteJsonLd(baseUrl: string): JsonLdWebSite {
+export function generateWebSiteJsonLd(
+  baseUrl: string,
+  settings: SiteSettings
+): JsonLdWebSite {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: SITE_NAME,
+    name: settings.site_name,
     url: baseUrl,
-    description: SITE_DESCRIPTION,
+    description: settings.site_description,
   };
 }

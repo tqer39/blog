@@ -4,14 +4,18 @@ import { ArticleCard } from '@/components/ArticleCard';
 import { JsonLd } from '@/components/JsonLd';
 import { getAllArticles } from '@/lib/articles';
 import { generateWebSiteJsonLd } from '@/lib/jsonld';
+import { getSiteSettings } from '@/lib/siteSettings';
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 
 export default async function HomePage() {
-  const result = await getAllArticles();
+  const [result, settings] = await Promise.all([
+    getAllArticles(),
+    getSiteSettings(),
+  ]);
   const articles = result.ok ? result.data.slice(0, 5) : [];
 
-  const websiteJsonLd = generateWebSiteJsonLd(BASE_URL);
+  const websiteJsonLd = generateWebSiteJsonLd(BASE_URL, settings);
 
   return (
     <>

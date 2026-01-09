@@ -241,3 +241,21 @@ export interface GenerateImageResponse {
   id: string;
   url: string;
 }
+
+// Site Settings types
+export interface SiteSettings {
+  site_name: string;
+  site_description: string;
+  author_name: string;
+  footer_text: string;
+  social_github: string;
+  social_twitter: string;
+  social_bento: string;
+}
+
+export interface SiteSettingsResponse {
+  settings: SiteSettings;
+  updatedAt: string | null;
+}
+
+export type SiteSettingsInput = Partial<SiteSettings>;
