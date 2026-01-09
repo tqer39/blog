@@ -22,6 +22,9 @@ This document describes how to obtain and configure secrets.
 | `CLOUDFLARE_API_TOKEN`  | Cloudflare Dashboard > API Tokens           |
 | `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Dashboard > Account ID           |
 | `CLOUDFLARE_ZONE_ID`    | Cloudflare Dashboard > Zone > Zone ID       |
+| `R2_ACCESS_KEY_ID`      | Cloudflare R2 > Manage R2 API Tokens        |
+| `R2_SECRET_ACCESS_KEY`  | R2 API Token (shown on creation)            |
+| `R2_BUCKET_NAME`        | Cloudflare R2 > Bucket name                 |
 | `VERCEL_API_TOKEN`      | Vercel Settings > Tokens                    |
 
 ### AI Service Secrets
@@ -78,6 +81,9 @@ pnpm wrangler secret put GEMINI_API_KEY
 pnpm wrangler secret put ANTHROPIC_API_KEY
 pnpm wrangler secret put AUTH_SECRET
 pnpm wrangler secret put ADMIN_PASSWORD_HASH
+pnpm wrangler secret put R2_ACCESS_KEY_ID
+pnpm wrangler secret put R2_SECRET_ACCESS_KEY
+pnpm wrangler secret put R2_BUCKET_NAME
 ```
 
 Or via Cloudflare Dashboard:

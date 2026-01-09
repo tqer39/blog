@@ -204,6 +204,9 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 | `CLOUDFLARE_ACCOUNT_ID` | CloudFlare account ID                 |
 | `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS zone ID                |
 | `D1_DATABASE_ID`        | CloudFlare D1 database ID (cms-api)   |
+| `R2_ACCESS_KEY_ID`      | R2 API access key for presigned URLs  |
+| `R2_SECRET_ACCESS_KEY`  | R2 API secret key for presigned URLs  |
+| `R2_BUCKET_NAME`        | R2 bucket name for presigned URLs     |
 
 ### Third-party Service Secrets
 

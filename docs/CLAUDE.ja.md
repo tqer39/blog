@@ -203,6 +203,9 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 | `CLOUDFLARE_ACCOUNT_ID` | CloudFlare アカウント ID                  |
 | `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS ゾーン ID                  |
 | `D1_DATABASE_ID`        | CloudFlare D1 データベース ID (cms-api)   |
+| `R2_ACCESS_KEY_ID`      | R2 API アクセスキー（署名付き URL 用）    |
+| `R2_SECRET_ACCESS_KEY`  | R2 API シークレットキー（署名付き URL 用）|
+| `R2_BUCKET_NAME`        | R2 バケット名（署名付き URL 用）          |
 
 ### サードパーティ Secrets
 
