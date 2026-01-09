@@ -231,3 +231,20 @@ wt-prune:
     @echo "→ Pruning stale worktree references..."
     git worktree prune
     @echo "✅ Pruned"
+
+# Secrets management
+# Sync secrets from 1Password to GitHub Secrets and Cloudflare Workers
+sync-secrets *args:
+    @./scripts/sync-secrets.sh {{args}}
+
+# Sync only GitHub Secrets from 1Password
+sync-secrets-github:
+    @./scripts/sync-secrets.sh --github
+
+# Sync only Wrangler Secrets from 1Password
+sync-secrets-wrangler:
+    @./scripts/sync-secrets.sh --wrangler
+
+# Dry-run: show what secrets would be synced
+sync-secrets-dry-run:
+    @./scripts/sync-secrets.sh --dry-run

@@ -64,13 +64,56 @@ node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 
 ## シークレットの設定方法
 
-### GitHub Secrets
+### 1Password からの自動同期（推奨）
+
+1Password から GitHub Secrets と Cloudflare Workers にシークレットを一括同期:
+
+```bash
+# 前提条件
+brew install 1password-cli  # 1Password CLI をインストール
+op signin                   # 1Password にサインイン
+
+# 全シークレットを同期
+just sync-secrets
+
+# または個別に同期
+just sync-secrets-github    # GitHub Secrets のみ
+just sync-secrets-wrangler  # Cloudflare Workers のみ
+just sync-secrets-dry-run   # 変更せずプレビュー
+```
+
+#### 1Password Vault の設定
+
+`blog-secrets` vault を作成し、以下のアイテムを登録。
+フィールドは特記なければ `password`。同期先: G=GitHub, W=Wrangler。
+
+| アイテム名 | 環境変数名 | 同期先 |
+| ---------- | ---------- | ------ |
+| cloudflare-api-token | CLOUDFLARE_API_TOKEN | G |
+| cloudflare-account-id | CLOUDFLARE_ACCOUNT_ID | G |
+| cloudflare-zone-id | CLOUDFLARE_ZONE_ID | G |
+| vercel-api-token | VERCEL_API_TOKEN | G |
+| d1-database-id | D1_DATABASE_ID | G |
+| r2-access-key-id | R2_ACCESS_KEY_ID | G+W |
+| r2-secret-access-key | R2_SECRET_ACCESS_KEY | G+W |
+| r2-bucket-name | R2_BUCKET_NAME | G+W |
+| openai-api-key | OPENAI_API_KEY | G+W |
+| gemini-api-key | GEMINI_API_KEY | W |
+| anthropic-api-key | ANTHROPIC_API_KEY | G+W |
+| auth-secret | AUTH_SECRET | W |
+| admin-password-hash | ADMIN_PASSWORD_HASH | W |
+| slack-webhook | SLACK_WEBHOOK | G |
+| codecov-token | CODECOV_TOKEN | G |
+| gha-app-id | GHA_APP_ID | G |
+| gha-app-private-key (field: private key) | GHA_APP_PRIVATE_KEY | G |
+
+### 手動設定: GitHub Secrets
 
 1. リポジトリの Settings > Secrets and variables > Actions
 2. 「New repository secret」をクリック
 3. 名前と値を入力
 
-### Cloudflare Workers
+### 手動設定: Cloudflare Workers
 
 ```bash
 cd apps/cms-api

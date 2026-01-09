@@ -64,13 +64,57 @@ node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 
 ## Setting Secrets
 
-### GitHub Secrets
+### Automated Sync from 1Password (Recommended)
+
+Sync all secrets from 1Password to GitHub Secrets and Cloudflare Workers with one
+command:
+
+```bash
+# Prerequisites
+brew install 1password-cli  # Install 1Password CLI
+op signin                   # Sign in to 1Password
+
+# Sync all secrets
+just sync-secrets
+
+# Or sync targets individually
+just sync-secrets-github    # GitHub Secrets only
+just sync-secrets-wrangler  # Cloudflare Workers only
+just sync-secrets-dry-run   # Preview without making changes
+```
+
+#### 1Password Vault Setup
+
+Create a vault named `blog-secrets` with the following items.
+Field is `password` unless noted. Target: G=GitHub, W=Wrangler.
+
+| Item Name | Maps To | Target |
+| --------- | ------- | ------ |
+| cloudflare-api-token | CLOUDFLARE_API_TOKEN | G |
+| cloudflare-account-id | CLOUDFLARE_ACCOUNT_ID | G |
+| cloudflare-zone-id | CLOUDFLARE_ZONE_ID | G |
+| vercel-api-token | VERCEL_API_TOKEN | G |
+| d1-database-id | D1_DATABASE_ID | G |
+| r2-access-key-id | R2_ACCESS_KEY_ID | G+W |
+| r2-secret-access-key | R2_SECRET_ACCESS_KEY | G+W |
+| r2-bucket-name | R2_BUCKET_NAME | G+W |
+| openai-api-key | OPENAI_API_KEY | G+W |
+| gemini-api-key | GEMINI_API_KEY | W |
+| anthropic-api-key | ANTHROPIC_API_KEY | G+W |
+| auth-secret | AUTH_SECRET | W |
+| admin-password-hash | ADMIN_PASSWORD_HASH | W |
+| slack-webhook | SLACK_WEBHOOK | G |
+| codecov-token | CODECOV_TOKEN | G |
+| gha-app-id | GHA_APP_ID | G |
+| gha-app-private-key (field: private key) | GHA_APP_PRIVATE_KEY | G |
+
+### Manual Setup: GitHub Secrets
 
 1. Go to repository Settings > Secrets and variables > Actions
 2. Click "New repository secret"
 3. Enter name and value
 
-### Cloudflare Workers
+### Manual Setup: Cloudflare Workers
 
 ```bash
 cd apps/cms-api
