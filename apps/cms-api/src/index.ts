@@ -46,6 +46,28 @@ app.use(
 // Health check (no auth required)
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
+// Public image serving (no auth required, for local development)
+app.get('/v1/images/file/*', async (c) => {
+  const r2Key = c.req.path.replace('/v1/images/file/', '');
+  const object = await c.env.R2_BUCKET.get(r2Key);
+
+  if (!object) {
+    return c.json(
+      { error: { code: 'NOT_FOUND', message: 'Image not found' } },
+      404
+    );
+  }
+
+  const headers = new Headers();
+  headers.set(
+    'Content-Type',
+    object.httpMetadata?.contentType || 'application/octet-stream'
+  );
+  headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+
+  return new Response(object.body, { headers });
+});
+
 // API v1 routes (auth required)
 const v1 = new Hono<{ Bindings: Env }>();
 v1.use('*', authMiddleware);
