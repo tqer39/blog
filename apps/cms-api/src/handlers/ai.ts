@@ -1,4 +1,5 @@
 import type {
+  ContinuationLength,
   ReviewArticleRequest,
   ReviewArticleResponse,
   ReviewItem,
@@ -90,7 +91,19 @@ const REVIEW_SYSTEM_PROMPT = `あなたは日本語の技術ブログ記事を�
   ]
 }`;
 
-const CONTINUATION_SYSTEM_PROMPT = `あなたは日本語の技術ブログ記事の執筆を支援するアシスタントです。
+// Length-specific character ranges for continuation suggestions
+const CONTINUATION_LENGTH_CONFIG: Record<
+  ContinuationLength,
+  { min: number; max: number; label: string }
+> = {
+  short: { min: 30, max: 100, label: '30-100文字程度' },
+  medium: { min: 100, max: 300, label: '100-300文字程度' },
+  long: { min: 300, max: 600, label: '300-600文字程度' },
+};
+
+const buildContinuationSystemPrompt = (length: ContinuationLength): string => {
+  const config = CONTINUATION_LENGTH_CONFIG[length];
+  return `あなたは日本語の技術ブログ記事の執筆を支援するアシスタントです。
 記事の続きを3つ提案してください。
 
 コンテキスト：
@@ -104,11 +117,12 @@ const CONTINUATION_SYSTEM_PROMPT = `あなたは日本語の技術ブログ記�
 {
   "suggestions": [
     {
-      "text": "続きのテキスト（100-300文字程度）",
+      "text": "続きのテキスト（${config.label}）",
       "confidence": 0.0から1.0
     }
   ]
 }`;
+};
 
 // Generate article metadata (description + tags) using OpenAI
 aiHandler.post('/generate-metadata', async (c) => {
@@ -424,7 +438,7 @@ aiHandler.post('/suggest-continuation', async (c) => {
   }
 
   const body = await c.req.json<SuggestContinuationRequest>();
-  const { title, content, cursorPosition } = body;
+  const { title, content, cursorPosition, length = 'medium' } = body;
 
   if (!title || content === undefined || cursorPosition === undefined) {
     validationError('Invalid input', {
@@ -464,7 +478,7 @@ ${contextAfter || '（なし）'}`;
       body: JSON.stringify({
         model: ANTHROPIC_MODEL,
         max_tokens: 2048,
-        system: CONTINUATION_SYSTEM_PROMPT,
+        system: buildContinuationSystemPrompt(length),
         messages: [{ role: 'user', content: userPrompt }],
       }),
     });

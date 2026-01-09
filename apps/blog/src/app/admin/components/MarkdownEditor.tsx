@@ -1,6 +1,9 @@
 'use client';
 
-import type { ContinuationSuggestion } from '@blog/cms-types';
+import type {
+  ContinuationLength,
+  ContinuationSuggestion,
+} from '@blog/cms-types';
 import {
   Button,
   FullscreenModal,
@@ -67,6 +70,8 @@ export function MarkdownEditor({
   const [suggestions, setSuggestions] = useState<ContinuationSuggestion[]>([]);
   const [suggestionError, setSuggestionError] = useState<string | null>(null);
   const [isSuggestionOpen, setIsSuggestionOpen] = useState(false);
+  const [selectedLength, setSelectedLength] =
+    useState<ContinuationLength>('medium');
 
   const insertTextAtCursor = useCallback(
     (text: string) => {
@@ -203,35 +208,40 @@ export function MarkdownEditor({
   }, []);
 
   // Handle continuation suggestion
-  const handleSuggestContinuation = useCallback(async () => {
-    const textarea = textareaRef.current;
-    if (!textarea || !title?.trim()) {
-      setSuggestionError('タイトルを入力してください');
-      return;
-    }
+  const handleSuggestContinuation = useCallback(
+    async (length: ContinuationLength = selectedLength) => {
+      const textarea = textareaRef.current;
+      if (!textarea || !title?.trim()) {
+        setSuggestionError('タイトルを入力してください');
+        return;
+      }
 
-    const cursorPosition = textarea.selectionStart;
+      const cursorPosition = textarea.selectionStart;
 
-    setIsSuggesting(true);
-    setSuggestionError(null);
-    setSuggestions([]);
-    setIsSuggestionOpen(true);
+      setIsSuggesting(true);
+      setSuggestionError(null);
+      setSuggestions([]);
+      setIsSuggestionOpen(true);
+      setSelectedLength(length);
 
-    try {
-      const result = await suggestContinuation({
-        title: title.trim(),
-        content: value,
-        cursorPosition,
-      });
-      setSuggestions(result.suggestions);
-    } catch (err) {
-      setSuggestionError(
-        err instanceof Error ? err.message : 'Failed to generate suggestions'
-      );
-    } finally {
-      setIsSuggesting(false);
-    }
-  }, [title, value]);
+      try {
+        const result = await suggestContinuation({
+          title: title.trim(),
+          content: value,
+          cursorPosition,
+          length,
+        });
+        setSuggestions(result.suggestions);
+      } catch (err) {
+        setSuggestionError(
+          err instanceof Error ? err.message : 'Failed to generate suggestions'
+        );
+      } finally {
+        setIsSuggesting(false);
+      }
+    },
+    [title, value, selectedLength]
+  );
 
   const handleAcceptSuggestion = useCallback(
     (text: string) => {
@@ -241,6 +251,21 @@ export function MarkdownEditor({
     },
     [insertTextAtCursor]
   );
+
+  // Keyboard shortcut for AI continuation (Cmd+J / Ctrl+J)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'j') {
+        e.preventDefault();
+        if (!isSuggesting && title?.trim()) {
+          handleSuggestContinuation();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleSuggestContinuation, isSuggesting, title]);
 
   useEffect(() => {
     if (!isDragging) return;
@@ -415,10 +440,40 @@ export function MarkdownEditor({
               </Tooltip>
               <PopoverContent className="w-96 p-0" align="start">
                 <div className="border-b px-4 py-3">
-                  <h4 className="font-medium">続きの提案</h4>
-                  <p className="text-xs text-muted-foreground">
-                    クリックして挿入
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">続きの提案</h4>
+                      <p className="text-xs text-muted-foreground">
+                        クリックして挿入 (⌘J)
+                      </p>
+                    </div>
+                    <div className="flex gap-1">
+                      {(
+                        [
+                          { value: 'short', label: '短い' },
+                          { value: 'medium', label: '中' },
+                          { value: 'long', label: '長い' },
+                        ] as const
+                      ).map((option) => (
+                        <Button
+                          key={option.value}
+                          variant={
+                            selectedLength === option.value
+                              ? 'default'
+                              : 'outline'
+                          }
+                          size="sm"
+                          className="h-7 px-2 text-xs"
+                          onClick={() =>
+                            handleSuggestContinuation(option.value)
+                          }
+                          disabled={isSuggesting}
+                        >
+                          {option.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
                 <div className="max-h-80 overflow-y-auto p-2">
                   {isSuggesting && (

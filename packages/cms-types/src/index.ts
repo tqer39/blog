@@ -123,10 +123,13 @@ export interface ReviewArticleResponse {
 }
 
 // AI Continuation types
+export type ContinuationLength = 'short' | 'medium' | 'long';
+
 export interface SuggestContinuationRequest {
   title: string;
   content: string;
   cursorPosition: number;
+  length?: ContinuationLength;
 }
 
 export interface ContinuationSuggestion {

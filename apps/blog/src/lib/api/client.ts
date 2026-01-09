@@ -2,6 +2,7 @@ import type {
   Article,
   ArticleInput,
   ArticleListResponse,
+  ContinuationLength,
   ImageUploadResponse,
   ReviewArticleRequest,
   ReviewArticleResponse,
@@ -11,6 +12,9 @@ import type {
   TagInput,
   TagListResponse,
 } from '@blog/cms-types';
+
+export type { ContinuationLength };
+
 import { createFetchClient } from '@blog/utils';
 
 const fetchApi = createFetchClient({ baseUrl: '/api' });
@@ -129,7 +133,9 @@ export interface GenerateMetadataResponse {
   tags: string[];
 }
 
-export type ImageModel = 'gemini-2.5-flash-image' | 'gemini-3-pro-image-preview';
+export type ImageModel =
+  | 'gemini-2.5-flash-image'
+  | 'gemini-3-pro-image-preview';
 
 export interface GenerateImageRequest {
   prompt: string;
