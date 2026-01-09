@@ -1,0 +1,334 @@
+---
+name: Terraform (Prod)
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "infra/terraform/envs/prod/**"
+      - "infra/terraform/modules/**"
+      - ".github/workflows/terraform-prod.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "infra/terraform/envs/prod/**"
+      - "infra/terraform/modules/**"
+      - ".github/workflows/terraform-prod.yml"
+  workflow_dispatch:
+    inputs:
+      RUN_APPLY:
+        description: "Apply実行フラグ（falseの場合はplanのみ）"
+        required: true
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AWS_ACCOUNT_ID: "072693953877"
+  AWS_REGION: ap-northeast-1
+  OIDC_IAM_ROLE: prod-blog-deploy-role
+  TF_VERSION: "1.14.3"
+  RUN_APPLY: ${{ inputs.RUN_APPLY || 'false' }}
+
+jobs:
+  # CloudFlare (cms-api)
+  terraform-cloudflare-cms-api:
+    name: CloudFlare (cms-api)
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      deployments: write
+      pull-requests: write
+    timeout-minutes: 20
+    env:
+      WORKING_DIRECTORY: infra/terraform/envs/prod/cms-api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS Credentials
+        run: aws sts get-caller-identity
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Format Check
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: terraform fmt -check -recursive -diff
+
+      - name: Terraform Init
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: terraform init -upgrade
+
+      - name: Terraform Validate
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: terraform validate -no-color
+
+      - name: Cache tfcmt
+        id: cache-tfcmt
+        uses: actions/cache@v5
+        with:
+          path: ~/bin/tfcmt
+          key: tfcmt-${{ runner.os }}-v4.14.12
+
+      - name: Setup tfcmt
+        if: steps.cache-tfcmt.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/bin
+          curl -fsSL https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.14.12/tfcmt_linux_amd64.tar.gz | tar -xz -C ~/bin tfcmt
+          chmod +x ~/bin/tfcmt
+
+      - name: Add tfcmt to PATH
+        run: echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Terraform Plan
+        id: plan
+        continue-on-error: true
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          terraform plan -detailed-exitcode -no-color 2>&1 | tee tf_plan.txt
+
+      - name: Set Plan Status
+        id: plan-status
+        run: |
+          case "${{ steps.plan.outputs.exitcode }}" in
+            0) echo "status=no-changes" >> $GITHUB_OUTPUT ;;
+            2) echo "status=has-diff" >> $GITHUB_OUTPUT ;;
+            *) echo "status=error" >> $GITHUB_OUTPUT ;;
+          esac
+
+      - name: tfcmt Plan Comment
+        if: github.event_name == 'pull_request' && steps.plan.outputs.exitcode != '1'
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TARGET=$(echo "${{ env.WORKING_DIRECTORY }}" | sed -e 's|^.*infra/terraform/envs/||' | cut -c 1-36)
+          tfcmt --config $GITHUB_WORKSPACE/.github/tfcmt.yml --var target:$TARGET plan -patch -- cat tf_plan.txt
+
+      - name: Slack Notification (Plan Error)
+        if: steps.plan.outputs.exitcode == '1'
+        continue-on-error: true
+        uses: ./.github/actions/slack-deploy-failure
+        with:
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          title: "Terraform Plan Error: cms-api"
+          message: "path: `${{ env.WORKING_DIRECTORY }}`"
+
+      - name: Fail on Plan Error
+        if: steps.plan.outputs.exitcode == '1'
+        run: |
+          echo "::error::Terraform plan failed with errors"
+          exit 1
+
+      - name: Start Deployment
+        if: steps.plan-status.outputs.status == 'has-diff' && github.ref == 'refs/heads/main'
+        uses: bobheadxi/deployments@v1
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: production-cloudflare
+
+      - name: Terraform Apply
+        if: |
+          steps.plan-status.outputs.status == 'has-diff' &&
+          (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true'))
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: terraform apply -auto-approve
+
+      - name: Finish Deployment
+        if: steps.plan-status.outputs.status == 'has-diff' && always() && github.ref == 'refs/heads/main'
+        uses: bobheadxi/deployments@v1
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          env: ${{ steps.deployment.outputs.env }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
+  # Vercel (frontend)
+  terraform-vercel:
+    name: Vercel (frontend)
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      deployments: write
+      pull-requests: write
+    timeout-minutes: 20
+    env:
+      WORKING_DIRECTORY: infra/terraform/envs/prod/frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS Credentials
+        run: aws sts get-caller-identity
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Terraform Format Check
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: terraform fmt -check -recursive -diff
+
+      - name: Terraform Init
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: terraform init -upgrade
+
+      - name: Terraform Validate
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: terraform validate -no-color
+
+      - name: Cache tfcmt
+        id: cache-tfcmt
+        uses: actions/cache@v5
+        with:
+          path: ~/bin/tfcmt
+          key: tfcmt-${{ runner.os }}-v4.14.12
+
+      - name: Setup tfcmt
+        if: steps.cache-tfcmt.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/bin
+          curl -fsSL https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.14.12/tfcmt_linux_amd64.tar.gz | tar -xz -C ~/bin tfcmt
+          chmod +x ~/bin/tfcmt
+
+      - name: Add tfcmt to PATH
+        run: echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Terraform Plan
+        id: plan
+        continue-on-error: true
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          VERCEL_API_TOKEN: ${{ secrets.VERCEL_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_vercel_api_token: ${{ secrets.VERCEL_API_TOKEN }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          terraform plan -detailed-exitcode -no-color 2>&1 | tee tf_plan.txt
+
+      - name: Set Plan Status
+        id: plan-status
+        run: |
+          case "${{ steps.plan.outputs.exitcode }}" in
+            0) echo "status=no-changes" >> $GITHUB_OUTPUT ;;
+            2) echo "status=has-diff" >> $GITHUB_OUTPUT ;;
+            *) echo "status=error" >> $GITHUB_OUTPUT ;;
+          esac
+
+      - name: tfcmt Plan Comment
+        if: github.event_name == 'pull_request' && steps.plan.outputs.exitcode != '1'
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TARGET=$(echo "${{ env.WORKING_DIRECTORY }}" | sed -e 's|^.*infra/terraform/envs/||' | cut -c 1-36)
+          tfcmt --config $GITHUB_WORKSPACE/.github/tfcmt.yml --var target:$TARGET plan -patch -- cat tf_plan.txt
+
+      - name: Slack Notification (Plan Error)
+        if: steps.plan.outputs.exitcode == '1'
+        continue-on-error: true
+        uses: ./.github/actions/slack-deploy-failure
+        with:
+          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          title: "Terraform Plan Error: frontend"
+          message: "path: `${{ env.WORKING_DIRECTORY }}`"
+
+      - name: Fail on Plan Error
+        if: steps.plan.outputs.exitcode == '1'
+        run: |
+          echo "::error::Terraform plan failed with errors"
+          exit 1
+
+      - name: Start Deployment
+        if: steps.plan-status.outputs.status == 'has-diff' && github.ref == 'refs/heads/main'
+        uses: bobheadxi/deployments@v1
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: production-vercel
+
+      - name: Terraform Apply
+        if: |
+          steps.plan-status.outputs.status == 'has-diff' &&
+          (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true'))
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          VERCEL_API_TOKEN: ${{ secrets.VERCEL_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_vercel_api_token: ${{ secrets.VERCEL_API_TOKEN }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: terraform apply -auto-approve
+
+      - name: Finish Deployment
+        if: steps.plan-status.outputs.status == 'has-diff' && always() && github.ref == 'refs/heads/main'
+        uses: bobheadxi/deployments@v1
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          env: ${{ steps.deployment.outputs.env }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
+  # Workflow result check
+  workflow-result:
+    name: Workflow Result
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs:
+      - terraform-cloudflare-cms-api
+      - terraform-vercel
+    if: always()
+    steps:
+      - name: Check Results
+        run: |
+          if [[ "${{ needs.terraform-cloudflare-cms-api.result }}" == "failure" ]] || \
+             [[ "${{ needs.terraform-cloudflare-cms-api.result }}" == "cancelled" ]] || \
+             [[ "${{ needs.terraform-vercel.result }}" == "failure" ]] || \
+             [[ "${{ needs.terraform-vercel.result }}" == "cancelled" ]]; then
+            echo "::error::Workflow failed"
+            exit 1
+          fi
+          echo "Workflow completed successfully"

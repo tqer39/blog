@@ -6,12 +6,21 @@ This document describes how to obtain and configure secrets.
 
 ## Overview
 
-| Location           | Purpose            |
-| ------------------ | ------------------ |
-| GitHub Secrets     | CI/CD workflows    |
-| Cloudflare Workers | CMS API runtime    |
-| Vercel             | Blog app runtime   |
-| Local (.env.local) | Development        |
+| Location           | Purpose             |
+| ------------------ | ------------------- |
+| GitHub Secrets     | CI/CD workflows     |
+| Cloudflare Workers | CMS API runtime     |
+| Vercel             | Blog app runtime    |
+| Local (.dev.vars)  | Local development   |
+
+## Environment-Specific Secrets
+
+| Secret         | Local     | Dev (staging)      | Prod (production)   |
+| -------------- | --------- | ------------------ | ------------------- |
+| D1 Database ID | local     | D1_DATABASE_ID_DEV | D1_DATABASE_ID_PROD |
+| R2 Bucket      | local     | blog-images-dev    | blog-images-prod    |
+| Basic Auth     | -         | BASIC_AUTH_*       | -                   |
+| API Key        | .dev.vars | wrangler secret    | wrangler secret     |
 
 ## Required Secrets
 
@@ -103,7 +112,7 @@ just sync-secrets-dry-run   # Preview without making changes
 #### 1Password Vault Setup
 
 Create a vault named `blog-secrets` with the following items.
-Field is `password` unless noted. Target: G=GitHub, W=Wrangler.
+Field is `password` unless noted. Target: G=GitHub, W=Wrangler (staging/production).
 
 | Item Name | Maps To | Target |
 | --------- | ------- | ------ |
@@ -111,10 +120,13 @@ Field is `password` unless noted. Target: G=GitHub, W=Wrangler.
 | cloudflare-account-id | CLOUDFLARE_ACCOUNT_ID | G |
 | cloudflare-zone-id | CLOUDFLARE_ZONE_ID | G |
 | vercel-api-token | VERCEL_API_TOKEN | G |
-| d1-database-id | D1_DATABASE_ID | G |
+| d1-database-id-dev | D1_DATABASE_ID_DEV | G |
+| d1-database-id-prod | D1_DATABASE_ID_PROD | G |
 | r2-access-key-id | R2_ACCESS_KEY_ID | G+W |
 | r2-secret-access-key | R2_SECRET_ACCESS_KEY | G+W |
 | r2-bucket-name | R2_BUCKET_NAME | G+W |
+| basic-auth-user | BASIC_AUTH_USER | W (staging) |
+| basic-auth-pass | BASIC_AUTH_PASS | W (staging) |
 | openai-api-key | OPENAI_API_KEY | G+W |
 | gemini-api-key | GEMINI_API_KEY | W |
 | anthropic-api-key | ANTHROPIC_API_KEY | G+W |
@@ -136,7 +148,19 @@ Field is `password` unless noted. Target: G=GitHub, W=Wrangler.
 ```bash
 cd apps/cms-api
 
-# Set secrets interactively
+# Set secrets for staging (dev) environment
+pnpm wrangler secret put OPENAI_API_KEY --env staging
+pnpm wrangler secret put GEMINI_API_KEY --env staging
+pnpm wrangler secret put ANTHROPIC_API_KEY --env staging
+pnpm wrangler secret put AUTH_SECRET --env staging
+pnpm wrangler secret put ADMIN_PASSWORD_HASH --env staging
+pnpm wrangler secret put R2_ACCESS_KEY_ID --env staging
+pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env staging
+pnpm wrangler secret put R2_BUCKET_NAME --env staging
+pnpm wrangler secret put BASIC_AUTH_USER --env staging
+pnpm wrangler secret put BASIC_AUTH_PASS --env staging
+
+# Set secrets for production environment
 pnpm wrangler secret put OPENAI_API_KEY
 pnpm wrangler secret put GEMINI_API_KEY
 pnpm wrangler secret put ANTHROPIC_API_KEY

@@ -60,6 +60,55 @@ All articles are "for my past self" - complaints are OK, but must end with insig
 
 Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
+## Environment Configuration
+
+```text
+┌─────────────────────────────────────────────────────────────────────┐
+│                       3-Environment Structure                        │
+├───────────────┬───────────────────┬─────────────────────────────────┤
+│    Local      │       Dev         │             Prod                │
+├───────────────┼───────────────────┼─────────────────────────────────┤
+│ localhost     │ blog-dev.tqer39   │ blog.tqer39.dev                 │
+│ :3100/:8787   │ .dev              │                                 │
+├───────────────┼───────────────────┼─────────────────────────────────┤
+│ D1: local     │ blog-cms-dev      │ blog-cms-prod                   │
+│ R2: local     │ blog-images-dev   │ blog-images-prod                │
+├───────────────┼───────────────────┼─────────────────────────────────┤
+│ No Auth       │ Basic Auth        │ No Auth (public)                │
+│               │ + API Key         │ + API Key                       │
+└───────────────┴───────────────────┴─────────────────────────────────┘
+```
+
+### Release Flow
+
+```text
+[Development]
+  main merge
+       ↓
+  deploy-cms-api-dev.yml (auto)
+  db-migrate-dev.yml (auto)
+       ↓
+  blog-dev.tqer39.dev
+
+[Production]
+  release.yml (manual)
+       ↓
+  GitHub Release + tag (v1.2.3)
+       ↓
+  deploy-cms-api-prod.yml (tag trigger)
+  db-migrate-prod.yml (tag trigger)
+       ↓
+  blog.tqer39.dev
+```
+
+### Authentication
+
+| Method     | Target          | Environment | Purpose                 |
+| ---------- | --------------- | ----------- | ----------------------- |
+| Basic Auth | CMS API (all)   | Dev only    | External access control |
+| API Key    | CMS API `/v1/*` | All         | API authentication      |
+| Password   | Admin UI        | All         | Admin login             |
+
 ## Development Commands
 
 ### Setup
@@ -140,7 +189,14 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 │   └── utils/                 # Shared utilities
 ├── infra/terraform/           # Terraform IaC
 │   ├── modules/               # Terraform modules
-│   └── envs/prod/             # Environment configs
+│   └── envs/
+│       ├── dev/               # Dev environment
+│       │   ├── cms-api/
+│       │   └── frontend/
+│       └── prod/              # Prod environment
+│           ├── bootstrap/
+│           ├── cms-api/
+│           └── frontend/
 ├── docs/                      # Documentation
 ├── turbo.json                 # Turborepo config
 ├── pnpm-workspace.yaml        # pnpm workspace config
@@ -180,42 +236,54 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
 ### CI/CD Coverage
 
-| Resource         | Terraform | CI/CD Workflow     | Notes              |
-| ---------------- | --------- | ------------------ | ------------------ |
-| D1 Database      | cms-api   | terraform.yml      |                    |
-| R2 Bucket        | cms-api   | terraform.yml      |                    |
-| Worker (cms-api) | -         | deploy-cms-api.yml | via wrangler       |
-| D1 Migration     | -         | db-migrate.yml     | migrations/**      |
-| DNS Record       | frontend  | terraform.yml      |                    |
-| Vercel Project   | frontend  | terraform.yml      |                    |
-| Blog App         | -         | Vercel auto-deploy | GitHub integration |
-| IAM Role         | bootstrap | Local only         | Initial setup      |
+| Resource         | Terraform | CI/CD Workflow          | Environment |
+| ---------------- | --------- | ----------------------- | ----------- |
+| D1 Database      | cms-api   | terraform-*.yml         | Per env     |
+| R2 Bucket        | cms-api   | terraform-*.yml         | Per env     |
+| Worker (cms-api) | -         | deploy-cms-api-*.yml    | Per env     |
+| D1 Migration     | -         | db-migrate-*.yml        | Per env     |
+| DNS Record       | frontend  | terraform-*.yml         | Per env     |
+| Vercel Project   | frontend  | terraform-*.yml         | Per env     |
+| Blog App         | -         | Vercel auto-deploy      | Per env     |
+| IAM Role         | bootstrap | Local only              | Initial     |
 
 ### Workflows
 
-| Workflow                        | Trigger              | Description      |
-| ------------------------------- | -------------------- | ---------------- |
-| `test-and-build.yml`            | Push/PR to main      | Lint, test, E2E  |
-| `terraform.yml`                 | infra/** changes     | Terraform apply  |
-| `deploy-cms-api.yml`            | cms-api/** changes   | Worker deploy    |
-| `db-migrate.yml`                | migrations/** change | D1 migrations    |
-| `generate-pr-description.yml`   | PR creation          | OpenAI PR desc   |
-| `sync-secrets.yml`              | workflow_dispatch    | 1Password sync   |
+| Workflow                      | Trigger            | Description        |
+| ----------------------------- | ------------------ | ------------------ |
+| `test-and-build.yml`          | Push/PR to main    | Lint, test, E2E    |
+| `terraform-dev.yml`           | envs/dev/** chg    | Dev Terraform      |
+| `terraform-prod.yml`          | envs/prod/** chg   | Prod Terraform     |
+| `deploy-cms-api-dev.yml`      | main push          | Dev Worker deploy  |
+| `deploy-cms-api-prod.yml`     | tag v*.*.*         | Prod Worker deploy |
+| `db-migrate-dev.yml`          | main push          | Dev D1 migrations  |
+| `db-migrate-prod.yml`         | tag v*.*.*         | Prod D1 migrations |
+| `release.yml`                 | manual             | Create release     |
+| `generate-pr-description.yml` | PR creation        | OpenAI PR desc     |
+| `sync-secrets.yml`            | workflow_dispatch  | 1Password sync     |
 
 ## GitHub Secrets Required
 
 ### Infrastructure Secrets
 
-| Secret                  | Description                           |
-| ----------------------- | ------------------------------------- |
-| `VERCEL_API_TOKEN`      | Vercel deployment token               |
-| `CLOUDFLARE_API_TOKEN`  | CloudFlare API token                  |
-| `CLOUDFLARE_ACCOUNT_ID` | CloudFlare account ID                 |
-| `CLOUDFLARE_ZONE_ID`    | CloudFlare DNS zone ID                |
-| `D1_DATABASE_ID`        | CloudFlare D1 database ID (cms-api)   |
-| `R2_ACCESS_KEY_ID`      | R2 API access key for presigned URLs  |
-| `R2_SECRET_ACCESS_KEY`  | R2 API secret key for presigned URLs  |
-| `R2_BUCKET_NAME`        | R2 bucket name for presigned URLs     |
+| Secret                   | Description                          |
+| ------------------------ | ------------------------------------ |
+| `VERCEL_API_TOKEN`       | Vercel deployment token              |
+| `CLOUDFLARE_API_TOKEN`   | CloudFlare API token                 |
+| `CLOUDFLARE_ACCOUNT_ID`  | CloudFlare account ID                |
+| `CLOUDFLARE_ZONE_ID`     | CloudFlare DNS zone ID               |
+| `D1_DATABASE_ID_DEV`     | D1 database ID (dev environment)     |
+| `D1_DATABASE_ID_PROD`    | D1 database ID (prod environment)    |
+| `R2_ACCESS_KEY_ID`       | R2 API access key for presigned URLs |
+| `R2_SECRET_ACCESS_KEY`   | R2 API secret key for presigned URLs |
+| `R2_BUCKET_NAME`         | R2 bucket name for presigned URLs    |
+
+### Dev Environment Secrets
+
+| Secret            | Description                         |
+| ----------------- | ----------------------------------- |
+| `BASIC_AUTH_USER` | Basic Auth username (dev only)      |
+| `BASIC_AUTH_PASS` | Basic Auth password (dev only)      |
 
 ### Third-party Service Secrets
 

@@ -6,12 +6,21 @@
 
 ## 概要
 
-| 設定場所           | 用途               |
-| ------------------ | ------------------ |
-| GitHub Secrets     | CI/CD ワークフロー |
-| Cloudflare Workers | CMS API ランタイム |
-| Vercel             | ブログアプリ       |
-| ローカル           | 開発環境           |
+| 設定場所             | 用途               |
+| -------------------- | ------------------ |
+| GitHub Secrets       | CI/CD ワークフロー |
+| Cloudflare Workers   | CMS API ランタイム |
+| Vercel               | ブログアプリ       |
+| ローカル (.dev.vars) | ローカル開発       |
+
+## 環境別シークレット
+
+| シークレット   | Local     | Dev            | Prod             |
+| -------------- | --------- | -------------- | ---------------- |
+| D1 Database ID | local     | _DEV           | _PROD            |
+| R2 Bucket      | local     | blog-images-*  | blog-images-*    |
+| Basic Auth     | -         | BASIC_AUTH_*   | -                |
+| API Key        | .dev.vars | wrangler       | wrangler         |
 
 ## 必要なシークレット
 
@@ -103,7 +112,7 @@ just sync-secrets-dry-run   # 変更せずプレビュー
 #### 1Password Vault の設定
 
 `blog-secrets` vault を作成し、以下のアイテムを登録。
-フィールドは特記なければ `password`。同期先: G=GitHub, W=Wrangler。
+フィールドは特記なければ `password`。同期先: G=GitHub, W=Wrangler (staging/production)。
 
 | アイテム名 | 環境変数名 | 同期先 |
 | ---------- | ---------- | ------ |
@@ -111,10 +120,13 @@ just sync-secrets-dry-run   # 変更せずプレビュー
 | cloudflare-account-id | CLOUDFLARE_ACCOUNT_ID | G |
 | cloudflare-zone-id | CLOUDFLARE_ZONE_ID | G |
 | vercel-api-token | VERCEL_API_TOKEN | G |
-| d1-database-id | D1_DATABASE_ID | G |
+| d1-database-id-dev | D1_DATABASE_ID_DEV | G |
+| d1-database-id-prod | D1_DATABASE_ID_PROD | G |
 | r2-access-key-id | R2_ACCESS_KEY_ID | G+W |
 | r2-secret-access-key | R2_SECRET_ACCESS_KEY | G+W |
 | r2-bucket-name | R2_BUCKET_NAME | G+W |
+| basic-auth-user | BASIC_AUTH_USER | W (staging) |
+| basic-auth-pass | BASIC_AUTH_PASS | W (staging) |
 | openai-api-key | OPENAI_API_KEY | G+W |
 | gemini-api-key | GEMINI_API_KEY | W |
 | anthropic-api-key | ANTHROPIC_API_KEY | G+W |
@@ -136,7 +148,19 @@ just sync-secrets-dry-run   # 変更せずプレビュー
 ```bash
 cd apps/cms-api
 
-# 対話形式でシークレットを設定
+# staging (dev) 環境のシークレット設定
+pnpm wrangler secret put OPENAI_API_KEY --env staging
+pnpm wrangler secret put GEMINI_API_KEY --env staging
+pnpm wrangler secret put ANTHROPIC_API_KEY --env staging
+pnpm wrangler secret put AUTH_SECRET --env staging
+pnpm wrangler secret put ADMIN_PASSWORD_HASH --env staging
+pnpm wrangler secret put R2_ACCESS_KEY_ID --env staging
+pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env staging
+pnpm wrangler secret put R2_BUCKET_NAME --env staging
+pnpm wrangler secret put BASIC_AUTH_USER --env staging
+pnpm wrangler secret put BASIC_AUTH_PASS --env staging
+
+# production 環境のシークレット設定
 pnpm wrangler secret put OPENAI_API_KEY
 pnpm wrangler secret put GEMINI_API_KEY
 pnpm wrangler secret put ANTHROPIC_API_KEY
