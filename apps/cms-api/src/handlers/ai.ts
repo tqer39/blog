@@ -1,8 +1,14 @@
 import type {
+  AnthropicModel,
   ArticleCategory,
   ContinuationLength,
+  GenerateImageRequest,
+  GenerateImageResponse,
+  GenerateMetadataRequest,
+  GenerateMetadataResponse,
   GenerateOutlineRequest,
   GenerateOutlineResponse,
+  OpenAIModel,
   ReviewArticleRequest,
   ReviewArticleResponse,
   ReviewItem,
@@ -20,27 +26,24 @@ import { getPublicUrl } from '../lib/r2-presigned';
 
 export const aiHandler = new Hono<{ Bindings: Env }>();
 
-interface GenerateMetadataRequest {
-  title: string;
-  content: string;
-  existingTags?: string[];
-}
+// Valid model lists for validation
+const VALID_OPENAI_MODELS: OpenAIModel[] = [
+  'gpt-4o-mini',
+  'gpt-4o',
+  'gpt-4-turbo',
+  'gpt-3.5-turbo',
+];
 
-interface GenerateMetadataResponse {
-  description: string;
-  tags: string[];
-}
+const VALID_ANTHROPIC_MODELS: AnthropicModel[] = [
+  'claude-sonnet-4-20250514',
+  'claude-3-5-sonnet-20241022',
+  'claude-3-opus-20240229',
+  'claude-3-haiku-20240307',
+];
 
-interface GenerateImageRequest {
-  prompt: string;
-  title?: string;
-  model?: 'gemini-2.5-flash-image' | 'gemini-3-pro-image-preview';
-}
-
-interface GenerateImageResponse {
-  id: string;
-  url: string;
-}
+// Default models
+const DEFAULT_OPENAI_MODEL: OpenAIModel = 'gpt-4o-mini';
+const DEFAULT_ANTHROPIC_MODEL: AnthropicModel = 'claude-sonnet-4-20250514';
 
 // Nano Banana (Gemini Image) models
 const NANO_BANANA_MODELS = {
@@ -67,7 +70,6 @@ const HEADER_IMAGE_CONFIG = {
 
 // Anthropic API configuration
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
-const ANTHROPIC_MODEL = 'claude-sonnet-4-20250514';
 
 // Japanese system prompts for Claude
 const REVIEW_SYSTEM_PROMPT = `あなたは日本語の技術ブログ記事をレビューする専門家です。
@@ -250,12 +252,19 @@ aiHandler.post('/generate-metadata', async (c) => {
   }
 
   const body = await c.req.json<GenerateMetadataRequest>();
-  const { title, content, existingTags } = body;
+  const { title, content, existingTags, model = DEFAULT_OPENAI_MODEL } = body;
 
   if (!title || !content) {
     validationError('Invalid input', {
       ...(title ? {} : { title: 'Required' }),
       ...(content ? {} : { content: 'Required' }),
+    });
+  }
+
+  // Validate model
+  if (!VALID_OPENAI_MODELS.includes(model)) {
+    validationError('Invalid model', {
+      model: `Must be one of: ${VALID_OPENAI_MODELS.join(', ')}`,
     });
   }
 
@@ -294,7 +303,7 @@ ${existingTags?.length ? `Existing tags in the system: ${existingTags.join(', ')
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt },
@@ -469,12 +478,19 @@ aiHandler.post('/review-article', async (c) => {
   }
 
   const body = await c.req.json<ReviewArticleRequest>();
-  const { title, content } = body;
+  const { title, content, model = DEFAULT_ANTHROPIC_MODEL } = body;
 
   if (!title || !content) {
     validationError('Invalid input', {
       ...(title ? {} : { title: 'Required' }),
       ...(content ? {} : { content: 'Required' }),
+    });
+  }
+
+  // Validate model
+  if (!VALID_ANTHROPIC_MODELS.includes(model)) {
+    validationError('Invalid model', {
+      model: `Must be one of: ${VALID_ANTHROPIC_MODELS.join(', ')}`,
     });
   }
 
@@ -497,7 +513,7 @@ ${truncatedContent}`;
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: ANTHROPIC_MODEL,
+        model,
         max_tokens: 4096,
         system: REVIEW_SYSTEM_PROMPT,
         messages: [{ role: 'user', content: userPrompt }],
@@ -556,13 +572,26 @@ aiHandler.post('/suggest-continuation', async (c) => {
   }
 
   const body = await c.req.json<SuggestContinuationRequest>();
-  const { title, content, cursorPosition, length = 'medium' } = body;
+  const {
+    title,
+    content,
+    cursorPosition,
+    length = 'medium',
+    model = DEFAULT_ANTHROPIC_MODEL,
+  } = body;
 
   if (!title || content === undefined || cursorPosition === undefined) {
     validationError('Invalid input', {
       ...(title ? {} : { title: 'Required' }),
       ...(content === undefined ? { content: 'Required' } : {}),
       ...(cursorPosition === undefined ? { cursorPosition: 'Required' } : {}),
+    });
+  }
+
+  // Validate model
+  if (!VALID_ANTHROPIC_MODELS.includes(model)) {
+    validationError('Invalid model', {
+      model: `Must be one of: ${VALID_ANTHROPIC_MODELS.join(', ')}`,
     });
   }
 
@@ -594,7 +623,7 @@ ${contextAfter || '（なし）'}`;
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: ANTHROPIC_MODEL,
+        model,
         max_tokens: 2048,
         system: buildContinuationSystemPrompt(length),
         messages: [{ role: 'user', content: userPrompt }],
@@ -648,10 +677,17 @@ aiHandler.post('/generate-outline', async (c) => {
   }
 
   const body = await c.req.json<GenerateOutlineRequest>();
-  const { title, category } = body;
+  const { title, category, model = DEFAULT_ANTHROPIC_MODEL } = body;
 
   if (!title?.trim()) {
     validationError('Invalid input', { title: 'Required' });
+  }
+
+  // Validate model
+  if (!VALID_ANTHROPIC_MODELS.includes(model)) {
+    validationError('Invalid model', {
+      model: `Must be one of: ${VALID_ANTHROPIC_MODELS.join(', ')}`,
+    });
   }
 
   const userPrompt = `以下のタイトルの記事のアウトラインを生成してください。
@@ -667,7 +703,7 @@ aiHandler.post('/generate-outline', async (c) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: ANTHROPIC_MODEL,
+        model,
         max_tokens: 2048,
         system: buildOutlineSystemPrompt(category),
         messages: [{ role: 'user', content: userPrompt }],
@@ -708,7 +744,8 @@ aiHandler.post('/transform-text', async (c) => {
   }
 
   const body = await c.req.json<TransformTextRequest>();
-  const { text, action, targetLanguage } = body;
+  const { text, action, targetLanguage, model = DEFAULT_ANTHROPIC_MODEL } =
+    body;
 
   if (!text?.trim()) {
     validationError('Invalid input', { text: 'Required' });
@@ -733,6 +770,13 @@ aiHandler.post('/transform-text', async (c) => {
     });
   }
 
+  // Validate model
+  if (!VALID_ANTHROPIC_MODELS.includes(model)) {
+    validationError('Invalid model', {
+      model: `Must be one of: ${VALID_ANTHROPIC_MODELS.join(', ')}`,
+    });
+  }
+
   // Truncate text if too long (keep first 10000 chars)
   const truncatedText = text.slice(0, 10000);
 
@@ -747,7 +791,7 @@ aiHandler.post('/transform-text', async (c) => {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: ANTHROPIC_MODEL,
+        model,
         max_tokens: 4096,
         system: buildTransformSystemPrompt(action, targetLanguage),
         messages: [{ role: 'user', content: userPrompt }],

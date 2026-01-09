@@ -1,5 +1,6 @@
 'use client';
 
+import type { AnthropicModel } from '@blog/cms-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { suggestContinuation } from '@/lib/api/client';
 
@@ -9,6 +10,7 @@ interface InlineCompletionProps {
   onChange: (value: string) => void;
   title?: string;
   enabled?: boolean;
+  model?: AnthropicModel;
 }
 
 // Calculate the position of the cursor in pixels within a textarea
@@ -83,6 +85,7 @@ export function InlineCompletion({
   onChange,
   title,
   enabled = true,
+  model,
 }: InlineCompletionProps) {
   const [suggestion, setSuggestion] = useState<string | null>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -132,6 +135,7 @@ export function InlineCompletion({
         content: value,
         cursorPosition: cursor,
         length: 'short',
+        model,
       });
 
       // Only show suggestion if we're still at the same position

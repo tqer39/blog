@@ -4,6 +4,11 @@ import type {
   ArticleInput,
   ArticleListResponse,
   ContinuationLength,
+  GeminiImageModel,
+  GenerateImageRequest,
+  GenerateImageResponse,
+  GenerateMetadataRequest,
+  GenerateMetadataResponse,
   GenerateOutlineRequest,
   GenerateOutlineResponse,
   ImageUploadResponse,
@@ -19,7 +24,12 @@ import type {
   TransformTextResponse,
 } from '@blog/cms-types';
 
-export type { ArticleCategory, ContinuationLength, TransformAction };
+export type {
+  ArticleCategory,
+  ContinuationLength,
+  GeminiImageModel as ImageModel,
+  TransformAction,
+};
 
 import { createFetchClient } from '@blog/utils';
 
@@ -128,32 +138,6 @@ export async function deleteImage(id: string): Promise<void> {
 }
 
 // AI
-export interface GenerateMetadataRequest {
-  title: string;
-  content: string;
-  existingTags?: string[];
-}
-
-export interface GenerateMetadataResponse {
-  description: string;
-  tags: string[];
-}
-
-export type ImageModel =
-  | 'gemini-2.5-flash-image'
-  | 'gemini-3-pro-image-preview';
-
-export interface GenerateImageRequest {
-  prompt: string;
-  title?: string;
-  model?: ImageModel;
-}
-
-export interface GenerateImageResponse {
-  id: string;
-  url: string;
-}
-
 export async function generateMetadata(
   request: GenerateMetadataRequest
 ): Promise<GenerateMetadataResponse> {

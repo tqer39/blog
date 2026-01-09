@@ -1,6 +1,10 @@
 'use client';
 
-import type { TransformAction, TransformLanguage } from '@blog/cms-types';
+import type {
+  AnthropicModel,
+  TransformAction,
+  TransformLanguage,
+} from '@blog/cms-types';
 import { Button } from '@blog/ui';
 import {
   ArrowRightLeft,
@@ -19,6 +23,7 @@ interface TextTransformPopoverProps {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   value: string;
   onChange: (value: string) => void;
+  model?: AnthropicModel;
 }
 
 interface TransformOption {
@@ -71,6 +76,7 @@ export function TextTransformPopover({
   textareaRef,
   value,
   onChange,
+  model,
 }: TextTransformPopoverProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedText, setSelectedText] = useState('');
@@ -192,6 +198,7 @@ export function TextTransformPopover({
           text: selectedText,
           action,
           targetLanguage,
+          model,
         });
 
         setTransformedText(result.result);

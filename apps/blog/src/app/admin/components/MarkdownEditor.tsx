@@ -1,6 +1,7 @@
 'use client';
 
 import type {
+  AIModelSettings,
   ContinuationLength,
   ContinuationSuggestion,
 } from '@blog/cms-types';
@@ -46,6 +47,7 @@ interface MarkdownEditorProps {
   onChange: (value: string) => void;
   onImageUpload: (file: File) => Promise<string>;
   title?: string;
+  aiSettings?: AIModelSettings;
 }
 
 export function MarkdownEditor({
@@ -53,6 +55,7 @@ export function MarkdownEditor({
   onChange,
   onImageUpload,
   title,
+  aiSettings,
 }: MarkdownEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -236,6 +239,7 @@ export function MarkdownEditor({
           content: value,
           cursorPosition,
           length,
+          model: aiSettings?.continuation,
         });
         setSuggestions(result.suggestions);
       } catch (err) {
@@ -246,7 +250,7 @@ export function MarkdownEditor({
         setIsSuggesting(false);
       }
     },
-    [title, value, selectedLength]
+    [title, value, selectedLength, aiSettings]
   );
 
   const handleAcceptSuggestion = useCallback(
@@ -661,6 +665,7 @@ export function MarkdownEditor({
         textareaRef={textareaRef}
         value={value}
         onChange={onChange}
+        model={aiSettings?.transform}
       />
 
       {/* Inline Completion */}
@@ -670,6 +675,7 @@ export function MarkdownEditor({
         onChange={onChange}
         title={title}
         enabled={inlineCompletionEnabled}
+        model={aiSettings?.continuation}
       />
 
       {/* Fullscreen Modal */}

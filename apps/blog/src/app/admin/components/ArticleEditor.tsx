@@ -28,15 +28,16 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
+import { useAIModelSettings } from '@/hooks/useAIModelSettings';
 import {
   generateImage,
   generateMetadata,
   generateOutline,
   getTags,
-  type ImageModel,
   reviewArticle,
   uploadImage,
 } from '@/lib/api/client';
+import { AISettingsPopover } from './AISettingsPopover';
 import { ArticlePreview } from './ArticlePreview';
 import { MarkdownEditor } from './MarkdownEditor';
 import { ReviewPanel } from './ReviewPanel';
@@ -73,10 +74,12 @@ export function ArticleEditor({
   const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [imagePrompt, setImagePrompt] = useState('');
-  const [imageModel, setImageModel] = useState<ImageModel>(
-    'gemini-2.5-flash-image'
-  );
   const [showImagePrompt, setShowImagePrompt] = useState(false);
+  const {
+    settings: aiSettings,
+    updateSettings: updateAISettings,
+    resetSettings: resetAISettings,
+  } = useAIModelSettings();
   const [useArticleContent, setUseArticleContent] = useState(true);
   const [promptMode, setPromptMode] = useState<'append' | 'override'>('append');
   const [error, setError] = useState<string | null>(null);
@@ -153,6 +156,7 @@ export function ArticleEditor({
         title: title.trim(),
         content,
         existingTags,
+        model: aiSettings.metadata,
       });
 
       setDescription(result.description);
@@ -201,7 +205,7 @@ export function ArticleEditor({
       const result = await generateImage({
         prompt: finalPrompt,
         title: title.trim() || undefined,
-        model: imageModel,
+        model: aiSettings.image,
       });
 
       setHeaderImageId(result.id);
@@ -228,6 +232,7 @@ export function ArticleEditor({
       const result = await reviewArticle({
         title: title.trim(),
         content,
+        model: aiSettings.review,
       });
       setReviewResult(result);
     } catch (err) {
@@ -252,6 +257,7 @@ export function ArticleEditor({
       const result = await generateOutline({
         title: title.trim(),
         category,
+        model: aiSettings.outline,
       });
       // Append outline to existing content or set as new content
       if (content.trim()) {
@@ -323,6 +329,13 @@ export function ArticleEditor({
               {status === 'published' ? 'Published' : 'Draft'}
             </button>
           </div>
+
+          {/* AI Settings */}
+          <AISettingsPopover
+            settings={aiSettings}
+            onSettingsChange={updateAISettings}
+            onReset={resetAISettings}
+          />
 
           {/* AI Review button */}
           <Button
@@ -560,18 +573,8 @@ export function ArticleEditor({
                 </div>
               )}
 
-              {/* Model selection and Generate button */}
+              {/* Generate button */}
               <div className="flex items-center gap-2">
-                <select
-                  id="imageModel"
-                  value={imageModel}
-                  onChange={(e) => setImageModel(e.target.value as ImageModel)}
-                  className="rounded-md border border-input bg-background px-3 py-1.5 text-sm"
-                  aria-label="画像生成モデルを選択"
-                >
-                  <option value="gemini-2.5-flash-image">2.5 Flash</option>
-                  <option value="gemini-3-pro-image-preview">3 Pro</option>
-                </select>
                 <Button
                   type="button"
                   size="sm"
@@ -667,6 +670,7 @@ export function ArticleEditor({
             onChange={setContent}
             onImageUpload={handleImageUpload}
             title={title}
+            aiSettings={aiSettings}
           />
         </div>
       </div>
