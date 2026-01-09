@@ -82,11 +82,16 @@ open http://localhost:3100
 
 ### CMS API (apps/cms-api)
 
-| 変数名                   | 説明             | デフォルト    |
-| ------------------------ | ---------------- | ------------- |
-| `ENVIRONMENT`            | 環境名           | `development` |
-| `API_KEY`                | API 認証キー     | `dev-api-key` |
-| `VERCEL_DEPLOY_HOOK_URL` | デプロイフック   | (なし)        |
+| 変数名                   | 説明                | デフォルト    |
+| ------------------------ | ------------------- | ------------- |
+| `ENVIRONMENT`            | 環境名              | `development` |
+| `API_KEY`                | API 認証キー        | `dev-api-key` |
+| `VERCEL_DEPLOY_HOOK_URL` | デプロイフック      | (なし)        |
+| `CLOUDFLARE_ACCOUNT_ID`  | CF アカウント ID    | (なし)        |
+| `R2_ACCESS_KEY_ID`       | R2 アクセスキー     | (なし)        |
+| `R2_SECRET_ACCESS_KEY`   | R2 シークレット     | (なし)        |
+| `R2_BUCKET_NAME`         | R2 バケット名       | (なし)        |
+| `R2_PUBLIC_URL`          | R2 CDN URL          | (なし)        |
 
 ## 初期データ投入
 
@@ -107,13 +112,19 @@ Wrangler が R2 をローカルでエミュレートします。Docker 不要。
 apps/cms-api/.wrangler/state/
 ```
 
-### 画像 URL
+### 画像 URL アーキテクチャ
 
-ローカル環境での画像 URL:
+画像 URL は以下の優先順位で解決されます:
 
-```text
-http://localhost:8787/v1/images/file/{path}
-```
+| 優先度 | 条件                 | URL 形式                       |
+| ------ | -------------------- | ------------------------------ |
+| 1      | R2 クレデンシャル    | 署名付き URL (1時間有効)       |
+| 2      | `R2_PUBLIC_URL`      | `{R2_PUBLIC_URL}/{r2Key}`      |
+| 3      | `ENVIRONMENT=dev`    | `localhost:8787/v1/images/..`  |
+| 4      | デフォルト           | `cdn.tqer39.dev/{r2Key}`       |
+
+ローカル開発では自動的にオプション 3 が使用されます。本番環境では
+wrangler secrets で R2 API クレデンシャルを設定すると署名付き URL（オプション 1）が使用されます。
 
 ## トラブルシューティング
 

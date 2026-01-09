@@ -82,11 +82,16 @@ open http://localhost:3100
 
 ### CMS API (apps/cms-api)
 
-| Variable                 | Description   | Default       |
-| ------------------------ | ------------- | ------------- |
-| `ENVIRONMENT`            | Environment   | `development` |
-| `API_KEY`                | API auth key  | `dev-api-key` |
-| `VERCEL_DEPLOY_HOOK_URL` | Deploy hook   | (none)        |
+| Variable                 | Description              | Default       |
+| ------------------------ | ------------------------ | ------------- |
+| `ENVIRONMENT`            | Environment              | `development` |
+| `API_KEY`                | API auth key             | `dev-api-key` |
+| `VERCEL_DEPLOY_HOOK_URL` | Deploy hook              | (none)        |
+| `CLOUDFLARE_ACCOUNT_ID`  | Cloudflare account ID    | (none)        |
+| `R2_ACCESS_KEY_ID`       | R2 API access key        | (none)        |
+| `R2_SECRET_ACCESS_KEY`   | R2 API secret key        | (none)        |
+| `R2_BUCKET_NAME`         | R2 bucket name           | (none)        |
+| `R2_PUBLIC_URL`          | R2 CDN URL (fallback)    | (none)        |
 
 ## Initial Data
 
@@ -107,13 +112,19 @@ Wrangler emulates R2 locally. No Docker required.
 apps/cms-api/.wrangler/state/
 ```
 
-### Image URLs
+### Image URL Architecture
 
-Local image URLs:
+Image URLs are resolved with the following priority:
 
-```text
-http://localhost:8787/v1/images/file/{path}
-```
+| Priority | Condition             | URL Format                    |
+| -------- | --------------------- | ----------------------------- |
+| 1        | R2 credentials set    | Presigned URL (1h expiry)     |
+| 2        | `R2_PUBLIC_URL` set   | `{R2_PUBLIC_URL}/{r2Key}`     |
+| 3        | `ENVIRONMENT=dev`     | `localhost:8787/v1/images/..` |
+| 4        | Default               | `cdn.tqer39.dev/{r2Key}`      |
+
+Local development uses option 3 automatically. Production uses presigned URLs
+(option 1) when R2 API credentials are configured via wrangler secrets.
 
 ## Troubleshooting
 
