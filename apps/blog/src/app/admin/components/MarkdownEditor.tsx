@@ -37,6 +37,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArticleContent } from '@/components/ArticleContent';
 import { suggestContinuation } from '@/lib/api/client';
 import { EmojiSuggester } from './EmojiSuggester';
+import { TextTransformPopover } from './TextTransformPopover';
 
 interface MarkdownEditorProps {
   value: string;
@@ -623,6 +624,13 @@ export function MarkdownEditor({
 
       {/* Emoji Suggester */}
       <EmojiSuggester
+        textareaRef={textareaRef}
+        value={value}
+        onChange={onChange}
+      />
+
+      {/* Text Transform Popover */}
+      <TextTransformPopover
         textareaRef={textareaRef}
         value={value}
         onChange={onChange}

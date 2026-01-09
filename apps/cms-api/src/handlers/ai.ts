@@ -8,6 +8,9 @@ import type {
   ReviewItem,
   SuggestContinuationRequest,
   SuggestContinuationResponse,
+  TransformAction,
+  TransformTextRequest,
+  TransformTextResponse,
 } from '@blog/cms-types';
 import { generateId } from '@blog/utils';
 import { Hono } from 'hono';
@@ -194,6 +197,49 @@ ${categoryGuide}
 - 必要に応じて ### のH3見出しも使用可
 - 見出しの下に1行の簡単な説明を追加（何を書くかのヒント）
 - JSON形式ではなく、そのままMarkdownとして使える形式で出力`;
+};
+
+// Text transform action configurations
+const TRANSFORM_ACTION_PROMPTS: Record<TransformAction, string> = {
+  rewrite: `以下のテキストをより簡潔で明確に書き直してください。
+意味を変えずに、読みやすさを向上させてください。`,
+
+  expand: `以下のテキストをより詳細に展開してください。
+具体例や補足説明を追加して、内容を充実させてください。
+元の文体とトーンを維持してください。`,
+
+  summarize: `以下のテキストを要約してください。
+重要なポイントを保持しながら、できるだけ簡潔にまとめてください。`,
+
+  translate: `以下のテキストを翻訳してください。
+自然な表現を心がけ、原文のニュアンスを保持してください。`,
+
+  formal: `以下のテキストをよりフォーマルな文体に変換してください。
+ビジネス文書や公式文書に適した表現にしてください。`,
+
+  casual: `以下のテキストをよりカジュアルな文体に変換してください。
+親しみやすく、読みやすい表現にしてください。`,
+};
+
+const buildTransformSystemPrompt = (
+  action: TransformAction,
+  targetLanguage?: 'ja' | 'en'
+): string => {
+  let prompt = TRANSFORM_ACTION_PROMPTS[action];
+
+  if (action === 'translate' && targetLanguage) {
+    const langName = targetLanguage === 'ja' ? '日本語' : '英語';
+    prompt += `\n翻訳先の言語: ${langName}`;
+  }
+
+  return `あなたはテキスト変換を行うアシスタントです。
+
+${prompt}
+
+重要な注意事項：
+- 変換後のテキストのみを出力してください
+- 説明や前置きは不要です
+- Markdown形式を維持してください（リンク、コードブロックなど）`;
 };
 
 // Generate article metadata (description + tags) using OpenAI
@@ -651,5 +697,85 @@ aiHandler.post('/generate-outline', async (c) => {
   } catch (error) {
     console.error('Error generating outline:', error);
     internalError('Failed to generate outline');
+  }
+});
+
+// Transform text using Claude
+aiHandler.post('/transform-text', async (c) => {
+  const apiKey = c.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    internalError('Anthropic API key not configured');
+  }
+
+  const body = await c.req.json<TransformTextRequest>();
+  const { text, action, targetLanguage } = body;
+
+  if (!text?.trim()) {
+    validationError('Invalid input', { text: 'Required' });
+  }
+
+  if (!action) {
+    validationError('Invalid input', { action: 'Required' });
+  }
+
+  // Validate action
+  const validActions: TransformAction[] = [
+    'rewrite',
+    'expand',
+    'summarize',
+    'translate',
+    'formal',
+    'casual',
+  ];
+  if (!validActions.includes(action)) {
+    validationError('Invalid action', {
+      action: `Must be one of: ${validActions.join(', ')}`,
+    });
+  }
+
+  // Truncate text if too long (keep first 10000 chars)
+  const truncatedText = text.slice(0, 10000);
+
+  const userPrompt = truncatedText;
+
+  try {
+    const response = await fetch(ANTHROPIC_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey as string,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: ANTHROPIC_MODEL,
+        max_tokens: 4096,
+        system: buildTransformSystemPrompt(action, targetLanguage),
+        messages: [{ role: 'user', content: userPrompt }],
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Anthropic API error:', error);
+      internalError('Failed to transform text');
+    }
+
+    const data = await response.json<{
+      content: Array<{ type: string; text: string }>;
+    }>();
+
+    const textContent = data.content.find((c) => c.type === 'text');
+    if (!textContent) {
+      internalError('No text response from Claude');
+    }
+
+    const result: TransformTextResponse = {
+      result: textContent.text.trim(),
+    };
+
+    return c.json(result);
+  } catch (error) {
+    console.error('Error transforming text:', error);
+    internalError('Failed to transform text');
   }
 });

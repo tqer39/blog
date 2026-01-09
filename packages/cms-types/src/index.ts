@@ -152,3 +152,24 @@ export interface GenerateOutlineRequest {
 export interface GenerateOutlineResponse {
   outline: string;
 }
+
+// AI Text Transform types
+export type TransformAction =
+  | 'rewrite'
+  | 'expand'
+  | 'summarize'
+  | 'translate'
+  | 'formal'
+  | 'casual';
+
+export type TransformLanguage = 'ja' | 'en';
+
+export interface TransformTextRequest {
+  text: string;
+  action: TransformAction;
+  targetLanguage?: TransformLanguage;
+}
+
+export interface TransformTextResponse {
+  result: string;
+}

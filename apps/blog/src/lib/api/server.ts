@@ -8,6 +8,8 @@ import type {
   Tag,
   TagInput,
   TagListResponse,
+  TransformTextRequest,
+  TransformTextResponse,
 } from '@blog/cms-types';
 import { DEFAULT_API_URL } from '@blog/config';
 import { createFetchClient } from '@blog/utils';
@@ -166,6 +168,16 @@ export async function generateOutline(
   request: GenerateOutlineRequest
 ): Promise<GenerateOutlineResponse> {
   return fetchApi('/ai/generate-outline', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export async function transformText(
+  request: TransformTextRequest
+): Promise<TransformTextResponse> {
+  return fetchApi('/ai/transform-text', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
