@@ -1,21 +1,21 @@
 # CMS API Secrets (for local development with wrangler)
 # Copy this file to .dev.vars and fill in your values.
 
-# AI Features (optional - required only if using AI endpoints)
-# OPENAI_API_KEY=sk-...
-# GEMINI_API_KEY=...
-# ANTHROPIC_API_KEY=sk-ant-...
+# AI Features
+# OPENAI_API_KEY=sk-...  # (Required)
+# GEMINI_API_KEY=...  # (Required)
+# ANTHROPIC_API_KEY=sk-ant-...  # (Required)
 
-# Webhook (optional)
-# VERCEL_DEPLOY_HOOK_URL=https://api.vercel.com/v1/integrations/deploy/...
-# WEBHOOK_SECRET=your-webhook-secret
+# Webhook
+# VERCEL_DEPLOY_HOOK_URL=https://api.vercel.com/v1/integrations/deploy/...  # (Required)
+# WEBHOOK_SECRET=your-webhook-secret  # (Required)
 
-# R2 Public URL (optional - for custom CDN domain)
+# R2 Public URL (Optional - for custom CDN domain)
 # R2_PUBLIC_URL=https://cdn.example.com
 
-# R2 Presigned URL credentials (for production)
+# R2 Presigned URL credentials
 # Create API Token at: Cloudflare Dashboard > R2 > Manage R2 API Tokens
-# CLOUDFLARE_ACCOUNT_ID=your-account-id
-# R2_ACCESS_KEY_ID=your-access-key-id
-# R2_SECRET_ACCESS_KEY=your-secret-access-key
-# R2_BUCKET_NAME=blog-images-prod
+# CLOUDFLARE_ACCOUNT_ID=your-account-id  # (Required)
+# R2_ACCESS_KEY_ID=your-access-key-id  # (Required)
+# R2_SECRET_ACCESS_KEY=your-secret-access-key  # (Required)
+# R2_BUCKET_NAME=blog-images-prod  # (Required)
