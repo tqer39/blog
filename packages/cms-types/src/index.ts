@@ -17,6 +17,8 @@ export interface Article {
   tags: string[];
   headerImageId: string | null;
   headerImageUrl: string | null;
+  reviewResult?: ReviewArticleResponse | null;
+  reviewUpdatedAt?: string | null;
 }
 
 export interface ArticleInput {
@@ -151,6 +153,7 @@ export interface ReviewArticleRequest {
   title: string;
   content: string;
   model?: AnthropicModel;
+  articleHash?: string;
 }
 
 export interface ReviewArticleResponse {

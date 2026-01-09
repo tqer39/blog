@@ -194,9 +194,15 @@ articlesHandler.put('/:hash', async (c) => {
   const updates: string[] = [];
   const params: (string | null)[] = [];
 
+  // Track if content changed to clear review results
+  let contentChanged = false;
+
   if (input.title !== undefined) {
     updates.push('title = ?');
     params.push(input.title);
+    if (input.title !== existing.title) {
+      contentChanged = true;
+    }
   }
   if (input.description !== undefined) {
     updates.push('description = ?');
@@ -205,10 +211,21 @@ articlesHandler.put('/:hash', async (c) => {
   if (input.content !== undefined) {
     updates.push('content = ?');
     params.push(input.content);
+    if (input.content !== existing.content) {
+      contentChanged = true;
+    }
   }
   if (input.headerImageId !== undefined) {
     updates.push('header_image_id = ?');
     params.push(input.headerImageId || null);
+  }
+
+  // Clear review results if title or content changed
+  if (contentChanged) {
+    updates.push('review_result = ?');
+    params.push(null);
+    updates.push('review_updated_at = ?');
+    params.push(null);
   }
 
   if (updates.length > 0) {
@@ -471,6 +488,7 @@ function mapRowToArticle(
   tags: string[],
   headerImageUrl: string | null = null
 ): Article {
+  const reviewResultStr = row.review_result as string | null;
   return {
     id: row.id as string,
     hash: row.hash as string,
@@ -484,6 +502,8 @@ function mapRowToArticle(
     tags,
     headerImageId: row.header_image_id as string | null,
     headerImageUrl,
+    reviewResult: reviewResultStr ? JSON.parse(reviewResultStr) : null,
+    reviewUpdatedAt: row.review_updated_at as string | null,
   };
 }
 

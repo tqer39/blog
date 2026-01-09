@@ -478,7 +478,7 @@ aiHandler.post('/review-article', async (c) => {
   }
 
   const body = await c.req.json<ReviewArticleRequest>();
-  const { title, content, model = DEFAULT_ANTHROPIC_MODEL } = body;
+  const { title, content, model = DEFAULT_ANTHROPIC_MODEL, articleHash } = body;
 
   if (!title || !content) {
     validationError('Invalid input', {
@@ -556,6 +556,16 @@ ${truncatedContent}`;
         suggestion: item.suggestion || '',
       })),
     };
+
+    // Save review result to database if articleHash is provided
+    if (articleHash) {
+      const now = new Date().toISOString();
+      await c.env.DB.prepare(
+        'UPDATE articles SET review_result = ?, review_updated_at = ? WHERE hash = ?'
+      )
+        .bind(JSON.stringify(sanitizedResult), now, articleHash)
+        .run();
+    }
 
     return c.json(sanitizedResult);
   } catch (error) {

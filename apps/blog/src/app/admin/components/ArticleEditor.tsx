@@ -89,7 +89,7 @@ export function ArticleEditor({
   const [isReviewing, setIsReviewing] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [reviewResult, setReviewResult] =
-    useState<ReviewArticleResponse | null>(null);
+    useState<ReviewArticleResponse | null>(initialData?.reviewResult ?? null);
   const [reviewError, setReviewError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -236,6 +236,7 @@ export function ArticleEditor({
         title: title.trim(),
         content,
         model: aiSettings.review,
+        articleHash: initialData?.hash,
       });
       setReviewResult(result);
     } catch (err) {
@@ -353,6 +354,17 @@ export function ArticleEditor({
               <MessageSquare className="h-4 w-4" />
               {isReviewing ? 'Reviewing...' : 'AI Review'}
             </Button>
+            {reviewResult && !isReviewing && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsReviewOpen(true)}
+                className="gap-1.5 text-muted-foreground"
+              >
+                前回の結果
+              </Button>
+            )}
             <InlineModelSelect
               type="anthropic"
               value={aiSettings.review}
