@@ -18,3 +18,11 @@ export function generateId(): string {
 export function generateHash(): string {
   return ulid().toLowerCase();
 }
+
+/**
+ * Generate a UUID v4 for image paths
+ * Provides 128 bits of randomness for unpredictable public URLs
+ */
+export function generateImageId(): string {
+  return crypto.randomUUID();
+}

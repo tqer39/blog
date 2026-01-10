@@ -14,7 +14,7 @@ export {
   isString,
   isStringArray,
 } from './guards';
-export { generateHash, generateId } from './id';
+export { generateHash, generateId, generateImageId } from './id';
 // Result type for error handling
 export { err, ok, type Result, toError } from './result';
 // Style utilities

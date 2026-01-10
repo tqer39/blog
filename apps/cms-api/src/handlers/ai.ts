@@ -18,11 +18,11 @@ import type {
   TransformTextRequest,
   TransformTextResponse,
 } from '@blog/cms-types';
-import { generateId } from '@blog/utils';
+import { generateId, generateImageId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
 import { internalError, validationError } from '../lib/errors';
-import { getPublicUrl } from '../lib/r2-presigned';
+import { getImageUrl } from '../lib/image-url';
 
 export const aiHandler = new Hono<{ Bindings: Env }>();
 
@@ -425,13 +425,11 @@ aiHandler.post('/generate-image', async (c) => {
     const binaryData = Uint8Array.from(atob(imageData), (c) => c.charCodeAt(0));
 
     // Upload to R2
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
     const id = generateId();
+    const imageId = generateImageId(); // UUIDv4 for unpredictable URL path
     const ext = mimeType === 'image/jpeg' ? 'jpg' : 'png';
-    const filename = `${id}.${ext}`;
-    const r2Key = `images/${year}/${month}/${filename}`;
+    const filename = `${imageId}.${ext}`;
+    const r2Key = `i/${filename}`;
 
     await c.env.R2_BUCKET.put(r2Key, binaryData, {
       httpMetadata: {
@@ -456,7 +454,7 @@ aiHandler.post('/generate-image', async (c) => {
       )
       .run();
 
-    const publicUrl = await getPublicUrl(c.env, r2Key);
+    const publicUrl = getImageUrl(c.env, r2Key);
 
     const result: GenerateImageResponse = {
       id,
