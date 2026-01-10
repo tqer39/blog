@@ -76,14 +76,28 @@ node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 
 ### Automated Sync from 1Password (Recommended)
 
-#### Option A: GitHub Actions (Recommended)
+#### Initial Setup (One-time)
 
-Run via GitHub Actions workflow:
+`OP_SERVICE_ACCOUNT_TOKEN` is the key to access 1Password.
+It must be set **manually once** (other secrets can be synced automatically).
+
+1. Create a Service Account in 1Password Web UI
+   - [my.1password.com](https://my.1password.com) → Integrations → Service Accounts
+   - Grant Read permission to `blog-secrets` vault
+   - Copy the token (`ops_...`)
+
+2. Register in GitHub Secret
+
+   ```bash
+   gh secret set OP_SERVICE_ACCOUNT_TOKEN
+   # Paste the token
+   ```
+
+After this, you can automatically sync other secrets with `sync-secrets.yml`.
+
+#### Option A: GitHub Actions
 
 ```bash
-# Prerequisites: Set up 1Password Service Account token
-gh secret set OP_SERVICE_ACCOUNT_TOKEN
-
 # Run workflow
 gh workflow run sync-secrets.yml -f target=both
 
