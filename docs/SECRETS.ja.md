@@ -123,6 +123,25 @@ just sync-secrets-wrangler  # Cloudflare Workers のみ
 just sync-secrets-dry-run   # 変更せずプレビュー
 ```
 
+#### 便利な 1Password CLI コマンド
+
+```bash
+# 1Password にサインイン
+op signin
+
+# Vault 一覧
+op vault list
+
+# Vault 内のアイテム一覧
+op item list --vault blog-secrets
+
+# アイテム詳細（フィールド名を確認）
+op item get openai-api-key --vault blog-secrets
+
+# シークレット値を取得
+op read "op://blog-secrets/openai-api-key/password"
+```
+
 #### 1Password Service Account の作成
 
 CI/CD 自動化用のサービスアカウントを作成:
@@ -132,7 +151,7 @@ CI/CD 自動化用のサービスアカウントを作成:
 op signin
 
 # サービスアカウント作成（対話形式）
-op service-account create "blog-ci" --vault blog-secrets:read_items
+op service-account create "dev-automation" --vault blog-secrets:read_items
 
 # または 1Password Web から:
 # 1. Settings > Developer > Service Accounts

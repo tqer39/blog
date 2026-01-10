@@ -151,7 +151,7 @@ Create a service account for CI/CD automation:
 op signin
 
 # Create service account (interactive)
-op service-account create "blog-ci" --vault blog-secrets:read_items
+op service-account create "dev-automation" --vault blog-secrets:read_items
 
 # Or via 1Password web:
 # 1. Settings > Developer > Service Accounts
