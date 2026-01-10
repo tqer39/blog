@@ -123,6 +123,25 @@ just sync-secrets-wrangler  # Cloudflare Workers only
 just sync-secrets-dry-run   # Preview without making changes
 ```
 
+#### Useful 1Password CLI Commands
+
+```bash
+# Sign in to 1Password
+op signin
+
+# List vaults
+op vault list
+
+# List items in a vault
+op item list --vault blog-secrets
+
+# Get item details (to check field names)
+op item get openai-api-key --vault blog-secrets
+
+# Read a secret value
+op read "op://blog-secrets/openai-api-key/password"
+```
+
 #### 1Password Service Account Setup
 
 Create a service account for CI/CD automation:
