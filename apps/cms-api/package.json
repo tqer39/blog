@@ -27,6 +27,6 @@
     "@cloudflare/workers-types": "4.20260101.0",
     "tsx": "4.21.0",
     "typescript": "5.1.6",
-    "wrangler": "4.54.0"
+    "wrangler": "4.58.0"
   }
 }
