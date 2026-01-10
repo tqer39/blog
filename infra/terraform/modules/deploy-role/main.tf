@@ -55,15 +55,6 @@ resource "aws_iam_role_policy" "deploy" {
           "arn:aws:s3:::terraform-tfstate-tqer39-${var.aws_account_id}-ap-northeast-1/*"
         ]
       },
-      {
-        Effect = "Allow"
-        Action = [
-          "dynamodb:GetItem",
-          "dynamodb:PutItem",
-          "dynamodb:DeleteItem"
-        ]
-        Resource = "arn:aws:dynamodb:*:${var.aws_account_id}:table/${var.aws_env_name}-terraform-lock"
-      }
     ]
   })
 }
