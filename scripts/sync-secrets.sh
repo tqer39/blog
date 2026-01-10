@@ -143,7 +143,7 @@ set_github_secret() {
 
     # Security: Pipe directly from op to gh (secret never in a variable or echo)
     if op read "op://${VAULT}/${op_item}/${field}" 2>/dev/null | \
-       gh secret set "$secret_name" --repo "$REPO" --body -; then
+        gh secret set "$secret_name" --repo "$REPO" --body -; then
         log_success "GitHub Secret: $secret_name"
     else
         log_warn "Failed to set GitHub Secret: $secret_name (item may not exist)"
@@ -164,7 +164,7 @@ set_wrangler_secret() {
     # Security: Pipe directly from op to wrangler (secret never in a variable or echo)
     cd "$PROJECT_ROOT/apps/cms-api"
     if op read "op://${VAULT}/${op_item}/${field}" 2>/dev/null | \
-       pnpm wrangler secret put "$secret_name" --env "$WRANGLER_ENV"; then
+        pnpm wrangler secret put "$secret_name" --env "$WRANGLER_ENV"; then
         log_success "Wrangler Secret: $secret_name"
     else
         log_warn "Failed to set Wrangler Secret: $secret_name (item may not exist)"
