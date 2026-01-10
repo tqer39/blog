@@ -76,14 +76,28 @@ node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 
 ### 1Password からの自動同期（推奨）
 
-#### 方法 A: GitHub Actions（推奨）
+#### 初回セットアップ（1回のみ）
 
-GitHub Actions ワークフローで実行:
+`OP_SERVICE_ACCOUNT_TOKEN` は 1Password にアクセスするための鍵なので、
+**手動で1回だけ**設定が必要です（他のシークレットは自動同期可能）。
+
+1. 1Password Web UI で Service Account を作成
+   - [my.1password.com](https://my.1password.com) → Integrations → Service Accounts
+   - `blog-secrets` vault への Read 権限を付与
+   - トークン（`ops_...`）をコピー
+
+2. GitHub Secret に登録
+
+   ```bash
+   gh secret set OP_SERVICE_ACCOUNT_TOKEN
+   # トークンを貼り付け
+   ```
+
+これ以降は `sync-secrets.yml` で他のシークレットを自動同期できます。
+
+#### 方法 A: GitHub Actions
 
 ```bash
-# 前提条件: 1Password Service Account トークンを設定
-gh secret set OP_SERVICE_ACCOUNT_TOKEN
-
 # ワークフロー実行
 gh workflow run sync-secrets.yml -f target=both
 
