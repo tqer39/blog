@@ -201,7 +201,7 @@ openssl rand -base64 32
 Generate password hash:
 
 ```bash
-node -e "require('bcryptjs').hash('password', 12).then(console.log)"
+cd apps/blog && node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 ```
 
 ## Setting Secrets

@@ -201,7 +201,7 @@ openssl rand -base64 32
 パスワードハッシュの生成:
 
 ```bash
-node -e "require('bcryptjs').hash('password', 12).then(console.log)"
+cd apps/blog && node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 ```
 
 ## シークレットの設定方法
