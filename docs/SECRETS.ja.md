@@ -95,8 +95,6 @@
 
 | アイテム名             | 環境変数             | 同期先 |
 | ---------------------- | -------------------- | ------ |
-| `slack-webhook-dev`    | SLACK_WEBHOOK_DEV    | GitHub |
-| `slack-webhook-prod`   | SLACK_WEBHOOK_PROD   | GitHub |
 | `discord-webhook-dev`  | DISCORD_WEBHOOK_DEV  | GitHub |
 | `discord-webhook-prod` | DISCORD_WEBHOOK_PROD | GitHub |
 | `codecov-token`        | CODECOV_TOKEN        | GitHub |

@@ -91,12 +91,12 @@ jobs:
           TARGET=$(echo "${{ env.WORKING_DIRECTORY }}" | sed -e 's|^.*infra/terraform/envs/||' | cut -c 1-36)
           tfcmt --config $GITHUB_WORKSPACE/.github/tfcmt.yml --var target:$TARGET plan -patch -- cat tf_plan.txt
 
-      - name: Slack Notification (Plan Error)
+      - name: Discord Notification (Plan Error)
         if: steps.plan.outputs.exitcode == '1'
         continue-on-error: true
-        uses: ./.github/actions/slack-deploy-failure
+        uses: ./.github/actions/discord-notify
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK_PROD }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
           title: "Terraform Plan Error: cms-api"
           message: "path: `${{ env.WORKING_DIRECTORY }}`"
 
@@ -194,12 +194,12 @@ jobs:
           TARGET=$(echo "${{ env.WORKING_DIRECTORY }}" | sed -e 's|^.*infra/terraform/envs/||' | cut -c 1-36)
           tfcmt --config $GITHUB_WORKSPACE/.github/tfcmt.yml --var target:$TARGET plan -patch -- cat tf_plan.txt
 
-      - name: Slack Notification (Plan Error)
+      - name: Discord Notification (Plan Error)
         if: steps.plan.outputs.exitcode == '1'
         continue-on-error: true
-        uses: ./.github/actions/slack-deploy-failure
+        uses: ./.github/actions/discord-notify
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK_PROD }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
           title: "Terraform Plan Error: frontend"
           message: "path: `${{ env.WORKING_DIRECTORY }}`"
 

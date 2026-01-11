@@ -25,10 +25,10 @@ jobs:
           cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      - name: Slack Notification (Failure)
+      - name: Discord Notification (Failure)
         if: failure()
-        uses: ./.github/actions/slack-deploy-failure
+        uses: ./.github/actions/discord-notify
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK_PROD }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
           title: "DB Migration Failed (production)"
           message: "D1 migration failed on production environment"

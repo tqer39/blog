@@ -146,9 +146,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Slack Notification
-        uses: ./.github/actions/slack-deploy-failure
+      - name: Discord Notification
+        uses: ./.github/actions/discord-notify
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK_DEV }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_DEV }}
           title: "CI Failed"
           message: "Test or build failed"

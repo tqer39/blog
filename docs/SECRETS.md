@@ -95,8 +95,6 @@ Note: R2 access keys are not needed - R2 is accessed via native bindings.
 
 | Item Name              | Maps To              | Target |
 | ---------------------- | -------------------- | ------ |
-| `slack-webhook-dev`    | SLACK_WEBHOOK_DEV    | GitHub |
-| `slack-webhook-prod`   | SLACK_WEBHOOK_PROD   | GitHub |
 | `discord-webhook-dev`  | DISCORD_WEBHOOK_DEV  | GitHub |
 | `discord-webhook-prod` | DISCORD_WEBHOOK_PROD | GitHub |
 | `codecov-token`        | CODECOV_TOKEN        | GitHub |

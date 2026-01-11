@@ -261,8 +261,6 @@ sync_all_secrets() {
 
         # Third-party (from blog-secrets)
         log_info "=== Third-party Service Secrets (GitHub) ==="
-        set_github_secret_blog "slack-webhook-dev"    "SLACK_WEBHOOK_DEV"
-        set_github_secret_blog "slack-webhook-prod"   "SLACK_WEBHOOK_PROD"
         set_github_secret_blog "discord-webhook-dev"  "DISCORD_WEBHOOK_DEV"
         set_github_secret_blog "discord-webhook-prod" "DISCORD_WEBHOOK_PROD"
         set_github_secret_blog "codecov-token"        "CODECOV_TOKEN"
