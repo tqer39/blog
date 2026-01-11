@@ -46,19 +46,17 @@
 
 ### Cloudflare (op://shared-secrets/cloudflare)
 
-| フィールド名                    | 環境変数             | 同期先       |
-| ------------------------------- | -------------------- | ------------ |
-| `api-token`                     | CLOUDFLARE_API_TOKEN | GitHub       |
-| `account-id`                    | CLOUDFLARE_ACCOUNT_ID| GitHub       |
-| `blog-zone-id`                  | CLOUDFLARE_ZONE_ID   | GitHub       |
-| `blog-d1-database-id-dev`       | D1_DATABASE_ID_DEV   | GitHub       |
-| `blog-d1-database-id-prod`      | D1_DATABASE_ID_PROD  | GitHub       |
-| `blog-r2-access-key-id-dev`     | R2_ACCESS_KEY_ID     | Wrangler dev |
-| `blog-r2-access-key-id-prod`    | R2_ACCESS_KEY_ID     | Wrangler prod|
-| `blog-r2-secret-access-key-dev` | R2_SECRET_ACCESS_KEY | Wrangler dev |
-| `blog-r2-secret-access-key-prod`| R2_SECRET_ACCESS_KEY | Wrangler prod|
-| `blog-r2-public-url-dev`        | R2_PUBLIC_URL        | Wrangler dev |
-| `blog-r2-public-url-prod`       | R2_PUBLIC_URL        | Wrangler prod|
+| フィールド名               | 環境変数              | 同期先        |
+| -------------------------- | --------------------- | ------------- |
+| `api-token`                | CLOUDFLARE_API_TOKEN  | GitHub        |
+| `account-id`               | CLOUDFLARE_ACCOUNT_ID | GitHub        |
+| `blog-zone-id`             | CLOUDFLARE_ZONE_ID    | GitHub        |
+| `blog-d1-database-id-dev`  | D1_DATABASE_ID_DEV    | GitHub        |
+| `blog-d1-database-id-prod` | D1_DATABASE_ID_PROD   | GitHub        |
+| `blog-r2-public-url-dev`   | R2_PUBLIC_URL         | Wrangler dev  |
+| `blog-r2-public-url-prod`  | R2_PUBLIC_URL         | Wrangler prod |
+
+備考: R2 アクセスキー不要（ネイティブバインディング経由でアクセス）。
 
 ### AI サービス (op://blog-secrets/{item}/password)
 
@@ -114,18 +112,6 @@
 2. **マイプロフィール** → **API トークン**
 3. **トークンを作成** をクリック
 4. テンプレートを使用するか、必要な権限でカスタムトークンを作成
-
-### R2 API トークン
-
-1. [Cloudflare Dashboard](https://dash.cloudflare.com) にログイン
-2. **R2 Object Storage** → **Manage R2 API Tokens**
-3. **Create API token** をクリック
-4. 設定:
-   - **Token name**: `blog-r2-dev` または `blog-r2-prod`
-   - **Permissions**: Object Read & Write
-   - **Specify bucket(s)**: 対象バケットのみ選択
-5. **Create API Token** をクリック
-6. `Access Key ID` と `Secret Access Key` をコピー（一度しか表示されない）
 
 ### Discord Webhook URL の取得方法
 
@@ -293,8 +279,6 @@ pnpm wrangler secret put GEMINI_API_KEY --env dev
 pnpm wrangler secret put ANTHROPIC_API_KEY --env dev
 pnpm wrangler secret put AUTH_SECRET --env dev
 pnpm wrangler secret put ADMIN_PASSWORD_HASH --env dev
-pnpm wrangler secret put R2_ACCESS_KEY_ID --env dev
-pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env dev
 pnpm wrangler secret put R2_PUBLIC_URL --env dev
 pnpm wrangler secret put BASIC_AUTH_USER --env dev
 pnpm wrangler secret put BASIC_AUTH_PASS --env dev
@@ -305,8 +289,6 @@ pnpm wrangler secret put GEMINI_API_KEY --env production
 pnpm wrangler secret put ANTHROPIC_API_KEY --env production
 pnpm wrangler secret put AUTH_SECRET --env production
 pnpm wrangler secret put ADMIN_PASSWORD_HASH --env production
-pnpm wrangler secret put R2_ACCESS_KEY_ID --env production
-pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env production
 pnpm wrangler secret put R2_PUBLIC_URL --env production
 ```
 

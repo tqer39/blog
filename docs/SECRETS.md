@@ -46,19 +46,17 @@ Secrets are stored in two vaults:
 
 ### Cloudflare (op://shared-secrets/cloudflare)
 
-| Field Name                      | Maps To              | Target       |
-| ------------------------------- | -------------------- | ------------ |
-| `api-token`                     | CLOUDFLARE_API_TOKEN | GitHub       |
-| `account-id`                    | CLOUDFLARE_ACCOUNT_ID| GitHub       |
-| `blog-zone-id`                  | CLOUDFLARE_ZONE_ID   | GitHub       |
-| `blog-d1-database-id-dev`       | D1_DATABASE_ID_DEV   | GitHub       |
-| `blog-d1-database-id-prod`      | D1_DATABASE_ID_PROD  | GitHub       |
-| `blog-r2-access-key-id-dev`     | R2_ACCESS_KEY_ID     | Wrangler dev |
-| `blog-r2-access-key-id-prod`    | R2_ACCESS_KEY_ID     | Wrangler prod|
-| `blog-r2-secret-access-key-dev` | R2_SECRET_ACCESS_KEY | Wrangler dev |
-| `blog-r2-secret-access-key-prod`| R2_SECRET_ACCESS_KEY | Wrangler prod|
-| `blog-r2-public-url-dev`        | R2_PUBLIC_URL        | Wrangler dev |
-| `blog-r2-public-url-prod`       | R2_PUBLIC_URL        | Wrangler prod|
+| Field Name                 | Maps To               | Target        |
+| -------------------------- | --------------------- | ------------- |
+| `api-token`                | CLOUDFLARE_API_TOKEN  | GitHub        |
+| `account-id`               | CLOUDFLARE_ACCOUNT_ID | GitHub        |
+| `blog-zone-id`             | CLOUDFLARE_ZONE_ID    | GitHub        |
+| `blog-d1-database-id-dev`  | D1_DATABASE_ID_DEV    | GitHub        |
+| `blog-d1-database-id-prod` | D1_DATABASE_ID_PROD   | GitHub        |
+| `blog-r2-public-url-dev`   | R2_PUBLIC_URL         | Wrangler dev  |
+| `blog-r2-public-url-prod`  | R2_PUBLIC_URL         | Wrangler prod |
+
+Note: R2 access keys are not needed - R2 is accessed via native bindings.
 
 ### AI Services (op://blog-secrets/{item}/password)
 
@@ -114,18 +112,6 @@ Secrets are stored in two vaults:
 2. Go to **My Profile** → **API Tokens**
 3. Click **Create Token**
 4. Use template or create custom token with required permissions
-
-### R2 API Token
-
-1. Log in to [Cloudflare Dashboard](https://dash.cloudflare.com)
-2. Go to **R2 Object Storage** → **Manage R2 API Tokens**
-3. Click **Create API token**
-4. Configure:
-   - **Token name**: `blog-r2-dev` or `blog-r2-prod`
-   - **Permissions**: Object Read & Write
-   - **Specify bucket(s)**: Select target bucket only
-5. Click **Create API Token**
-6. Copy `Access Key ID` and `Secret Access Key` (shown only once)
 
 ### Discord Webhook URL
 
