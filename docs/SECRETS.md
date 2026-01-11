@@ -110,13 +110,18 @@ Note: R2 access keys are not needed - R2 is accessed via native bindings.
 | `basic-auth-user` | BASIC_AUTH_USER | Wrangler dev |
 | `basic-auth-pass` | BASIC_AUTH_PASS | Wrangler dev |
 
+### Discord (op://shared-secrets/discord)
+
+| Field Name             | Maps To              | Target |
+| ---------------------- | -------------------- | ------ |
+| `blog-webhook-url-dev` | DISCORD_WEBHOOK_DEV  | GitHub |
+| `blog-webhook-url-prod`| DISCORD_WEBHOOK_PROD | GitHub |
+
 ### Third-party Services (op://blog-secrets/{item}/password)
 
-| Item Name              | Maps To              | Target |
-| ---------------------- | -------------------- | ------ |
-| `discord-webhook-dev`  | DISCORD_WEBHOOK_DEV  | GitHub |
-| `discord-webhook-prod` | DISCORD_WEBHOOK_PROD | GitHub |
-| `codecov-token`        | CODECOV_TOKEN        | GitHub |
+| Item Name       | Maps To       | Target |
+| --------------- | ------------- | ------ |
+| `codecov-token` | CODECOV_TOKEN | GitHub |
 
 ### GitHub App (op://blog-secrets/{item})
 

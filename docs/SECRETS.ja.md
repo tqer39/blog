@@ -110,13 +110,18 @@
 | `basic-auth-user` | BASIC_AUTH_USER | Wrangler dev |
 | `basic-auth-pass` | BASIC_AUTH_PASS | Wrangler dev |
 
+### Discord (op://shared-secrets/discord)
+
+| フィールド名           | 環境変数             | 同期先 |
+| ---------------------- | -------------------- | ------ |
+| `blog-webhook-url-dev` | DISCORD_WEBHOOK_DEV  | GitHub |
+| `blog-webhook-url-prod`| DISCORD_WEBHOOK_PROD | GitHub |
+
 ### サードパーティ (op://blog-secrets/{item}/password)
 
-| アイテム名             | 環境変数             | 同期先 |
-| ---------------------- | -------------------- | ------ |
-| `discord-webhook-dev`  | DISCORD_WEBHOOK_DEV  | GitHub |
-| `discord-webhook-prod` | DISCORD_WEBHOOK_PROD | GitHub |
-| `codecov-token`        | CODECOV_TOKEN        | GitHub |
+| アイテム名      | 環境変数      | 同期先 |
+| --------------- | ------------- | ------ |
+| `codecov-token` | CODECOV_TOKEN | GitHub |
 
 ### GitHub App (op://blog-secrets/{item})
 
