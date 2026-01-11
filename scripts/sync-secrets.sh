@@ -336,8 +336,8 @@ sync_all_secrets() {
         log_info "=== Application Secrets (Dev) ==="
         set_wrangler_secret_blog "auth-secret"              "AUTH_SECRET"         "dev" "dev"
         set_wrangler_secret_blog "admin-password-hash-dev" "ADMIN_PASSWORD_HASH" "dev" "hash"
-        set_wrangler_secret_blog "basic-auth-user"         "BASIC_AUTH_USER"     "dev"
-        set_wrangler_secret_blog "basic-auth-pass"         "BASIC_AUTH_PASS"     "dev"
+        set_wrangler_secret_blog "basic-auth"               "BASIC_AUTH_USER"     "dev" "username"
+        set_wrangler_secret_blog "basic-auth"               "BASIC_AUTH_PASS"     "dev" "password"
         printf "\n"
 
         # ========================================

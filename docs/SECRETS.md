@@ -103,12 +103,12 @@ Note: R2 access keys are not needed - R2 is accessed via native bindings.
 | `admin-password-hash-dev`  | `hash` | ADMIN_PASSWORD_HASH | Wrangler dev  |
 | `admin-password-hash-prod` | `hash` | ADMIN_PASSWORD_HASH | Wrangler prod |
 
-#### Other Application Secrets (op://blog-secrets/{item}/password)
+#### basic-auth (op://blog-secrets/basic-auth)
 
-| Item Name         | Maps To         | Target       |
-| ----------------- | --------------- | ------------ |
-| `basic-auth-user` | BASIC_AUTH_USER | Wrangler dev |
-| `basic-auth-pass` | BASIC_AUTH_PASS | Wrangler dev |
+| Field      | Maps To         | Target       |
+| ---------- | --------------- | ------------ |
+| `username` | BASIC_AUTH_USER | Wrangler dev |
+| `password` | BASIC_AUTH_PASS | Wrangler dev |
 
 ### Discord (op://shared-secrets/discord)
 
@@ -206,6 +206,17 @@ Reference: [Anthropic Console](https://console.anthropic.com)
 Note: Gemini API is free to start. Each key is linked to a Google Cloud project.
 
 Reference: [Gemini API Key Documentation](https://ai.google.dev/gemini-api/docs/api-key)
+
+### Codecov Token
+
+1. Log in to [Codecov](https://codecov.io) with your GitHub account
+2. Select the target repository (`tqer39/blog`)
+3. Go to **Settings** tab
+4. Copy the **Repository Upload Token** from the General section
+
+Token format: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` (UUID)
+
+Reference: [Codecov Quick Start](https://docs.codecov.com/docs/quick-start)
 
 ### Application Secrets
 

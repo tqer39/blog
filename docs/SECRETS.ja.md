@@ -103,12 +103,12 @@
 | `admin-password-hash-dev` | `hash` | ADMIN_PASSWORD_HASH | Wrangler dev |
 | `admin-password-hash-prod` | `hash` | ADMIN_PASSWORD_HASH | Wrangler prod |
 
-#### その他のアプリケーションシークレット (op://blog-secrets/{item}/password)
+#### basic-auth (op://blog-secrets/basic-auth)
 
-| アイテム名        | 環境変数        | 同期先       |
-| ----------------- | --------------- | ------------ |
-| `basic-auth-user` | BASIC_AUTH_USER | Wrangler dev |
-| `basic-auth-pass` | BASIC_AUTH_PASS | Wrangler dev |
+| フィールド | 環境変数        | 同期先       |
+| ---------- | --------------- | ------------ |
+| `username` | BASIC_AUTH_USER | Wrangler dev |
+| `password` | BASIC_AUTH_PASS | Wrangler dev |
 
 ### Discord (op://shared-secrets/discord)
 
@@ -206,6 +206,17 @@ URL 形式: `https://discord.com/api/webhooks/xxxx/yyyy`
 備考: Gemini API は無料で開始可能。各キーは Google Cloud プロジェクトに紐付け。
 
 参考: [Gemini API Key Documentation](https://ai.google.dev/gemini-api/docs/api-key)
+
+### Codecov Token の取得方法
+
+1. [Codecov](https://codecov.io) に GitHub アカウントでログイン
+2. 対象リポジトリを選択（`tqer39/blog`）
+3. **Settings** タブを開く
+4. General セクションの **Repository Upload Token** をコピー
+
+Token 形式: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`（UUID）
+
+参考: [Codecov Quick Start](https://docs.codecov.com/docs/quick-start)
 
 ### アプリケーションシークレット
 
