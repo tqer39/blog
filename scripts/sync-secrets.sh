@@ -341,21 +341,21 @@ sync_all_secrets() {
         printf "\n"
 
         # ========================================
-        # Wrangler Secrets (Production)
+        # Wrangler Secrets (Prod)
         # ========================================
         log_info "=== R2 Secrets (Prod) ==="
-        set_wrangler_secret_cf "blog-r2-public-url-prod" "R2_PUBLIC_URL" "production"
+        set_wrangler_secret_cf "blog-r2-public-url-prod" "R2_PUBLIC_URL" "prod"
         printf "\n"
 
         log_info "=== AI Service Secrets (Prod) ==="
-        set_wrangler_secret_shared "openai" "OPENAI_API_KEY" "production" "blog-secret-key"
-        set_wrangler_secret_shared "google-ai-studio" "GEMINI_API_KEY" "production" "blog-api-key"
-        set_wrangler_secret_shared "anthropic" "ANTHROPIC_API_KEY" "production" "blog-api-key"
+        set_wrangler_secret_shared "openai" "OPENAI_API_KEY" "prod" "blog-secret-key"
+        set_wrangler_secret_shared "google-ai-studio" "GEMINI_API_KEY" "prod" "blog-api-key"
+        set_wrangler_secret_shared "anthropic" "ANTHROPIC_API_KEY" "prod" "blog-api-key"
         printf "\n"
 
         log_info "=== Application Secrets (Prod) ==="
-        set_wrangler_secret_blog "auth-secret"              "AUTH_SECRET"         "production" "prod"
-        set_wrangler_secret_blog "admin-password-hash-prod" "ADMIN_PASSWORD_HASH" "production" "hash"
+        set_wrangler_secret_blog "auth-secret"              "AUTH_SECRET"         "prod" "prod"
+        set_wrangler_secret_blog "admin-password-hash-prod" "ADMIN_PASSWORD_HASH" "prod" "hash"
         printf "\n"
     fi
 
@@ -378,7 +378,7 @@ main() {
     log_info "Verification commands:"
     printf "  gh secret list --repo %s\n" "$REPO"
     printf "  cd apps/cms-api && pnpm wrangler secret list --env dev\n"
-    printf "  cd apps/cms-api && pnpm wrangler secret list --env production\n"
+    printf "  cd apps/cms-api && pnpm wrangler secret list --env prod\n"
 }
 
 main

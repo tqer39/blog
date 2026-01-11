@@ -21,7 +21,7 @@ jobs:
 
       - uses: ./.github/actions/deploy-cms-api
         with:
-          wrangler_env: production
+          wrangler_env: prod
           placeholder: to-be-set-by-terraform
           d1_database_id: ${{ secrets.D1_DATABASE_ID_PROD }}
           cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -32,5 +32,5 @@ jobs:
         uses: ./.github/actions/discord-notify
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
-          title: "CMS API Deploy Failed (production)"
-          message: "Worker deployment to production failed"
+          title: "CMS API Deploy Failed (prod)"
+          message: "Worker deployment to prod failed"

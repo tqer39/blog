@@ -113,7 +113,7 @@ jobs:
         with:
           step: start
           token: ${{ secrets.GITHUB_TOKEN }}
-          env: production-cloudflare
+          env: prod-cloudflare
 
       - name: Terraform Apply
         if: |
@@ -216,7 +216,7 @@ jobs:
         with:
           step: start
           token: ${{ secrets.GITHUB_TOKEN }}
-          env: production-vercel
+          env: prod-vercel
 
       - name: Terraform Apply
         if: |

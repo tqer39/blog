@@ -30,5 +30,5 @@ jobs:
         uses: ./.github/actions/discord-notify
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
-          title: "DB Migration Failed (production)"
-          message: "D1 migration failed on production environment"
+          title: "DB Migration Failed (prod)"
+          message: "D1 migration failed on prod environment"

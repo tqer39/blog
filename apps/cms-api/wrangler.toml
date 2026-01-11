@@ -38,19 +38,19 @@ database_id = "to-be-set-by-terraform-dev"
 binding = "R2_BUCKET"
 bucket_name = "blog-images-dev"
 
-# ==================== PRODUCTION ====================
-[env.production]
+# ==================== PROD ====================
+[env.prod]
 name = "cms-api"
-vars = { ENVIRONMENT = "production", BASIC_AUTH_ENABLED = "false" }
-# Set these secrets via: wrangler secret put API_KEY --env production
-# wrangler secret put VERCEL_DEPLOY_HOOK_URL --env production
-# wrangler secret put WEBHOOK_SECRET --env production
+vars = { ENVIRONMENT = "prod", BASIC_AUTH_ENABLED = "false" }
+# Set these secrets via: wrangler secret put API_KEY --env prod
+# wrangler secret put VERCEL_DEPLOY_HOOK_URL --env prod
+# wrangler secret put WEBHOOK_SECRET --env prod
 
-[[env.production.d1_databases]]
+[[env.prod.d1_databases]]
 binding = "DB"
 database_name = "blog-cms-prod"
 database_id = "to-be-set-by-terraform"
 
-[[env.production.r2_buckets]]
+[[env.prod.r2_buckets]]
 binding = "R2_BUCKET"
 bucket_name = "blog-images-prod"

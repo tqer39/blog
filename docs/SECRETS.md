@@ -313,15 +313,15 @@ pnpm wrangler secret put R2_PUBLIC_URL --env dev
 pnpm wrangler secret put BASIC_AUTH_USER --env dev
 pnpm wrangler secret put BASIC_AUTH_PASS --env dev
 
-# Set secrets for production environment
-pnpm wrangler secret put OPENAI_API_KEY --env production
-pnpm wrangler secret put GEMINI_API_KEY --env production
-pnpm wrangler secret put ANTHROPIC_API_KEY --env production
-pnpm wrangler secret put AUTH_SECRET --env production
-pnpm wrangler secret put ADMIN_PASSWORD_HASH --env production
-pnpm wrangler secret put R2_ACCESS_KEY_ID --env production
-pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env production
-pnpm wrangler secret put R2_PUBLIC_URL --env production
+# Set secrets for prod environment
+pnpm wrangler secret put OPENAI_API_KEY --env prod
+pnpm wrangler secret put GEMINI_API_KEY --env prod
+pnpm wrangler secret put ANTHROPIC_API_KEY --env prod
+pnpm wrangler secret put AUTH_SECRET --env prod
+pnpm wrangler secret put ADMIN_PASSWORD_HASH --env prod
+pnpm wrangler secret put R2_ACCESS_KEY_ID --env prod
+pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env prod
+pnpm wrangler secret put R2_PUBLIC_URL --env prod
 ```
 
 Or via Cloudflare Dashboard:

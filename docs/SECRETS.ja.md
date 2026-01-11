@@ -311,13 +311,13 @@ pnpm wrangler secret put R2_PUBLIC_URL --env dev
 pnpm wrangler secret put BASIC_AUTH_USER --env dev
 pnpm wrangler secret put BASIC_AUTH_PASS --env dev
 
-# production 環境のシークレット設定
-pnpm wrangler secret put OPENAI_API_KEY --env production
-pnpm wrangler secret put GEMINI_API_KEY --env production
-pnpm wrangler secret put ANTHROPIC_API_KEY --env production
-pnpm wrangler secret put AUTH_SECRET --env production
-pnpm wrangler secret put ADMIN_PASSWORD_HASH --env production
-pnpm wrangler secret put R2_PUBLIC_URL --env production
+# prod 環境のシークレット設定
+pnpm wrangler secret put OPENAI_API_KEY --env prod
+pnpm wrangler secret put GEMINI_API_KEY --env prod
+pnpm wrangler secret put ANTHROPIC_API_KEY --env prod
+pnpm wrangler secret put AUTH_SECRET --env prod
+pnpm wrangler secret put ADMIN_PASSWORD_HASH --env prod
+pnpm wrangler secret put R2_PUBLIC_URL --env prod
 ```
 
 または Cloudflare Dashboard から:

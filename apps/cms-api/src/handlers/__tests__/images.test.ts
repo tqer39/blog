@@ -381,7 +381,7 @@ describe('imagesHandler', () => {
       );
     });
 
-    it('should use default CDN URL in production without R2_PUBLIC_URL', async () => {
+    it('should use default CDN URL in prod without R2_PUBLIC_URL', async () => {
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
           first: vi.fn().mockResolvedValue(sampleImage),
@@ -390,7 +390,7 @@ describe('imagesHandler', () => {
 
       const app = createTestApp(mockDB, mockR2, {
         R2_PUBLIC_URL: undefined,
-        ENVIRONMENT: 'production',
+        ENVIRONMENT: 'prod',
       });
       const res = await app.request('/images/image-1');
 

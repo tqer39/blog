@@ -150,7 +150,7 @@ app.onError((err, c) => {
 
   // Handle unexpected errors
   const message =
-    c.env.ENVIRONMENT === 'production'
+    c.env.ENVIRONMENT === 'prod'
       ? 'An unexpected error occurred'
       : err.message || 'An unexpected error occurred';
 
