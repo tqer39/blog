@@ -5,6 +5,7 @@ import { logger } from 'hono/logger';
 
 import { aiHandler } from './handlers/ai';
 import { articlesHandler } from './handlers/articles';
+import { categoriesHandler } from './handlers/categories';
 import { imagesHandler } from './handlers/images';
 import { importExportHandler } from './handlers/import-export';
 import { settingsHandler } from './handlers/settings';
@@ -106,6 +107,7 @@ const v1 = new Hono<{ Bindings: Env }>();
 v1.use('*', authMiddleware);
 v1.route('/ai', aiHandler);
 v1.route('/articles', articlesHandler);
+v1.route('/categories', categoriesHandler);
 v1.route('/tags', tagsHandler);
 v1.route('/images', imagesHandler);
 v1.route('/import', importExportHandler);

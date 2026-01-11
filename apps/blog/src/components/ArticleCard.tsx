@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import type { Article } from '@/types/article';
+import { CategoryBadge } from './CategoryBadge';
 import { TagLink } from './TagLink';
 
 interface ArticleCardProps {
@@ -41,6 +42,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
         >
           {dayjs(displayDate).format('YYYY/MM/DD')}
         </time>
+        {article.category && <CategoryBadge category={article.category} />}
         <div className="flex flex-wrap gap-1">
           {article.tags.map((tag) => (
             <TagLink key={tag} tag={tag} size="sm" />

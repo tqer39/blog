@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || undefined;
     const tag = searchParams.get('tag') || undefined;
+    const category = searchParams.get('category') || undefined;
     const page = searchParams.get('page')
       ? Number(searchParams.get('page'))
       : undefined;
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
       ? Number(searchParams.get('perPage'))
       : undefined;
 
-    const result = await getArticles({ status, tag, page, perPage });
+    const result = await getArticles({ status, tag, category, page, perPage });
     return NextResponse.json(result);
   } catch (error) {
     const message =

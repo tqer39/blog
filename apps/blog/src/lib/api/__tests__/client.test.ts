@@ -29,6 +29,8 @@ const sampleArticle: Article = {
   content: '# Test Content',
   status: 'published',
   tags: ['javascript'],
+  categoryId: null,
+  category: null,
   publishedAt: '2024-01-15T00:00:00Z',
   createdAt: '2024-01-01T00:00:00Z',
   updatedAt: '2024-01-15T00:00:00Z',

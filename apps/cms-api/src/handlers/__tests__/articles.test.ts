@@ -45,6 +45,7 @@ const sampleArticle = {
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z',
   header_image_id: null,
+  category_id: null,
 };
 
 describe('articlesHandler', () => {
@@ -185,16 +186,16 @@ describe('articlesHandler', () => {
             run: vi.fn().mockResolvedValue({}),
           }),
         })
-        // Get tags (empty)
-        .mockReturnValueOnce({
-          bind: vi.fn().mockReturnValue({
-            all: vi.fn().mockResolvedValue({ results: [] }),
-          }),
-        })
         // SELECT created article
         .mockReturnValueOnce({
           bind: vi.fn().mockReturnValue({
             first: vi.fn().mockResolvedValue(createdArticle),
+          }),
+        })
+        // Get tags (empty)
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi.fn().mockResolvedValue({ results: [] }),
           }),
         });
 

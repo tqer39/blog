@@ -15,6 +15,8 @@ export interface Article {
   createdAt: string;
   updatedAt: string;
   tags: string[];
+  categoryId: string | null;
+  category: Category | null;
   headerImageId: string | null;
   headerImageUrl: string | null;
   reviewResult?: ReviewArticleResponse | null;
@@ -27,6 +29,7 @@ export interface ArticleInput {
   content: string;
   status?: ArticleStatus;
   tags?: string[];
+  categoryId?: string | null;
   headerImageId?: string | null;
 }
 
@@ -54,6 +57,31 @@ export interface TagWithCount extends Tag {
 
 export interface TagListResponse {
   tags: TagWithCount[];
+}
+
+// Category types
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  color: string;
+  displayOrder: number;
+  createdAt: string;
+}
+
+export interface CategoryInput {
+  name: string;
+  slug: string;
+  color?: string;
+  displayOrder?: number;
+}
+
+export interface CategoryWithCount extends Category {
+  articleCount: number;
+}
+
+export interface CategoryListResponse {
+  categories: CategoryWithCount[];
 }
 
 // Image types
@@ -92,6 +120,7 @@ export interface PaginationParams {
 export interface ArticleFilters extends PaginationParams {
   status?: ArticleStatus;
   tag?: string;
+  category?: string;
 }
 
 // AI Model types (defined first as they're used in request types)
