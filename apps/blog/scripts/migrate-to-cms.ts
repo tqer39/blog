@@ -6,7 +6,7 @@
  *   npx tsx scripts/migrate-to-cms.ts
  *
  * Prerequisites:
- *   - CMS API running at localhost:3200 (just dev-api)
+ *   - CMS API running at localhost:3101 (just dev-api)
  *   - D1 database initialized (just db-migrate-local)
  */
 
@@ -14,7 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
 
-const API_URL = process.env.CMS_API_URL || 'http://localhost:3200/v1';
+const API_URL = process.env.CMS_API_URL || 'http://localhost:3101/v1';
 const API_KEY = process.env.CMS_API_KEY || 'dev-api-key';
 
 interface OldFrontmatter {

@@ -377,7 +377,7 @@ describe('imagesHandler', () => {
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.url).toBe(
-        'http://localhost:3200/v1/images/file/i/550e8400-e29b-41d4-a716-446655440000.jpg'
+        'http://localhost:3101/v1/images/file/i/550e8400-e29b-41d4-a716-446655440000.jpg'
       );
     });
 

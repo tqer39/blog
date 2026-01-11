@@ -27,7 +27,7 @@ describe('getImageUrl', () => {
     });
 
     const result = getImageUrl(env, 'i/abc123.jpg');
-    expect(result).toBe('http://localhost:3200/v1/images/file/i/abc123.jpg');
+    expect(result).toBe('http://localhost:3101/v1/images/file/i/abc123.jpg');
   });
 
   it('should return default CDN URL as fallback', () => {

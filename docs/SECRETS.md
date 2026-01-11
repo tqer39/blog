@@ -251,7 +251,7 @@ Create `apps/blog/.env.local`:
 ```bash
 AUTH_SECRET=your-local-secret
 ADMIN_PASSWORD_HASH=$2b$12$...
-CMS_API_URL=http://localhost:3200/v1
+CMS_API_URL=http://localhost:3101/v1
 CMS_API_KEY=dev-api-key
 ```
 

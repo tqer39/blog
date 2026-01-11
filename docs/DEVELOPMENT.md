@@ -8,7 +8,7 @@
 | -------------- | ---- | ----------------------------- | ---------------- |
 | Blog (Next.js) | 3100 | <http://localhost:3100>       | Frontend         |
 | Admin UI       | 3100 | <http://localhost:3100/admin> | Article manager  |
-| CMS API        | 3200 | <http://localhost:3200>       | Backend API      |
+| CMS API        | 3101 | <http://localhost:3101>       | Backend API      |
 
 ## Quick Start
 
@@ -77,7 +77,7 @@ open http://localhost:3100
 
 | Variable      | Description | Default                    |
 | ------------- | ----------- | -------------------------- |
-| `CMS_API_URL` | API URL     | `http://localhost:3200/v1` |
+| `CMS_API_URL` | API URL     | `http://localhost:3101/v1` |
 | `CMS_API_KEY` | API key     | (none)                     |
 
 ### CMS API (apps/cms-api)
@@ -123,7 +123,7 @@ Image URLs are resolved with the following priority:
 | -------- | --------------------- | ----------------------------- |
 | 1        | R2 credentials set    | Presigned URL (1h expiry)     |
 | 2        | `R2_PUBLIC_URL` set   | `{R2_PUBLIC_URL}/{r2Key}`     |
-| 3        | `ENVIRONMENT=dev`     | `localhost:3200/v1/images/..` |
+| 3        | `ENVIRONMENT=dev`     | `localhost:3101/v1/images/..` |
 | 4        | Default               | `cdn.tqer39.dev/{r2Key}`      |
 
 Local development uses option 3 automatically. Production uses presigned URLs
@@ -136,7 +136,7 @@ Local development uses option 3 automatically. Production uses presigned URLs
 ```bash
 # Check port usage
 lsof -i :3100
-lsof -i :3200
+lsof -i :3101
 
 # Kill process
 kill -9 <PID>

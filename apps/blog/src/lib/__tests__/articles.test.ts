@@ -274,7 +274,7 @@ describe('articles', () => {
       await getArticlesByTag('C++');
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:3200/v1/articles?status=published&tag=C%2B%2B&perPage=1000',
+        'http://localhost:3101/v1/articles?status=published&tag=C%2B%2B&perPage=1000',
         expect.any(Object)
       );
     });

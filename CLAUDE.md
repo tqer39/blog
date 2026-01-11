@@ -80,11 +80,11 @@ All environment constants are centralized in `packages/config/src/constants.ts`.
 │ localhost:3100  │ blog-dev.tqer39.dev     │ blog.tqer39.dev               │
 ├─────────────────┼─────────────────────────┼───────────────────────────────┤
 │ CMS API:        │ CMS API:                │ CMS API:                      │
-│ localhost:3200  │ cms-api-dev.tqer39      │ cms-api.tqer39.workers.dev    │
+│ localhost:3101  │ cms-api-dev.tqer39      │ cms-api.tqer39.workers.dev    │
 │                 │ .workers.dev            │                               │
 ├─────────────────┼─────────────────────────┼───────────────────────────────┤
 │ CDN/R2:         │ CDN/R2:                 │ CDN/R2:                       │
-│ localhost:3300  │ cdn.tqer39.dev          │ cdn.tqer39.dev                │
+│ localhost:3102  │ cdn.tqer39.dev          │ cdn.tqer39.dev                │
 ├─────────────────┼─────────────────────────┼───────────────────────────────┤
 │ D1: local       │ blog-cms-dev            │ blog-cms-prod                 │
 │ R2: local       │ blog-images-dev         │ blog-images-prod              │

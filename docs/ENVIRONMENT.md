@@ -11,7 +11,7 @@ and production.
 
 | Environment | Blog | CMS API | CDN |
 | ----------- | ---- | ------- | --- |
-| Local | localhost:3100 | localhost:3200 | localhost:3300 |
+| Local | localhost:3100 | localhost:3101 | localhost:3102 |
 | Dev | blog-dev.tqer39.dev | cms-api-dev.workers.dev | cdn.tqer39.dev |
 | Prod | blog.tqer39.dev | cms-api.workers.dev | cdn.tqer39.dev |
 
@@ -20,8 +20,8 @@ and production.
 | Service | Port | Description |
 | ------- | ---- | ----------- |
 | Blog (Next.js) | 3100 | Frontend application |
-| CMS API (Hono) | 3200 | Backend API |
-| R2 Local | 3300 | R2 emulator (MinIO) |
+| CMS API (Hono) | 3101 | Backend API |
+| R2 Local | 3102 | R2 emulator (MinIO) |
 
 ## Domain Structure
 

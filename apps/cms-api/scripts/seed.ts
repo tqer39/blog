@@ -3,7 +3,7 @@
  * Run with: pnpm seed (requires API server running)
  */
 
-const API_URL = process.env.CMS_API_URL || 'http://localhost:3200/v1';
+const API_URL = process.env.CMS_API_URL || 'http://localhost:3101/v1';
 const API_KEY = process.env.CMS_API_KEY || 'dev-api-key';
 
 interface ArticleInput {

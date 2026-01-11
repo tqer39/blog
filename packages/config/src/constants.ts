@@ -9,9 +9,9 @@ export const PORTS = {
   /** Next.js Blog App */
   BLOG: 3100,
   /** Hono CMS API (Cloudflare Workers) */
-  CMS_API: 3200,
+  CMS_API: 3101,
   /** R2 Local Emulator (MinIO) */
-  R2_LOCAL: 3300,
+  R2_LOCAL: 3102,
 } as const;
 
 // ===========================================
