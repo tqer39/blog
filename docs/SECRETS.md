@@ -69,14 +69,22 @@ Note: R2 access keys are not needed - R2 is accessed via native bindings.
 | ---------------- | ---------------- | ------ |
 | `blog-api-token` | VERCEL_API_TOKEN | GitHub |
 
+### OpenAI (op://shared-secrets/openai)
+
+| Field Name        | Maps To        | Target                       |
+| ----------------- | -------------- | ---------------------------- |
+| `blog-secret-key` | OPENAI_API_KEY | GitHub + Wrangler dev & prod |
+
+### Google AI Studio (op://shared-secrets/google-ai-studio)
+
+| Field Name     | Maps To        | Target              |
+| -------------- | -------------- | ------------------- |
+| `blog-api-key` | GEMINI_API_KEY | Wrangler dev & prod |
+
 ### AI Services (op://blog-secrets/{item}/password)
 
 | Item Name                | Maps To           | Target                 |
 | ------------------------ | ----------------- | ---------------------- |
-| `openai-api-key-dev`     | OPENAI_API_KEY    | Wrangler dev           |
-| `openai-api-key-prod`    | OPENAI_API_KEY    | GitHub + Wrangler prod |
-| `gemini-api-key-dev`     | GEMINI_API_KEY    | Wrangler dev           |
-| `gemini-api-key-prod`    | GEMINI_API_KEY    | Wrangler prod          |
 | `anthropic-api-key-dev`  | ANTHROPIC_API_KEY | Wrangler dev           |
 | `anthropic-api-key-prod` | ANTHROPIC_API_KEY | GitHub + Wrangler prod |
 
@@ -261,10 +269,10 @@ op vault list
 op item list --vault blog-secrets
 
 # Get item details (to check field names)
-op item get openai-api-key-dev --vault blog-secrets
+op item get anthropic-api-key-dev --vault blog-secrets
 
 # Read a secret value
-op read "op://blog-secrets/openai-api-key-dev/password"
+op read "op://shared-secrets/openai/blog-secret-key"
 
 # Read from shared-secrets/cloudflare
 op read "op://shared-secrets/cloudflare/api-token"

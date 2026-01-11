@@ -191,6 +191,25 @@ set_github_secret_blog() {
     fi
 }
 
+# Set GitHub Secret from shared-secrets vault (generic item/field)
+set_github_secret_shared() {
+    local op_item="$1"
+    local secret_name="$2"
+    local field="$3"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "[DRY-RUN] Would set GitHub Secret: $secret_name (from shared-secrets/$op_item/$field)"
+        return 0
+    fi
+
+    if op read "op://${SHARED_VAULT}/${op_item}/${field}" 2>/dev/null | \
+        gh secret set "$secret_name" --repo "$REPO" --body -; then
+        log_success "GitHub Secret: $secret_name"
+    else
+        log_warn "Failed to set GitHub Secret: $secret_name (item may not exist)"
+    fi
+}
+
 # Set Wrangler Secret from Cloudflare vault (custom field)
 set_wrangler_secret_cf() {
     local field="$1"
@@ -234,6 +253,28 @@ set_wrangler_secret_blog() {
     cd "$PROJECT_ROOT"
 }
 
+# Set Wrangler Secret from shared-secrets vault (generic item/field)
+set_wrangler_secret_shared() {
+    local op_item="$1"
+    local secret_name="$2"
+    local wrangler_env="$3"
+    local field="$4"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "[DRY-RUN] Would set Wrangler Secret: $secret_name (env: $wrangler_env, from shared-secrets/$op_item/$field)"
+        return 0
+    fi
+
+    cd "$PROJECT_ROOT/apps/cms-api"
+    if op read "op://${SHARED_VAULT}/${op_item}/${field}" 2>/dev/null | \
+        pnpm wrangler secret put "$secret_name" --env "$wrangler_env"; then
+        log_success "Wrangler Secret: $secret_name (env: $wrangler_env)"
+    else
+        log_warn "Failed to set Wrangler Secret: $secret_name (item may not exist)"
+    fi
+    cd "$PROJECT_ROOT"
+}
+
 # Main sync function
 sync_all_secrets() {
     log_info "Starting secret sync..."
@@ -253,9 +294,9 @@ sync_all_secrets() {
         set_github_secret_cf "blog-d1-database-id-prod" "D1_DATABASE_ID_PROD"
         printf "\n"
 
-        # AI Services (from blog-secrets, prod only for GitHub)
+        # AI Services (OpenAI from shared-secrets, others from blog-secrets)
         log_info "=== AI Service Secrets (GitHub) ==="
-        set_github_secret_blog "openai-api-key-prod"    "OPENAI_API_KEY"
+        set_github_secret_shared "openai" "OPENAI_API_KEY" "blog-secret-key"
         set_github_secret_blog "anthropic-api-key-prod" "ANTHROPIC_API_KEY"
         printf "\n"
 
@@ -287,8 +328,8 @@ sync_all_secrets() {
         printf "\n"
 
         log_info "=== AI Service Secrets (Dev) ==="
-        set_wrangler_secret_blog "openai-api-key-dev"    "OPENAI_API_KEY"    "dev"
-        set_wrangler_secret_blog "gemini-api-key-dev"    "GEMINI_API_KEY"    "dev"
+        set_wrangler_secret_shared "openai" "OPENAI_API_KEY" "dev" "blog-secret-key"
+        set_wrangler_secret_shared "google-ai-studio" "GEMINI_API_KEY" "dev" "blog-api-key"
         set_wrangler_secret_blog "anthropic-api-key-dev" "ANTHROPIC_API_KEY" "dev"
         printf "\n"
 
@@ -307,8 +348,8 @@ sync_all_secrets() {
         printf "\n"
 
         log_info "=== AI Service Secrets (Prod) ==="
-        set_wrangler_secret_blog "openai-api-key-prod"    "OPENAI_API_KEY"    "production"
-        set_wrangler_secret_blog "gemini-api-key-prod"    "GEMINI_API_KEY"    "production"
+        set_wrangler_secret_shared "openai" "OPENAI_API_KEY" "production" "blog-secret-key"
+        set_wrangler_secret_shared "google-ai-studio" "GEMINI_API_KEY" "production" "blog-api-key"
         set_wrangler_secret_blog "anthropic-api-key-prod" "ANTHROPIC_API_KEY" "production"
         printf "\n"
 

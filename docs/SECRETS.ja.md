@@ -69,14 +69,22 @@
 | ---------------- | ---------------- | ------ |
 | `blog-api-token` | VERCEL_API_TOKEN | GitHub |
 
+### OpenAI (op://shared-secrets/openai)
+
+| フィールド名      | 環境変数       | 同期先                       |
+| ----------------- | -------------- | ---------------------------- |
+| `blog-secret-key` | OPENAI_API_KEY | GitHub + Wrangler dev & prod |
+
+### Google AI Studio (op://shared-secrets/google-ai-studio)
+
+| フィールド名   | 環境変数       | 同期先              |
+| -------------- | -------------- | ------------------- |
+| `blog-api-key` | GEMINI_API_KEY | Wrangler dev & prod |
+
 ### AI サービス (op://blog-secrets/{item}/password)
 
 | アイテム名               | 環境変数          | 同期先                 |
 | ------------------------ | ----------------- | ---------------------- |
-| `openai-api-key-dev`     | OPENAI_API_KEY    | Wrangler dev           |
-| `openai-api-key-prod`    | OPENAI_API_KEY    | GitHub + Wrangler prod |
-| `gemini-api-key-dev`     | GEMINI_API_KEY    | Wrangler dev           |
-| `gemini-api-key-prod`    | GEMINI_API_KEY    | Wrangler prod          |
 | `anthropic-api-key-dev`  | ANTHROPIC_API_KEY | Wrangler dev           |
 | `anthropic-api-key-prod` | ANTHROPIC_API_KEY | GitHub + Wrangler prod |
 
@@ -261,10 +269,10 @@ op vault list
 op item list --vault blog-secrets
 
 # アイテム詳細（フィールド名を確認）
-op item get openai-api-key-dev --vault blog-secrets
+op item get anthropic-api-key-dev --vault blog-secrets
 
 # シークレット値を取得
-op read "op://blog-secrets/openai-api-key-dev/password"
+op read "op://shared-secrets/openai/blog-secret-key"
 
 # shared-secrets/cloudflare から取得
 op read "op://shared-secrets/cloudflare/api-token"
