@@ -46,11 +46,13 @@ This document describes how to obtain and configure secrets.
 
 ### Other Third-party Secrets (GitHub Secrets)
 
-| Secret              | How to Obtain                    |
-| ------------------- | -------------------------------- |
-| `SLACK_WEBHOOK_DEV` | Slack API > Incoming Webhooks    |
-| `SLACK_WEBHOOK_PROD`| Slack API > Incoming Webhooks    |
-| `CODECOV_TOKEN`     | Codecov > Repository Settings    |
+| Secret                 | How to Obtain                 |
+| ---------------------- | ----------------------------- |
+| `SLACK_WEBHOOK_DEV`    | Slack API > Incoming Webhooks |
+| `SLACK_WEBHOOK_PROD`   | Slack API > Incoming Webhooks |
+| `DISCORD_WEBHOOK_DEV`  | Discord Server > Webhooks     |
+| `DISCORD_WEBHOOK_PROD` | Discord Server > Webhooks     |
+| `CODECOV_TOKEN`        | Codecov > Repository Settings |
 
 ### GitHub App Secrets (GitHub Secrets)
 
@@ -71,6 +73,17 @@ Generate password hash:
 ```bash
 node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 ```
+
+### How to Get Discord Webhook URL
+
+1. Open Discord server settings (click server name → "Server Settings")
+2. Go to "Integrations" → "Webhooks"
+3. Click "New Webhook"
+   - Set name (e.g., `blog-notifications`)
+   - Select target channel
+4. Click "Copy Webhook URL"
+
+URL format: `https://discord.com/api/webhooks/xxxx/yyyy`
 
 ## Setting Secrets
 
@@ -194,6 +207,8 @@ Field is `password` unless noted. Target: G=GitHub, W=Wrangler (staging/producti
 | admin-password-hash | ADMIN_PASSWORD_HASH | W |
 | slack-webhook-dev | SLACK_WEBHOOK_DEV | G |
 | slack-webhook-prod | SLACK_WEBHOOK_PROD | G |
+| discord-webhook-dev | DISCORD_WEBHOOK_DEV | G |
+| discord-webhook-prod | DISCORD_WEBHOOK_PROD | G |
 | codecov-token | CODECOV_TOKEN | G |
 | gha-app-id | GHA_APP_ID | G |
 | gha-app-private-key (field: private key) | GHA_APP_PRIVATE_KEY | G |

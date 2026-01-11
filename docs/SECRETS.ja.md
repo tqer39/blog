@@ -46,11 +46,13 @@
 
 ### その他サードパーティ (GitHub Secrets)
 
-| シークレット         | 取得方法                      |
-| -------------------- | ----------------------------- |
-| `SLACK_WEBHOOK_DEV`  | Slack API > Incoming Webhooks |
-| `SLACK_WEBHOOK_PROD` | Slack API > Incoming Webhooks |
-| `CODECOV_TOKEN`      | Codecov > リポジトリ設定      |
+| シークレット           | 取得方法                       |
+| ---------------------- | ------------------------------ |
+| `SLACK_WEBHOOK_DEV`    | Slack API > Incoming Webhooks  |
+| `SLACK_WEBHOOK_PROD`   | Slack API > Incoming Webhooks  |
+| `DISCORD_WEBHOOK_DEV`  | Discord サーバー > Webhook     |
+| `DISCORD_WEBHOOK_PROD` | Discord サーバー > Webhook     |
+| `CODECOV_TOKEN`        | Codecov > リポジトリ設定       |
 
 ### GitHub App 関連 (GitHub Secrets)
 
@@ -71,6 +73,17 @@
 ```bash
 node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 ```
+
+### Discord Webhook URL の取得方法
+
+1. Discord サーバー設定を開く（サーバー名クリック →「サーバー設定」）
+2. 「連携サービス」→「Webhook」
+3. 「新しいウェブフック」をクリック
+   - 名前を設定（例: `blog-notifications`）
+   - 投稿先チャンネルを選択
+4. 「ウェブフックURLをコピー」をクリック
+
+URL 形式: `https://discord.com/api/webhooks/xxxx/yyyy`
 
 ## シークレットの設定方法
 
@@ -194,6 +207,8 @@ gh secret set OP_SERVICE_ACCOUNT_TOKEN
 | admin-password-hash | ADMIN_PASSWORD_HASH | W |
 | slack-webhook-dev | SLACK_WEBHOOK_DEV | G |
 | slack-webhook-prod | SLACK_WEBHOOK_PROD | G |
+| discord-webhook-dev | DISCORD_WEBHOOK_DEV | G |
+| discord-webhook-prod | DISCORD_WEBHOOK_PROD | G |
 | codecov-token | CODECOV_TOKEN | G |
 | gha-app-id | GHA_APP_ID | G |
 | gha-app-private-key (field: private key) | GHA_APP_PRIVATE_KEY | G |
