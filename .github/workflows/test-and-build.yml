@@ -98,6 +98,17 @@ jobs:
             pnpm wrangler d1 execute blog-cms --local --file="$migration"
           done
 
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          CMS_API_KEY: op://blog-secrets/cms-api-key-test/password
+
+      - name: Create CMS API dev vars
+        run: echo "API_KEY=$CMS_API_KEY" > apps/cms-api/.dev.vars
+
       - name: Start CMS API
         run: pnpm --filter @blog/cms-api dev &
 
@@ -113,13 +124,11 @@ jobs:
         run: pnpm --filter @blog/cms-api seed
         env:
           CMS_API_URL: http://localhost:3101/v1
-          CMS_API_KEY: dev-api-key
 
       - name: Run E2E tests
         run: pnpm e2e
         env:
           CMS_API_URL: http://localhost:3101/v1
-          CMS_API_KEY: dev-api-key
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
