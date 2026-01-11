@@ -234,35 +234,73 @@ gh secret set OP_SERVICE_ACCOUNT_TOKEN
 #### 1Password Vault Setup
 
 Create a vault named `blog-secrets` with the following items.
-Field is `password` unless noted. Target: G=GitHub, W=Wrangler (dev/production).
+Field is `password` unless noted.
 
-| Item Name | Maps To | Target |
-| --------- | ------- | ------ |
-| cloudflare-api-token | CLOUDFLARE_API_TOKEN | G |
-| cloudflare-account-id | CLOUDFLARE_ACCOUNT_ID | G |
-| cloudflare-zone-id | CLOUDFLARE_ZONE_ID | G |
-| vercel-api-token | VERCEL_API_TOKEN | G |
-| d1-database-id-dev | D1_DATABASE_ID_DEV | G |
-| d1-database-id-prod | D1_DATABASE_ID_PROD | G |
-| r2-access-key-id | R2_ACCESS_KEY_ID | G+W |
-| r2-secret-access-key | R2_SECRET_ACCESS_KEY | G+W |
-| r2-bucket-name | R2_BUCKET_NAME | G+W |
-| r2-public-url-dev | R2_PUBLIC_URL | W (dev) |
-| r2-public-url-prod | R2_PUBLIC_URL | W (production) |
-| basic-auth-user | BASIC_AUTH_USER | W (dev) |
-| basic-auth-pass | BASIC_AUTH_PASS | W (dev) |
-| openai-api-key | OPENAI_API_KEY | G+W |
-| gemini-api-key | GEMINI_API_KEY | W |
-| anthropic-api-key | ANTHROPIC_API_KEY | G+W |
-| auth-secret | AUTH_SECRET | W |
-| admin-password-hash | ADMIN_PASSWORD_HASH | W |
-| slack-webhook-dev | SLACK_WEBHOOK_DEV | G |
-| slack-webhook-prod | SLACK_WEBHOOK_PROD | G |
-| discord-webhook-dev | DISCORD_WEBHOOK_DEV | G |
-| discord-webhook-prod | DISCORD_WEBHOOK_PROD | G |
-| codecov-token | CODECOV_TOKEN | G |
-| gha-app-id | GHA_APP_ID | G |
-| gha-app-private-key (field: private key) | GHA_APP_PRIVATE_KEY | G |
+Target legend: G=GitHub, Wd=Wrangler dev, Wp=Wrangler production.
+
+**Infrastructure (GitHub only):**
+
+| Item Name              | Maps To                | Target |
+| ---------------------- | ---------------------- | ------ |
+| cloudflare-api-token   | CLOUDFLARE_API_TOKEN   | G      |
+| cloudflare-account-id  | CLOUDFLARE_ACCOUNT_ID  | G      |
+| cloudflare-zone-id     | CLOUDFLARE_ZONE_ID     | G      |
+| vercel-api-token       | VERCEL_API_TOKEN       | G      |
+| d1-database-id-dev     | D1_DATABASE_ID_DEV     | G      |
+| d1-database-id-prod    | D1_DATABASE_ID_PROD    | G      |
+
+**R2 Storage (environment-specific):**
+
+| Item Name                 | Maps To              | Target |
+| ------------------------- | -------------------- | ------ |
+| r2-access-key-id-dev      | R2_ACCESS_KEY_ID     | Wd     |
+| r2-access-key-id-prod     | R2_ACCESS_KEY_ID     | Wp     |
+| r2-secret-access-key-dev  | R2_SECRET_ACCESS_KEY | Wd     |
+| r2-secret-access-key-prod | R2_SECRET_ACCESS_KEY | Wp     |
+| r2-public-url-dev         | R2_PUBLIC_URL        | Wd     |
+| r2-public-url-prod        | R2_PUBLIC_URL        | Wp     |
+
+**AI Services (environment-specific):**
+
+| Item Name              | Maps To           | Target |
+| ---------------------- | ----------------- | ------ |
+| openai-api-key-dev     | OPENAI_API_KEY    | Wd     |
+| openai-api-key-prod    | OPENAI_API_KEY    | G+Wp   |
+| gemini-api-key-dev     | GEMINI_API_KEY    | Wd     |
+| gemini-api-key-prod    | GEMINI_API_KEY    | Wp     |
+| anthropic-api-key-dev  | ANTHROPIC_API_KEY | Wd     |
+| anthropic-api-key-prod | ANTHROPIC_API_KEY | G+Wp   |
+
+**Application (environment-specific):**
+
+| Item Name                | Maps To             | Target |
+| ------------------------ | ------------------- | ------ |
+| auth-secret-dev          | AUTH_SECRET         | Wd     |
+| auth-secret-prod         | AUTH_SECRET         | Wp     |
+| admin-password-hash-dev  | ADMIN_PASSWORD_HASH | Wd     |
+| admin-password-hash-prod | ADMIN_PASSWORD_HASH | Wp     |
+| basic-auth-user          | BASIC_AUTH_USER     | Wd     |
+| basic-auth-pass          | BASIC_AUTH_PASS     | Wd     |
+
+**Third-party Services (GitHub only):**
+
+| Item Name                | Maps To              | Target |
+| ------------------------ | -------------------- | ------ |
+| slack-webhook-dev        | SLACK_WEBHOOK_DEV    | G      |
+| slack-webhook-prod       | SLACK_WEBHOOK_PROD   | G      |
+| discord-webhook-dev      | DISCORD_WEBHOOK_DEV  | G      |
+| discord-webhook-prod     | DISCORD_WEBHOOK_PROD | G      |
+| codecov-token            | CODECOV_TOKEN        | G      |
+| gha-app-id               | GHA_APP_ID           | G      |
+| gha-app-private-key [^1] | GHA_APP_PRIVATE_KEY  | G      |
+
+**CI/CD Testing:**
+
+| Item Name        | Maps To       | Target | Notes              |
+| ---------------- | ------------- | ------ | ------------------ |
+| cms-api-key-test | CMS_API_KEY   | CI     | E2E tests API auth |
+
+[^1]: Field name is `private key` instead of `password`.
 
 ### Manual Setup: GitHub Secrets
 

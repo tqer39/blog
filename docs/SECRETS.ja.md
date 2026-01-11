@@ -234,35 +234,71 @@ gh secret set OP_SERVICE_ACCOUNT_TOKEN
 #### 1Password Vault の設定
 
 `blog-secrets` vault を作成し、以下のアイテムを登録。
-フィールドは特記なければ `password`。同期先: G=GitHub, W=Wrangler (dev/production)。
+フィールドは特記なければ `password`。同期先: G=GitHub, Wd=Wrangler dev, Wp=Wrangler production。
 
-| アイテム名 | 環境変数名 | 同期先 |
-| ---------- | ---------- | ------ |
-| cloudflare-api-token | CLOUDFLARE_API_TOKEN | G |
-| cloudflare-account-id | CLOUDFLARE_ACCOUNT_ID | G |
-| cloudflare-zone-id | CLOUDFLARE_ZONE_ID | G |
-| vercel-api-token | VERCEL_API_TOKEN | G |
-| d1-database-id-dev | D1_DATABASE_ID_DEV | G |
-| d1-database-id-prod | D1_DATABASE_ID_PROD | G |
-| r2-access-key-id | R2_ACCESS_KEY_ID | G+W |
-| r2-secret-access-key | R2_SECRET_ACCESS_KEY | G+W |
-| r2-bucket-name | R2_BUCKET_NAME | G+W |
-| r2-public-url-dev | R2_PUBLIC_URL | W (dev) |
-| r2-public-url-prod | R2_PUBLIC_URL | W (production) |
-| basic-auth-user | BASIC_AUTH_USER | W (dev) |
-| basic-auth-pass | BASIC_AUTH_PASS | W (dev) |
-| openai-api-key | OPENAI_API_KEY | G+W |
-| gemini-api-key | GEMINI_API_KEY | W |
-| anthropic-api-key | ANTHROPIC_API_KEY | G+W |
-| auth-secret | AUTH_SECRET | W |
-| admin-password-hash | ADMIN_PASSWORD_HASH | W |
-| slack-webhook-dev | SLACK_WEBHOOK_DEV | G |
-| slack-webhook-prod | SLACK_WEBHOOK_PROD | G |
-| discord-webhook-dev | DISCORD_WEBHOOK_DEV | G |
-| discord-webhook-prod | DISCORD_WEBHOOK_PROD | G |
-| codecov-token | CODECOV_TOKEN | G |
-| gha-app-id | GHA_APP_ID | G |
-| gha-app-private-key (field: private key) | GHA_APP_PRIVATE_KEY | G |
+**インフラ (GitHub のみ):**
+
+| アイテム名             | 環境変数名             | 同期先 |
+| ---------------------- | ---------------------- | ------ |
+| cloudflare-api-token   | CLOUDFLARE_API_TOKEN   | G      |
+| cloudflare-account-id  | CLOUDFLARE_ACCOUNT_ID  | G      |
+| cloudflare-zone-id     | CLOUDFLARE_ZONE_ID     | G      |
+| vercel-api-token       | VERCEL_API_TOKEN       | G      |
+| d1-database-id-dev     | D1_DATABASE_ID_DEV     | G      |
+| d1-database-id-prod    | D1_DATABASE_ID_PROD    | G      |
+
+**R2 ストレージ (環境別):**
+
+| アイテム名                | 環境変数名           | 同期先 |
+| ------------------------- | -------------------- | ------ |
+| r2-access-key-id-dev      | R2_ACCESS_KEY_ID     | Wd     |
+| r2-access-key-id-prod     | R2_ACCESS_KEY_ID     | Wp     |
+| r2-secret-access-key-dev  | R2_SECRET_ACCESS_KEY | Wd     |
+| r2-secret-access-key-prod | R2_SECRET_ACCESS_KEY | Wp     |
+| r2-public-url-dev         | R2_PUBLIC_URL        | Wd     |
+| r2-public-url-prod        | R2_PUBLIC_URL        | Wp     |
+
+**AI サービス (環境別):**
+
+| アイテム名             | 環境変数名        | 同期先 |
+| ---------------------- | ----------------- | ------ |
+| openai-api-key-dev     | OPENAI_API_KEY    | Wd     |
+| openai-api-key-prod    | OPENAI_API_KEY    | G+Wp   |
+| gemini-api-key-dev     | GEMINI_API_KEY    | Wd     |
+| gemini-api-key-prod    | GEMINI_API_KEY    | Wp     |
+| anthropic-api-key-dev  | ANTHROPIC_API_KEY | Wd     |
+| anthropic-api-key-prod | ANTHROPIC_API_KEY | G+Wp   |
+
+**アプリケーション (環境別):**
+
+| アイテム名               | 環境変数名          | 同期先 |
+| ------------------------ | ------------------- | ------ |
+| auth-secret-dev          | AUTH_SECRET         | Wd     |
+| auth-secret-prod         | AUTH_SECRET         | Wp     |
+| admin-password-hash-dev  | ADMIN_PASSWORD_HASH | Wd     |
+| admin-password-hash-prod | ADMIN_PASSWORD_HASH | Wp     |
+| basic-auth-user          | BASIC_AUTH_USER     | Wd     |
+| basic-auth-pass          | BASIC_AUTH_PASS     | Wd     |
+
+**サードパーティ (GitHub のみ):**
+
+| アイテム名               | 環境変数名           | 同期先 |
+| ------------------------ | -------------------- | ------ |
+| slack-webhook-dev        | SLACK_WEBHOOK_DEV    | G      |
+| slack-webhook-prod       | SLACK_WEBHOOK_PROD   | G      |
+| discord-webhook-dev      | DISCORD_WEBHOOK_DEV  | G      |
+| discord-webhook-prod     | DISCORD_WEBHOOK_PROD | G      |
+| codecov-token            | CODECOV_TOKEN        | G      |
+| gha-app-id               | GHA_APP_ID           | G      |
+| gha-app-private-key [^1] | GHA_APP_PRIVATE_KEY  | G      |
+
+**CI/CD テスト:**
+
+| アイテム名       | 環境変数名    | 同期先 | 備考                  |
+| ---------------- | ------------- | ------ | --------------------- |
+| cms-api-key-test | CMS_API_KEY   | CI     | E2E テスト用 API 認証 |
+
+[^1]: フィールド名は `password` ではなく `private key` を使用。
 
 ### 手動設定: GitHub Secrets
 
