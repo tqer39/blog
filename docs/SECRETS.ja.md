@@ -87,12 +87,19 @@
 | -------------- | ----------------- | ---------------------------- |
 | `blog-api-key` | ANTHROPIC_API_KEY | GitHub + Wrangler dev & prod |
 
-### アプリケーション (op://blog-secrets/{item}/password)
+### アプリケーション (op://blog-secrets)
+
+#### auth-secret (op://blog-secrets/auth-secret)
+
+| フィールド | 環境変数    | 同期先        |
+| ---------- | ----------- | ------------- |
+| `dev`      | AUTH_SECRET | Wrangler dev  |
+| `prod`     | AUTH_SECRET | Wrangler prod |
+
+#### その他のアプリケーションシークレット (op://blog-secrets/{item}/password)
 
 | アイテム名                 | 環境変数            | 同期先        |
 | -------------------------- | ------------------- | ------------- |
-| `auth-secret-dev`          | AUTH_SECRET         | Wrangler dev  |
-| `auth-secret-prod`         | AUTH_SECRET         | Wrangler prod |
 | `admin-password-hash-dev`  | ADMIN_PASSWORD_HASH | Wrangler dev  |
 | `admin-password-hash-prod` | ADMIN_PASSWORD_HASH | Wrangler prod |
 | `basic-auth-user`          | BASIC_AUTH_USER     | Wrangler dev  |

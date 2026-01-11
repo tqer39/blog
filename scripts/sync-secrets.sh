@@ -334,7 +334,7 @@ sync_all_secrets() {
         printf "\n"
 
         log_info "=== Application Secrets (Dev) ==="
-        set_wrangler_secret_blog "auth-secret-dev"         "AUTH_SECRET"         "dev"
+        set_wrangler_secret_blog "auth-secret"              "AUTH_SECRET"         "dev" "dev"
         set_wrangler_secret_blog "admin-password-hash-dev" "ADMIN_PASSWORD_HASH" "dev"
         set_wrangler_secret_blog "basic-auth-user"         "BASIC_AUTH_USER"     "dev"
         set_wrangler_secret_blog "basic-auth-pass"         "BASIC_AUTH_PASS"     "dev"
@@ -354,7 +354,7 @@ sync_all_secrets() {
         printf "\n"
 
         log_info "=== Application Secrets (Prod) ==="
-        set_wrangler_secret_blog "auth-secret-prod"         "AUTH_SECRET"         "production"
+        set_wrangler_secret_blog "auth-secret"              "AUTH_SECRET"         "production" "prod"
         set_wrangler_secret_blog "admin-password-hash-prod" "ADMIN_PASSWORD_HASH" "production"
         printf "\n"
     fi
