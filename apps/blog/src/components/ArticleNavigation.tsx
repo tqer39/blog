@@ -1,4 +1,6 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+'use client';
+
+import { ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react';
 import Link from 'next/link';
 
 interface ArticleNavigationProps {
@@ -10,12 +12,21 @@ export function ArticleNavigation({
   prevArticle,
   nextArticle,
 }: ArticleNavigationProps) {
-  if (!prevArticle && !nextArticle) {
-    return null;
-  }
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <nav className="mt-12 border-t border-stone-200 pt-8 dark:border-stone-700">
+      <button
+        type="button"
+        onClick={scrollToTop}
+        className={`flex w-full items-center justify-center gap-2 rounded-lg border border-stone-200 p-3 text-stone-600 transition-colors hover:border-stone-400 hover:bg-stone-50 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:border-stone-500 dark:hover:bg-stone-800 dark:hover:text-stone-100 ${prevArticle || nextArticle ? 'mb-6' : ''}`}
+      >
+        <ChevronUp className="h-5 w-5" />
+        トップに戻る
+      </button>
+      {(prevArticle || nextArticle) && (
       <div className="flex flex-col gap-4 sm:flex-row sm:justify-between">
         {prevArticle ? (
           <Link
@@ -51,6 +62,7 @@ export function ArticleNavigation({
           <div className="flex-1" />
         )}
       </div>
+      )}
     </nav>
   );
 }

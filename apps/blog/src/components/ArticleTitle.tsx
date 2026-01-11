@@ -1,6 +1,6 @@
 'use client';
 
-import { Link2, Copy } from 'lucide-react';
+import { Copy } from 'lucide-react';
 
 interface ArticleTitleProps {
   title: string;
