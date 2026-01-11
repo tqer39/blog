@@ -15,7 +15,7 @@ This document describes how to obtain and configure secrets.
 
 ## Environment-Specific Secrets
 
-| Secret         | Local     | Dev (staging)      | Prod (production)   |
+| Secret         | Local     | Dev                | Prod                |
 | -------------- | --------- | ------------------ | ------------------- |
 | D1 Database ID | local     | D1_DATABASE_ID_DEV | D1_DATABASE_ID_PROD |
 | R2 Bucket      | local     | blog-images-dev    | blog-images-prod    |
@@ -96,6 +96,45 @@ URL format: `https://discord.com/api/webhooks/xxxx/yyyy`
 7. Click **Create Token** and copy the value (shown only once)
 
 Reference: [Vercel Tokens Documentation](https://vercel.com/docs/sign-in-with-vercel/tokens)
+
+### How to Get OpenAI API Key
+
+1. Sign up or log in at [OpenAI Platform](https://platform.openai.com)
+2. Click your profile icon (top right) → **View API keys**
+   - Or go directly to: <https://platform.openai.com/api-keys>
+3. Click **Create new secret key**
+4. Name your key and click **Create secret key**
+5. Copy the key immediately (shown only once)
+
+Note: New accounts receive $5 in free credits. Set up billing for continued use.
+
+Reference: [OpenAI API Keys](https://platform.openai.com/api-keys)
+
+### How to Get Anthropic API Key
+
+1. Sign up or log in at [Anthropic Console](https://console.anthropic.com)
+   - Use Google or email magic link authentication
+2. Set up billing under **Settings** (required before creating keys)
+3. Navigate to **API Keys** in the left sidebar
+4. Click **Create Key**
+5. Name your key and copy it immediately (shown only once)
+
+Note: Purchase credits ($5 minimum) to start using the API.
+
+Reference: [Anthropic Console](https://console.anthropic.com)
+
+### How to Get Gemini API Key
+
+1. Sign up or log in at [Google AI Studio](https://ai.google.dev/aistudio)
+2. Accept Terms of Service (first-time only)
+3. Navigate to **API Keys** in the menu
+4. Click **Create API Key**
+5. Select an existing project or create a new one
+6. Copy the generated key
+
+Note: Gemini API is free to start. Each key is linked to a Google Cloud project.
+
+Reference: [Gemini API Key Documentation](https://ai.google.dev/gemini-api/docs/api-key)
 
 ## Setting Secrets
 
@@ -195,7 +234,7 @@ gh secret set OP_SERVICE_ACCOUNT_TOKEN
 #### 1Password Vault Setup
 
 Create a vault named `blog-secrets` with the following items.
-Field is `password` unless noted. Target: G=GitHub, W=Wrangler (staging/production).
+Field is `password` unless noted. Target: G=GitHub, W=Wrangler (dev/production).
 
 | Item Name | Maps To | Target |
 | --------- | ------- | ------ |
@@ -208,10 +247,10 @@ Field is `password` unless noted. Target: G=GitHub, W=Wrangler (staging/producti
 | r2-access-key-id | R2_ACCESS_KEY_ID | G+W |
 | r2-secret-access-key | R2_SECRET_ACCESS_KEY | G+W |
 | r2-bucket-name | R2_BUCKET_NAME | G+W |
-| r2-public-url-dev | R2_PUBLIC_URL | W (staging) |
+| r2-public-url-dev | R2_PUBLIC_URL | W (dev) |
 | r2-public-url-prod | R2_PUBLIC_URL | W (production) |
-| basic-auth-user | BASIC_AUTH_USER | W (staging) |
-| basic-auth-pass | BASIC_AUTH_PASS | W (staging) |
+| basic-auth-user | BASIC_AUTH_USER | W (dev) |
+| basic-auth-pass | BASIC_AUTH_PASS | W (dev) |
 | openai-api-key | OPENAI_API_KEY | G+W |
 | gemini-api-key | GEMINI_API_KEY | W |
 | anthropic-api-key | ANTHROPIC_API_KEY | G+W |
@@ -236,18 +275,18 @@ Field is `password` unless noted. Target: G=GitHub, W=Wrangler (staging/producti
 ```bash
 cd apps/cms-api
 
-# Set secrets for staging (dev) environment
-pnpm wrangler secret put OPENAI_API_KEY --env staging
-pnpm wrangler secret put GEMINI_API_KEY --env staging
-pnpm wrangler secret put ANTHROPIC_API_KEY --env staging
-pnpm wrangler secret put AUTH_SECRET --env staging
-pnpm wrangler secret put ADMIN_PASSWORD_HASH --env staging
-pnpm wrangler secret put R2_ACCESS_KEY_ID --env staging
-pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env staging
-pnpm wrangler secret put R2_BUCKET_NAME --env staging
-pnpm wrangler secret put R2_PUBLIC_URL --env staging
-pnpm wrangler secret put BASIC_AUTH_USER --env staging
-pnpm wrangler secret put BASIC_AUTH_PASS --env staging
+# Set secrets for dev environment
+pnpm wrangler secret put OPENAI_API_KEY --env dev
+pnpm wrangler secret put GEMINI_API_KEY --env dev
+pnpm wrangler secret put ANTHROPIC_API_KEY --env dev
+pnpm wrangler secret put AUTH_SECRET --env dev
+pnpm wrangler secret put ADMIN_PASSWORD_HASH --env dev
+pnpm wrangler secret put R2_ACCESS_KEY_ID --env dev
+pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env dev
+pnpm wrangler secret put R2_BUCKET_NAME --env dev
+pnpm wrangler secret put R2_PUBLIC_URL --env dev
+pnpm wrangler secret put BASIC_AUTH_USER --env dev
+pnpm wrangler secret put BASIC_AUTH_PASS --env dev
 
 # Set secrets for production environment
 pnpm wrangler secret put OPENAI_API_KEY

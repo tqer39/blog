@@ -97,6 +97,45 @@ URL 形式: `https://discord.com/api/webhooks/xxxx/yyyy`
 
 参考: [Vercel Tokens Documentation](https://vercel.com/docs/sign-in-with-vercel/tokens)
 
+### OpenAI API Key の取得方法
+
+1. [OpenAI Platform](https://platform.openai.com) にサインアップまたはログイン
+2. 右上のプロフィールアイコン →「View API keys」
+   - または直接: <https://platform.openai.com/api-keys>
+3. 「Create new secret key」をクリック
+4. キーに名前を付けて「Create secret key」をクリック
+5. キーをすぐにコピー（一度しか表示されない）
+
+備考: 新規アカウントには $5 の無料クレジット付与。継続利用には課金設定が必要。
+
+参考: [OpenAI API Keys](https://platform.openai.com/api-keys)
+
+### Anthropic API Key の取得方法
+
+1. [Anthropic Console](https://console.anthropic.com) にサインアップまたはログイン
+   - Google または メールのマジックリンク認証を使用
+2. 「Settings」で課金設定（キー作成前に必須）
+3. 左サイドバーの「API Keys」に移動
+4. 「Create Key」をクリック
+5. キーに名前を付けてすぐにコピー（一度しか表示されない）
+
+備考: API 利用にはクレジット購入が必要（最低 $5）。
+
+参考: [Anthropic Console](https://console.anthropic.com)
+
+### Gemini API Key の取得方法
+
+1. [Google AI Studio](https://ai.google.dev/aistudio) にサインアップまたはログイン
+2. 利用規約に同意（初回のみ）
+3. メニューから「API Keys」に移動
+4. 「Create API Key」をクリック
+5. 既存のプロジェクトを選択するか、新規作成
+6. 生成されたキーをコピー
+
+備考: Gemini API は無料で開始可能。各キーは Google Cloud プロジェクトに紐付け。
+
+参考: [Gemini API Key Documentation](https://ai.google.dev/gemini-api/docs/api-key)
+
 ## シークレットの設定方法
 
 ### 1Password からの自動同期（推奨）
@@ -195,7 +234,7 @@ gh secret set OP_SERVICE_ACCOUNT_TOKEN
 #### 1Password Vault の設定
 
 `blog-secrets` vault を作成し、以下のアイテムを登録。
-フィールドは特記なければ `password`。同期先: G=GitHub, W=Wrangler (staging/production)。
+フィールドは特記なければ `password`。同期先: G=GitHub, W=Wrangler (dev/production)。
 
 | アイテム名 | 環境変数名 | 同期先 |
 | ---------- | ---------- | ------ |
@@ -208,10 +247,10 @@ gh secret set OP_SERVICE_ACCOUNT_TOKEN
 | r2-access-key-id | R2_ACCESS_KEY_ID | G+W |
 | r2-secret-access-key | R2_SECRET_ACCESS_KEY | G+W |
 | r2-bucket-name | R2_BUCKET_NAME | G+W |
-| r2-public-url-dev | R2_PUBLIC_URL | W (staging) |
+| r2-public-url-dev | R2_PUBLIC_URL | W (dev) |
 | r2-public-url-prod | R2_PUBLIC_URL | W (production) |
-| basic-auth-user | BASIC_AUTH_USER | W (staging) |
-| basic-auth-pass | BASIC_AUTH_PASS | W (staging) |
+| basic-auth-user | BASIC_AUTH_USER | W (dev) |
+| basic-auth-pass | BASIC_AUTH_PASS | W (dev) |
 | openai-api-key | OPENAI_API_KEY | G+W |
 | gemini-api-key | GEMINI_API_KEY | W |
 | anthropic-api-key | ANTHROPIC_API_KEY | G+W |
@@ -236,18 +275,18 @@ gh secret set OP_SERVICE_ACCOUNT_TOKEN
 ```bash
 cd apps/cms-api
 
-# staging (dev) 環境のシークレット設定
-pnpm wrangler secret put OPENAI_API_KEY --env staging
-pnpm wrangler secret put GEMINI_API_KEY --env staging
-pnpm wrangler secret put ANTHROPIC_API_KEY --env staging
-pnpm wrangler secret put AUTH_SECRET --env staging
-pnpm wrangler secret put ADMIN_PASSWORD_HASH --env staging
-pnpm wrangler secret put R2_ACCESS_KEY_ID --env staging
-pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env staging
-pnpm wrangler secret put R2_BUCKET_NAME --env staging
-pnpm wrangler secret put R2_PUBLIC_URL --env staging
-pnpm wrangler secret put BASIC_AUTH_USER --env staging
-pnpm wrangler secret put BASIC_AUTH_PASS --env staging
+# dev 環境のシークレット設定
+pnpm wrangler secret put OPENAI_API_KEY --env dev
+pnpm wrangler secret put GEMINI_API_KEY --env dev
+pnpm wrangler secret put ANTHROPIC_API_KEY --env dev
+pnpm wrangler secret put AUTH_SECRET --env dev
+pnpm wrangler secret put ADMIN_PASSWORD_HASH --env dev
+pnpm wrangler secret put R2_ACCESS_KEY_ID --env dev
+pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env dev
+pnpm wrangler secret put R2_BUCKET_NAME --env dev
+pnpm wrangler secret put R2_PUBLIC_URL --env dev
+pnpm wrangler secret put BASIC_AUTH_USER --env dev
+pnpm wrangler secret put BASIC_AUTH_PASS --env dev
 
 # production 環境のシークレット設定
 pnpm wrangler secret put OPENAI_API_KEY

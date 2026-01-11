@@ -4,7 +4,7 @@ description: Deploy CMS API to Cloudflare Workers
 
 inputs:
   wrangler_env:
-    description: "Wrangler environment (staging or production)"
+    description: "Wrangler environment (dev or production)"
     required: true
   placeholder:
     description: "D1 database ID placeholder in wrangler.toml"

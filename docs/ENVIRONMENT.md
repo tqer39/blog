@@ -4,8 +4,7 @@
 
 ## Overview
 
-This project uses a 3-environment structure for development, staging,
-and production.
+This project uses a 3-environment structure: Local, Dev, and Prod.
 
 ## Environments
 
