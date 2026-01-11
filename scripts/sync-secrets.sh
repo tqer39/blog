@@ -28,7 +28,6 @@ umask 077
 # Configuration
 VAULT="blog-secrets"
 REPO="tqer39/blog"
-WRANGLER_ENV="production"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
@@ -154,18 +153,19 @@ set_github_secret() {
 set_wrangler_secret() {
     local op_item="$1"
     local secret_name="$2"
-    local field="${3:-password}"
+    local wrangler_env="$3"  # "dev" or "production"
+    local field="${4:-password}"
 
     if [[ "$DRY_RUN" == "true" ]]; then
-        log_info "[DRY-RUN] Would set Wrangler Secret: $secret_name"
+        log_info "[DRY-RUN] Would set Wrangler Secret: $secret_name (env: $wrangler_env)"
         return 0
     fi
 
     # Security: Pipe directly from op to wrangler (secret never in a variable or echo)
     cd "$PROJECT_ROOT/apps/cms-api"
     if op read "op://${VAULT}/${op_item}/${field}" 2>/dev/null | \
-        pnpm wrangler secret put "$secret_name" --env "$WRANGLER_ENV"; then
-        log_success "Wrangler Secret: $secret_name"
+        pnpm wrangler secret put "$secret_name" --env "$wrangler_env"; then
+        log_success "Wrangler Secret: $secret_name (env: $wrangler_env)"
     else
         log_warn "Failed to set Wrangler Secret: $secret_name (item may not exist)"
     fi
@@ -176,7 +176,7 @@ set_wrangler_secret() {
 sync_secret() {
     local op_item="$1"
     local secret_name="$2"
-    local targets="$3"  # "github", "wrangler", or "both"
+    local targets="$3"  # "github", "wrangler_dev", "wrangler_prod", "wrangler_both", "github_wrangler_both"
     local field="${4:-password}"
 
     case "$targets" in
@@ -185,17 +185,31 @@ sync_secret() {
                 set_github_secret "$op_item" "$secret_name" "$field"
             fi
             ;;
-        wrangler)
+        wrangler_dev)
             if [[ "$SYNC_WRANGLER" == "true" ]]; then
-                set_wrangler_secret "$op_item" "$secret_name" "$field"
+                set_wrangler_secret "$op_item" "$secret_name" "dev" "$field"
             fi
             ;;
-        both)
+        wrangler_prod)
+            if [[ "$SYNC_WRANGLER" == "true" ]]; then
+                set_wrangler_secret "$op_item" "$secret_name" "production" "$field"
+            fi
+            ;;
+        wrangler_both)
+            # Same 1Password item synced to both dev and production
+            if [[ "$SYNC_WRANGLER" == "true" ]]; then
+                set_wrangler_secret "$op_item" "$secret_name" "dev" "$field"
+                set_wrangler_secret "$op_item" "$secret_name" "production" "$field"
+            fi
+            ;;
+        github_wrangler_both)
+            # GitHub + both Wrangler environments (same 1Password item)
             if [[ "$SYNC_GITHUB" == "true" ]]; then
                 set_github_secret "$op_item" "$secret_name" "$field"
             fi
             if [[ "$SYNC_WRANGLER" == "true" ]]; then
-                set_wrangler_secret "$op_item" "$secret_name" "$field"
+                set_wrangler_secret "$op_item" "$secret_name" "dev" "$field"
+                set_wrangler_secret "$op_item" "$secret_name" "production" "$field"
             fi
             ;;
     esac
@@ -208,43 +222,68 @@ sync_all_secrets() {
     printf "\n"
 
     # Infrastructure secrets (GitHub only)
-    log_info "=== Infrastructure Secrets ==="
+    log_info "=== Infrastructure Secrets (GitHub) ==="
     sync_secret "cloudflare-api-token"  "CLOUDFLARE_API_TOKEN"  "github"
     sync_secret "cloudflare-account-id" "CLOUDFLARE_ACCOUNT_ID" "github"
     sync_secret "cloudflare-zone-id"    "CLOUDFLARE_ZONE_ID"    "github"
     sync_secret "vercel-api-token"      "VERCEL_API_TOKEN"      "github"
-    sync_secret "d1-database-id"        "D1_DATABASE_ID"        "github"
+    sync_secret "d1-database-id-dev"    "D1_DATABASE_ID_DEV"    "github"
+    sync_secret "d1-database-id-prod"   "D1_DATABASE_ID_PROD"   "github"
     printf "\n"
 
-    # R2 secrets (GitHub + Wrangler)
-    log_info "=== R2 Secrets ==="
-    sync_secret "r2-access-key-id"     "R2_ACCESS_KEY_ID"     "both"
-    sync_secret "r2-secret-access-key" "R2_SECRET_ACCESS_KEY" "both"
-    sync_secret "r2-bucket-name"       "R2_BUCKET_NAME"       "both"
+    # R2 secrets (environment-specific)
+    log_info "=== R2 Secrets (Dev) ==="
+    sync_secret "r2-access-key-id-dev"     "R2_ACCESS_KEY_ID"     "wrangler_dev"
+    sync_secret "r2-secret-access-key-dev" "R2_SECRET_ACCESS_KEY" "wrangler_dev"
+    sync_secret "r2-public-url-dev"        "R2_PUBLIC_URL"        "wrangler_dev"
     printf "\n"
 
-    # AI API keys
-    log_info "=== AI Service Secrets ==="
-    sync_secret "openai-api-key"    "OPENAI_API_KEY"    "both"      # GitHub (PR description) + Wrangler
-    sync_secret "gemini-api-key"    "GEMINI_API_KEY"    "wrangler"
-    sync_secret "anthropic-api-key" "ANTHROPIC_API_KEY" "both"      # GitHub (future) + Wrangler
+    log_info "=== R2 Secrets (Prod) ==="
+    sync_secret "r2-access-key-id-prod"     "R2_ACCESS_KEY_ID"     "wrangler_prod"
+    sync_secret "r2-secret-access-key-prod" "R2_SECRET_ACCESS_KEY" "wrangler_prod"
+    sync_secret "r2-public-url-prod"        "R2_PUBLIC_URL"        "wrangler_prod"
     printf "\n"
 
-    # Application secrets (Wrangler only)
-    log_info "=== Application Secrets ==="
-    sync_secret "auth-secret"         "AUTH_SECRET"         "wrangler"
-    sync_secret "admin-password-hash" "ADMIN_PASSWORD_HASH" "wrangler"
+    # AI API keys (environment-specific for Wrangler, shared for GitHub)
+    log_info "=== AI Service Secrets (GitHub) ==="
+    sync_secret "openai-api-key-prod"    "OPENAI_API_KEY"    "github"  # PR description generation
+    sync_secret "anthropic-api-key-prod" "ANTHROPIC_API_KEY" "github"  # Future use
+    printf "\n"
+
+    log_info "=== AI Service Secrets (Dev) ==="
+    sync_secret "openai-api-key-dev"    "OPENAI_API_KEY"    "wrangler_dev"
+    sync_secret "gemini-api-key-dev"    "GEMINI_API_KEY"    "wrangler_dev"
+    sync_secret "anthropic-api-key-dev" "ANTHROPIC_API_KEY" "wrangler_dev"
+    printf "\n"
+
+    log_info "=== AI Service Secrets (Prod) ==="
+    sync_secret "openai-api-key-prod"    "OPENAI_API_KEY"    "wrangler_prod"
+    sync_secret "gemini-api-key-prod"    "GEMINI_API_KEY"    "wrangler_prod"
+    sync_secret "anthropic-api-key-prod" "ANTHROPIC_API_KEY" "wrangler_prod"
+    printf "\n"
+
+    # Application secrets (environment-specific)
+    log_info "=== Application Secrets (Dev) ==="
+    sync_secret "auth-secret-dev"         "AUTH_SECRET"         "wrangler_dev"
+    sync_secret "admin-password-hash-dev" "ADMIN_PASSWORD_HASH" "wrangler_dev"
+    printf "\n"
+
+    log_info "=== Application Secrets (Prod) ==="
+    sync_secret "auth-secret-prod"         "AUTH_SECRET"         "wrangler_prod"
+    sync_secret "admin-password-hash-prod" "ADMIN_PASSWORD_HASH" "wrangler_prod"
     printf "\n"
 
     # Third-party service secrets (GitHub only)
-    log_info "=== Third-party Service Secrets ==="
-    sync_secret "slack-webhook-dev"  "SLACK_WEBHOOK_DEV"  "github"
-    sync_secret "slack-webhook-prod" "SLACK_WEBHOOK_PROD" "github"
-    sync_secret "codecov-token"      "CODECOV_TOKEN"      "github"
+    log_info "=== Third-party Service Secrets (GitHub) ==="
+    sync_secret "slack-webhook-dev"    "SLACK_WEBHOOK_DEV"    "github"
+    sync_secret "slack-webhook-prod"   "SLACK_WEBHOOK_PROD"   "github"
+    sync_secret "discord-webhook-dev"  "DISCORD_WEBHOOK_DEV"  "github"
+    sync_secret "discord-webhook-prod" "DISCORD_WEBHOOK_PROD" "github"
+    sync_secret "codecov-token"        "CODECOV_TOKEN"        "github"
     printf "\n"
 
     # GitHub App secrets (GitHub only)
-    log_info "=== GitHub App Secrets ==="
+    log_info "=== GitHub App Secrets (GitHub) ==="
     sync_secret "gha-app-id"          "GHA_APP_ID"          "github"
     sync_secret "gha-app-private-key" "GHA_APP_PRIVATE_KEY" "github" "private key"
     printf "\n"
@@ -267,7 +306,8 @@ main() {
     printf "\n"
     log_info "Verification commands:"
     printf "  gh secret list --repo %s\n" "$REPO"
-    printf "  cd apps/cms-api && pnpm wrangler secret list --env %s\n" "$WRANGLER_ENV"
+    printf "  cd apps/cms-api && pnpm wrangler secret list --env dev\n"
+    printf "  cd apps/cms-api && pnpm wrangler secret list --env production\n"
 }
 
 main
