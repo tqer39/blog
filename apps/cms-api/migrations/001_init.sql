@@ -9,7 +9,9 @@ CREATE TABLE IF NOT EXISTS articles (
   published_at DATETIME,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  header_image_id TEXT REFERENCES images(id) ON DELETE SET NULL
+  header_image_id TEXT REFERENCES images(id) ON DELETE SET NULL,
+  review_result TEXT,
+  review_updated_at TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status);
@@ -20,11 +22,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_articles_hash ON articles(hash);
 CREATE TABLE IF NOT EXISTS tags (
   id TEXT PRIMARY KEY,
   name TEXT UNIQUE NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE INDEX IF NOT EXISTS idx_tags_slug ON tags(slug);
 
 -- Article-Tags junction table
 CREATE TABLE IF NOT EXISTS article_tags (
@@ -55,9 +54,34 @@ CREATE TABLE IF NOT EXISTS images (
 CREATE INDEX IF NOT EXISTS idx_images_article ON images(article_id);
 CREATE INDEX IF NOT EXISTS idx_images_r2_key ON images(r2_key);
 
--- Trigger to update updated_at
+-- Site settings table for storing configurable site-wide settings
+CREATE TABLE IF NOT EXISTS site_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert default values
+INSERT INTO site_settings (key, value) VALUES
+  ('site_name', 'tB'),
+  ('site_description', '未来の自分に向けた技術ログ'),
+  ('author_name', 'tqer39'),
+  ('footer_text', ''),
+  ('social_github', 'https://github.com/tqer39'),
+  ('social_twitter', 'https://twitter.com/tqer39'),
+  ('social_bento', 'https://bento.me/tqer39')
+ON CONFLICT (key) DO NOTHING;
+
+-- Trigger to update updated_at on articles
 CREATE TRIGGER IF NOT EXISTS articles_updated_at
 AFTER UPDATE ON articles
 BEGIN
   UPDATE articles SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+END;
+
+-- Trigger to auto-update updated_at on site_settings
+CREATE TRIGGER IF NOT EXISTS site_settings_updated_at
+AFTER UPDATE ON site_settings
+BEGIN
+  UPDATE site_settings SET updated_at = CURRENT_TIMESTAMP WHERE key = NEW.key;
 END;
