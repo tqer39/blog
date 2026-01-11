@@ -81,12 +81,11 @@
 | -------------- | -------------- | ------------------- |
 | `blog-api-key` | GEMINI_API_KEY | Wrangler dev & prod |
 
-### AI サービス (op://blog-secrets/{item}/password)
+### Anthropic (op://shared-secrets/anthropic)
 
-| アイテム名               | 環境変数          | 同期先                 |
-| ------------------------ | ----------------- | ---------------------- |
-| `anthropic-api-key-dev`  | ANTHROPIC_API_KEY | Wrangler dev           |
-| `anthropic-api-key-prod` | ANTHROPIC_API_KEY | GitHub + Wrangler prod |
+| フィールド名   | 環境変数          | 同期先                       |
+| -------------- | ----------------- | ---------------------------- |
+| `blog-api-key` | ANTHROPIC_API_KEY | GitHub + Wrangler dev & prod |
 
 ### アプリケーション (op://blog-secrets/{item}/password)
 

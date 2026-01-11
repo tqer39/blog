@@ -81,12 +81,11 @@ Note: R2 access keys are not needed - R2 is accessed via native bindings.
 | -------------- | -------------- | ------------------- |
 | `blog-api-key` | GEMINI_API_KEY | Wrangler dev & prod |
 
-### AI Services (op://blog-secrets/{item}/password)
+### Anthropic (op://shared-secrets/anthropic)
 
-| Item Name                | Maps To           | Target                 |
-| ------------------------ | ----------------- | ---------------------- |
-| `anthropic-api-key-dev`  | ANTHROPIC_API_KEY | Wrangler dev           |
-| `anthropic-api-key-prod` | ANTHROPIC_API_KEY | GitHub + Wrangler prod |
+| Field Name     | Maps To           | Target                       |
+| -------------- | ----------------- | ---------------------------- |
+| `blog-api-key` | ANTHROPIC_API_KEY | GitHub + Wrangler dev & prod |
 
 ### Application (op://blog-secrets/{item}/password)
 

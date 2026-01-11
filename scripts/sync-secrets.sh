@@ -297,7 +297,7 @@ sync_all_secrets() {
         # AI Services (OpenAI from shared-secrets, others from blog-secrets)
         log_info "=== AI Service Secrets (GitHub) ==="
         set_github_secret_shared "openai" "OPENAI_API_KEY" "blog-secret-key"
-        set_github_secret_blog "anthropic-api-key-prod" "ANTHROPIC_API_KEY"
+        set_github_secret_shared "anthropic" "ANTHROPIC_API_KEY" "blog-api-key"
         printf "\n"
 
         # Third-party (from blog-secrets)
@@ -330,7 +330,7 @@ sync_all_secrets() {
         log_info "=== AI Service Secrets (Dev) ==="
         set_wrangler_secret_shared "openai" "OPENAI_API_KEY" "dev" "blog-secret-key"
         set_wrangler_secret_shared "google-ai-studio" "GEMINI_API_KEY" "dev" "blog-api-key"
-        set_wrangler_secret_blog "anthropic-api-key-dev" "ANTHROPIC_API_KEY" "dev"
+        set_wrangler_secret_shared "anthropic" "ANTHROPIC_API_KEY" "dev" "blog-api-key"
         printf "\n"
 
         log_info "=== Application Secrets (Dev) ==="
@@ -350,7 +350,7 @@ sync_all_secrets() {
         log_info "=== AI Service Secrets (Prod) ==="
         set_wrangler_secret_shared "openai" "OPENAI_API_KEY" "production" "blog-secret-key"
         set_wrangler_secret_shared "google-ai-studio" "GEMINI_API_KEY" "production" "blog-api-key"
-        set_wrangler_secret_blog "anthropic-api-key-prod" "ANTHROPIC_API_KEY" "production"
+        set_wrangler_secret_shared "anthropic" "ANTHROPIC_API_KEY" "production" "blog-api-key"
         printf "\n"
 
         log_info "=== Application Secrets (Prod) ==="
