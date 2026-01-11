@@ -92,19 +92,15 @@ importExportHandler.post('/markdown', async (c) => {
 
   // Handle tags
   for (const tagName of tags) {
-    const tagSlug = tagName.toLowerCase().replace(/\s+/g, '-');
-
     // Get or create tag
-    let tag = await c.env.DB.prepare('SELECT id FROM tags WHERE slug = ?')
-      .bind(tagSlug)
+    let tag = await c.env.DB.prepare('SELECT id FROM tags WHERE name = ?')
+      .bind(tagName)
       .first<{ id: string }>();
 
     if (!tag) {
       const tagId = generateId();
-      await c.env.DB.prepare(
-        'INSERT INTO tags (id, name, slug) VALUES (?, ?, ?)'
-      )
-        .bind(tagId, tagName, tagSlug)
+      await c.env.DB.prepare('INSERT INTO tags (id, name) VALUES (?, ?)')
+        .bind(tagId, tagName)
         .run();
       tag = { id: tagId };
     }

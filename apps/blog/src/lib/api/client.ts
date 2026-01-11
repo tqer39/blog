@@ -3,6 +3,9 @@ import type {
   ArticleCategory,
   ArticleInput,
   ArticleListResponse,
+  Category,
+  CategoryInput,
+  CategoryListResponse,
   ContinuationLength,
   GeminiImageModel,
   GenerateImageRequest,
@@ -57,9 +60,15 @@ async function fetchApi<T>(path: string, options?: RequestInit): Promise<T> {
   if (isMutating) {
     const csrfToken = getCsrfToken();
     if (csrfToken) {
-      const headers = new Headers(options?.headers);
-      headers.set('X-CSRF-Token', csrfToken);
-      options = { ...options, headers };
+      const existingHeaders =
+        (options?.headers as Record<string, string>) || {};
+      options = {
+        ...options,
+        headers: {
+          ...existingHeaders,
+          'X-CSRF-Token': csrfToken,
+        },
+      };
     }
   }
 
@@ -70,12 +79,14 @@ async function fetchApi<T>(path: string, options?: RequestInit): Promise<T> {
 export async function getArticles(params?: {
   status?: string;
   tag?: string;
+  category?: string;
   page?: number;
   perPage?: number;
 }): Promise<ArticleListResponse> {
   const searchParams = new URLSearchParams();
   if (params?.status) searchParams.set('status', params.status);
   if (params?.tag) searchParams.set('tag', params.tag);
+  if (params?.category) searchParams.set('category', params.category);
   if (params?.page) searchParams.set('page', String(params.page));
   if (params?.perPage) searchParams.set('perPage', String(params.perPage));
 
@@ -123,8 +134,8 @@ export async function getTags(): Promise<TagListResponse> {
   return fetchApi('/tags');
 }
 
-export async function getTag(slug: string): Promise<Tag> {
-  return fetchApi(`/tags/${slug}`);
+export async function getTag(id: string): Promise<Tag> {
+  return fetchApi(`/tags/${id}`);
 }
 
 export async function createTag(input: TagInput): Promise<Tag> {
@@ -135,16 +146,58 @@ export async function createTag(input: TagInput): Promise<Tag> {
   });
 }
 
-export async function updateTag(slug: string, input: TagInput): Promise<Tag> {
-  return fetchApi(`/tags/${slug}`, {
+export async function updateTag(id: string, input: TagInput): Promise<Tag> {
+  return fetchApi(`/tags/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   });
 }
 
-export async function deleteTag(slug: string): Promise<void> {
-  await fetchApi(`/tags/${slug}`, { method: 'DELETE' });
+export async function deleteTag(id: string): Promise<void> {
+  await fetchApi(`/tags/${id}`, { method: 'DELETE' });
+}
+
+// Categories
+export async function getCategories(): Promise<CategoryListResponse> {
+  return fetchApi('/categories');
+}
+
+export async function getCategory(id: string): Promise<Category> {
+  return fetchApi(`/categories/${id}`);
+}
+
+export async function createCategory(input: CategoryInput): Promise<Category> {
+  return fetchApi('/categories', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function updateCategory(
+  id: string,
+  input: CategoryInput
+): Promise<Category> {
+  return fetchApi(`/categories/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function deleteCategory(id: string): Promise<void> {
+  await fetchApi(`/categories/${id}`, { method: 'DELETE' });
+}
+
+export async function updateCategoriesOrder(
+  orderedIds: string[]
+): Promise<void> {
+  await fetchApi('/categories/reorder', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ orderedIds }),
+  });
 }
 
 // Images

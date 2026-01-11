@@ -61,6 +61,14 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
             </li>
             <li>
               <Link
+                href="/admin/categories"
+                className="block rounded-lg px-4 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                Categories
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/admin/settings"
                 className="block rounded-lg px-4 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
               >

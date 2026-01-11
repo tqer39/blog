@@ -1,3 +1,54 @@
+// Environment configuration (synced with packages/config/src/constants.ts)
+const PORTS = {
+  BLOG: 3100,
+  CMS_API: 3101,
+  R2_LOCAL: 3102,
+};
+const BASE_DOMAIN = 'tqer39.dev';
+const DOMAINS = {
+  CDN: `https://cdn.${BASE_DOMAIN}`,
+  CMS_API_LOCAL: `http://localhost:${PORTS.CMS_API}`,
+};
+
+const isDev = process.env.NODE_ENV !== 'production';
+
+// Build CSP header based on environment
+const cspDirectives = {
+  'default-src': ["'self'"],
+  'script-src': [
+    "'self'",
+    'https://cdn.jsdelivr.net',
+    'https://www.googletagmanager.com',
+    // unsafe-eval and unsafe-inline only in development
+    ...(isDev ? ["'unsafe-eval'", "'unsafe-inline'"] : []),
+  ],
+  'style-src': [
+    "'self'",
+    // unsafe-inline only in development (needed for Mermaid SVG styles in production too)
+    "'unsafe-inline'",
+  ],
+  'img-src': [
+    "'self'",
+    'data:',
+    DOMAINS.CDN,
+    'https://picsum.photos',
+    ...(isDev ? [DOMAINS.CMS_API_LOCAL] : []),
+  ],
+  'font-src': ["'self'"],
+  'connect-src': [
+    "'self'",
+    DOMAINS.CDN,
+    'https://www.google-analytics.com',
+    'https://analytics.google.com',
+    ...(isDev ? ['http://localhost:*'] : []),
+  ],
+  'frame-ancestors': ["'none'"],
+};
+
+const cspHeader = Object.entries(cspDirectives)
+  .map(([key, values]) => `${key} ${values.join(' ')}`)
+  .join('; ');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -5,18 +56,18 @@ const nextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '9000',
+        port: String(PORTS.R2_LOCAL),
         pathname: '/blog-images/**',
       },
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '8787',
+        port: String(PORTS.CMS_API),
         pathname: '/v1/images/**',
       },
       {
         protocol: 'https',
-        hostname: 'cdn.tqer39.dev',
+        hostname: `cdn.${BASE_DOMAIN}`, // cdn.tqer39.dev
         pathname: '/**',
       },
     ],
@@ -39,8 +90,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value:
-              "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://cdn.tqer39.dev https://picsum.photos http://localhost:8787; font-src 'self'; connect-src 'self' http://localhost:* https://cdn.tqer39.dev https://www.google-analytics.com https://analytics.google.com; frame-ancestors 'none';",
+            value: cspHeader,
           },
         ],
       },

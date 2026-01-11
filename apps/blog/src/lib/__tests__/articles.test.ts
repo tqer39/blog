@@ -19,6 +19,8 @@ const sampleArticle: Article = {
   content: '# Test Content',
   status: 'published',
   tags: ['javascript', 'testing'],
+  categoryId: null,
+  category: null,
   publishedAt: '2024-01-15T00:00:00Z',
   createdAt: '2024-01-01T00:00:00Z',
   updatedAt: '2024-01-15T00:00:00Z',
@@ -34,6 +36,8 @@ const sampleArticle2: Article = {
   content: '# Another Content',
   status: 'published',
   tags: ['typescript'],
+  categoryId: null,
+  category: null,
   publishedAt: '2024-01-10T00:00:00Z',
   createdAt: '2024-01-05T00:00:00Z',
   updatedAt: '2024-01-10T00:00:00Z',
@@ -45,19 +49,16 @@ const sampleTags: Tag[] = [
   {
     id: 'tag-1',
     name: 'javascript',
-    slug: 'javascript',
     createdAt: '2024-01-01T00:00:00Z',
   },
   {
     id: 'tag-2',
     name: 'typescript',
-    slug: 'typescript',
     createdAt: '2024-01-01T00:00:00Z',
   },
   {
     id: 'tag-3',
     name: 'testing',
-    slug: 'testing',
     createdAt: '2024-01-01T00:00:00Z',
   },
 ];
@@ -277,7 +278,7 @@ describe('articles', () => {
       await getArticlesByTag('C++');
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:8787/v1/articles?status=published&tag=C%2B%2B&perPage=1000',
+        'http://localhost:3101/v1/articles?status=published&tag=C%2B%2B&perPage=1000',
         expect.any(Object)
       );
     });

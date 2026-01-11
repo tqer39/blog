@@ -3,13 +3,13 @@ import type { Env } from '../index';
 
 /**
  * Basic Authentication middleware for dev environment
- * Skips authentication in production environment
+ * Skips authentication in prod environment
  */
 export async function basicAuthMiddleware(
   c: Context<{ Bindings: Env }>,
   next: Next
 ) {
-  // Skip Basic Auth in production environment
+  // Skip Basic Auth in prod environment
   if (c.env.BASIC_AUTH_ENABLED !== 'true') {
     return next();
   }

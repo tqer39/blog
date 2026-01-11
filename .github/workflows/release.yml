@@ -76,19 +76,20 @@ jobs:
             --notes-file CHANGELOG_BODY.md \
             --generate-notes
 
-      - name: Slack Notification (Success)
+      - name: Discord Notification (Success)
         if: success()
         continue-on-error: true
-        uses: ./.github/actions/slack-deploy-failure
+        uses: ./.github/actions/discord-notify
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
           title: "Release Created: ${{ inputs.version }}"
           message: "New release created. Production deployment will start automatically."
+          color: "3066993"
 
-      - name: Slack Notification (Failure)
+      - name: Discord Notification (Failure)
         if: failure()
-        uses: ./.github/actions/slack-deploy-failure
+        uses: ./.github/actions/discord-notify
         with:
-          slackWebhook: ${{ secrets.SLACK_WEBHOOK }}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
           title: "Release Creation Failed"
           message: "Failed to create release ${{ inputs.version }}"

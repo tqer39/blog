@@ -37,6 +37,7 @@ import {
 } from '@/lib/api/client';
 import { AISettingsPopover } from './AISettingsPopover';
 import { ArticlePreview } from './ArticlePreview';
+import { CategorySelector } from './CategorySelector';
 import { MarkdownEditor } from './MarkdownEditor';
 import { ReviewPanel } from './ReviewPanel';
 import { SplitButton } from './SplitButton';
@@ -59,6 +60,9 @@ export function ArticleEditor({
   );
   const [content, setContent] = useState(initialData?.content ?? '');
   const [tags, setTags] = useState<string[]>(initialData?.tags ?? []);
+  const [categoryId, setCategoryId] = useState<string | null>(
+    initialData?.categoryId ?? null
+  );
   const [status, setStatus] = useState<'draft' | 'published'>(
     initialData?.status ?? 'draft'
   );
@@ -292,6 +296,7 @@ export function ArticleEditor({
         description: description.trim() || undefined,
         content,
         tags,
+        categoryId,
         status,
         headerImageId,
       });
@@ -464,6 +469,7 @@ export function ArticleEditor({
             </p>
           </div>
           <TagSelector value={tags} onChange={setTags} />
+          <CategorySelector value={categoryId} onChange={setCategoryId} />
         </div>
 
         {/* Header Image */}

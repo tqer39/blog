@@ -55,11 +55,35 @@ Japanese files link to English with `[🇺🇸 English](path/to/file.md)`.
 
 ## CLAUDE.md Content Requirements
 
-1. **Project Overview**: Purpose and architecture
-2. **Development Commands**: Just commands with descriptions
-3. **Directory Structure**: Minimal monorepo structure
-4. **GitHub Secrets**: Required secrets for CI/CD
-5. **Key Technical Decisions**: Stack and tooling choices
+CLAUDE.md は簡潔に保ち、他ドキュメントで参照可能な内容は削除する。
+
+### 含めるべき内容
+
+1. **Blog Philosophy**: このリポジトリ固有の設計思想
+2. **Project Overview**: 概要と他ドキュメントへの参照リンク
+3. **Environment Configuration**: 3 環境構成図
+4. **Release Flow**: CI/CD フロー図
+5. **Authentication**: 認証方式
+6. **Package Names**: パッケージ名一覧
+7. **Key Technical Decisions**: 技術選定
+8. **Deployment**: デプロイ情報（概要のみ）
+9. **Tool Management**: ツール管理（簡潔に）
+
+### 他ドキュメントへ委譲する内容
+
+| 内容                     | 参照先                 |
+| ------------------------ | ---------------------- |
+| 開発コマンド             | `just --list`          |
+| ディレクトリ構造         | `README.md`            |
+| GitHub Secrets           | `docs/SECRETS.md`      |
+| CI/CD ワークフロー詳細   | `.github/workflows/`   |
+
+### 簡潔化ルール
+
+- 冗長な記述は削除し、参照リンクを記載
+- コマンド一覧は `just --list` で確認可能なため詳細不要
+- テーブルは必要最小限の列のみ
+- 重複を避け、Claude Code に必要な情報のみを記載
 
 ## README.md Content Requirements
 

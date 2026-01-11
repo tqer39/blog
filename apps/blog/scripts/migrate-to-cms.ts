@@ -6,7 +6,7 @@
  *   npx tsx scripts/migrate-to-cms.ts
  *
  * Prerequisites:
- *   - CMS API running at localhost:8787 (just dev-api)
+ *   - CMS API running at localhost:3101 (just dev-api)
  *   - D1 database initialized (just db-migrate-local)
  */
 
@@ -14,7 +14,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
 
-const API_URL = process.env.CMS_API_URL || 'http://localhost:8787/v1';
+const API_URL = process.env.CMS_API_URL || 'http://localhost:3101/v1';
 const API_KEY = process.env.CMS_API_KEY || 'dev-api-key';
 
 interface OldFrontmatter {
@@ -26,7 +26,6 @@ interface OldFrontmatter {
 }
 
 interface ArticleInput {
-  slug: string;
   title: string;
   description?: string;
   content: string;
@@ -63,11 +62,10 @@ async function createArticle(input: ArticleInput): Promise<void> {
 }
 
 async function createTagIfNotExists(tagName: string): Promise<void> {
-  const slug = tagName.toLowerCase().replace(/\s+/g, '-');
   try {
     await fetchApi('/tags', {
       method: 'POST',
-      body: JSON.stringify({ name: tagName, slug }),
+      body: JSON.stringify({ name: tagName }),
     });
     console.log(`  Created tag: ${tagName}`);
   } catch (error) {
@@ -122,7 +120,6 @@ async function migrate(): Promise<void> {
 
   // Migrate articles
   for (const filename of files) {
-    const slug = filename.replace(/\.md$/, '');
     const filePath = path.join(contentsDir, filename);
     const fileContents = fs.readFileSync(filePath, 'utf8');
     const { data, content } = matter(fileContents);
@@ -135,7 +132,6 @@ async function migrate(): Promise<void> {
     console.log(`  Tags: ${frontmatter.tags.join(', ')}`);
 
     const input: ArticleInput = {
-      slug,
       title: frontmatter.title,
       description: frontmatter.description,
       content: content.trim(),

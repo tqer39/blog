@@ -19,9 +19,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Checkout
-      uses: actions/checkout@v6
-
     - name: Get Terraform version from mise
       id: tf-version
       shell: bash

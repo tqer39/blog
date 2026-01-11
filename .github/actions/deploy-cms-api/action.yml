@@ -1,0 +1,45 @@
+---
+name: Deploy CMS API
+description: Deploy CMS API to Cloudflare Workers
+
+inputs:
+  wrangler_env:
+    description: "Wrangler environment (dev or prod)"
+    required: true
+  placeholder:
+    description: "D1 database ID placeholder in wrangler.toml"
+    required: true
+  d1_database_id:
+    description: "D1 database ID"
+    required: true
+  cloudflare_api_token:
+    description: "Cloudflare API token"
+    required: true
+  cloudflare_account_id:
+    description: "Cloudflare account ID"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: ./.github/actions/setup-node
+      with:
+        working-directory: apps/cms-api
+
+    - name: Update wrangler.toml with D1 database ID
+      shell: bash
+      working-directory: apps/cms-api
+      env:
+        D1_DATABASE_ID: ${{ inputs.d1_database_id }}
+        PLACEHOLDER: ${{ inputs.placeholder }}
+      run: |
+        sed -i "s/database_id = \"$PLACEHOLDER\"/database_id = \"$D1_DATABASE_ID\"/" wrangler.toml
+
+    - name: Deploy to Cloudflare Workers
+      shell: bash
+      working-directory: apps/cms-api
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ inputs.cloudflare_api_token }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cloudflare_account_id }}
+      run: pnpm wrangler deploy --env ${{ inputs.wrangler_env }}

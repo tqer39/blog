@@ -100,16 +100,42 @@ div:has(svg[id^="mermaid"]) {
 
 .prose .anchor-link {
   opacity: 0;
-  margin-right: 0.5rem;
+  margin-left: 0.5rem;
   text-decoration: none;
   color: hsl(var(--muted-foreground));
   transition: opacity 0.2s;
+  vertical-align: baseline;
+}
+
+.prose .anchor-hash {
+  font-weight: 400;
+  margin-right: 0.25rem;
+}
+
+.prose .anchor-hash:hover {
+  color: hsl(var(--foreground));
+}
+
+.prose .anchor-copy {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 0.35rem;
+  cursor: pointer;
+  color: inherit;
+  vertical-align: baseline;
+  position: relative;
+  top: 0.1em;
+}
+
+.prose .anchor-copy:hover {
+  color: hsl(var(--foreground));
 }
 
 .prose :is(h1, h2, h3, h4, h5, h6):hover .anchor-link {
-  opacity: 1;
+  opacity: 0.4;
 }
 
 .prose .anchor-link:hover {
-  color: hsl(var(--foreground));
+  opacity: 1;
 }

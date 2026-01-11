@@ -12,7 +12,7 @@
 #   - GitHub CLI (gh): brew install gh
 #   - Logged into 1Password: op signin
 #   - Logged into GitHub: gh auth login
-#   - 1Password vault "blog-secrets" with items configured
+#   - 1Password vaults: "shared-secrets" and "blog-secrets"
 #
 # Usage:
 #   ./scripts/sync-secrets.sh           # Sync all secrets
@@ -26,9 +26,11 @@ set -euo pipefail
 umask 077
 
 # Configuration
-VAULT="blog-secrets"
+SHARED_VAULT="shared-secrets"
+CLOUDFLARE_ITEM="cloudflare"
+VERCEL_ITEM="vercel"
+BLOG_VAULT="blog-secrets"
 REPO="tqer39/blog"
-WRANGLER_ENV="production"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
@@ -120,85 +122,157 @@ check_prerequisites() {
         exit 1
     fi
 
-    # Check if vault exists
-    if ! op vault get "$VAULT" &> /dev/null; then
-        log_error "1Password vault '$VAULT' not found"
-        log_info "Create the vault and add secrets first"
+    # Check if vaults exist
+    if ! op vault get "$SHARED_VAULT" &> /dev/null; then
+        log_error "1Password vault '$SHARED_VAULT' not found"
+        exit 1
+    fi
+
+    if ! op vault get "$BLOG_VAULT" &> /dev/null; then
+        log_error "1Password vault '$BLOG_VAULT' not found"
         exit 1
     fi
 
     log_success "All prerequisites met"
 }
 
-# Set GitHub Secret (secrets piped directly, never stored in variables)
-set_github_secret() {
+# Set GitHub Secret from Cloudflare vault (custom field)
+set_github_secret_cf() {
+    local field="$1"
+    local secret_name="$2"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "[DRY-RUN] Would set GitHub Secret: $secret_name (from cloudflare/$field)"
+        return 0
+    fi
+
+    if op read "op://${SHARED_VAULT}/${CLOUDFLARE_ITEM}/${field}" 2>/dev/null | \
+        gh secret set "$secret_name" --repo "$REPO" --body -; then
+        log_success "GitHub Secret: $secret_name"
+    else
+        log_warn "Failed to set GitHub Secret: $secret_name (field may not exist)"
+    fi
+}
+
+# Set GitHub Secret from Vercel vault (custom field)
+set_github_secret_vercel() {
+    local field="$1"
+    local secret_name="$2"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "[DRY-RUN] Would set GitHub Secret: $secret_name (from vercel/$field)"
+        return 0
+    fi
+
+    if op read "op://${SHARED_VAULT}/${VERCEL_ITEM}/${field}" 2>/dev/null | \
+        gh secret set "$secret_name" --repo "$REPO" --body -; then
+        log_success "GitHub Secret: $secret_name"
+    else
+        log_warn "Failed to set GitHub Secret: $secret_name (field may not exist)"
+    fi
+}
+
+# Set GitHub Secret from blog-secrets vault (item/password)
+set_github_secret_blog() {
     local op_item="$1"
     local secret_name="$2"
     local field="${3:-password}"
 
     if [[ "$DRY_RUN" == "true" ]]; then
-        log_info "[DRY-RUN] Would set GitHub Secret: $secret_name"
+        log_info "[DRY-RUN] Would set GitHub Secret: $secret_name (from $op_item)"
         return 0
     fi
 
-    # Security: Pipe directly from op to gh (secret never in a variable or echo)
-    if op read "op://${VAULT}/${op_item}/${field}" 2>/dev/null | \
-       gh secret set "$secret_name" --repo "$REPO" --body -; then
+    if op read "op://${BLOG_VAULT}/${op_item}/${field}" 2>/dev/null | \
+        gh secret set "$secret_name" --repo "$REPO" --body -; then
         log_success "GitHub Secret: $secret_name"
     else
         log_warn "Failed to set GitHub Secret: $secret_name (item may not exist)"
     fi
 }
 
-# Set Wrangler Secret (secrets piped directly, never stored in variables)
-set_wrangler_secret() {
+# Set GitHub Secret from shared-secrets vault (generic item/field)
+set_github_secret_shared() {
     local op_item="$1"
     local secret_name="$2"
-    local field="${3:-password}"
+    local field="$3"
 
     if [[ "$DRY_RUN" == "true" ]]; then
-        log_info "[DRY-RUN] Would set Wrangler Secret: $secret_name"
+        log_info "[DRY-RUN] Would set GitHub Secret: $secret_name (from shared-secrets/$op_item/$field)"
         return 0
     fi
 
-    # Security: Pipe directly from op to wrangler (secret never in a variable or echo)
+    if op read "op://${SHARED_VAULT}/${op_item}/${field}" 2>/dev/null | \
+        gh secret set "$secret_name" --repo "$REPO" --body -; then
+        log_success "GitHub Secret: $secret_name"
+    else
+        log_warn "Failed to set GitHub Secret: $secret_name (item may not exist)"
+    fi
+}
+
+# Set Wrangler Secret from Cloudflare vault (custom field)
+set_wrangler_secret_cf() {
+    local field="$1"
+    local secret_name="$2"
+    local wrangler_env="$3"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "[DRY-RUN] Would set Wrangler Secret: $secret_name (env: $wrangler_env, from cloudflare/$field)"
+        return 0
+    fi
+
     cd "$PROJECT_ROOT/apps/cms-api"
-    if op read "op://${VAULT}/${op_item}/${field}" 2>/dev/null | \
-       pnpm wrangler secret put "$secret_name" --env "$WRANGLER_ENV"; then
-        log_success "Wrangler Secret: $secret_name"
+    if op read "op://${SHARED_VAULT}/${CLOUDFLARE_ITEM}/${field}" 2>/dev/null | \
+        pnpm wrangler secret put "$secret_name" --env "$wrangler_env"; then
+        log_success "Wrangler Secret: $secret_name (env: $wrangler_env)"
+    else
+        log_warn "Failed to set Wrangler Secret: $secret_name (field may not exist)"
+    fi
+    cd "$PROJECT_ROOT"
+}
+
+# Set Wrangler Secret from blog-secrets vault (item/password)
+set_wrangler_secret_blog() {
+    local op_item="$1"
+    local secret_name="$2"
+    local wrangler_env="$3"
+    local field="${4:-password}"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "[DRY-RUN] Would set Wrangler Secret: $secret_name (env: $wrangler_env, from $op_item)"
+        return 0
+    fi
+
+    cd "$PROJECT_ROOT/apps/cms-api"
+    if op read "op://${BLOG_VAULT}/${op_item}/${field}" 2>/dev/null | \
+        pnpm wrangler secret put "$secret_name" --env "$wrangler_env"; then
+        log_success "Wrangler Secret: $secret_name (env: $wrangler_env)"
     else
         log_warn "Failed to set Wrangler Secret: $secret_name (item may not exist)"
     fi
     cd "$PROJECT_ROOT"
 }
 
-# Sync a secret to specified targets
-sync_secret() {
+# Set Wrangler Secret from shared-secrets vault (generic item/field)
+set_wrangler_secret_shared() {
     local op_item="$1"
     local secret_name="$2"
-    local targets="$3"  # "github", "wrangler", or "both"
-    local field="${4:-password}"
+    local wrangler_env="$3"
+    local field="$4"
 
-    case "$targets" in
-        github)
-            if [[ "$SYNC_GITHUB" == "true" ]]; then
-                set_github_secret "$op_item" "$secret_name" "$field"
-            fi
-            ;;
-        wrangler)
-            if [[ "$SYNC_WRANGLER" == "true" ]]; then
-                set_wrangler_secret "$op_item" "$secret_name" "$field"
-            fi
-            ;;
-        both)
-            if [[ "$SYNC_GITHUB" == "true" ]]; then
-                set_github_secret "$op_item" "$secret_name" "$field"
-            fi
-            if [[ "$SYNC_WRANGLER" == "true" ]]; then
-                set_wrangler_secret "$op_item" "$secret_name" "$field"
-            fi
-            ;;
-    esac
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "[DRY-RUN] Would set Wrangler Secret: $secret_name (env: $wrangler_env, from shared-secrets/$op_item/$field)"
+        return 0
+    fi
+
+    cd "$PROJECT_ROOT/apps/cms-api"
+    if op read "op://${SHARED_VAULT}/${op_item}/${field}" 2>/dev/null | \
+        pnpm wrangler secret put "$secret_name" --env "$wrangler_env"; then
+        log_success "Wrangler Secret: $secret_name (env: $wrangler_env)"
+    else
+        log_warn "Failed to set Wrangler Secret: $secret_name (item may not exist)"
+    fi
+    cd "$PROJECT_ROOT"
 }
 
 # Main sync function
@@ -207,46 +281,83 @@ sync_all_secrets() {
     [[ "$DRY_RUN" == "true" ]] && log_warn "DRY-RUN mode: No changes will be made"
     printf "\n"
 
-    # Infrastructure secrets (GitHub only)
-    log_info "=== Infrastructure Secrets ==="
-    sync_secret "cloudflare-api-token"  "CLOUDFLARE_API_TOKEN"  "github"
-    sync_secret "cloudflare-account-id" "CLOUDFLARE_ACCOUNT_ID" "github"
-    sync_secret "cloudflare-zone-id"    "CLOUDFLARE_ZONE_ID"    "github"
-    sync_secret "vercel-api-token"      "VERCEL_API_TOKEN"      "github"
-    sync_secret "d1-database-id"        "D1_DATABASE_ID"        "github"
-    printf "\n"
+    # ========================================
+    # GitHub Secrets
+    # ========================================
+    if [[ "$SYNC_GITHUB" == "true" ]]; then
+        # Infrastructure (from shared-secrets/cloudflare)
+        log_info "=== Infrastructure Secrets (GitHub) ==="
+        set_github_secret_cf "api-token"               "CLOUDFLARE_API_TOKEN"
+        set_github_secret_cf "account-id"              "CLOUDFLARE_ACCOUNT_ID"
+        set_github_secret_cf "blog-zone-id"            "CLOUDFLARE_ZONE_ID"
+        set_github_secret_cf "blog-d1-database-id-dev" "D1_DATABASE_ID_DEV"
+        set_github_secret_cf "blog-d1-database-id-prod" "D1_DATABASE_ID_PROD"
+        printf "\n"
 
-    # R2 secrets (GitHub + Wrangler)
-    log_info "=== R2 Secrets ==="
-    sync_secret "r2-access-key-id"     "R2_ACCESS_KEY_ID"     "both"
-    sync_secret "r2-secret-access-key" "R2_SECRET_ACCESS_KEY" "both"
-    sync_secret "r2-bucket-name"       "R2_BUCKET_NAME"       "both"
-    printf "\n"
+        # AI Services (OpenAI from shared-secrets, others from blog-secrets)
+        log_info "=== AI Service Secrets (GitHub) ==="
+        set_github_secret_shared "openai" "OPENAI_API_KEY" "blog-secret-key"
+        set_github_secret_shared "anthropic" "ANTHROPIC_API_KEY" "blog-api-key"
+        printf "\n"
 
-    # AI API keys
-    log_info "=== AI Service Secrets ==="
-    sync_secret "openai-api-key"    "OPENAI_API_KEY"    "both"      # GitHub (PR description) + Wrangler
-    sync_secret "gemini-api-key"    "GEMINI_API_KEY"    "wrangler"
-    sync_secret "anthropic-api-key" "ANTHROPIC_API_KEY" "both"      # GitHub (future) + Wrangler
-    printf "\n"
+        # Third-party (all from shared-secrets)
+        log_info "=== Third-party Service Secrets (GitHub) ==="
+        set_github_secret_shared "discord" "DISCORD_WEBHOOK_DEV" "blog-webhook-url-dev"
+        set_github_secret_shared "discord" "DISCORD_WEBHOOK_PROD" "blog-webhook-url-prod"
+        set_github_secret_shared "codecov" "CODECOV_TOKEN" "blog"
+        printf "\n"
 
-    # Application secrets (Wrangler only)
-    log_info "=== Application Secrets ==="
-    sync_secret "auth-secret"         "AUTH_SECRET"         "wrangler"
-    sync_secret "admin-password-hash" "ADMIN_PASSWORD_HASH" "wrangler"
-    printf "\n"
+        # Vercel (from shared-secrets/vercel)
+        log_info "=== Vercel Secrets (GitHub) ==="
+        set_github_secret_vercel "blog-api-token"     "VERCEL_API_TOKEN"
+        printf "\n"
 
-    # Third-party service secrets (GitHub only)
-    log_info "=== Third-party Service Secrets ==="
-    sync_secret "slack-webhook"  "SLACK_WEBHOOK"  "github"
-    sync_secret "codecov-token"  "CODECOV_TOKEN"  "github"
-    printf "\n"
+        # GitHub App (from blog-secrets)
+        log_info "=== GitHub App Secrets (GitHub) ==="
+        set_github_secret_blog "gha-app-id"          "GHA_APP_ID"
+        set_github_secret_blog "gha-app-private-key" "GHA_APP_PRIVATE_KEY" "private key"
+        printf "\n"
+    fi
 
-    # GitHub App secrets (GitHub only)
-    log_info "=== GitHub App Secrets ==="
-    sync_secret "gha-app-id"          "GHA_APP_ID"          "github"
-    sync_secret "gha-app-private-key" "GHA_APP_PRIVATE_KEY" "github" "private key"
-    printf "\n"
+    # ========================================
+    # Wrangler Secrets (Dev)
+    # ========================================
+    if [[ "$SYNC_WRANGLER" == "true" ]]; then
+        log_info "=== R2 Secrets (Dev) ==="
+        set_wrangler_secret_cf "blog-r2-public-url-dev" "R2_PUBLIC_URL" "dev"
+        printf "\n"
+
+        log_info "=== AI Service Secrets (Dev) ==="
+        set_wrangler_secret_shared "openai" "OPENAI_API_KEY" "dev" "blog-secret-key"
+        set_wrangler_secret_shared "google-ai-studio" "GEMINI_API_KEY" "dev" "blog-api-key"
+        set_wrangler_secret_shared "anthropic" "ANTHROPIC_API_KEY" "dev" "blog-api-key"
+        printf "\n"
+
+        log_info "=== Application Secrets (Dev) ==="
+        set_wrangler_secret_blog "auth-secret"              "AUTH_SECRET"         "dev" "dev"
+        set_wrangler_secret_blog "admin-password-hash-dev" "ADMIN_PASSWORD_HASH" "dev" "hash"
+        set_wrangler_secret_blog "basic-auth"               "BASIC_AUTH_USER"     "dev" "username"
+        set_wrangler_secret_blog "basic-auth"               "BASIC_AUTH_PASS"     "dev" "password"
+        printf "\n"
+
+        # ========================================
+        # Wrangler Secrets (Prod)
+        # ========================================
+        log_info "=== R2 Secrets (Prod) ==="
+        set_wrangler_secret_cf "blog-r2-public-url-prod" "R2_PUBLIC_URL" "prod"
+        printf "\n"
+
+        log_info "=== AI Service Secrets (Prod) ==="
+        set_wrangler_secret_shared "openai" "OPENAI_API_KEY" "prod" "blog-secret-key"
+        set_wrangler_secret_shared "google-ai-studio" "GEMINI_API_KEY" "prod" "blog-api-key"
+        set_wrangler_secret_shared "anthropic" "ANTHROPIC_API_KEY" "prod" "blog-api-key"
+        printf "\n"
+
+        log_info "=== Application Secrets (Prod) ==="
+        set_wrangler_secret_blog "auth-secret"              "AUTH_SECRET"         "prod" "prod"
+        set_wrangler_secret_blog "admin-password-hash-prod" "ADMIN_PASSWORD_HASH" "prod" "hash"
+        printf "\n"
+    fi
 
     log_success "Secret sync completed!"
 }
@@ -266,7 +377,8 @@ main() {
     printf "\n"
     log_info "Verification commands:"
     printf "  gh secret list --repo %s\n" "$REPO"
-    printf "  cd apps/cms-api && pnpm wrangler secret list --env %s\n" "$WRANGLER_ENV"
+    printf "  cd apps/cms-api && pnpm wrangler secret list --env dev\n"
+    printf "  cd apps/cms-api && pnpm wrangler secret list --env prod\n"
 }
 
 main

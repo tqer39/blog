@@ -1,0 +1,62 @@
+name: "Discord Notification"
+description: "Send a notification to Discord"
+
+inputs:
+  webhookUrl:
+    description: "Discord webhook URL"
+    required: true
+  title:
+    description: "Notification title"
+    required: true
+  message:
+    description: "Notification message"
+    required: true
+  color:
+    description: "Embed color (decimal): 15158332=red, 3066993=green"
+    required: false
+    default: "15158332"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Send Discord notification
+      shell: bash
+      env:
+        WEBHOOK_URL: ${{ inputs.webhookUrl }}
+        TITLE: ${{ inputs.title }}
+        MESSAGE: ${{ inputs.message }}
+        COLOR: ${{ inputs.color }}
+        REPO: ${{ github.repository }}
+        WORKFLOW: ${{ github.workflow }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        # Escape special characters for JSON
+        ESCAPED_TITLE=$(echo "$TITLE" | sed 's/"/\\"/g')
+        ESCAPED_MESSAGE=$(echo "$MESSAGE" | sed 's/"/\\"/g')
+
+        curl -s -X POST "$WEBHOOK_URL" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"embeds\": [{
+              \"title\": \"$ESCAPED_TITLE\",
+              \"description\": \"$ESCAPED_MESSAGE\",
+              \"color\": $COLOR,
+              \"fields\": [
+                {
+                  \"name\": \"Repository\",
+                  \"value\": \"$REPO\",
+                  \"inline\": true
+                },
+                {
+                  \"name\": \"Workflow\",
+                  \"value\": \"$WORKFLOW\",
+                  \"inline\": true
+                },
+                {
+                  \"name\": \"Details\",
+                  \"value\": \"[View Run]($RUN_URL)\",
+                  \"inline\": false
+                }
+              ]
+            }]
+          }"

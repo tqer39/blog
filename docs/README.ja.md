@@ -29,7 +29,7 @@ just setup
 just bootstrap
 
 # 4. 開発サーバーを起動（別々のターミナルで）
-just dev-api   # CMS API: http://localhost:8787
+just dev-api   # CMS API: http://localhost:3101
 just dev-blog  # Blog: http://localhost:3100
 
 # 5. ブログにアクセス
@@ -60,6 +60,7 @@ open http://localhost:3100
 ![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white)
 ![Biome](https://img.shields.io/badge/Biome-60A5FA?style=for-the-badge&logo=biome&logoColor=white)
 ![Playwright](https://img.shields.io/badge/Playwright-45ba4b?style=for-the-badge&logo=playwright&logoColor=white)
+![1Password](https://img.shields.io/badge/1Password-0094F5?style=for-the-badge&logo=1password&logoColor=white)
 
 ## プロジェクト構成
 

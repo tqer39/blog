@@ -210,7 +210,7 @@ export function TextTransformPopover({
         setIsTransforming(false);
       }
     },
-    [selectedText]
+    [selectedText, model]
   );
 
   const handleApply = useCallback(() => {

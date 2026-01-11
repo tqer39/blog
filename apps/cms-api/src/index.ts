@@ -1,9 +1,11 @@
+import { CORS_ORIGINS } from '@blog/config';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 
 import { aiHandler } from './handlers/ai';
 import { articlesHandler } from './handlers/articles';
+import { categoriesHandler } from './handlers/categories';
 import { imagesHandler } from './handlers/images';
 import { importExportHandler } from './handlers/import-export';
 import { settingsHandler } from './handlers/settings';
@@ -20,11 +22,6 @@ export interface Env {
   API_KEY: string;
   ENVIRONMENT: string;
   R2_PUBLIC_URL?: string;
-  // R2 Presigned URL credentials (for production)
-  CLOUDFLARE_ACCOUNT_ID?: string;
-  R2_ACCESS_KEY_ID?: string;
-  R2_SECRET_ACCESS_KEY?: string;
-  R2_BUCKET_NAME?: string;
   VERCEL_DEPLOY_HOOK_URL?: string;
   WEBHOOK_SECRET?: string;
   OPENAI_API_KEY?: string;
@@ -45,12 +42,7 @@ app.use('*', rateLimitMiddleware);
 app.use(
   '*',
   cors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:3100',
-      'https://blog.tqer39.dev',
-      'https://blog-dev.tqer39.dev',
-    ],
+    origin: [...CORS_ORIGINS],
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowHeaders: ['Content-Type', 'Authorization'],
   })
@@ -115,6 +107,7 @@ const v1 = new Hono<{ Bindings: Env }>();
 v1.use('*', authMiddleware);
 v1.route('/ai', aiHandler);
 v1.route('/articles', articlesHandler);
+v1.route('/categories', categoriesHandler);
 v1.route('/tags', tagsHandler);
 v1.route('/images', imagesHandler);
 v1.route('/import', importExportHandler);
@@ -157,7 +150,7 @@ app.onError((err, c) => {
 
   // Handle unexpected errors
   const message =
-    c.env.ENVIRONMENT === 'production'
+    c.env.ENVIRONMENT === 'prod'
       ? 'An unexpected error occurred'
       : err.message || 'An unexpected error occurred';
 

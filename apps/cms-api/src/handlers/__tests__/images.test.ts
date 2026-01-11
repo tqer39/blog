@@ -4,12 +4,15 @@ import type { Env } from '../../index';
 import { withErrorHandler } from '../../test/helpers';
 import { imagesHandler } from '../images';
 
-// Mock generateId to return predictable values
+// Mock ID generation to return predictable values
 vi.mock('@blog/utils', async () => {
   const actual = await vi.importActual('@blog/utils');
   return {
     ...actual,
     generateId: vi.fn(() => 'mock-image-id'),
+    generateImageId: vi.fn(
+      () => '550e8400-e29b-41d4-a716-446655440000' // Mock UUIDv4
+    ),
   };
 });
 
@@ -58,9 +61,9 @@ function createMockFile(name: string, type: string, size: number): File {
 const sampleImage = {
   id: 'image-1',
   article_id: 'article-1',
-  filename: 'mock-image-id.jpg',
+  filename: '550e8400-e29b-41d4-a716-446655440000.jpg',
   original_filename: 'test.jpg',
-  r2_key: 'images/2024/01/mock-image-id.jpg',
+  r2_key: 'i/550e8400-e29b-41d4-a716-446655440000.jpg',
   mime_type: 'image/jpeg',
   size_bytes: 1024,
   alt_text: 'Test image',
@@ -201,10 +204,10 @@ describe('imagesHandler', () => {
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.id).toBe('image-1');
-      expect(data.filename).toBe('mock-image-id.jpg');
+      expect(data.filename).toBe('550e8400-e29b-41d4-a716-446655440000.jpg');
       expect(data.mimeType).toBe('image/jpeg');
       expect(data.url).toBe(
-        'https://cdn.example.com/images/2024/01/mock-image-id.jpg'
+        'https://cdn.example.com/i/550e8400-e29b-41d4-a716-446655440000.jpg'
       );
     });
 
@@ -354,7 +357,7 @@ describe('imagesHandler', () => {
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.url).toBe(
-        'https://custom-cdn.example.com/images/2024/01/mock-image-id.jpg'
+        'https://custom-cdn.example.com/i/550e8400-e29b-41d4-a716-446655440000.jpg'
       );
     });
 
@@ -374,11 +377,11 @@ describe('imagesHandler', () => {
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.url).toBe(
-        'http://localhost:8787/v1/images/file/images/2024/01/mock-image-id.jpg'
+        'http://localhost:3101/v1/images/file/i/550e8400-e29b-41d4-a716-446655440000.jpg'
       );
     });
 
-    it('should use default CDN URL in production without R2_PUBLIC_URL', async () => {
+    it('should use default CDN URL in prod without R2_PUBLIC_URL', async () => {
       mockDB.prepare.mockReturnValue({
         bind: vi.fn().mockReturnValue({
           first: vi.fn().mockResolvedValue(sampleImage),
@@ -387,14 +390,14 @@ describe('imagesHandler', () => {
 
       const app = createTestApp(mockDB, mockR2, {
         R2_PUBLIC_URL: undefined,
-        ENVIRONMENT: 'production',
+        ENVIRONMENT: 'prod',
       });
       const res = await app.request('/images/image-1');
 
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.url).toBe(
-        'https://cdn.tqer39.dev/images/2024/01/mock-image-id.jpg'
+        'https://cdn.tqer39.dev/i/550e8400-e29b-41d4-a716-446655440000.jpg'
       );
     });
   });

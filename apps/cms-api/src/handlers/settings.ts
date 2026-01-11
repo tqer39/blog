@@ -16,6 +16,31 @@ const ALLOWED_KEYS = [
   'social_bento',
 ] as const;
 
+// URL keys that require scheme validation
+const URL_KEYS = ['social_github', 'social_twitter', 'social_bento'] as const;
+const ALLOWED_SCHEMES = ['https:', 'http:'];
+
+/**
+ * Validate URL scheme for social links
+ * Prevents javascript:, data:, vbscript: and other dangerous protocols
+ */
+function validateUrlScheme(url: string, key: string): void {
+  if (!url || url.trim() === '') {
+    return; // Empty values are allowed (optional fields)
+  }
+
+  try {
+    const parsed = new URL(url);
+    if (!ALLOWED_SCHEMES.includes(parsed.protocol)) {
+      validationError(
+        `Invalid URL scheme for ${key}: only http/https are allowed`
+      );
+    }
+  } catch {
+    validationError(`Invalid URL format for ${key}`);
+  }
+}
+
 // Get all settings (public, no auth required)
 settingsHandler.get('/', async (c) => {
   const { results } = await c.env.DB.prepare(
@@ -59,6 +84,13 @@ settingsHandler.put('/', async (c) => {
   // Validate required fields are not empty strings
   if (input.site_name !== undefined && input.site_name.trim() === '') {
     validationError('site_name cannot be empty');
+  }
+
+  // Validate URL schemes for social links
+  for (const key of URL_KEYS) {
+    if (input[key] !== undefined) {
+      validateUrlScheme(input[key] as string, key);
+    }
   }
 
   // Batch update using upsert

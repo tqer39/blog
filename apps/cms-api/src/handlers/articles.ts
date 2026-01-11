@@ -2,11 +2,18 @@ import type {
   Article,
   ArticleInput,
   ArticleListResponse,
+  Category,
 } from '@blog/cms-types';
-import { generateHash, generateId, slugify } from '@blog/utils';
+import { generateHash, generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
-import { conflict, notFound, validationError } from '../lib/errors';
+import {
+  notFound,
+  throwIfUniqueConstraint,
+  validationError,
+} from '../lib/errors';
+import { getImageUrl } from '../lib/image-url';
+import type { ArticleRow, CategoryRow } from '../types/rows';
 
 export const articlesHandler = new Hono<{ Bindings: Env }>();
 
@@ -14,6 +21,7 @@ export const articlesHandler = new Hono<{ Bindings: Env }>();
 articlesHandler.get('/', async (c) => {
   const status = c.req.query('status');
   const tag = c.req.query('tag');
+  const category = c.req.query('category');
   const page = Number.parseInt(c.req.query('page') || '1', 10);
   const perPage = Number.parseInt(c.req.query('perPage') || '10', 10);
   const offset = (page - 1) * perPage;
@@ -24,20 +32,29 @@ articlesHandler.get('/', async (c) => {
   `;
   const params: (string | number)[] = [];
   const conditions: string[] = [];
+  const joins: string[] = [];
 
   if (tag) {
-    query += `
+    joins.push(`
       JOIN article_tags at ON a.id = at.article_id
       JOIN tags t ON at.tag_id = t.id
-    `;
-    conditions.push('t.slug = ?');
+    `);
+    conditions.push('t.name = ?');
     params.push(tag);
+  }
+
+  if (category) {
+    joins.push('JOIN categories c ON a.category_id = c.id');
+    conditions.push('c.slug = ?');
+    params.push(category);
   }
 
   if (status) {
     conditions.push('a.status = ?');
     params.push(status);
   }
+
+  query += joins.join(' ');
 
   if (conditions.length > 0) {
     query += ` WHERE ${conditions.join(' AND ')}`;
@@ -70,19 +87,32 @@ articlesHandler.get('/', async (c) => {
     } satisfies ArticleListResponse);
   }
 
-  // Batch fetch tags and images to avoid N+1
+  // Batch fetch tags, categories, and images to avoid N+1
   const articleIds = results.map((row) => row.id as string);
-  const [tagsByArticle, imageUrlsByArticle] = await Promise.all([
-    getArticleTagsBatch(c.env.DB, articleIds),
-    getHeaderImageUrlsBatch(c.env.DB, articleIds, c.env),
-  ]);
+  const categoryIds = [
+    ...new Set(
+      results
+        .map((row) => row.category_id as string | null)
+        .filter((id): id is string => id !== null)
+    ),
+  ];
+
+  const [tagsByArticle, imageUrlsByArticle, categoriesById] = await Promise.all(
+    [
+      getArticleTagsBatch(c.env.DB, articleIds),
+      getHeaderImageUrlsBatch(c.env.DB, articleIds, c.env),
+      getCategoriesBatch(c.env.DB, categoryIds),
+    ]
+  );
 
   const articles: Article[] = results.map((row) => {
     const id = row.id as string;
+    const categoryId = row.category_id as string | null;
     return mapRowToArticle(
       row,
       tagsByArticle.get(id) || [],
-      imageUrlsByArticle.get(id) || null
+      imageUrlsByArticle.get(id) || null,
+      categoryId ? categoriesById.get(categoryId) || null : null
     );
   });
 
@@ -108,13 +138,12 @@ articlesHandler.get('/:hash', async (c) => {
     notFound('Article not found');
   }
 
-  const tags = await getArticleTags(c.env.DB, row.id as string);
-  const headerImageUrl = await getHeaderImageUrl(
-    c.env.DB,
-    row.header_image_id as string | null,
-    c.env
-  );
-  const article = mapRowToArticle(row, tags, headerImageUrl);
+  const [tags, headerImageUrl, category] = await Promise.all([
+    getArticleTags(c.env.DB, row.id as string),
+    getHeaderImageUrl(c.env.DB, row.header_image_id as string | null, c.env),
+    getArticleCategory(c.env.DB, row.category_id as string | null),
+  ]);
+  const article = mapRowToArticle(row, tags, headerImageUrl, category);
 
   return c.json(article);
 });
@@ -137,8 +166,8 @@ articlesHandler.post('/', async (c) => {
 
   try {
     await c.env.DB.prepare(
-      `INSERT INTO articles (id, hash, title, description, content, status, published_at, header_image_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO articles (id, hash, title, description, content, status, published_at, header_image_id, category_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
       .bind(
         id,
@@ -148,7 +177,8 @@ articlesHandler.post('/', async (c) => {
         input.content,
         status,
         publishedAt,
-        input.headerImageId || null
+        input.headerImageId || null,
+        input.categoryId || null
       )
       .run();
 
@@ -157,22 +187,18 @@ articlesHandler.post('/', async (c) => {
       await syncArticleTags(c.env.DB, id, input.tags);
     }
 
-    const tags = await getArticleTags(c.env.DB, id);
     const row = await c.env.DB.prepare('SELECT * FROM articles WHERE id = ?')
       .bind(id)
       .first();
-    const headerImageUrl = await getHeaderImageUrl(
-      c.env.DB,
-      input.headerImageId || null,
-      c.env
-    );
+    const [tags, headerImageUrl, category] = await Promise.all([
+      getArticleTags(c.env.DB, id),
+      getHeaderImageUrl(c.env.DB, input.headerImageId || null, c.env),
+      getArticleCategory(c.env.DB, input.categoryId || null),
+    ]);
 
-    return c.json(mapRowToArticle(row!, tags, headerImageUrl), 201);
+    return c.json(mapRowToArticle(row!, tags, headerImageUrl, category), 201);
   } catch (error) {
-    if (String(error).includes('UNIQUE constraint failed')) {
-      conflict('Article with this hash already exists');
-    }
-    throw error;
+    throwIfUniqueConstraint(error, 'Article with this hash already exists');
   }
 });
 
@@ -219,6 +245,10 @@ articlesHandler.put('/:hash', async (c) => {
     updates.push('header_image_id = ?');
     params.push(input.headerImageId || null);
   }
+  if (input.categoryId !== undefined) {
+    updates.push('category_id = ?');
+    params.push(input.categoryId || null);
+  }
 
   // Clear review results if title or content changed
   if (contentChanged) {
@@ -244,14 +274,13 @@ articlesHandler.put('/:hash', async (c) => {
   const row = await c.env.DB.prepare('SELECT * FROM articles WHERE hash = ?')
     .bind(hash)
     .first();
-  const tags = await getArticleTags(c.env.DB, row!.id as string);
-  const headerImageUrl = await getHeaderImageUrl(
-    c.env.DB,
-    row!.header_image_id as string | null,
-    c.env
-  );
+  const [tags, headerImageUrl, category] = await Promise.all([
+    getArticleTags(c.env.DB, row!.id as string),
+    getHeaderImageUrl(c.env.DB, row!.header_image_id as string | null, c.env),
+    getArticleCategory(c.env.DB, row!.category_id as string | null),
+  ]);
 
-  return c.json(mapRowToArticle(row!, tags, headerImageUrl));
+  return c.json(mapRowToArticle(row!, tags, headerImageUrl, category));
 });
 
 // Delete article
@@ -286,14 +315,13 @@ articlesHandler.post('/:hash/publish', async (c) => {
   const row = await c.env.DB.prepare('SELECT * FROM articles WHERE hash = ?')
     .bind(hash)
     .first();
-  const tags = await getArticleTags(c.env.DB, row!.id as string);
-  const headerImageUrl = await getHeaderImageUrl(
-    c.env.DB,
-    row!.header_image_id as string | null,
-    c.env
-  );
+  const [tags, headerImageUrl, category] = await Promise.all([
+    getArticleTags(c.env.DB, row!.id as string),
+    getHeaderImageUrl(c.env.DB, row!.header_image_id as string | null, c.env),
+    getArticleCategory(c.env.DB, row!.category_id as string | null),
+  ]);
 
-  return c.json(mapRowToArticle(row!, tags, headerImageUrl));
+  return c.json(mapRowToArticle(row!, tags, headerImageUrl, category));
 });
 
 // Unpublish article
@@ -313,14 +341,13 @@ articlesHandler.post('/:hash/unpublish', async (c) => {
   const row = await c.env.DB.prepare('SELECT * FROM articles WHERE hash = ?')
     .bind(hash)
     .first();
-  const tags = await getArticleTags(c.env.DB, row!.id as string);
-  const headerImageUrl = await getHeaderImageUrl(
-    c.env.DB,
-    row!.header_image_id as string | null,
-    c.env
-  );
+  const [tags, headerImageUrl, category] = await Promise.all([
+    getArticleTags(c.env.DB, row!.id as string),
+    getHeaderImageUrl(c.env.DB, row!.header_image_id as string | null, c.env),
+    getArticleCategory(c.env.DB, row!.category_id as string | null),
+  ]);
 
-  return c.json(mapRowToArticle(row!, tags, headerImageUrl));
+  return c.json(mapRowToArticle(row!, tags, headerImageUrl, category));
 });
 
 // Helper functions
@@ -379,6 +406,59 @@ async function getArticleTagsBatch(
   return result;
 }
 
+// Single article category fetch
+async function getArticleCategory(
+  db: D1Database,
+  categoryId: string | null
+): Promise<Category | null> {
+  if (!categoryId) return null;
+
+  const row = await db
+    .prepare('SELECT * FROM categories WHERE id = ?')
+    .bind(categoryId)
+    .first();
+
+  if (!row) return null;
+
+  return mapRowToCategory(row);
+}
+
+// Batch fetch categories (avoids N+1)
+async function getCategoriesBatch(
+  db: D1Database,
+  categoryIds: string[]
+): Promise<Map<string, Category>> {
+  const result = new Map<string, Category>();
+
+  if (categoryIds.length === 0) {
+    return result;
+  }
+
+  const placeholders = categoryIds.map(() => '?').join(',');
+  const { results } = await db
+    .prepare(`SELECT * FROM categories WHERE id IN (${placeholders})`)
+    .bind(...categoryIds)
+    .all();
+
+  for (const row of results || []) {
+    const category = mapRowToCategory(row);
+    result.set(category.id, category);
+  }
+
+  return result;
+}
+
+function mapRowToCategory(row: CategoryRow): Category {
+  return {
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    color: row.color,
+    displayOrder: row.display_order,
+    createdAt: row.created_at,
+  };
+}
+
 // Batch fetch header image URLs for multiple articles (avoids N+1)
 async function getHeaderImageUrlsBatch(
   db: D1Database,
@@ -411,17 +491,7 @@ async function getHeaderImageUrlsBatch(
   for (const row of results || []) {
     const articleId = row.article_id as string;
     const r2Key = row.r2_key as string;
-
-    let url: string;
-    if (env.R2_PUBLIC_URL) {
-      url = `${env.R2_PUBLIC_URL}/${r2Key}`;
-    } else if (env.ENVIRONMENT === 'development') {
-      url = `http://localhost:8787/v1/images/file/${r2Key}`;
-    } else {
-      url = `https://cdn.tqer39.dev/${r2Key}`;
-    }
-
-    result.set(articleId, url);
+    result.set(articleId, getImageUrl(env, r2Key));
   }
 
   return result;
@@ -447,17 +517,16 @@ async function syncArticleTags(
   const tagData = tagNames.map((name) => ({
     id: generateId(),
     name,
-    slug: slugify(name),
   }));
 
   // Use batch for tag upserts
   const tagInsertStatements = tagData.map((tag) =>
     db
       .prepare(
-        `INSERT INTO tags (id, name, slug) VALUES (?, ?, ?)
+        `INSERT INTO tags (id, name) VALUES (?, ?)
        ON CONFLICT (name) DO NOTHING`
       )
-      .bind(tag.id, tag.name, tag.slug)
+      .bind(tag.id, tag.name)
   );
 
   await db.batch(tagInsertStatements);
@@ -484,26 +553,28 @@ async function syncArticleTags(
 }
 
 function mapRowToArticle(
-  row: Record<string, unknown>,
+  row: ArticleRow,
   tags: string[],
-  headerImageUrl: string | null = null
+  headerImageUrl: string | null = null,
+  category: Category | null = null
 ): Article {
-  const reviewResultStr = row.review_result as string | null;
   return {
-    id: row.id as string,
-    hash: row.hash as string,
-    title: row.title as string,
-    description: row.description as string | null,
-    content: row.content as string,
-    status: row.status as 'draft' | 'published',
-    publishedAt: row.published_at as string | null,
-    createdAt: row.created_at as string,
-    updatedAt: row.updated_at as string,
+    id: row.id,
+    hash: row.hash,
+    title: row.title,
+    description: row.description,
+    content: row.content,
+    status: row.status,
+    publishedAt: row.published_at,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
     tags,
-    headerImageId: row.header_image_id as string | null,
+    categoryId: row.category_id,
+    category,
+    headerImageId: row.header_image_id,
     headerImageUrl,
-    reviewResult: reviewResultStr ? JSON.parse(reviewResultStr) : null,
-    reviewUpdatedAt: row.review_updated_at as string | null,
+    reviewResult: row.review_result ? JSON.parse(row.review_result) : null,
+    reviewUpdatedAt: row.review_updated_at,
   };
 }
 
@@ -522,11 +593,5 @@ async function getHeaderImageUrl(
 
   if (!image) return null;
 
-  if (env.R2_PUBLIC_URL) {
-    return `${env.R2_PUBLIC_URL}/${image.r2_key}`;
-  }
-  if (env.ENVIRONMENT === 'development') {
-    return `http://localhost:8787/v1/images/file/${image.r2_key}`;
-  }
-  return `https://cdn.tqer39.dev/${image.r2_key}`;
+  return getImageUrl(env, image.r2_key);
 }

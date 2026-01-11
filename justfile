@@ -60,10 +60,10 @@ dev-all:
     #!/usr/bin/env bash
     set -euo pipefail
     echo "→ Starting all services..."
-    echo "  - CMS API: http://localhost:8787"
+    echo "  - CMS API: http://localhost:3101"
     echo "  - Blog:    http://localhost:3100"
     echo ""
-    concurrently \
+    pnpm exec concurrently \
         --names "api,blog" \
         --prefix-colors "yellow,cyan" \
         "pnpm --filter @blog/cms-api dev" \
@@ -78,7 +78,7 @@ dev-blog:
 dev-api:
     #!/usr/bin/env bash
     set -euo pipefail
-    just kill-port 8787 || true
+    just kill-port 3101 || true
     pnpm --filter @blog/cms-api dev
 
 # Kill process using a specific port
@@ -136,7 +136,7 @@ bootstrap: deps db-reset db-migrate db-seed
     @echo "✅ Bootstrap completed!"
     @echo ""
     @echo "To start development servers:"
-    @echo "  just dev-api   # Terminal 1: API server (http://localhost:8787)"
+    @echo "  just dev-api   # Terminal 1: API server (http://localhost:3101)"
     @echo "  just dev-blog  # Terminal 2: Blog app (http://localhost:3100)"
 
 # E2E tests

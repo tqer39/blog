@@ -1,3 +1,4 @@
+import { DOMAINS } from '@blog/config';
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
@@ -8,7 +9,7 @@ export default defineConfig({
   workers: process.env.CI ? 4 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3100',
+    baseURL: DOMAINS.BLOG_LOCAL,
     trace: 'on-first-retry',
   },
   projects: [
@@ -19,7 +20,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:3100',
+    url: DOMAINS.BLOG_LOCAL,
     reuseExistingServer: !process.env.CI,
   },
 });

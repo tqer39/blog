@@ -4,6 +4,7 @@
   "ignorePaths": [".git", ".gitignore", ".claude", "pnpm-lock.yaml", ".turbo"],
   "words": [
     "aahl",
+    "adsense",
     "anotherhash",
     "Crockford",
     "Amazonwebservices",
@@ -116,6 +117,9 @@
     "minioadmin",
     "minio",
     "mise",
+    "nextauth",
+    "MonitoRSS",
+    "monitorss",
     "mobaxterm",
     "msix",
     "MSYS",
@@ -154,6 +158,7 @@
     "setopt",
     "shellcheck",
     "shiki",
+    "signup",
     "solargraph",
     "shellenv",
     "shlvl",
@@ -199,6 +204,8 @@
     "testhash",
     "ulidx",
     "unstub",
-    "virality"
+    "virality",
+    "zakki",
+    "zenn"
   ]
 }

@@ -29,4 +29,4 @@ module "cms_r2" {
 #
 # After applying this Terraform:
 # 1. Update wrangler.toml with the database_id from outputs
-# 2. Deploy with: cd apps/cms-api && pnpm deploy:staging
+# 2. Deploy with: cd apps/cms-api && pnpm deploy:dev

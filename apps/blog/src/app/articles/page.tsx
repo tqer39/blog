@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { ArticleCard } from '@/components/ArticleCard';
+import { ArticleCategorySelector } from '@/components/ArticleCategorySelector';
 import { ArticleTagSelector } from '@/components/ArticleTagSelector';
 import { JsonLd } from '@/components/JsonLd';
 import { Pagination } from '@/components/Pagination';
@@ -13,14 +14,18 @@ import { ARTICLES_PER_PAGE } from '@/lib/pagination';
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 
 interface ArticlesPageProps {
-  searchParams: Promise<{ tags?: string | string[]; q?: string }>;
+  searchParams: Promise<{
+    tags?: string | string[];
+    q?: string;
+    category?: string;
+  }>;
 }
 
 export async function generateMetadata({
   searchParams,
 }: ArticlesPageProps): Promise<Metadata> {
-  const { tags, q } = await searchParams;
-  const hasFilters = tags || q;
+  const { tags, q, category } = await searchParams;
+  const hasFilters = tags || q || category;
 
   if (hasFilters) {
     return {
@@ -50,9 +55,10 @@ export async function generateMetadata({
 export default async function ArticlesPage({
   searchParams,
 }: ArticlesPageProps) {
-  const { tags, q } = await searchParams;
+  const { tags, q, category } = await searchParams;
   const selectedTags = tags ? (Array.isArray(tags) ? tags : [tags]) : [];
   const searchQuery = q?.trim() || '';
+  const selectedCategory = category?.trim() || '';
 
   const result = await getAllArticles();
   const allArticles = result.ok ? result.data : [];
@@ -62,12 +68,25 @@ export default async function ArticlesPage({
     ...new Set(allArticles.flatMap((article) => article.tags)),
   ].sort();
 
-  // Filter by tags (AND condition) and search query
+  // Extract all unique categories from articles
+  const allCategories = [
+    ...new Map(
+      allArticles
+        .filter((article) => article.category)
+        .map((article) => [article.category!.id, article.category!])
+    ).values(),
+  ].sort((a, b) => a.displayOrder - b.displayOrder);
+
+  // Filter by tags (AND condition), category, and search query
   const filteredArticles = allArticles.filter((article) => {
     // Tag filter
     const matchesTags =
       selectedTags.length === 0 ||
       selectedTags.every((tag) => article.tags.includes(tag));
+
+    // Category filter
+    const matchesCategory =
+      !selectedCategory || article.category?.slug === selectedCategory;
 
     // Search filter (case-insensitive)
     const matchesSearch =
@@ -76,16 +95,22 @@ export default async function ArticlesPage({
       article.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.content.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesTags && matchesSearch;
+    return matchesTags && matchesCategory && matchesSearch;
   });
 
   const articles = filteredArticles.slice(0, ARTICLES_PER_PAGE);
   const totalPages = Math.ceil(filteredArticles.length / ARTICLES_PER_PAGE);
 
-  // Build clear search URL (preserve tags)
+  // Build clear search URL (preserve tags and category)
+  const clearSearchParams = [
+    ...selectedTags.map((t) => `tags=${encodeURIComponent(t)}`),
+    ...(selectedCategory
+      ? [`category=${encodeURIComponent(selectedCategory)}`]
+      : []),
+  ];
   const clearSearchUrl =
-    selectedTags.length > 0
-      ? `/articles?${selectedTags.map((t) => `tags=${encodeURIComponent(t)}`).join('&')}`
+    clearSearchParams.length > 0
+      ? `/articles?${clearSearchParams.join('&')}`
       : '/articles';
 
   const breadcrumbJsonLd = generateBreadcrumbJsonLd(
@@ -122,6 +147,10 @@ export default async function ArticlesPage({
         )}
 
         <Suspense fallback={null}>
+          <ArticleCategorySelector
+            allCategories={allCategories}
+            selectedCategory={selectedCategory}
+          />
           <ArticleTagSelector allTags={allTags} />
         </Suspense>
 

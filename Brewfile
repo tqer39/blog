@@ -13,6 +13,7 @@ brew "biome"
 # Infrastructure and cloud tools
 brew "aws-vault"   # AWS credential manager for secure access
 brew "direnv"      # Environment variable manager per directory
+cask "1password-cli"  # 1Password CLI for secrets sync
 
 # Cloudflare tools
 tap "jacobbednarz/tap"              # cf-vault 公式リポジトリ
