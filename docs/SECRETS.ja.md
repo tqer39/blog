@@ -96,14 +96,19 @@
 | `dev`      | AUTH_SECRET | Wrangler dev  |
 | `prod`     | AUTH_SECRET | Wrangler prod |
 
+#### admin-password-hash (op://blog-secrets/admin-password-hash-{env}/hash)
+
+| アイテム名 | フィールド | 環境変数 | 同期先 |
+| --- | --- | --- | --- |
+| `admin-password-hash-dev` | `hash` | ADMIN_PASSWORD_HASH | Wrangler dev |
+| `admin-password-hash-prod` | `hash` | ADMIN_PASSWORD_HASH | Wrangler prod |
+
 #### その他のアプリケーションシークレット (op://blog-secrets/{item}/password)
 
-| アイテム名                 | 環境変数            | 同期先        |
-| -------------------------- | ------------------- | ------------- |
-| `admin-password-hash-dev`  | ADMIN_PASSWORD_HASH | Wrangler dev  |
-| `admin-password-hash-prod` | ADMIN_PASSWORD_HASH | Wrangler prod |
-| `basic-auth-user`          | BASIC_AUTH_USER     | Wrangler dev  |
-| `basic-auth-pass`          | BASIC_AUTH_PASS     | Wrangler dev  |
+| アイテム名        | 環境変数        | 同期先       |
+| ----------------- | --------------- | ------------ |
+| `basic-auth-user` | BASIC_AUTH_USER | Wrangler dev |
+| `basic-auth-pass` | BASIC_AUTH_PASS | Wrangler dev |
 
 ### サードパーティ (op://blog-secrets/{item}/password)
 
@@ -205,10 +210,11 @@ AUTH_SECRET の生成:
 openssl rand -base64 32
 ```
 
-パスワードハッシュの生成:
+ADMIN_PASSWORD_HASH の生成（管理画面ログイン用）:
 
 ```bash
-cd apps/blog && node -e "require('bcryptjs').hash('password', 12).then(console.log)"
+# 'your-password' を実際のパスワードに置き換えて実行
+cd apps/blog && node -e "require('bcryptjs').hash('your-password', 12).then(console.log)"
 ```
 
 ## シークレットの設定方法

@@ -96,14 +96,19 @@ Note: R2 access keys are not needed - R2 is accessed via native bindings.
 | `dev`  | AUTH_SECRET | Wrangler dev  |
 | `prod` | AUTH_SECRET | Wrangler prod |
 
+#### admin-password-hash (op://blog-secrets/admin-password-hash-{env}/hash)
+
+| Item Name                  | Field  | Maps To             | Target        |
+| -------------------------- | ------ | ------------------- | ------------- |
+| `admin-password-hash-dev`  | `hash` | ADMIN_PASSWORD_HASH | Wrangler dev  |
+| `admin-password-hash-prod` | `hash` | ADMIN_PASSWORD_HASH | Wrangler prod |
+
 #### Other Application Secrets (op://blog-secrets/{item}/password)
 
-| Item Name                  | Maps To             | Target        |
-| -------------------------- | ------------------- | ------------- |
-| `admin-password-hash-dev`  | ADMIN_PASSWORD_HASH | Wrangler dev  |
-| `admin-password-hash-prod` | ADMIN_PASSWORD_HASH | Wrangler prod |
-| `basic-auth-user`          | BASIC_AUTH_USER     | Wrangler dev  |
-| `basic-auth-pass`          | BASIC_AUTH_PASS     | Wrangler dev  |
+| Item Name         | Maps To         | Target       |
+| ----------------- | --------------- | ------------ |
+| `basic-auth-user` | BASIC_AUTH_USER | Wrangler dev |
+| `basic-auth-pass` | BASIC_AUTH_PASS | Wrangler dev |
 
 ### Third-party Services (op://blog-secrets/{item}/password)
 
@@ -205,10 +210,11 @@ Generate AUTH_SECRET:
 openssl rand -base64 32
 ```
 
-Generate password hash:
+Generate ADMIN_PASSWORD_HASH (for admin UI login):
 
 ```bash
-cd apps/blog && node -e "require('bcryptjs').hash('password', 12).then(console.log)"
+# Replace 'your-password' with your actual password
+cd apps/blog && node -e "require('bcryptjs').hash('your-password', 12).then(console.log)"
 ```
 
 ## Setting Secrets
