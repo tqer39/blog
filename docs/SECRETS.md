@@ -85,6 +85,18 @@ node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 
 URL format: `https://discord.com/api/webhooks/xxxx/yyyy`
 
+### How to Get Vercel API Token
+
+1. Log in to [Vercel Dashboard](https://vercel.com)
+2. Click your profile icon (top right) → **Settings**
+3. Navigate to **Tokens** in the left sidebar
+4. Click **Create**
+5. Enter a token name (e.g., `blog-deploy`)
+6. Select scope and expiration date
+7. Click **Create Token** and copy the value (shown only once)
+
+Reference: [Vercel Tokens Documentation](https://vercel.com/docs/sign-in-with-vercel/tokens)
+
 ## Setting Secrets
 
 ### Automated Sync from 1Password (Recommended)

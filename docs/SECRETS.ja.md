@@ -85,6 +85,18 @@ node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 
 URL 形式: `https://discord.com/api/webhooks/xxxx/yyyy`
 
+### Vercel API Token の取得方法
+
+1. [Vercel Dashboard](https://vercel.com) にログイン
+2. 右上のプロフィールアイコン →「Settings」
+3. 左メニューの「Tokens」をクリック
+4. 「Create」ボタンをクリック
+5. トークン名を入力（例: `blog-deploy`）
+6. スコープと有効期限を選択
+7. 「Create Token」をクリックし、表示された値をコピー（一度しか表示されない）
+
+参考: [Vercel Tokens Documentation](https://vercel.com/docs/sign-in-with-vercel/tokens)
+
 ## シークレットの設定方法
 
 ### 1Password からの自動同期（推奨）
