@@ -7,6 +7,7 @@ on:
     paths:
       - "apps/cms-api/**"
       - ".github/workflows/deploy-cms-api-dev.yml"
+      - ".github/actions/deploy-cms-api/**"
   workflow_dispatch:
 
 concurrency:
@@ -15,36 +16,24 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy Worker (Dev)
+    name: Deploy Worker
     runs-on: ubuntu-latest
     environment: development
-    defaults:
-      run:
-        working-directory: apps/cms-api
     steps:
       - uses: actions/checkout@v6
 
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/deploy-cms-api
         with:
-          working-directory: apps/cms-api
-
-      - name: Update wrangler.toml with D1 database ID
-        env:
-          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID_DEV }}
-        run: |
-          sed -i "s/database_id = \"to-be-set-by-terraform-dev\"/database_id = \"$D1_DATABASE_ID\"/" wrangler.toml
-
-      - name: Deploy to Cloudflare Workers (staging)
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: pnpm wrangler deploy --env staging
+          wrangler_env: staging
+          placeholder: to-be-set-by-terraform-dev
+          d1_database_id: ${{ secrets.D1_DATABASE_ID_DEV }}
+          cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Slack Notification (Failure)
         if: failure()
         uses: ./.github/actions/slack-deploy-failure
         with:
           slackWebhook: ${{ secrets.SLACK_WEBHOOK_DEV }}
-          title: "CMS API Deploy Failed (Dev)"
-          message: "Worker deployment to staging failed on main branch"
+          title: "CMS API Deploy Failed (development)"
+          message: "Worker deployment to development failed"
