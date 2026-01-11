@@ -32,9 +32,11 @@ export function CategorySelector({ value, onChange }: CategorySelectorProps) {
 
   return (
     <div className="space-y-2">
-      <Label>Category</Label>
+      <Label htmlFor="category-selector">Category</Label>
       <div className="relative">
         <select
+          id="category-selector"
+          aria-label="Category"
           value={value || ''}
           onChange={(e) => onChange(e.target.value || null)}
           disabled={isLoading}
