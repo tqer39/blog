@@ -84,8 +84,8 @@ export function ArticleContent({ content }: ArticleContentProps) {
               }, [
                 h('svg', {
                   xmlns: 'http://www.w3.org/2000/svg',
-                  width: 14,
-                  height: 14,
+                  width: 18,
+                  height: 18,
                   viewBox: '0 0 24 24',
                   fill: 'none',
                   stroke: 'currentColor',
