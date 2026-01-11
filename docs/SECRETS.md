@@ -117,11 +117,11 @@ Note: R2 access keys are not needed - R2 is accessed via native bindings.
 | `blog-webhook-url-dev` | DISCORD_WEBHOOK_DEV  | GitHub |
 | `blog-webhook-url-prod`| DISCORD_WEBHOOK_PROD | GitHub |
 
-### Third-party Services (op://blog-secrets/{item}/password)
+### Codecov (op://shared-secrets/codecov)
 
-| Item Name       | Maps To       | Target |
-| --------------- | ------------- | ------ |
-| `codecov-token` | CODECOV_TOKEN | GitHub |
+| Field Name | Maps To       | Target |
+| ---------- | ------------- | ------ |
+| `blog`     | CODECOV_TOKEN | GitHub |
 
 ### GitHub App (op://blog-secrets/{item})
 

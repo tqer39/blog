@@ -300,11 +300,11 @@ sync_all_secrets() {
         set_github_secret_shared "anthropic" "ANTHROPIC_API_KEY" "blog-api-key"
         printf "\n"
 
-        # Third-party (Discord from shared-secrets, others from blog-secrets)
+        # Third-party (all from shared-secrets)
         log_info "=== Third-party Service Secrets (GitHub) ==="
         set_github_secret_shared "discord" "DISCORD_WEBHOOK_DEV" "blog-webhook-url-dev"
         set_github_secret_shared "discord" "DISCORD_WEBHOOK_PROD" "blog-webhook-url-prod"
-        set_github_secret_blog "codecov-token"        "CODECOV_TOKEN"
+        set_github_secret_shared "codecov" "CODECOV_TOKEN" "blog"
         printf "\n"
 
         # Vercel (from shared-secrets/vercel)

@@ -117,11 +117,11 @@
 | `blog-webhook-url-dev` | DISCORD_WEBHOOK_DEV  | GitHub |
 | `blog-webhook-url-prod`| DISCORD_WEBHOOK_PROD | GitHub |
 
-### サードパーティ (op://blog-secrets/{item}/password)
+### Codecov (op://shared-secrets/codecov)
 
-| アイテム名      | 環境変数      | 同期先 |
-| --------------- | ------------- | ------ |
-| `codecov-token` | CODECOV_TOKEN | GitHub |
+| フィールド名 | 環境変数      | 同期先 |
+| ------------ | ------------- | ------ |
+| `blog`       | CODECOV_TOKEN | GitHub |
 
 ### GitHub App (op://blog-secrets/{item})
 
