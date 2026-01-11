@@ -22,59 +22,112 @@ This document describes how to obtain and configure secrets.
 | Basic Auth     | -         | BASIC_AUTH_*       | -                   |
 | API Key        | .dev.vars | wrangler secret    | wrangler secret     |
 
-## Required Secrets
+## 1Password Structure
 
-### Infrastructure Secrets (GitHub Secrets)
+Secrets are stored in two vaults:
 
-| Secret                  | How to Obtain                               |
-| ----------------------- | ------------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | Cloudflare Dashboard > API Tokens           |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Dashboard > Account ID           |
-| `CLOUDFLARE_ZONE_ID`    | Cloudflare Dashboard > Zone > Zone ID       |
-| `R2_ACCESS_KEY_ID`      | Cloudflare R2 > Manage R2 API Tokens        |
-| `R2_SECRET_ACCESS_KEY`  | R2 API Token (shown on creation)            |
-| `R2_BUCKET_NAME`        | Cloudflare R2 > Bucket name                 |
-| `VERCEL_API_TOKEN`      | Vercel Settings > Tokens                    |
+| Vault            | Item         | Purpose                              |
+| ---------------- | ------------ | ------------------------------------ |
+| `shared-secrets` | `cloudflare` | Cloudflare-related (custom fields)   |
+| `blog-secrets`   | Each item    | AI, Auth, Third-party, GitHub App    |
 
-### AI Service Secrets
+### Field Naming Convention
 
-| Secret              | How to Obtain    | Where to Set              |
-| ------------------- | ---------------- | ------------------------- |
-| `OPENAI_API_KEY`    | OpenAI Platform  | Cloudflare Workers+GitHub |
-| `GEMINI_API_KEY`    | Google AI Studio | Cloudflare Workers        |
-| `ANTHROPIC_API_KEY` | Anthropic Console| Cloudflare Workers        |
+**shared-secrets/cloudflare:**
 
-### Other Third-party Secrets (GitHub Secrets)
+- `api-token`, `account-id` → No prefix (shared resources)
+- Others → `blog-` prefix + `-dev`/`-prod` suffix
 
-| Secret                 | How to Obtain                 |
-| ---------------------- | ----------------------------- |
-| `SLACK_WEBHOOK_DEV`    | Slack API > Incoming Webhooks |
-| `SLACK_WEBHOOK_PROD`   | Slack API > Incoming Webhooks |
-| `DISCORD_WEBHOOK_DEV`  | Discord Server > Webhooks     |
-| `DISCORD_WEBHOOK_PROD` | Discord Server > Webhooks     |
-| `CODECOV_TOKEN`        | Codecov > Repository Settings |
+**blog-secrets:**
 
-### GitHub App Secrets (GitHub Secrets)
+- `{item-name}` format (managed per item)
 
-| Secret                | How to Obtain                            |
-| --------------------- | ---------------------------------------- |
-| `GHA_APP_ID`          | GitHub > Developer settings > Apps       |
-| `GHA_APP_PRIVATE_KEY` | GitHub App > Generate a private key      |
+## 1Password Field Configuration
 
-### Application Secrets
+### Cloudflare (op://shared-secrets/cloudflare)
 
-| Secret                | How to Generate           | Where to Set        |
-| --------------------- | ------------------------- | ------------------- |
-| `AUTH_SECRET`         | `openssl rand -base64 32` | Cloudflare + Vercel |
-| `ADMIN_PASSWORD_HASH` | bcrypt hash (see below)   | Cloudflare + Vercel |
+| Field Name                      | Maps To              | Target       |
+| ------------------------------- | -------------------- | ------------ |
+| `api-token`                     | CLOUDFLARE_API_TOKEN | GitHub       |
+| `account-id`                    | CLOUDFLARE_ACCOUNT_ID| GitHub       |
+| `blog-zone-id`                  | CLOUDFLARE_ZONE_ID   | GitHub       |
+| `blog-d1-database-id-dev`       | D1_DATABASE_ID_DEV   | GitHub       |
+| `blog-d1-database-id-prod`      | D1_DATABASE_ID_PROD  | GitHub       |
+| `blog-r2-access-key-id-dev`     | R2_ACCESS_KEY_ID     | Wrangler dev |
+| `blog-r2-access-key-id-prod`    | R2_ACCESS_KEY_ID     | Wrangler prod|
+| `blog-r2-secret-access-key-dev` | R2_SECRET_ACCESS_KEY | Wrangler dev |
+| `blog-r2-secret-access-key-prod`| R2_SECRET_ACCESS_KEY | Wrangler prod|
+| `blog-r2-public-url-dev`        | R2_PUBLIC_URL        | Wrangler dev |
+| `blog-r2-public-url-prod`       | R2_PUBLIC_URL        | Wrangler prod|
 
-Generate password hash:
+### AI Services (op://blog-secrets/{item}/password)
 
-```bash
-node -e "require('bcryptjs').hash('password', 12).then(console.log)"
-```
+| Item Name                | Maps To           | Target                 |
+| ------------------------ | ----------------- | ---------------------- |
+| `openai-api-key-dev`     | OPENAI_API_KEY    | Wrangler dev           |
+| `openai-api-key-prod`    | OPENAI_API_KEY    | GitHub + Wrangler prod |
+| `gemini-api-key-dev`     | GEMINI_API_KEY    | Wrangler dev           |
+| `gemini-api-key-prod`    | GEMINI_API_KEY    | Wrangler prod          |
+| `anthropic-api-key-dev`  | ANTHROPIC_API_KEY | Wrangler dev           |
+| `anthropic-api-key-prod` | ANTHROPIC_API_KEY | GitHub + Wrangler prod |
 
-### How to Get Discord Webhook URL
+### Application (op://blog-secrets/{item}/password)
+
+| Item Name                  | Maps To             | Target        |
+| -------------------------- | ------------------- | ------------- |
+| `auth-secret-dev`          | AUTH_SECRET         | Wrangler dev  |
+| `auth-secret-prod`         | AUTH_SECRET         | Wrangler prod |
+| `admin-password-hash-dev`  | ADMIN_PASSWORD_HASH | Wrangler dev  |
+| `admin-password-hash-prod` | ADMIN_PASSWORD_HASH | Wrangler prod |
+| `basic-auth-user`          | BASIC_AUTH_USER     | Wrangler dev  |
+| `basic-auth-pass`          | BASIC_AUTH_PASS     | Wrangler dev  |
+
+### Third-party Services (op://blog-secrets/{item}/password)
+
+| Item Name              | Maps To              | Target |
+| ---------------------- | -------------------- | ------ |
+| `slack-webhook-dev`    | SLACK_WEBHOOK_DEV    | GitHub |
+| `slack-webhook-prod`   | SLACK_WEBHOOK_PROD   | GitHub |
+| `discord-webhook-dev`  | DISCORD_WEBHOOK_DEV  | GitHub |
+| `discord-webhook-prod` | DISCORD_WEBHOOK_PROD | GitHub |
+| `codecov-token`        | CODECOV_TOKEN        | GitHub |
+| `vercel-api-token`     | VERCEL_API_TOKEN     | GitHub |
+
+### GitHub App (op://blog-secrets/{item})
+
+| Item Name               | Field         | Maps To             | Target |
+| ----------------------- | ------------- | ------------------- | ------ |
+| `gha-app-id`            | password      | GHA_APP_ID          | GitHub |
+| `gha-app-private-key`   | private key   | GHA_APP_PRIVATE_KEY | GitHub |
+
+### CI/CD Testing
+
+| Item Name          | Maps To     | Target | Notes              |
+| ------------------ | ----------- | ------ | ------------------ |
+| `cms-api-key-test` | CMS_API_KEY | CI     | E2E tests API auth |
+
+## How to Obtain Secrets
+
+### Cloudflare API Token
+
+1. Log in to [Cloudflare Dashboard](https://dash.cloudflare.com)
+2. Go to **My Profile** → **API Tokens**
+3. Click **Create Token**
+4. Use template or create custom token with required permissions
+
+### R2 API Token
+
+1. Log in to [Cloudflare Dashboard](https://dash.cloudflare.com)
+2. Go to **R2 Object Storage** → **Manage R2 API Tokens**
+3. Click **Create API token**
+4. Configure:
+   - **Token name**: `blog-r2-dev` or `blog-r2-prod`
+   - **Permissions**: Object Read & Write
+   - **Specify bucket(s)**: Select target bucket only
+5. Click **Create API Token**
+6. Copy `Access Key ID` and `Secret Access Key` (shown only once)
+
+### Discord Webhook URL
 
 1. Open Discord server settings (click server name → "Server Settings")
 2. Go to "Integrations" → "Webhooks"
@@ -85,7 +138,7 @@ node -e "require('bcryptjs').hash('password', 12).then(console.log)"
 
 URL format: `https://discord.com/api/webhooks/xxxx/yyyy`
 
-### How to Get Vercel API Token
+### Vercel API Token
 
 1. Log in to [Vercel Dashboard](https://vercel.com)
 2. Click your profile icon (top right) → **Settings**
@@ -97,7 +150,7 @@ URL format: `https://discord.com/api/webhooks/xxxx/yyyy`
 
 Reference: [Vercel Tokens Documentation](https://vercel.com/docs/sign-in-with-vercel/tokens)
 
-### How to Get OpenAI API Key
+### OpenAI API Key
 
 1. Sign up or log in at [OpenAI Platform](https://platform.openai.com)
 2. Click your profile icon (top right) → **View API keys**
@@ -110,7 +163,7 @@ Note: New accounts receive $5 in free credits. Set up billing for continued use.
 
 Reference: [OpenAI API Keys](https://platform.openai.com/api-keys)
 
-### How to Get Anthropic API Key
+### Anthropic API Key
 
 1. Sign up or log in at [Anthropic Console](https://console.anthropic.com)
    - Use Google or email magic link authentication
@@ -123,7 +176,7 @@ Note: Purchase credits ($5 minimum) to start using the API.
 
 Reference: [Anthropic Console](https://console.anthropic.com)
 
-### How to Get Gemini API Key
+### Gemini API Key
 
 1. Sign up or log in at [Google AI Studio](https://ai.google.dev/aistudio)
 2. Accept Terms of Service (first-time only)
@@ -136,6 +189,20 @@ Note: Gemini API is free to start. Each key is linked to a Google Cloud project.
 
 Reference: [Gemini API Key Documentation](https://ai.google.dev/gemini-api/docs/api-key)
 
+### Application Secrets
+
+Generate AUTH_SECRET:
+
+```bash
+openssl rand -base64 32
+```
+
+Generate password hash:
+
+```bash
+node -e "require('bcryptjs').hash('password', 12).then(console.log)"
+```
+
 ## Setting Secrets
 
 ### Automated Sync from 1Password (Recommended)
@@ -147,7 +214,7 @@ It must be set **manually once** (other secrets can be synced automatically).
 
 1. Create a Service Account in 1Password Web UI
    - [my.1password.com](https://my.1password.com) → Integrations → Service Accounts
-   - Grant Read permission to `blog-secrets` vault
+   - Grant Read permission to `shared-secrets` and `blog-secrets` vaults
    - Copy the token (`ops_...`)
 
 2. Register in GitHub Secret
@@ -200,107 +267,14 @@ op vault list
 op item list --vault blog-secrets
 
 # Get item details (to check field names)
-op item get openai-api-key --vault blog-secrets
+op item get openai-api-key-dev --vault blog-secrets
 
 # Read a secret value
-op read "op://blog-secrets/openai-api-key/password"
+op read "op://blog-secrets/openai-api-key-dev/password"
+
+# Read from shared-secrets/cloudflare
+op read "op://shared-secrets/cloudflare/api-token"
 ```
-
-#### 1Password Service Account Setup
-
-Create a service account for CI/CD automation:
-
-```bash
-# Sign in to 1Password
-op signin
-
-# Create service account (interactive)
-op service-account create "dev-automation" --vault blog-secrets:read_items
-
-# Or via 1Password web:
-# 1. Settings > Developer > Service Accounts
-# 2. Create new service account
-# 3. Grant access to "blog-secrets" vault
-# 4. Copy the token
-```
-
-Set the token in GitHub:
-
-```bash
-gh secret set OP_SERVICE_ACCOUNT_TOKEN
-# Paste the service account token when prompted
-```
-
-#### 1Password Vault Setup
-
-Create a vault named `blog-secrets` with the following items.
-Field is `password` unless noted.
-
-Target legend: G=GitHub, Wd=Wrangler dev, Wp=Wrangler production.
-
-**Infrastructure (GitHub only):**
-
-| Item Name              | Maps To                | Target |
-| ---------------------- | ---------------------- | ------ |
-| cloudflare-api-token   | CLOUDFLARE_API_TOKEN   | G      |
-| cloudflare-account-id  | CLOUDFLARE_ACCOUNT_ID  | G      |
-| cloudflare-zone-id     | CLOUDFLARE_ZONE_ID     | G      |
-| vercel-api-token       | VERCEL_API_TOKEN       | G      |
-| d1-database-id-dev     | D1_DATABASE_ID_DEV     | G      |
-| d1-database-id-prod    | D1_DATABASE_ID_PROD    | G      |
-
-**R2 Storage (environment-specific):**
-
-| Item Name                 | Maps To              | Target |
-| ------------------------- | -------------------- | ------ |
-| r2-access-key-id-dev      | R2_ACCESS_KEY_ID     | Wd     |
-| r2-access-key-id-prod     | R2_ACCESS_KEY_ID     | Wp     |
-| r2-secret-access-key-dev  | R2_SECRET_ACCESS_KEY | Wd     |
-| r2-secret-access-key-prod | R2_SECRET_ACCESS_KEY | Wp     |
-| r2-public-url-dev         | R2_PUBLIC_URL        | Wd     |
-| r2-public-url-prod        | R2_PUBLIC_URL        | Wp     |
-
-**AI Services (environment-specific):**
-
-| Item Name              | Maps To           | Target |
-| ---------------------- | ----------------- | ------ |
-| openai-api-key-dev     | OPENAI_API_KEY    | Wd     |
-| openai-api-key-prod    | OPENAI_API_KEY    | G+Wp   |
-| gemini-api-key-dev     | GEMINI_API_KEY    | Wd     |
-| gemini-api-key-prod    | GEMINI_API_KEY    | Wp     |
-| anthropic-api-key-dev  | ANTHROPIC_API_KEY | Wd     |
-| anthropic-api-key-prod | ANTHROPIC_API_KEY | G+Wp   |
-
-**Application (environment-specific):**
-
-| Item Name                | Maps To             | Target |
-| ------------------------ | ------------------- | ------ |
-| auth-secret-dev          | AUTH_SECRET         | Wd     |
-| auth-secret-prod         | AUTH_SECRET         | Wp     |
-| admin-password-hash-dev  | ADMIN_PASSWORD_HASH | Wd     |
-| admin-password-hash-prod | ADMIN_PASSWORD_HASH | Wp     |
-| basic-auth-user          | BASIC_AUTH_USER     | Wd     |
-| basic-auth-pass          | BASIC_AUTH_PASS     | Wd     |
-
-**Third-party Services (GitHub only):**
-
-| Item Name                | Maps To              | Target |
-| ------------------------ | -------------------- | ------ |
-| slack-webhook-dev        | SLACK_WEBHOOK_DEV    | G      |
-| slack-webhook-prod       | SLACK_WEBHOOK_PROD   | G      |
-| discord-webhook-dev      | DISCORD_WEBHOOK_DEV  | G      |
-| discord-webhook-prod     | DISCORD_WEBHOOK_PROD | G      |
-| codecov-token            | CODECOV_TOKEN        | G      |
-| gha-app-id               | GHA_APP_ID           | G      |
-| gha-app-private-key [^1] | GHA_APP_PRIVATE_KEY  | G      |
-
-**CI/CD Testing:**
-
-| Item Name        | Maps To       | Target | Notes              |
-| ---------------- | ------------- | ------ | ------------------ |
-| cms-api-key-test | CMS_API_KEY   | CI     | E2E tests API auth |
-
-[^1]: Field name is `private key` instead of `password`.
 
 ### Manual Setup: GitHub Secrets
 
@@ -321,21 +295,19 @@ pnpm wrangler secret put AUTH_SECRET --env dev
 pnpm wrangler secret put ADMIN_PASSWORD_HASH --env dev
 pnpm wrangler secret put R2_ACCESS_KEY_ID --env dev
 pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env dev
-pnpm wrangler secret put R2_BUCKET_NAME --env dev
 pnpm wrangler secret put R2_PUBLIC_URL --env dev
 pnpm wrangler secret put BASIC_AUTH_USER --env dev
 pnpm wrangler secret put BASIC_AUTH_PASS --env dev
 
 # Set secrets for production environment
-pnpm wrangler secret put OPENAI_API_KEY
-pnpm wrangler secret put GEMINI_API_KEY
-pnpm wrangler secret put ANTHROPIC_API_KEY
-pnpm wrangler secret put AUTH_SECRET
-pnpm wrangler secret put ADMIN_PASSWORD_HASH
-pnpm wrangler secret put R2_ACCESS_KEY_ID
-pnpm wrangler secret put R2_SECRET_ACCESS_KEY
-pnpm wrangler secret put R2_BUCKET_NAME
-pnpm wrangler secret put R2_PUBLIC_URL
+pnpm wrangler secret put OPENAI_API_KEY --env production
+pnpm wrangler secret put GEMINI_API_KEY --env production
+pnpm wrangler secret put ANTHROPIC_API_KEY --env production
+pnpm wrangler secret put AUTH_SECRET --env production
+pnpm wrangler secret put ADMIN_PASSWORD_HASH --env production
+pnpm wrangler secret put R2_ACCESS_KEY_ID --env production
+pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env production
+pnpm wrangler secret put R2_PUBLIC_URL --env production
 ```
 
 Or via Cloudflare Dashboard:

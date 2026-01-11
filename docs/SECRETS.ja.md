@@ -22,57 +22,110 @@
 | Basic Auth     | -         | BASIC_AUTH_*   | -                |
 | API Key        | .dev.vars | wrangler       | wrangler         |
 
-## 必要なシークレット
+## 1Password 構造
 
-### インフラ関連 (GitHub Secrets)
+シークレットは2つの Vault に保存:
 
-| シークレット            | 取得方法                                |
-| ----------------------- | --------------------------------------- |
-| `CLOUDFLARE_API_TOKEN`  | Cloudflare Dashboard > API Tokens       |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Dashboard > Account ID       |
-| `CLOUDFLARE_ZONE_ID`    | Cloudflare Dashboard > Zone > Zone ID   |
-| `R2_ACCESS_KEY_ID`      | Cloudflare R2 > Manage R2 API Tokens    |
-| `R2_SECRET_ACCESS_KEY`  | R2 API Token（作成時に表示）            |
-| `R2_BUCKET_NAME`        | Cloudflare R2 > バケット名              |
-| `VERCEL_API_TOKEN`      | Vercel Settings > Tokens                |
+| Vault            | Item         | 用途                                 |
+| ---------------- | ------------ | ------------------------------------ |
+| `shared-secrets` | `cloudflare` | Cloudflare 関連 (カスタムフィールド) |
+| `blog-secrets`   | 各アイテム   | AI、Auth、サードパーティ、GitHub App |
 
-### AI サービス関連
+### フィールド命名規則
 
-| シークレット        | 取得方法         | 設定場所                |
-| ------------------- | ---------------- | ----------------------- |
-| `OPENAI_API_KEY`    | OpenAI Platform  | Cloudflare+GitHub       |
-| `GEMINI_API_KEY`    | Google AI Studio | Cloudflare Workers      |
-| `ANTHROPIC_API_KEY` | Anthropic Console| Cloudflare Workers      |
+**shared-secrets/cloudflare:**
 
-### その他サードパーティ (GitHub Secrets)
+- `api-token`, `account-id` → prefix なし（共有リソース）
+- その他 → `blog-` prefix + `-dev`/`-prod` suffix
 
-| シークレット           | 取得方法                       |
-| ---------------------- | ------------------------------ |
-| `SLACK_WEBHOOK_DEV`    | Slack API > Incoming Webhooks  |
-| `SLACK_WEBHOOK_PROD`   | Slack API > Incoming Webhooks  |
-| `DISCORD_WEBHOOK_DEV`  | Discord サーバー > Webhook     |
-| `DISCORD_WEBHOOK_PROD` | Discord サーバー > Webhook     |
-| `CODECOV_TOKEN`        | Codecov > リポジトリ設定       |
+**blog-secrets:**
 
-### GitHub App 関連 (GitHub Secrets)
+- `{item-name}` 形式（アイテム単位で管理）
 
-| シークレット          | 取得方法                         |
-| --------------------- | -------------------------------- |
-| `GHA_APP_ID`          | GitHub > Developer settings      |
-| `GHA_APP_PRIVATE_KEY` | GitHub App > Private key 生成    |
+## 1Password フィールド構成
 
-### アプリケーション関連
+### Cloudflare (op://shared-secrets/cloudflare)
 
-| シークレット          | 生成方法                    | 設定場所              |
-| --------------------- | --------------------------- | --------------------- |
-| `AUTH_SECRET`         | `openssl rand -base64 32`   | Cloudflare + Vercel   |
-| `ADMIN_PASSWORD_HASH` | bcrypt ハッシュ（下記参照） | Cloudflare + Vercel   |
+| フィールド名                    | 環境変数             | 同期先       |
+| ------------------------------- | -------------------- | ------------ |
+| `api-token`                     | CLOUDFLARE_API_TOKEN | GitHub       |
+| `account-id`                    | CLOUDFLARE_ACCOUNT_ID| GitHub       |
+| `blog-zone-id`                  | CLOUDFLARE_ZONE_ID   | GitHub       |
+| `blog-d1-database-id-dev`       | D1_DATABASE_ID_DEV   | GitHub       |
+| `blog-d1-database-id-prod`      | D1_DATABASE_ID_PROD  | GitHub       |
+| `blog-r2-access-key-id-dev`     | R2_ACCESS_KEY_ID     | Wrangler dev |
+| `blog-r2-access-key-id-prod`    | R2_ACCESS_KEY_ID     | Wrangler prod|
+| `blog-r2-secret-access-key-dev` | R2_SECRET_ACCESS_KEY | Wrangler dev |
+| `blog-r2-secret-access-key-prod`| R2_SECRET_ACCESS_KEY | Wrangler prod|
+| `blog-r2-public-url-dev`        | R2_PUBLIC_URL        | Wrangler dev |
+| `blog-r2-public-url-prod`       | R2_PUBLIC_URL        | Wrangler prod|
 
-パスワードハッシュの生成:
+### AI サービス (op://blog-secrets/{item}/password)
 
-```bash
-node -e "require('bcryptjs').hash('password', 12).then(console.log)"
-```
+| アイテム名               | 環境変数          | 同期先                 |
+| ------------------------ | ----------------- | ---------------------- |
+| `openai-api-key-dev`     | OPENAI_API_KEY    | Wrangler dev           |
+| `openai-api-key-prod`    | OPENAI_API_KEY    | GitHub + Wrangler prod |
+| `gemini-api-key-dev`     | GEMINI_API_KEY    | Wrangler dev           |
+| `gemini-api-key-prod`    | GEMINI_API_KEY    | Wrangler prod          |
+| `anthropic-api-key-dev`  | ANTHROPIC_API_KEY | Wrangler dev           |
+| `anthropic-api-key-prod` | ANTHROPIC_API_KEY | GitHub + Wrangler prod |
+
+### アプリケーション (op://blog-secrets/{item}/password)
+
+| アイテム名                 | 環境変数            | 同期先        |
+| -------------------------- | ------------------- | ------------- |
+| `auth-secret-dev`          | AUTH_SECRET         | Wrangler dev  |
+| `auth-secret-prod`         | AUTH_SECRET         | Wrangler prod |
+| `admin-password-hash-dev`  | ADMIN_PASSWORD_HASH | Wrangler dev  |
+| `admin-password-hash-prod` | ADMIN_PASSWORD_HASH | Wrangler prod |
+| `basic-auth-user`          | BASIC_AUTH_USER     | Wrangler dev  |
+| `basic-auth-pass`          | BASIC_AUTH_PASS     | Wrangler dev  |
+
+### サードパーティ (op://blog-secrets/{item}/password)
+
+| アイテム名             | 環境変数             | 同期先 |
+| ---------------------- | -------------------- | ------ |
+| `slack-webhook-dev`    | SLACK_WEBHOOK_DEV    | GitHub |
+| `slack-webhook-prod`   | SLACK_WEBHOOK_PROD   | GitHub |
+| `discord-webhook-dev`  | DISCORD_WEBHOOK_DEV  | GitHub |
+| `discord-webhook-prod` | DISCORD_WEBHOOK_PROD | GitHub |
+| `codecov-token`        | CODECOV_TOKEN        | GitHub |
+| `vercel-api-token`     | VERCEL_API_TOKEN     | GitHub |
+
+### GitHub App (op://blog-secrets/{item})
+
+| アイテム名              | フィールド    | 環境変数            | 同期先 |
+| ----------------------- | ------------- | ------------------- | ------ |
+| `gha-app-id`            | password      | GHA_APP_ID          | GitHub |
+| `gha-app-private-key`   | private key   | GHA_APP_PRIVATE_KEY | GitHub |
+
+### CI/CD テスト
+
+| アイテム名         | 環境変数    | 同期先 | 備考                  |
+| ------------------ | ----------- | ------ | --------------------- |
+| `cms-api-key-test` | CMS_API_KEY | CI     | E2E テスト用 API 認証 |
+
+## シークレットの取得方法
+
+### Cloudflare API Token
+
+1. [Cloudflare Dashboard](https://dash.cloudflare.com) にログイン
+2. **マイプロフィール** → **API トークン**
+3. **トークンを作成** をクリック
+4. テンプレートを使用するか、必要な権限でカスタムトークンを作成
+
+### R2 API トークン
+
+1. [Cloudflare Dashboard](https://dash.cloudflare.com) にログイン
+2. **R2 Object Storage** → **Manage R2 API Tokens**
+3. **Create API token** をクリック
+4. 設定:
+   - **Token name**: `blog-r2-dev` または `blog-r2-prod`
+   - **Permissions**: Object Read & Write
+   - **Specify bucket(s)**: 対象バケットのみ選択
+5. **Create API Token** をクリック
+6. `Access Key ID` と `Secret Access Key` をコピー（一度しか表示されない）
 
 ### Discord Webhook URL の取得方法
 
@@ -136,6 +189,20 @@ URL 形式: `https://discord.com/api/webhooks/xxxx/yyyy`
 
 参考: [Gemini API Key Documentation](https://ai.google.dev/gemini-api/docs/api-key)
 
+### アプリケーションシークレット
+
+AUTH_SECRET の生成:
+
+```bash
+openssl rand -base64 32
+```
+
+パスワードハッシュの生成:
+
+```bash
+node -e "require('bcryptjs').hash('password', 12).then(console.log)"
+```
+
 ## シークレットの設定方法
 
 ### 1Password からの自動同期（推奨）
@@ -147,7 +214,7 @@ URL 形式: `https://discord.com/api/webhooks/xxxx/yyyy`
 
 1. 1Password Web UI で Service Account を作成
    - [my.1password.com](https://my.1password.com) → Integrations → Service Accounts
-   - `blog-secrets` vault への Read 権限を付与
+   - `shared-secrets` と `blog-secrets` vault への Read 権限を付与
    - トークン（`ops_...`）をコピー
 
 2. GitHub Secret に登録
@@ -200,105 +267,14 @@ op vault list
 op item list --vault blog-secrets
 
 # アイテム詳細（フィールド名を確認）
-op item get openai-api-key --vault blog-secrets
+op item get openai-api-key-dev --vault blog-secrets
 
 # シークレット値を取得
-op read "op://blog-secrets/openai-api-key/password"
+op read "op://blog-secrets/openai-api-key-dev/password"
+
+# shared-secrets/cloudflare から取得
+op read "op://shared-secrets/cloudflare/api-token"
 ```
-
-#### 1Password Service Account の作成
-
-CI/CD 自動化用のサービスアカウントを作成:
-
-```bash
-# 1Password にサインイン
-op signin
-
-# サービスアカウント作成（対話形式）
-op service-account create "dev-automation" --vault blog-secrets:read_items
-
-# または 1Password Web から:
-# 1. Settings > Developer > Service Accounts
-# 2. 新しいサービスアカウントを作成
-# 3. "blog-secrets" vault へのアクセス権を付与
-# 4. トークンをコピー
-```
-
-GitHub にトークンを設定:
-
-```bash
-gh secret set OP_SERVICE_ACCOUNT_TOKEN
-# プロンプトでサービスアカウントトークンを貼り付け
-```
-
-#### 1Password Vault の設定
-
-`blog-secrets` vault を作成し、以下のアイテムを登録。
-フィールドは特記なければ `password`。同期先: G=GitHub, Wd=Wrangler dev, Wp=Wrangler production。
-
-**インフラ (GitHub のみ):**
-
-| アイテム名             | 環境変数名             | 同期先 |
-| ---------------------- | ---------------------- | ------ |
-| cloudflare-api-token   | CLOUDFLARE_API_TOKEN   | G      |
-| cloudflare-account-id  | CLOUDFLARE_ACCOUNT_ID  | G      |
-| cloudflare-zone-id     | CLOUDFLARE_ZONE_ID     | G      |
-| vercel-api-token       | VERCEL_API_TOKEN       | G      |
-| d1-database-id-dev     | D1_DATABASE_ID_DEV     | G      |
-| d1-database-id-prod    | D1_DATABASE_ID_PROD    | G      |
-
-**R2 ストレージ (環境別):**
-
-| アイテム名                | 環境変数名           | 同期先 |
-| ------------------------- | -------------------- | ------ |
-| r2-access-key-id-dev      | R2_ACCESS_KEY_ID     | Wd     |
-| r2-access-key-id-prod     | R2_ACCESS_KEY_ID     | Wp     |
-| r2-secret-access-key-dev  | R2_SECRET_ACCESS_KEY | Wd     |
-| r2-secret-access-key-prod | R2_SECRET_ACCESS_KEY | Wp     |
-| r2-public-url-dev         | R2_PUBLIC_URL        | Wd     |
-| r2-public-url-prod        | R2_PUBLIC_URL        | Wp     |
-
-**AI サービス (環境別):**
-
-| アイテム名             | 環境変数名        | 同期先 |
-| ---------------------- | ----------------- | ------ |
-| openai-api-key-dev     | OPENAI_API_KEY    | Wd     |
-| openai-api-key-prod    | OPENAI_API_KEY    | G+Wp   |
-| gemini-api-key-dev     | GEMINI_API_KEY    | Wd     |
-| gemini-api-key-prod    | GEMINI_API_KEY    | Wp     |
-| anthropic-api-key-dev  | ANTHROPIC_API_KEY | Wd     |
-| anthropic-api-key-prod | ANTHROPIC_API_KEY | G+Wp   |
-
-**アプリケーション (環境別):**
-
-| アイテム名               | 環境変数名          | 同期先 |
-| ------------------------ | ------------------- | ------ |
-| auth-secret-dev          | AUTH_SECRET         | Wd     |
-| auth-secret-prod         | AUTH_SECRET         | Wp     |
-| admin-password-hash-dev  | ADMIN_PASSWORD_HASH | Wd     |
-| admin-password-hash-prod | ADMIN_PASSWORD_HASH | Wp     |
-| basic-auth-user          | BASIC_AUTH_USER     | Wd     |
-| basic-auth-pass          | BASIC_AUTH_PASS     | Wd     |
-
-**サードパーティ (GitHub のみ):**
-
-| アイテム名               | 環境変数名           | 同期先 |
-| ------------------------ | -------------------- | ------ |
-| slack-webhook-dev        | SLACK_WEBHOOK_DEV    | G      |
-| slack-webhook-prod       | SLACK_WEBHOOK_PROD   | G      |
-| discord-webhook-dev      | DISCORD_WEBHOOK_DEV  | G      |
-| discord-webhook-prod     | DISCORD_WEBHOOK_PROD | G      |
-| codecov-token            | CODECOV_TOKEN        | G      |
-| gha-app-id               | GHA_APP_ID           | G      |
-| gha-app-private-key [^1] | GHA_APP_PRIVATE_KEY  | G      |
-
-**CI/CD テスト:**
-
-| アイテム名       | 環境変数名    | 同期先 | 備考                  |
-| ---------------- | ------------- | ------ | --------------------- |
-| cms-api-key-test | CMS_API_KEY   | CI     | E2E テスト用 API 認証 |
-
-[^1]: フィールド名は `password` ではなく `private key` を使用。
 
 ### 手動設定: GitHub Secrets
 
@@ -319,21 +295,19 @@ pnpm wrangler secret put AUTH_SECRET --env dev
 pnpm wrangler secret put ADMIN_PASSWORD_HASH --env dev
 pnpm wrangler secret put R2_ACCESS_KEY_ID --env dev
 pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env dev
-pnpm wrangler secret put R2_BUCKET_NAME --env dev
 pnpm wrangler secret put R2_PUBLIC_URL --env dev
 pnpm wrangler secret put BASIC_AUTH_USER --env dev
 pnpm wrangler secret put BASIC_AUTH_PASS --env dev
 
 # production 環境のシークレット設定
-pnpm wrangler secret put OPENAI_API_KEY
-pnpm wrangler secret put GEMINI_API_KEY
-pnpm wrangler secret put ANTHROPIC_API_KEY
-pnpm wrangler secret put AUTH_SECRET
-pnpm wrangler secret put ADMIN_PASSWORD_HASH
-pnpm wrangler secret put R2_ACCESS_KEY_ID
-pnpm wrangler secret put R2_SECRET_ACCESS_KEY
-pnpm wrangler secret put R2_BUCKET_NAME
-pnpm wrangler secret put R2_PUBLIC_URL
+pnpm wrangler secret put OPENAI_API_KEY --env production
+pnpm wrangler secret put GEMINI_API_KEY --env production
+pnpm wrangler secret put ANTHROPIC_API_KEY --env production
+pnpm wrangler secret put AUTH_SECRET --env production
+pnpm wrangler secret put ADMIN_PASSWORD_HASH --env production
+pnpm wrangler secret put R2_ACCESS_KEY_ID --env production
+pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env production
+pnpm wrangler secret put R2_PUBLIC_URL --env production
 ```
 
 または Cloudflare Dashboard から:
