@@ -60,9 +60,15 @@ async function fetchApi<T>(path: string, options?: RequestInit): Promise<T> {
   if (isMutating) {
     const csrfToken = getCsrfToken();
     if (csrfToken) {
-      const headers = new Headers(options?.headers);
-      headers.set('X-CSRF-Token', csrfToken);
-      options = { ...options, headers };
+      const existingHeaders =
+        (options?.headers as Record<string, string>) || {};
+      options = {
+        ...options,
+        headers: {
+          ...existingHeaders,
+          'X-CSRF-Token': csrfToken,
+        },
+      };
     }
   }
 
