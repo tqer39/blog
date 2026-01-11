@@ -7,21 +7,24 @@ inputs:
     description: Working directory for pnpm install
     required: false
     default: "."
-  node-version:
-    description: Node.js version
-    required: false
-    default: "25"
 
 runs:
   using: composite
   steps:
+    - name: Get Node.js version from mise
+      id: node-version
+      shell: bash
+      run: |
+        NODE_VERSION=$(grep '^node' .mise.toml | sed 's/.*= *"//' | sed 's/".*//')
+        echo "version=$NODE_VERSION" >> $GITHUB_OUTPUT
+
     - name: Setup pnpm
       uses: pnpm/action-setup@v4
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ inputs.node-version }}
+        node-version: ${{ steps.node-version.outputs.version }}
         cache: pnpm
 
     - name: Install dependencies
