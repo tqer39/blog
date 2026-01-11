@@ -14,7 +14,11 @@ import { ARTICLES_PER_PAGE } from '@/lib/pagination';
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 
 interface ArticlesPageProps {
-  searchParams: Promise<{ tags?: string | string[]; q?: string; category?: string }>;
+  searchParams: Promise<{
+    tags?: string | string[];
+    q?: string;
+    category?: string;
+  }>;
 }
 
 export async function generateMetadata({
@@ -100,7 +104,9 @@ export default async function ArticlesPage({
   // Build clear search URL (preserve tags and category)
   const clearSearchParams = [
     ...selectedTags.map((t) => `tags=${encodeURIComponent(t)}`),
-    ...(selectedCategory ? [`category=${encodeURIComponent(selectedCategory)}`] : []),
+    ...(selectedCategory
+      ? [`category=${encodeURIComponent(selectedCategory)}`]
+      : []),
   ];
   const clearSearchUrl =
     clearSearchParams.length > 0

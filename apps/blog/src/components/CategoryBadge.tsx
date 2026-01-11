@@ -6,7 +6,10 @@ interface CategoryBadgeProps {
   className?: string;
 }
 
-export function CategoryBadge({ category, className = '' }: CategoryBadgeProps) {
+export function CategoryBadge({
+  category,
+  className = '',
+}: CategoryBadgeProps) {
   return (
     <Link
       href={`/articles?category=${category.slug}`}

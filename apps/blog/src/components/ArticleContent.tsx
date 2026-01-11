@@ -1,6 +1,7 @@
 'use client';
 
 import { CodeBlock, Mermaid } from '@blog/ui';
+import { h } from 'hastscript';
 import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -8,18 +9,35 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
-import { h } from 'hastscript';
 
 // Custom sanitize schema: allow className on code/pre for syntax highlighting
 // and SVG elements for anchor link icons
 const sanitizeSchema = {
   ...defaultSchema,
-  tagNames: [...(defaultSchema.tagNames || []), 'svg', 'path', 'rect', 'button', 'span'],
+  tagNames: [
+    ...(defaultSchema.tagNames || []),
+    'svg',
+    'path',
+    'rect',
+    'button',
+    'span',
+  ],
   attributes: {
     ...defaultSchema.attributes,
     code: [...(defaultSchema.attributes?.code || []), 'className'],
     pre: [...(defaultSchema.attributes?.pre || []), 'className'],
-    svg: ['xmlns', 'width', 'height', 'viewBox', 'fill', 'stroke', 'strokeWidth', 'strokeLinecap', 'strokeLinejoin', 'className'],
+    svg: [
+      'xmlns',
+      'width',
+      'height',
+      'viewBox',
+      'fill',
+      'stroke',
+      'strokeWidth',
+      'strokeLinecap',
+      'strokeLinejoin',
+      'className',
+    ],
     path: ['d'],
     rect: ['x', 'y', 'width', 'height', 'rx', 'ry'],
     button: ['type', 'className', 'ariaLabel'],
@@ -77,26 +95,43 @@ export function ArticleContent({ content }: ArticleContentProps) {
             },
             content: [
               h('span', { className: 'anchor-hash' }, '#'),
-              h('button', {
-                type: 'button',
-                className: 'anchor-copy',
-                ariaLabel: 'Copy link to clipboard',
-              }, [
-                h('svg', {
-                  xmlns: 'http://www.w3.org/2000/svg',
-                  width: 18,
-                  height: 18,
-                  viewBox: '0 0 24 24',
-                  fill: 'none',
-                  stroke: 'currentColor',
-                  strokeWidth: 2,
-                  strokeLinecap: 'round',
-                  strokeLinejoin: 'round',
-                }, [
-                  h('rect', { x: 9, y: 9, width: 13, height: 13, rx: 2, ry: 2 }),
-                  h('path', { d: 'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1' }),
-                ]),
-              ]),
+              h(
+                'button',
+                {
+                  type: 'button',
+                  className: 'anchor-copy',
+                  ariaLabel: 'Copy link to clipboard',
+                },
+                [
+                  h(
+                    'svg',
+                    {
+                      xmlns: 'http://www.w3.org/2000/svg',
+                      width: 18,
+                      height: 18,
+                      viewBox: '0 0 24 24',
+                      fill: 'none',
+                      stroke: 'currentColor',
+                      strokeWidth: 2,
+                      strokeLinecap: 'round',
+                      strokeLinejoin: 'round',
+                    },
+                    [
+                      h('rect', {
+                        x: 9,
+                        y: 9,
+                        width: 13,
+                        height: 13,
+                        rx: 2,
+                        ry: 2,
+                      }),
+                      h('path', {
+                        d: 'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1',
+                      }),
+                    ]
+                  ),
+                ]
+              ),
             ],
           },
         ],

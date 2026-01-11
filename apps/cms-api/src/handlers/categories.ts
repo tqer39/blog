@@ -1,4 +1,8 @@
-import type { Category, CategoryInput, CategoryWithCount } from '@blog/cms-types';
+import type {
+  Category,
+  CategoryInput,
+  CategoryWithCount,
+} from '@blog/cms-types';
 import { generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
@@ -123,6 +127,25 @@ categoriesHandler.put('/:id', async (c) => {
     }
     throw error;
   }
+});
+
+// Reorder categories
+categoriesHandler.patch('/reorder', async (c) => {
+  const { orderedIds } = await c.req.json<{ orderedIds: string[] }>();
+
+  if (!orderedIds || !Array.isArray(orderedIds)) {
+    validationError('Invalid input', { orderedIds: 'Required array of IDs' });
+  }
+
+  const statements = orderedIds.map((id, index) =>
+    c.env.DB.prepare(
+      'UPDATE categories SET display_order = ? WHERE id = ?'
+    ).bind(index, id)
+  );
+
+  await c.env.DB.batch(statements);
+
+  return c.json({ success: true });
 });
 
 // Delete category

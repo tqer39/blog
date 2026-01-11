@@ -64,14 +64,21 @@ export function ArticleCategorySelector({
                   : 'hover:opacity-80'
               }`}
               style={{
-                backgroundColor: isSelected ? category.color : `${category.color}20`,
+                backgroundColor: isSelected
+                  ? category.color
+                  : `${category.color}20`,
                 color: isSelected ? 'white' : category.color,
-                ...(isSelected && { '--tw-ring-color': category.color } as React.CSSProperties),
+                ...(isSelected &&
+                  ({
+                    '--tw-ring-color': category.color,
+                  } as React.CSSProperties)),
               }}
             >
               <span
                 className={`h-2 w-2 rounded-full ${isSelected ? 'bg-white' : ''}`}
-                style={!isSelected ? { backgroundColor: category.color } : undefined}
+                style={
+                  !isSelected ? { backgroundColor: category.color } : undefined
+                }
                 aria-hidden="true"
               />
               {category.name}

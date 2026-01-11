@@ -144,6 +144,16 @@ export async function deleteCategory(id: string): Promise<void> {
   await fetchApi(`/categories/${id}`, { method: 'DELETE' });
 }
 
+export async function updateCategoriesOrder(
+  orderedIds: string[]
+): Promise<void> {
+  await fetchApi('/categories/reorder', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ orderedIds }),
+  });
+}
+
 // Images
 export async function uploadImage(
   formData: FormData

@@ -26,7 +26,8 @@ export const VALID_ANTHROPIC_MODELS: AnthropicModel[] = [
 
 // Default models
 export const DEFAULT_OPENAI_MODEL: OpenAIModel = 'gpt-4o-mini';
-export const DEFAULT_ANTHROPIC_MODEL: AnthropicModel = 'claude-sonnet-4-20250514';
+export const DEFAULT_ANTHROPIC_MODEL: AnthropicModel =
+  'claude-sonnet-4-20250514';
 
 // Nano Banana (Gemini Image) models
 export const NANO_BANANA_MODELS = {
@@ -92,7 +93,9 @@ export const CONTINUATION_LENGTH_CONFIG: Record<
   long: { min: 300, max: 600, label: '300-600文字程度' },
 };
 
-export function buildContinuationSystemPrompt(length: ContinuationLength): string {
+export function buildContinuationSystemPrompt(
+  length: ContinuationLength
+): string {
   const config = CONTINUATION_LENGTH_CONFIG[length];
   return `あなたは日本語の技術ブログ記事の執筆を支援するアシスタントです。
 記事の続きを3つ提案してください。
