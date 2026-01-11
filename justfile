@@ -63,7 +63,7 @@ dev-all:
     echo "  - CMS API: http://localhost:3101"
     echo "  - Blog:    http://localhost:3100"
     echo ""
-    concurrently \
+    pnpm exec concurrently \
         --names "api,blog" \
         --prefix-colors "yellow,cyan" \
         "pnpm --filter @blog/cms-api dev" \
