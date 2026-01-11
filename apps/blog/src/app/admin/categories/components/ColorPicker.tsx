@@ -22,14 +22,16 @@ interface ColorPickerProps {
 export function ColorPicker({ value, onChange }: ColorPickerProps) {
   return (
     <div className="space-y-2">
-      <Label>Color</Label>
+      <Label htmlFor="color-picker">Color</Label>
       <div className="flex items-center gap-3">
         <div className="relative">
           <input
+            id="color-picker"
             type="color"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className="h-10 w-10 cursor-pointer rounded border border-input bg-transparent p-0.5"
+            aria-label="Select color"
           />
         </div>
         <span className="font-mono text-sm text-muted-foreground">{value}</span>
