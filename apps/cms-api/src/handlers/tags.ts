@@ -2,7 +2,12 @@ import type { Tag, TagInput, TagWithCount } from '@blog/cms-types';
 import { generateId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
-import { conflict, notFound, validationError } from '../lib/errors';
+import {
+  notFound,
+  throwIfUniqueConstraint,
+  validationError,
+} from '../lib/errors';
+import type { TagRow, TagWithCountRow } from '../types/rows';
 
 export const tagsHandler = new Hono<{ Bindings: Env }>();
 
@@ -57,10 +62,7 @@ tagsHandler.post('/', async (c) => {
 
     return c.json(mapRowToTag(row!), 201);
   } catch (error) {
-    if (String(error).includes('UNIQUE constraint failed')) {
-      conflict('Tag with this name already exists');
-    }
-    throw error;
+    throwIfUniqueConstraint(error, 'Tag with this name already exists');
   }
 });
 
@@ -92,10 +94,7 @@ tagsHandler.put('/:id', async (c) => {
 
     return c.json(mapRowToTag(row!));
   } catch (error) {
-    if (String(error).includes('UNIQUE constraint failed')) {
-      conflict('Tag with this name already exists');
-    }
-    throw error;
+    throwIfUniqueConstraint(error, 'Tag with this name already exists');
   }
 });
 
@@ -114,19 +113,19 @@ tagsHandler.delete('/:id', async (c) => {
   return c.json({ success: true });
 });
 
-function mapRowToTag(row: Record<string, unknown>): Tag {
+function mapRowToTag(row: TagRow): Tag {
   return {
-    id: row.id as string,
-    name: row.name as string,
-    createdAt: row.created_at as string,
+    id: row.id,
+    name: row.name,
+    createdAt: row.created_at,
   };
 }
 
-function mapRowToTagWithCount(row: Record<string, unknown>): TagWithCount {
+function mapRowToTagWithCount(row: TagWithCountRow): TagWithCount {
   return {
-    id: row.id as string,
-    name: row.name as string,
-    createdAt: row.created_at as string,
-    articleCount: (row.article_count as number) || 0,
+    id: row.id,
+    name: row.name,
+    createdAt: row.created_at,
+    articleCount: row.article_count || 0,
   };
 }

@@ -57,3 +57,24 @@ export function unauthorized(message: string): never {
 export function internalError(message: string): never {
   throw new ApiException(500, 'INTERNAL_ERROR', message);
 }
+
+/**
+ * Check if error is a UNIQUE constraint violation and throw conflict error
+ * @returns false if not a UNIQUE constraint error (caller should rethrow)
+ */
+export function isUniqueConstraintError(error: unknown): boolean {
+  return String(error).includes('UNIQUE constraint failed');
+}
+
+/**
+ * Handle UNIQUE constraint error by throwing conflict, or rethrow original error
+ */
+export function throwIfUniqueConstraint(
+  error: unknown,
+  conflictMessage: string
+): never {
+  if (isUniqueConstraintError(error)) {
+    conflict(conflictMessage);
+  }
+  throw error;
+}
