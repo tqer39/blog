@@ -29,6 +29,7 @@
 | Vault            | Item         | 用途                                 |
 | ---------------- | ------------ | ------------------------------------ |
 | `shared-secrets` | `cloudflare` | Cloudflare 関連 (カスタムフィールド) |
+| `shared-secrets` | `vercel`     | Vercel 関連 (dev/prod 共有)          |
 | `blog-secrets`   | 各アイテム   | AI、Auth、サードパーティ、GitHub App |
 
 ### フィールド命名規則
@@ -37,6 +38,10 @@
 
 - `api-token`, `account-id` → prefix なし（共有リソース）
 - その他 → `blog-` prefix + `-dev`/`-prod` suffix
+
+**shared-secrets/vercel:**
+
+- `blog-api-token` → dev/prod 共有
 
 **blog-secrets:**
 
@@ -57,6 +62,12 @@
 | `blog-r2-public-url-prod`  | R2_PUBLIC_URL         | Wrangler prod |
 
 備考: R2 アクセスキー不要（ネイティブバインディング経由でアクセス）。
+
+### Vercel (op://shared-secrets/vercel)
+
+| フィールド名     | 環境変数         | 同期先 |
+| ---------------- | ---------------- | ------ |
+| `blog-api-token` | VERCEL_API_TOKEN | GitHub |
 
 ### AI サービス (op://blog-secrets/{item}/password)
 
@@ -89,7 +100,6 @@
 | `discord-webhook-dev`  | DISCORD_WEBHOOK_DEV  | GitHub |
 | `discord-webhook-prod` | DISCORD_WEBHOOK_PROD | GitHub |
 | `codecov-token`        | CODECOV_TOKEN        | GitHub |
-| `vercel-api-token`     | VERCEL_API_TOKEN     | GitHub |
 
 ### GitHub App (op://blog-secrets/{item})
 

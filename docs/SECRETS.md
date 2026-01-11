@@ -29,6 +29,7 @@ Secrets are stored in two vaults:
 | Vault            | Item         | Purpose                              |
 | ---------------- | ------------ | ------------------------------------ |
 | `shared-secrets` | `cloudflare` | Cloudflare-related (custom fields)   |
+| `shared-secrets` | `vercel`     | Vercel-related (dev/prod shared)     |
 | `blog-secrets`   | Each item    | AI, Auth, Third-party, GitHub App    |
 
 ### Field Naming Convention
@@ -37,6 +38,10 @@ Secrets are stored in two vaults:
 
 - `api-token`, `account-id` → No prefix (shared resources)
 - Others → `blog-` prefix + `-dev`/`-prod` suffix
+
+**shared-secrets/vercel:**
+
+- `blog-api-token` → dev/prod shared
 
 **blog-secrets:**
 
@@ -57,6 +62,12 @@ Secrets are stored in two vaults:
 | `blog-r2-public-url-prod`  | R2_PUBLIC_URL         | Wrangler prod |
 
 Note: R2 access keys are not needed - R2 is accessed via native bindings.
+
+### Vercel (op://shared-secrets/vercel)
+
+| Field Name       | Maps To          | Target |
+| ---------------- | ---------------- | ------ |
+| `blog-api-token` | VERCEL_API_TOKEN | GitHub |
 
 ### AI Services (op://blog-secrets/{item}/password)
 
@@ -89,7 +100,6 @@ Note: R2 access keys are not needed - R2 is accessed via native bindings.
 | `discord-webhook-dev`  | DISCORD_WEBHOOK_DEV  | GitHub |
 | `discord-webhook-prod` | DISCORD_WEBHOOK_PROD | GitHub |
 | `codecov-token`        | CODECOV_TOKEN        | GitHub |
-| `vercel-api-token`     | VERCEL_API_TOKEN     | GitHub |
 
 ### GitHub App (op://blog-secrets/{item})
 

@@ -26,8 +26,9 @@ set -euo pipefail
 umask 077
 
 # Configuration
-CLOUDFLARE_VAULT="shared-secrets"
+SHARED_VAULT="shared-secrets"
 CLOUDFLARE_ITEM="cloudflare"
+VERCEL_ITEM="vercel"
 BLOG_VAULT="blog-secrets"
 REPO="tqer39/blog"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -122,8 +123,8 @@ check_prerequisites() {
     fi
 
     # Check if vaults exist
-    if ! op vault get "$CLOUDFLARE_VAULT" &> /dev/null; then
-        log_error "1Password vault '$CLOUDFLARE_VAULT' not found"
+    if ! op vault get "$SHARED_VAULT" &> /dev/null; then
+        log_error "1Password vault '$SHARED_VAULT' not found"
         exit 1
     fi
 
@@ -145,7 +146,25 @@ set_github_secret_cf() {
         return 0
     fi
 
-    if op read "op://${CLOUDFLARE_VAULT}/${CLOUDFLARE_ITEM}/${field}" 2>/dev/null | \
+    if op read "op://${SHARED_VAULT}/${CLOUDFLARE_ITEM}/${field}" 2>/dev/null | \
+        gh secret set "$secret_name" --repo "$REPO" --body -; then
+        log_success "GitHub Secret: $secret_name"
+    else
+        log_warn "Failed to set GitHub Secret: $secret_name (field may not exist)"
+    fi
+}
+
+# Set GitHub Secret from Vercel vault (custom field)
+set_github_secret_vercel() {
+    local field="$1"
+    local secret_name="$2"
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+        log_info "[DRY-RUN] Would set GitHub Secret: $secret_name (from vercel/$field)"
+        return 0
+    fi
+
+    if op read "op://${SHARED_VAULT}/${VERCEL_ITEM}/${field}" 2>/dev/null | \
         gh secret set "$secret_name" --repo "$REPO" --body -; then
         log_success "GitHub Secret: $secret_name"
     else
@@ -184,7 +203,7 @@ set_wrangler_secret_cf() {
     fi
 
     cd "$PROJECT_ROOT/apps/cms-api"
-    if op read "op://${CLOUDFLARE_VAULT}/${CLOUDFLARE_ITEM}/${field}" 2>/dev/null | \
+    if op read "op://${SHARED_VAULT}/${CLOUDFLARE_ITEM}/${field}" 2>/dev/null | \
         pnpm wrangler secret put "$secret_name" --env "$wrangler_env"; then
         log_success "Wrangler Secret: $secret_name (env: $wrangler_env)"
     else
@@ -247,7 +266,11 @@ sync_all_secrets() {
         set_github_secret_blog "discord-webhook-dev"  "DISCORD_WEBHOOK_DEV"
         set_github_secret_blog "discord-webhook-prod" "DISCORD_WEBHOOK_PROD"
         set_github_secret_blog "codecov-token"        "CODECOV_TOKEN"
-        set_github_secret_blog "vercel-api-token"     "VERCEL_API_TOKEN"
+        printf "\n"
+
+        # Vercel (from shared-secrets/vercel)
+        log_info "=== Vercel Secrets (GitHub) ==="
+        set_github_secret_vercel "blog-api-token"     "VERCEL_API_TOKEN"
         printf "\n"
 
         # GitHub App (from blog-secrets)
