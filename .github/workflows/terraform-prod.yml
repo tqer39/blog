@@ -49,6 +49,9 @@ jobs:
       WORKING_DIRECTORY: infra/terraform/envs/prod/cms-api
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Setup Terraform Environment
         uses: ./.github/actions/setup-terraform-env
         with:
@@ -149,6 +152,9 @@ jobs:
       WORKING_DIRECTORY: infra/terraform/envs/prod/frontend
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Setup Terraform Environment
         uses: ./.github/actions/setup-terraform-env
         with:
