@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
 ---
 name: DB Migration
 description: Run D1 database migrations
@@ -28,7 +29,22 @@ runs:
         CLOUDFLARE_API_TOKEN: ${{ inputs.cloudflare_api_token }}
         CLOUDFLARE_ACCOUNT_ID: ${{ inputs.cloudflare_account_id }}
       run: |
+        FAILED=0
         for migration in migrations/*.sql; do
           echo "Applying: $migration"
-          pnpm wrangler d1 execute ${{ inputs.database_name }} --remote --file="$migration" || echo "Warning: $migration may have already been applied"
+          OUTPUT=$(pnpm wrangler d1 execute ${{ inputs.database_name }} --remote --file="$migration" 2>&1) || {
+            # Check if it's an "already applied" error (table/index already exists)
+            if echo "$OUTPUT" | grep -qE "(already exists|UNIQUE constraint failed)"; then
+              echo "⚠️  Warning: $migration may have already been applied (skipping)"
+              continue
+            fi
+            # Otherwise, it's a real error
+            echo "❌ Error applying $migration:"
+            echo "$OUTPUT"
+            FAILED=1
+          }
         done
+        if [ $FAILED -eq 1 ]; then
+          echo "::error::One or more migrations failed"
+          exit 1
+        fi
