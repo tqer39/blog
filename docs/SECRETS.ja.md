@@ -51,17 +51,18 @@
 
 ### Cloudflare (op://shared-secrets/cloudflare)
 
-| フィールド名               | 環境変数              | 同期先        |
-| -------------------------- | --------------------- | ------------- |
-| `api-token`                | CLOUDFLARE_API_TOKEN  | GitHub        |
-| `account-id`               | CLOUDFLARE_ACCOUNT_ID | GitHub        |
-| `blog-zone-id`             | CLOUDFLARE_ZONE_ID    | GitHub        |
-| `blog-d1-database-id-dev`  | D1_DATABASE_ID_DEV    | GitHub        |
-| `blog-d1-database-id-prod` | D1_DATABASE_ID_PROD   | GitHub        |
-| `blog-r2-public-url-dev`   | R2_PUBLIC_URL         | Wrangler dev  |
-| `blog-r2-public-url-prod`  | R2_PUBLIC_URL         | Wrangler prod |
-
-備考: R2 アクセスキー不要（ネイティブバインディング経由でアクセス）。
+| フィールド名                | 環境変数              | 同期先        |
+| --------------------------- | --------------------- | ------------- |
+| `api-token`                 | CLOUDFLARE_API_TOKEN  | GitHub        |
+| `account-id`                | CLOUDFLARE_ACCOUNT_ID | GitHub        |
+| `blog-zone-id`              | CLOUDFLARE_ZONE_ID    | GitHub        |
+| `blog-d1-database-id-dev`   | D1_DATABASE_ID_DEV    | GitHub        |
+| `blog-d1-database-id-prod`  | D1_DATABASE_ID_PROD   | GitHub        |
+| `blog-r2-token`             | R2_TOKEN              | Wrangler      |
+| `blog-r2-access-key-id`     | R2_ACCESS_KEY_ID      | Wrangler      |
+| `blog-r2-secret-access-key` | R2_SECRET_ACCESS_KEY  | Wrangler      |
+| `blog-r2-public-url-dev`    | R2_PUBLIC_URL         | Wrangler dev  |
+| `blog-r2-public-url-prod`   | R2_PUBLIC_URL         | Wrangler prod |
 
 ### Vercel (op://shared-secrets/vercel)
 

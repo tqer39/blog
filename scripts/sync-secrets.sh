@@ -324,7 +324,10 @@ sync_all_secrets() {
     # ========================================
     if [[ "$SYNC_WRANGLER" == "true" ]]; then
         log_info "=== R2 Secrets (Dev) ==="
-        set_wrangler_secret_cf "blog-r2-public-url-dev" "R2_PUBLIC_URL" "dev"
+        set_wrangler_secret_cf "blog-r2-token"             "R2_TOKEN"             "dev"
+        set_wrangler_secret_cf "blog-r2-access-key-id"     "R2_ACCESS_KEY_ID"     "dev"
+        set_wrangler_secret_cf "blog-r2-secret-access-key" "R2_SECRET_ACCESS_KEY" "dev"
+        set_wrangler_secret_cf "blog-r2-public-url-dev"    "R2_PUBLIC_URL"        "dev"
         printf "\n"
 
         log_info "=== AI Service Secrets (Dev) ==="
@@ -344,7 +347,10 @@ sync_all_secrets() {
         # Wrangler Secrets (Prod)
         # ========================================
         log_info "=== R2 Secrets (Prod) ==="
-        set_wrangler_secret_cf "blog-r2-public-url-prod" "R2_PUBLIC_URL" "prod"
+        set_wrangler_secret_cf "blog-r2-token"             "R2_TOKEN"             "prod"
+        set_wrangler_secret_cf "blog-r2-access-key-id"     "R2_ACCESS_KEY_ID"     "prod"
+        set_wrangler_secret_cf "blog-r2-secret-access-key" "R2_SECRET_ACCESS_KEY" "prod"
+        set_wrangler_secret_cf "blog-r2-public-url-prod"   "R2_PUBLIC_URL"        "prod"
         printf "\n"
 
         log_info "=== AI Service Secrets (Prod) ==="
