@@ -19,8 +19,10 @@ const cspDirectives = {
     "'self'",
     'https://cdn.jsdelivr.net',
     'https://www.googletagmanager.com',
-    // unsafe-eval and unsafe-inline only in development
-    ...(isDev ? ["'unsafe-eval'", "'unsafe-inline'"] : []),
+    // unsafe-inline needed for Next.js hydration scripts
+    "'unsafe-inline'",
+    // unsafe-eval only in development
+    ...(isDev ? ["'unsafe-eval'"] : []),
   ],
   'style-src': [
     "'self'",
