@@ -124,13 +124,6 @@ Secrets are stored in two vaults:
 | ---------- | ------------- | ------ |
 | `blog`     | CODECOV_TOKEN | GitHub |
 
-### GitHub App (op://blog-secrets/{item})
-
-| Item Name               | Field         | Maps To             | Target |
-| ----------------------- | ------------- | ------------------- | ------ |
-| `gha-app-id`            | password      | GHA_APP_ID          | GitHub |
-| `gha-app-private-key`   | private key   | GHA_APP_PRIVATE_KEY | GitHub |
-
 ### CI/CD Testing
 
 | Item Name          | Maps To     | Target | Notes              |
