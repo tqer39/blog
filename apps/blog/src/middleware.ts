@@ -2,8 +2,55 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { COOKIE_NAME, verifySession } from '@/lib/auth';
 
+/**
+ * Basic Auth check for dev environment
+ * Returns 401 response if auth fails, null if auth succeeds or is disabled
+ */
+function checkBasicAuth(request: NextRequest): Response | null {
+  if (process.env.BASIC_AUTH_ENABLED !== 'true') {
+    return null;
+  }
+
+  const authHeader = request.headers.get('Authorization');
+
+  if (!authHeader?.startsWith('Basic ')) {
+    return new Response('Unauthorized', {
+      status: 401,
+      headers: { 'WWW-Authenticate': 'Basic realm="Dev Environment"' },
+    });
+  }
+
+  try {
+    const credentials = atob(authHeader.slice(6));
+    const [username, password] = credentials.split(':');
+
+    if (
+      username !== process.env.BASIC_AUTH_USER ||
+      password !== process.env.BASIC_AUTH_PASS
+    ) {
+      return new Response('Unauthorized', {
+        status: 401,
+        headers: { 'WWW-Authenticate': 'Basic realm="Dev Environment"' },
+      });
+    }
+  } catch {
+    return new Response('Unauthorized', {
+      status: 401,
+      headers: { 'WWW-Authenticate': 'Basic realm="Dev Environment"' },
+    });
+  }
+
+  return null;
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Basic Auth check (dev environment only, protects entire site)
+  const basicAuthResponse = checkBasicAuth(request);
+  if (basicAuthResponse) {
+    return basicAuthResponse;
+  }
 
   // Only protect /admin routes (except /admin/login)
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
@@ -42,5 +89,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  // Match all routes except static files
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)'],
 };

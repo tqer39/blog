@@ -36,6 +36,11 @@ module "vercel_project" {
       key    = "NEXT_PUBLIC_SITE_URL"
       value  = "https://${local.domain}"
       target = ["production", "preview", "development"]
+    },
+    {
+      key    = "BASIC_AUTH_ENABLED"
+      value  = "true"
+      target = ["production", "preview"]
     }
   ]
 
@@ -43,6 +48,16 @@ module "vercel_project" {
     {
       key    = "CMS_API_KEY"
       value  = var.cms_api_key
+      target = ["production", "preview"]
+    },
+    {
+      key    = "BASIC_AUTH_USER"
+      value  = var.basic_auth_user
+      target = ["production", "preview"]
+    },
+    {
+      key    = "BASIC_AUTH_PASS"
+      value  = var.basic_auth_pass
       target = ["production", "preview"]
     }
   ]

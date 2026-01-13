@@ -107,10 +107,13 @@
 
 #### basic-auth (op://blog-secrets/basic-auth)
 
-| フィールド | 環境変数        | 同期先       |
-| ---------- | --------------- | ------------ |
-| `username` | BASIC_AUTH_USER | Wrangler dev |
-| `password` | BASIC_AUTH_PASS | Wrangler dev |
+| フィールド | 環境変数        | 同期先                   |
+| ---------- | --------------- | ------------------------ |
+| `username` | BASIC_AUTH_USER | GitHub + Wrangler dev    |
+| `password` | BASIC_AUTH_PASS | GitHub + Wrangler dev    |
+
+備考: Basic Auth は dev 環境で CMS API (Wrangler) と Blog Frontend (Vercel)
+の両方で使用されます。
 
 ### Discord (op://shared-secrets/discord)
 
