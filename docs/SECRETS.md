@@ -36,7 +36,8 @@ Secrets are stored in two vaults:
 
 **shared-secrets/cloudflare:**
 
-- `api-token`, `account-id` → No prefix (shared resources)
+- `account-id` → No prefix (shared resources)
+- `blog-api-token` → `blog-` prefix (blog-specific)
 - Others → `blog-` prefix + `-dev`/`-prod` suffix
 
 **shared-secrets/vercel:**
@@ -53,7 +54,7 @@ Secrets are stored in two vaults:
 
 | Field Name                  | Maps To               | Target        |
 | --------------------------- | --------------------- | ------------- |
-| `api-token`                 | CLOUDFLARE_API_TOKEN  | GitHub        |
+| `blog-api-token`            | CLOUDFLARE_API_TOKEN  | GitHub        |
 | `account-id`                | CLOUDFLARE_ACCOUNT_ID | GitHub        |
 | `blog-zone-id`              | CLOUDFLARE_ZONE_ID    | GitHub        |
 | `blog-d1-database-id-dev`   | D1_DATABASE_ID_DEV    | GitHub        |
@@ -297,7 +298,7 @@ op item get anthropic-api-key-dev --vault blog-secrets
 op read "op://shared-secrets/openai/blog-secret-key"
 
 # Read from shared-secrets/cloudflare
-op read "op://shared-secrets/cloudflare/api-token"
+op read "op://shared-secrets/cloudflare/blog-api-token"
 ```
 
 ### Manual Setup: GitHub Secrets

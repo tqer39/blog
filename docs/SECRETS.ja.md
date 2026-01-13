@@ -36,7 +36,8 @@
 
 **shared-secrets/cloudflare:**
 
-- `api-token`, `account-id` → prefix なし（共有リソース）
+- `account-id` → prefix なし（共有リソース）
+- `blog-api-token` → `blog-` prefix（blog 専用）
 - その他 → `blog-` prefix + `-dev`/`-prod` suffix
 
 **shared-secrets/vercel:**
@@ -53,7 +54,7 @@
 
 | フィールド名                | 環境変数              | 同期先        |
 | --------------------------- | --------------------- | ------------- |
-| `api-token`                 | CLOUDFLARE_API_TOKEN  | GitHub        |
+| `blog-api-token`            | CLOUDFLARE_API_TOKEN  | GitHub        |
 | `account-id`                | CLOUDFLARE_ACCOUNT_ID | GitHub        |
 | `blog-zone-id`              | CLOUDFLARE_ZONE_ID    | GitHub        |
 | `blog-d1-database-id-dev`   | D1_DATABASE_ID_DEV    | GitHub        |
@@ -297,7 +298,7 @@ op item get anthropic-api-key-dev --vault blog-secrets
 op read "op://shared-secrets/openai/blog-secret-key"
 
 # shared-secrets/cloudflare から取得
-op read "op://shared-secrets/cloudflare/api-token"
+op read "op://shared-secrets/cloudflare/blog-api-token"
 ```
 
 ### 手動設定: GitHub Secrets
