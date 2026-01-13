@@ -43,7 +43,7 @@ module "vercel_project" {
     {
       key    = "CMS_API_KEY"
       value  = var.cms_api_key
-      target = ["production", "preview", "development"]
+      target = ["production", "preview"]
     }
   ]
 }
