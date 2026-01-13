@@ -12,3 +12,8 @@ output "domain" {
   description = "Custom domain"
   value       = vercel_project_domain.blog.domain
 }
+
+output "domain_verification" {
+  description = "Domain verification details"
+  value       = vercel_project_domain.blog.verification
+}

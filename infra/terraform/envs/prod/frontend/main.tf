@@ -52,7 +52,7 @@ module "vercel_project" {
 resource "cloudflare_dns_record" "vercel_verification" {
   zone_id = var.cloudflare_zone_id
   name    = "_vercel"
-  content = "vc-domain-verify=${local.domain},${module.vercel_project.project_id}"
+  content = module.vercel_project.domain_verification.value
   type    = "TXT"
   ttl     = 1
 
