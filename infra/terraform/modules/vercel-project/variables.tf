@@ -51,3 +51,15 @@ variable "environment_variables" {
   }))
   default = []
 }
+
+variable "sensitive_environment_variables" {
+  description = "Sensitive environment variables (stored securely in Vercel)"
+  type = list(object({
+    key    = string
+    value  = string
+    target = list(string)
+  }))
+  default = []
+  # Note: The values passed to this variable should come from sensitive sources
+  # (e.g., TF_VAR_* from GitHub Secrets), and Vercel will store them as sensitive
+}
