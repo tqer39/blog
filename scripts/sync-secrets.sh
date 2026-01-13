@@ -311,12 +311,6 @@ sync_all_secrets() {
         log_info "=== Vercel Secrets (GitHub) ==="
         set_github_secret_vercel "blog-api-token"     "VERCEL_API_TOKEN"
         printf "\n"
-
-        # GitHub App (from blog-secrets)
-        log_info "=== GitHub App Secrets (GitHub) ==="
-        set_github_secret_blog "gha-app-id"          "GHA_APP_ID"
-        set_github_secret_blog "gha-app-private-key" "GHA_APP_PRIVATE_KEY" "private key"
-        printf "\n"
     fi
 
     # ========================================

@@ -124,13 +124,6 @@
 | ------------ | ------------- | ------ |
 | `blog`       | CODECOV_TOKEN | GitHub |
 
-### GitHub App (op://blog-secrets/{item})
-
-| アイテム名              | フィールド    | 環境変数            | 同期先 |
-| ----------------------- | ------------- | ------------------- | ------ |
-| `gha-app-id`            | password      | GHA_APP_ID          | GitHub |
-| `gha-app-private-key`   | private key   | GHA_APP_PRIVATE_KEY | GitHub |
-
 ### CI/CD テスト
 
 | アイテム名         | 環境変数    | 同期先 | 備考                  |
