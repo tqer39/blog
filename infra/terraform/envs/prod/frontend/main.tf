@@ -48,13 +48,6 @@ module "vercel_project" {
   ]
 }
 
-# Vercel Domain Verification TXT Record
-resource "cloudflare_dns_record" "vercel_verification" {
-  zone_id = var.cloudflare_zone_id
-  name    = "_vercel"
-  content = module.vercel_project.domain_verification.value
-  type    = "TXT"
-  ttl     = 1
-
-  comment = "Vercel domain verification - Managed by Terraform"
-}
+# Note: Vercel domain verification TXT record must be added manually in CloudFlare
+# Get the verification value from Vercel Dashboard -> Settings -> Domains
+# Add TXT record: _vercel -> vc-domain-verify=<domain>,<verification-code>
