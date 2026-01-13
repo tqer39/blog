@@ -47,3 +47,14 @@ module "vercel_project" {
     }
   ]
 }
+
+# Vercel Domain Verification TXT Record
+resource "cloudflare_dns_record" "vercel_verification" {
+  zone_id = var.cloudflare_zone_id
+  name    = "_vercel"
+  content = "vc-domain-verify=${local.domain},${module.vercel_project.project_id}"
+  type    = "TXT"
+  ttl     = 1
+
+  comment = "Vercel domain verification - Managed by Terraform"
+}
