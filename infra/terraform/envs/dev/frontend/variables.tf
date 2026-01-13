@@ -26,3 +26,15 @@ variable "cms_api_key" {
   type        = string
   sensitive   = true
 }
+
+variable "basic_auth_user" {
+  description = "Basic Auth username for dev environment"
+  type        = string
+  sensitive   = true
+}
+
+variable "basic_auth_pass" {
+  description = "Basic Auth password for dev environment"
+  type        = string
+  sensitive   = true
+}

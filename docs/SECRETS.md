@@ -107,10 +107,13 @@ Secrets are stored in two vaults:
 
 #### basic-auth (op://blog-secrets/basic-auth)
 
-| Field      | Maps To         | Target       |
-| ---------- | --------------- | ------------ |
-| `username` | BASIC_AUTH_USER | Wrangler dev |
-| `password` | BASIC_AUTH_PASS | Wrangler dev |
+| Field      | Maps To         | Target                       |
+| ---------- | --------------- | ---------------------------- |
+| `username` | BASIC_AUTH_USER | GitHub + Wrangler dev        |
+| `password` | BASIC_AUTH_PASS | GitHub + Wrangler dev        |
+
+Note: Basic Auth is used for both CMS API (Wrangler) and Blog Frontend
+(Vercel) in dev environment.
 
 ### Discord (op://shared-secrets/discord)
 
