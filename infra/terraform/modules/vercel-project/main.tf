@@ -26,3 +26,14 @@ resource "vercel_project_domain" "blog" {
   project_id = vercel_project.blog.id
   domain     = var.domain
 }
+
+# Sensitive Environment Variables
+resource "vercel_project_environment_variable" "sensitive" {
+  for_each = { for env_var in var.sensitive_environment_variables : env_var.key => env_var }
+
+  project_id = vercel_project.blog.id
+  key        = each.value.key
+  value      = each.value.value
+  target     = each.value.target
+  sensitive  = true
+}

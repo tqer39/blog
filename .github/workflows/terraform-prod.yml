@@ -173,6 +173,7 @@ jobs:
           TF_VAR_vercel_api_token: ${{ secrets.VERCEL_API_TOKEN }}
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cms_api_key: ${{ secrets.CMS_API_KEY_PROD }}
         run: |
           terraform plan -detailed-exitcode -no-color 2>&1 | tee tf_plan.txt
 
@@ -229,6 +230,7 @@ jobs:
           TF_VAR_vercel_api_token: ${{ secrets.VERCEL_API_TOKEN }}
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cms_api_key: ${{ secrets.CMS_API_KEY_PROD }}
         run: terraform apply -auto-approve
 
       - name: Finish Deployment

@@ -38,4 +38,12 @@ module "vercel_project" {
       target = ["production", "preview", "development"]
     }
   ]
+
+  sensitive_environment_variables = [
+    {
+      key    = "CMS_API_KEY"
+      value  = var.cms_api_key
+      target = ["production", "preview", "development"]
+    }
+  ]
 }
