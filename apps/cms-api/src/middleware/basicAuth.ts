@@ -4,6 +4,7 @@ import type { Env } from '../index';
 /**
  * Basic Authentication middleware for dev environment
  * Skips authentication in prod environment
+ * Skips if Bearer token is present (API client authentication)
  */
 export async function basicAuthMiddleware(
   c: Context<{ Bindings: Env }>,
@@ -15,6 +16,11 @@ export async function basicAuthMiddleware(
   }
 
   const authHeader = c.req.header('Authorization');
+
+  // Skip Basic Auth if Bearer token is present (API clients use Bearer token)
+  if (authHeader?.startsWith('Bearer ')) {
+    return next();
+  }
 
   if (!authHeader?.startsWith('Basic ')) {
     return new Response('Unauthorized', {
