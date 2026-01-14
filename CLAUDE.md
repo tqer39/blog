@@ -60,6 +60,7 @@ All articles are "for my past self" - complaints are OK, but must end with insig
 
 Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
+- **System architecture**: See [ARCHITECTURE.md](ARCHITECTURE.md) for comprehensive design decisions and data flows
 - **Directory structure**: See [README.md](README.md)
 - **Development commands**: Run `just --list`
 - **GitHub Secrets**: See [docs/SECRETS.md](docs/SECRETS.md)

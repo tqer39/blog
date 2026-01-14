@@ -5,10 +5,10 @@
   "rules": {
     "preset-smarthr": {
       "sentence-length": {
-        "max": 120
+        "max": 150
       },
       "ja-no-mixed-period": {
-        "allowPeriodMarks": [":", "：", "）", ")", "」", "】", "》", "〉", ">", "】"],
+        "allowPeriodMarks": [":", "：", "）", ")", "」", "】", "》", "〉", ">", "】", "✅", "⚠️"],
         "allowEmojiAtEnd": true,
         "forceAppendPeriod": false
       },
@@ -30,7 +30,8 @@
       "ja-no-redundant-expression": false,
       "ja-no-abusage": false,
       "no-doubled-conjunctive-particle-ga": false,
-      "ja-no-mixed-period": false
+      "ja-no-mixed-period": false,
+      "no-exclamation-question-mark": false
     },
     "prh": {
       "rulePaths": ["./dict/prh-blog.yml"]

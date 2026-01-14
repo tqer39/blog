@@ -1,13 +1,2 @@
-.editorconfig
-.git/
-.github/
-.gitignore
-.pre-commit-config.yaml
-.textlintcache
-.vscode/
-.yamllint.yml
-cspell.json
-LICENSE
-renovate.json
-tmp/
-.markdownlint.json
+ARCHITECTURE.md
+docs/ARCHITECTURE.ja.md

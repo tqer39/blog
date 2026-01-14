@@ -60,6 +60,7 @@
 
 Turborepo + pnpm workspaces で管理された個人ブログサービスのモノレポです。
 
+- **システムアーキテクチャ**: 包括的な設計決定とデータフローについては [ARCHITECTURE.ja.md](ARCHITECTURE.ja.md) 参照
 - **ディレクトリ構造**: [README.ja.md](README.ja.md) 参照
 - **開発コマンド**: `just --list` を実行
 - **GitHub Secrets**: [SECRETS.ja.md](SECRETS.ja.md) 参照
