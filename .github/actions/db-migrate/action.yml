@@ -34,7 +34,7 @@ runs:
           echo "Applying: $migration"
           OUTPUT=$(pnpm wrangler d1 execute ${{ inputs.database_name }} --remote --file="$migration" 2>&1) || {
             # Check if it's an "already applied" error (table/index already exists)
-            if echo "$OUTPUT" | grep -qE "(already exists|UNIQUE constraint failed)"; then
+            if echo "$OUTPUT" | grep -qE "(already exists|UNIQUE constraint failed|duplicate column)"; then
               echo "⚠️  Warning: $migration may have already been applied (skipping)"
               continue
             fi
