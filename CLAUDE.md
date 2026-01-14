@@ -88,7 +88,7 @@ All environment constants are centralized in `packages/config/src/constants.ts`.
 │ localhost:3102  │ cdn.tqer39.dev          │ cdn.tqer39.dev                │
 ├─────────────────┼─────────────────────────┼───────────────────────────────┤
 │ D1: local       │ blog-cms-dev            │ blog-cms-prod                 │
-│ R2: local       │ blog-images-dev         │ blog-images-prod              │
+│ R2: local       │ blog-assets-dev         │ blog-assets-prod              │
 ├─────────────────┼─────────────────────────┼───────────────────────────────┤
 │ No Auth         │ Basic Auth + API Key    │ No Auth (public) + API Key    │
 └─────────────────┴─────────────────────────┴───────────────────────────────┘

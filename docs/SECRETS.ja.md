@@ -18,7 +18,7 @@
 | シークレット   | Local     | Dev            | Prod             |
 | -------------- | --------- | -------------- | ---------------- |
 | D1 Database ID | local     | _DEV           | _PROD            |
-| R2 Bucket      | local     | blog-images-*  | blog-images-*    |
+| R2 Bucket      | local     | blog-assets-*  | blog-assets-*    |
 | Basic Auth     | -         | BASIC_AUTH_*   | -                |
 | API Key        | .dev.vars | wrangler       | wrangler         |
 

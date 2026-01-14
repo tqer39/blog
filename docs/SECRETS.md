@@ -18,7 +18,7 @@ This document describes how to obtain and configure secrets.
 | Secret         | Local     | Dev                | Prod                |
 | -------------- | --------- | ------------------ | ------------------- |
 | D1 Database ID | local     | D1_DATABASE_ID_DEV | D1_DATABASE_ID_PROD |
-| R2 Bucket      | local     | blog-images-dev    | blog-images-prod    |
+| R2 Bucket      | local     | blog-assets-dev    | blog-assets-prod    |
 | Basic Auth     | -         | BASIC_AUTH_*       | -                   |
 | API Key        | .dev.vars | wrangler secret    | wrangler secret     |
 

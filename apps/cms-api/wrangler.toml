@@ -18,7 +18,7 @@ database_id = "local"
 
 [[r2_buckets]]
 binding = "R2_BUCKET"
-bucket_name = "blog-images"
+bucket_name = "blog-assets"
 
 # ==================== DEV ====================
 [env.dev]
@@ -36,7 +36,7 @@ database_id = "to-be-set-by-terraform-dev"
 
 [[env.dev.r2_buckets]]
 binding = "R2_BUCKET"
-bucket_name = "blog-images-dev"
+bucket_name = "blog-assets-dev"
 
 # ==================== PROD ====================
 [env.prod]
@@ -53,4 +53,4 @@ database_id = "to-be-set-by-terraform"
 
 [[env.prod.r2_buckets]]
 binding = "R2_BUCKET"
-bucket_name = "blog-images-prod"
+bucket_name = "blog-assets-prod"
