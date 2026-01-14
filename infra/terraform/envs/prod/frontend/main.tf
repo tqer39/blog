@@ -29,7 +29,7 @@ module "vercel_project" {
   environment_variables = [
     {
       key    = "CMS_API_URL"
-      value  = "https://cms-api.tqer39.workers.dev"
+      value  = "https://cms-api.tqer39.workers.dev/v1"
       target = ["production", "preview", "development"]
     },
     {
