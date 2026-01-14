@@ -18,7 +18,7 @@ module "cms_r2" {
   source = "../../../modules/cloudflare-r2"
 
   account_id  = var.cloudflare_account_id
-  bucket_name = "blog-images-prod"
+  bucket_name = "blog-assets-prod"
   location    = "apac"
 }
 

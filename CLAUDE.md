@@ -60,6 +60,7 @@ All articles are "for my past self" - complaints are OK, but must end with insig
 
 Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
+- **System architecture**: See [ARCHITECTURE.md](ARCHITECTURE.md) for comprehensive design decisions and data flows
 - **Directory structure**: See [README.md](README.md)
 - **Development commands**: Run `just --list`
 - **GitHub Secrets**: See [docs/SECRETS.md](docs/SECRETS.md)
@@ -87,7 +88,7 @@ All environment constants are centralized in `packages/config/src/constants.ts`.
 │ localhost:3102  │ cdn.tqer39.dev          │ cdn.tqer39.dev                │
 ├─────────────────┼─────────────────────────┼───────────────────────────────┤
 │ D1: local       │ blog-cms-dev            │ blog-cms-prod                 │
-│ R2: local       │ blog-images-dev         │ blog-images-prod              │
+│ R2: local       │ blog-assets-dev         │ blog-assets-prod              │
 ├─────────────────┼─────────────────────────┼───────────────────────────────┤
 │ No Auth         │ Basic Auth + API Key    │ No Auth (public) + API Key    │
 └─────────────────┴─────────────────────────┴───────────────────────────────┘

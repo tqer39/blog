@@ -59,7 +59,7 @@ const nextConfig = {
         protocol: 'http',
         hostname: 'localhost',
         port: String(PORTS.R2_LOCAL),
-        pathname: '/blog-images/**',
+        pathname: '/blog-assets/**',
       },
       {
         protocol: 'http',

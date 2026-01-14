@@ -60,6 +60,7 @@
 
 Turborepo + pnpm workspaces で管理された個人ブログサービスのモノレポです。
 
+- **システムアーキテクチャ**: 包括的な設計決定とデータフローについては [ARCHITECTURE.ja.md](ARCHITECTURE.ja.md) 参照
 - **ディレクトリ構造**: [README.ja.md](README.ja.md) 参照
 - **開発コマンド**: `just --list` を実行
 - **GitHub Secrets**: [SECRETS.ja.md](SECRETS.ja.md) 参照
@@ -76,7 +77,7 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 │ :3100/:3101   │ .dev              │                                 │
 ├───────────────┼───────────────────┼─────────────────────────────────┤
 │ D1: local     │ blog-cms-dev      │ blog-cms-prod                   │
-│ R2: local     │ blog-images-dev   │ blog-images-prod                │
+│ R2: local     │ blog-assets-dev   │ blog-assets-prod                │
 ├───────────────┼───────────────────┼─────────────────────────────────┤
 │ 認証なし      │ Basic 認証        │ 認証なし（公開）                │
 │               │ + API Key         │ + API Key                       │

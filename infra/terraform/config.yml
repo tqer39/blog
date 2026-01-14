@@ -26,7 +26,7 @@ environments:
     subdomain: blog-dev
     cms_api:
       database_name: blog-cms-dev
-      bucket_name: blog-images-dev
+      bucket_name: blog-assets-dev
     vercel:
       framework: nextjs
       root_directory: apps/blog
@@ -36,7 +36,7 @@ environments:
     subdomain: blog
     cms_api:
       database_name: blog-cms-prod
-      bucket_name: blog-images-prod
+      bucket_name: blog-assets-prod
     vercel:
       framework: nextjs
       root_directory: apps/blog
