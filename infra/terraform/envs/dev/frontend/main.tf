@@ -59,6 +59,11 @@ module "vercel_project" {
       key    = "BASIC_AUTH_PASS"
       value  = var.basic_auth_pass
       target = ["production", "preview"]
+    },
+    {
+      key    = "ADMIN_PASSWORD_HASH"
+      value  = var.admin_password_hash
+      target = ["production", "preview"]
     }
   ]
 }
