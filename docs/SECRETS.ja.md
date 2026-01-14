@@ -100,10 +100,12 @@
 
 #### admin-password-hash (op://blog-secrets/admin-password-hash-{env}/hash)
 
-| アイテム名 | フィールド | 環境変数 | 同期先 |
-| --- | --- | --- | --- |
-| `admin-password-hash-dev` | `hash` | ADMIN_PASSWORD_HASH | Wrangler dev |
-| `admin-password-hash-prod` | `hash` | ADMIN_PASSWORD_HASH | Wrangler prod |
+| アイテム名                 | フィールド | 環境変数                | 同期先                   |
+| -------------------------- | ---------- | ----------------------- | ------------------------ |
+| `admin-password-hash-dev`  | `hash`     | ADMIN_PASSWORD_HASH     | Wrangler dev             |
+| `admin-password-hash-dev`  | `hash`     | ADMIN_PASSWORD_HASH_DEV | GitHub                   |
+| `admin-password-hash-prod` | `hash`     | ADMIN_PASSWORD_HASH     | Wrangler prod            |
+| `admin-password-hash-prod` | `hash`     | ADMIN_PASSWORD_HASH_PROD| GitHub                   |
 
 #### basic-auth (op://blog-secrets/basic-auth)
 

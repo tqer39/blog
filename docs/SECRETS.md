@@ -100,10 +100,12 @@ Secrets are stored in two vaults:
 
 #### admin-password-hash (op://blog-secrets/admin-password-hash-{env}/hash)
 
-| Item Name                  | Field  | Maps To             | Target        |
-| -------------------------- | ------ | ------------------- | ------------- |
-| `admin-password-hash-dev`  | `hash` | ADMIN_PASSWORD_HASH | Wrangler dev  |
-| `admin-password-hash-prod` | `hash` | ADMIN_PASSWORD_HASH | Wrangler prod |
+| Item Name                  | Field  | Maps To                  | Target        |
+| -------------------------- | ------ | ------------------------ | ------------- |
+| `admin-password-hash-dev`  | `hash` | ADMIN_PASSWORD_HASH      | Wrangler dev  |
+| `admin-password-hash-dev`  | `hash` | ADMIN_PASSWORD_HASH_DEV  | GitHub        |
+| `admin-password-hash-prod` | `hash` | ADMIN_PASSWORD_HASH      | Wrangler prod |
+| `admin-password-hash-prod` | `hash` | ADMIN_PASSWORD_HASH_PROD | GitHub        |
 
 #### basic-auth (op://blog-secrets/basic-auth)
 
