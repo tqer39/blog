@@ -38,3 +38,9 @@ variable "basic_auth_pass" {
   type        = string
   sensitive   = true
 }
+
+variable "admin_password_hash" {
+  description = "Admin password hash for admin login"
+  type        = string
+  sensitive   = true
+}

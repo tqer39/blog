@@ -176,6 +176,7 @@ jobs:
           TF_VAR_cms_api_key: ${{ secrets.CMS_API_KEY_DEV }}
           TF_VAR_basic_auth_user: ${{ secrets.BASIC_AUTH_USER }}
           TF_VAR_basic_auth_pass: ${{ secrets.BASIC_AUTH_PASS }}
+          TF_VAR_admin_password_hash: ${{ secrets.ADMIN_PASSWORD_HASH_DEV }}
         run: |
           terraform plan -detailed-exitcode -no-color 2>&1 | tee tf_plan.txt
 
@@ -235,6 +236,7 @@ jobs:
           TF_VAR_cms_api_key: ${{ secrets.CMS_API_KEY_DEV }}
           TF_VAR_basic_auth_user: ${{ secrets.BASIC_AUTH_USER }}
           TF_VAR_basic_auth_pass: ${{ secrets.BASIC_AUTH_PASS }}
+          TF_VAR_admin_password_hash: ${{ secrets.ADMIN_PASSWORD_HASH_DEV }}
         run: terraform apply -auto-approve
 
       - name: Finish Deployment
