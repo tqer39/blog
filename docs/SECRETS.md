@@ -119,6 +119,7 @@ Note: Basic Auth is used for both CMS API (Wrangler) and Blog Frontend
 
 | Field Name             | Maps To              | Target |
 | ---------------------- | -------------------- | ------ |
+| `blog-bot-token`       | DISCORD_BOT_TOKEN    | GitHub |
 | `blog-webhook-url-dev` | DISCORD_WEBHOOK_DEV  | GitHub |
 | `blog-webhook-url-prod`| DISCORD_WEBHOOK_PROD | GitHub |
 
@@ -153,6 +154,53 @@ Note: Basic Auth is used for both CMS API (Wrangler) and Blog Frontend
 4. Click "Copy Webhook URL"
 
 URL format: `https://discord.com/api/webhooks/xxxx/yyyy`
+
+### Discord Bot Token (for Terraform)
+
+Required for managing Discord channels and webhooks via Terraform.
+
+#### 1. Create Application
+
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
+2. Click **New Application** (top right)
+3. Enter name (e.g., `blog-terraform`) → **Create**
+
+#### 2. Create Bot
+
+1. Click **Bot** in the left menu
+2. Click **Reset Token** to generate a token
+3. Copy the displayed token (**shown only once**)
+4. Enable under **Privileged Gateway Intents**:
+   - **Server Members Intent**
+   - **Message Content Intent** (if needed)
+
+#### 3. Configure Bot Permissions
+
+1. Click **OAuth2** → **URL Generator** in the left menu
+2. Select under **SCOPES**:
+   - `bot`
+   - `applications.commands`
+3. Select under **BOT PERMISSIONS**:
+   - `Manage Channels`
+   - `Manage Webhooks`
+   - `View Channels`
+4. Copy the generated **URL** at the bottom
+
+#### 4. Invite Bot to Server
+
+1. Open the copied URL in a browser
+2. Select the target server (`blog`)
+3. Click **Authorize**
+
+#### 5. Save Token
+
+```bash
+# Save to GitHub Secrets
+gh secret set DISCORD_BOT_TOKEN
+# Paste the token
+```
+
+Reference: [Discord Developer Portal](https://discord.com/developers/applications)
 
 ### Vercel API Token
 
