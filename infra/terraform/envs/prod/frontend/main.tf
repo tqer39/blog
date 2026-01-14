@@ -17,7 +17,7 @@ module "cloudflare_dns" {
 module "vercel_project" {
   source = "../../../modules/vercel-project"
 
-  project_name     = local.config.project.name
+  project_name     = "${local.config.project.name}-prod"
   organization     = local.config.project.organization
   repository       = local.config.project.repository
   framework        = local.environment.vercel.framework
