@@ -65,100 +65,23 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 - **Development commands**: Run `just --list`
 - **GitHub Secrets**: See [docs/SECRETS.md](docs/SECRETS.md)
 
-## Environment Configuration
+## Environment & Deployment
 
-For detailed environment configuration, see [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md).
+**Quick Reference**:
+- Local: `localhost:3100` (blog), `localhost:3101` (API)
+- Dev: `blog-dev.tqer39.dev`
+- Prod: `blog.tqer39.dev`
 
-All environment constants are centralized in `packages/config/src/constants.ts`.
+**Detailed documentation**: See [ARCHITECTURE.md](ARCHITECTURE.md) for:
+- 3-environment structure and configuration
+- CI/CD and release flow
+- Authentication layers (Basic Auth, API Key, Password)
+- Deployment architecture
 
-```text
-┌───────────────────────────────────────────────────────────────────────────┐
-│                         3-Environment Structure                            │
-├─────────────────┬─────────────────────────┬───────────────────────────────┤
-│      Local      │           Dev           │             Prod              │
-├─────────────────┼─────────────────────────┼───────────────────────────────┤
-│ Blog:           │ Blog:                   │ Blog:                         │
-│ localhost:3100  │ blog-dev.tqer39.dev     │ blog.tqer39.dev               │
-├─────────────────┼─────────────────────────┼───────────────────────────────┤
-│ CMS API:        │ CMS API:                │ CMS API:                      │
-│ localhost:3101  │ cms-api-dev.tqer39      │ cms-api.tqer39.workers.dev    │
-│                 │ .workers.dev            │                               │
-├─────────────────┼─────────────────────────┼───────────────────────────────┤
-│ CDN/R2:         │ CDN/R2:                 │ CDN/R2:                       │
-│ localhost:3102  │ cdn.tqer39.dev          │ cdn.tqer39.dev                │
-├─────────────────┼─────────────────────────┼───────────────────────────────┤
-│ D1: local       │ blog-cms-dev            │ blog-cms-prod                 │
-│ R2: local       │ blog-assets-dev         │ blog-assets-prod              │
-├─────────────────┼─────────────────────────┼───────────────────────────────┤
-│ No Auth         │ Basic Auth + API Key    │ No Auth (public) + API Key    │
-└─────────────────┴─────────────────────────┴───────────────────────────────┘
-```
+## Tech Stack
 
-### Release Flow
+**Core**:
+- Next.js 15 (App Router) + Hono + Cloudflare (D1/R2/Workers)
+- TypeScript + Tailwind CSS + Turborepo + pnpm
 
-```text
-[Development]
-  main merge
-       ↓
-  deploy-cms-api-dev.yml (auto)
-  db-migrate-dev.yml (auto)
-       ↓
-  blog-dev.tqer39.dev
-
-[Production]
-  release.yml (manual)
-       ↓
-  GitHub Release + tag (v1.2.3)
-       ↓
-  deploy-cms-api-prod.yml (tag trigger)
-  db-migrate-prod.yml (tag trigger)
-       ↓
-  blog.tqer39.dev
-```
-
-### Authentication
-
-| Method     | Target          | Environment | Purpose                 |
-| ---------- | --------------- | ----------- | ----------------------- |
-| Basic Auth | CMS API (all)   | Dev only    | External access control |
-| API Key    | CMS API `/v1/*` | All         | API authentication      |
-| Password   | Admin UI        | All         | Admin login             |
-
-## Package Names
-
-| Directory            | Package Name       |
-| -------------------- | ------------------ |
-| `apps/blog`          | `@blog/web`        |
-| `apps/cms-api`       | `@blog/cms-api`    |
-| `packages/cms-types` | `@blog/cms-types`  |
-| `packages/ui`        | `@blog/ui`         |
-| `packages/config`    | `@blog/config`     |
-| `packages/utils`     | `@blog/utils`      |
-
-## Key Technical Decisions
-
-- **Monorepo**: Turborepo + pnpm workspaces
-- **Frontend**: Next.js 15 with App Router
-- **Backend**: Hono on Cloudflare Workers
-- **Database**: Cloudflare D1 (SQLite)
-- **Storage**: Cloudflare R2
-- **Styling**: Tailwind CSS with typography plugin
-- **Code Highlighting**: Shiki
-- **Diagrams**: Mermaid.js
-- **Formatter/Linter**: Biome (not ESLint/Prettier)
-- **E2E Testing**: Playwright
-- **IaC**: Terraform (AWS + CloudFlare + Vercel)
-- **Secrets**: 1Password + GitHub Secrets
-
-## Deployment
-
-- **Hosting**: Vercel (blog), Cloudflare Workers (cms-api)
-- **Domain**: blog.tqer39.dev (CloudFlare DNS)
-- **CI/CD**: GitHub Actions
-
-## Tool Management
-
-- **Homebrew**: System packages (see Brewfile)
-- **mise**: Node.js, pnpm, Terraform (see .mise.toml)
-- **just**: Task runner (see justfile)
-- **prek**: Pre-commit hooks
+**Detailed documentation**: See [ARCHITECTURE.md](ARCHITECTURE.md) for complete tech stack and architecture decisions

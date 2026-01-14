@@ -311,6 +311,12 @@ sync_all_secrets() {
         log_info "=== Vercel Secrets (GitHub) ==="
         set_github_secret_vercel "blog-api-token"     "VERCEL_API_TOKEN"
         printf "\n"
+
+        # Application Secrets (GitHub) - all from blog-secrets
+        log_info "=== Application Secrets (GitHub) ==="
+        set_github_secret_blog "admin-password-hash-dev"  "ADMIN_PASSWORD_HASH_DEV"  "hash"
+        set_github_secret_blog "admin-password-hash-prod" "ADMIN_PASSWORD_HASH_PROD" "hash"
+        printf "\n"
     fi
 
     # ========================================

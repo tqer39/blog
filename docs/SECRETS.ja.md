@@ -100,10 +100,12 @@
 
 #### admin-password-hash (op://blog-secrets/admin-password-hash-{env}/hash)
 
-| アイテム名 | フィールド | 環境変数 | 同期先 |
-| --- | --- | --- | --- |
-| `admin-password-hash-dev` | `hash` | ADMIN_PASSWORD_HASH | Wrangler dev |
-| `admin-password-hash-prod` | `hash` | ADMIN_PASSWORD_HASH | Wrangler prod |
+| アイテム名                 | フィールド | 環境変数                | 同期先                   |
+| -------------------------- | ---------- | ----------------------- | ------------------------ |
+| `admin-password-hash-dev`  | `hash`     | ADMIN_PASSWORD_HASH     | Wrangler dev             |
+| `admin-password-hash-dev`  | `hash`     | ADMIN_PASSWORD_HASH_DEV | GitHub                   |
+| `admin-password-hash-prod` | `hash`     | ADMIN_PASSWORD_HASH     | Wrangler prod            |
+| `admin-password-hash-prod` | `hash`     | ADMIN_PASSWORD_HASH_PROD| GitHub                   |
 
 #### basic-auth (op://blog-secrets/basic-auth)
 
@@ -119,6 +121,7 @@
 
 | フィールド名           | 環境変数             | 同期先 |
 | ---------------------- | -------------------- | ------ |
+| `blog-bot-token`       | DISCORD_BOT_TOKEN    | GitHub |
 | `blog-webhook-url-dev` | DISCORD_WEBHOOK_DEV  | GitHub |
 | `blog-webhook-url-prod`| DISCORD_WEBHOOK_PROD | GitHub |
 
@@ -153,6 +156,53 @@
 4. 「ウェブフックURLをコピー」をクリック
 
 URL 形式: `https://discord.com/api/webhooks/xxxx/yyyy`
+
+### Discord Bot Token の取得方法（Terraform 用）
+
+Terraform で Discord チャンネルや Webhook を管理するために必要です。
+
+#### 1. アプリケーションの作成
+
+1. [Discord Developer Portal](https://discord.com/developers/applications) にアクセス
+2. 右上の **New Application** をクリック
+3. 名前を入力（例: `blog-terraform`）→ **Create**
+
+#### 2. Bot の作成
+
+1. 左メニューの **Bot** をクリック
+2. **Reset Token** をクリックしてトークンを生成
+3. 表示されたトークンをコピー（**一度しか表示されない**）
+4. **Privileged Gateway Intents** で以下を ON:
+   - **Server Members Intent**
+   - **Message Content Intent**（必要に応じて）
+
+#### 3. Bot の権限設定
+
+1. 左メニューの **OAuth2** → **URL Generator** をクリック
+2. **SCOPES** で選択:
+   - `bot`
+   - `applications.commands`
+3. **BOT PERMISSIONS** で選択:
+   - `Manage Channels`
+   - `Manage Webhooks`
+   - `View Channels`
+4. 下部に生成された **URL をコピー**
+
+#### 4. Bot をサーバーに招待
+
+1. コピーした URL をブラウザで開く
+2. 招待先サーバー（`blog`）を選択
+3. **認証** をクリック
+
+#### 5. トークンの保存
+
+```bash
+# GitHub Secrets に保存
+gh secret set DISCORD_BOT_TOKEN
+# トークンを貼り付け
+```
+
+参考: [Discord Developer Portal](https://discord.com/developers/applications)
 
 ### Vercel API Token の取得方法
 
