@@ -31,6 +31,7 @@
     "chdir",
     "checkwinsize",
     "chsh",
+    "cicd",
     "CODEOWNERS",
     "codespaces",
     "codezombiech",

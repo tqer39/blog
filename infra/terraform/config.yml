@@ -8,6 +8,19 @@ aws:
   account_id: "072693953877"
   region: ap-northeast-1
 
+discord:
+  server_id: "1459749087812260012"
+  channels:
+    - name: blog-notifications
+      category: CI/CD
+    - name: blog-alerts
+      category: CI/CD
+  webhooks:
+    blog-dev:
+      channel: blog-notifications
+    blog-prod:
+      channel: blog-alerts
+
 environments:
   dev:
     subdomain: blog-dev

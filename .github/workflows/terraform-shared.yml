@@ -1,0 +1,131 @@
+---
+name: Terraform (Shared)
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "infra/terraform/envs/shared/**"
+      - "infra/terraform/config.yml"
+      - ".github/workflows/terraform-shared.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "infra/terraform/envs/shared/**"
+      - "infra/terraform/config.yml"
+      - ".github/workflows/terraform-shared.yml"
+  workflow_dispatch:
+    inputs:
+      RUN_APPLY:
+        description: "Apply実行フラグ（falseの場合はplanのみ）"
+        required: true
+        type: boolean
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AWS_ACCOUNT_ID: "072693953877"
+  AWS_REGION: ap-northeast-1
+  OIDC_IAM_ROLE: prod-blog-deploy-role
+  RUN_APPLY: ${{ inputs.RUN_APPLY || 'false' }}
+
+jobs:
+  # Discord Infrastructure
+  terraform-discord:
+    name: Discord
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      deployments: write
+      pull-requests: write
+    timeout-minutes: 20
+    env:
+      WORKING_DIRECTORY: infra/terraform/envs/shared/discord
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform Environment
+        uses: ./.github/actions/setup-terraform-env
+        with:
+          aws-account-id: ${{ env.AWS_ACCOUNT_ID }}
+          aws-region: ${{ env.AWS_REGION }}
+          oidc-iam-role: ${{ env.OIDC_IAM_ROLE }}
+          working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      - name: Terraform Plan
+        id: plan
+        continue-on-error: true
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          TF_VAR_discord_bot_token: ${{ secrets.DISCORD_BOT_TOKEN }}
+        run: |
+          terraform plan -detailed-exitcode -no-color 2>&1 | tee tf_plan.txt
+
+      - name: Set Plan Status
+        id: plan-status
+        run: |
+          case "${{ steps.plan.outputs.exitcode }}" in
+            0) echo "status=no-changes" >> $GITHUB_OUTPUT ;;
+            2) echo "status=has-diff" >> $GITHUB_OUTPUT ;;
+            *) echo "status=error" >> $GITHUB_OUTPUT ;;
+          esac
+
+      - name: tfcmt Plan Comment
+        if: github.event_name == 'pull_request' && steps.plan.outputs.exitcode != '1'
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TARGET=$(echo "${{ env.WORKING_DIRECTORY }}" | sed -e 's|^.*infra/terraform/envs/||' | cut -c 1-36)
+          tfcmt --config $GITHUB_WORKSPACE/.github/tfcmt.yml --var target:$TARGET plan -patch -- cat tf_plan.txt
+
+      - name: Discord Notification (Plan Error)
+        if: steps.plan.outputs.exitcode == '1'
+        continue-on-error: true
+        uses: ./.github/actions/discord-notify
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_DEV }}
+          title: "Terraform Plan Error: discord"
+          message: "path: `${{ env.WORKING_DIRECTORY }}`"
+
+      - name: Fail on Plan Error
+        if: steps.plan.outputs.exitcode == '1'
+        run: |
+          echo "::error::Terraform plan failed with errors"
+          exit 1
+
+      - name: Start Deployment
+        if: steps.plan-status.outputs.status == 'has-diff' && github.ref == 'refs/heads/main'
+        uses: bobheadxi/deployments@v1
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: shared-discord
+
+      - name: Terraform Apply
+        if: |
+          steps.plan-status.outputs.status == 'has-diff' &&
+          (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true'))
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          TF_VAR_discord_bot_token: ${{ secrets.DISCORD_BOT_TOKEN }}
+        run: terraform apply -auto-approve
+
+      - name: Finish Deployment
+        if: steps.plan-status.outputs.status == 'has-diff' && always() && github.ref == 'refs/heads/main'
+        uses: bobheadxi/deployments@v1
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          env: ${{ steps.deployment.outputs.env }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
