@@ -106,7 +106,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   if (!svg) {
     const lineWidths = [80, 65, 85, 70, 75];
     return (
-      <div className={`my-4 rounded-lg p-4 ${bgClass}`}>
+      <div className={`my-4 w-full rounded-lg p-4 ${bgClass}`}>
         <div className="flex flex-col items-center space-y-2 py-4">
           {lineWidths.map((width, i) => (
             <Skeleton key={i} className="h-4" style={{ width: `${width}%` }} />
@@ -118,7 +118,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
 
   const mermaidContent = (
     <div
-      className="[&_svg]:mx-auto [&_svg]:max-w-full"
+      className="flex w-full justify-center [&_svg]:max-w-full"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
@@ -130,7 +130,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   return (
     <>
       <div
-        className={`group relative my-4 overflow-x-auto rounded-lg p-4 ${bgClass}`}
+        className={`group relative my-4 w-full overflow-x-auto rounded-lg p-4 ${bgClass}`}
       >
         <button
           type="button"
