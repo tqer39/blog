@@ -103,10 +103,10 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     clonedSvg.setAttribute('height', String(svgHeight));
 
     const svgData = new XMLSerializer().serializeToString(clonedSvg);
-    const svgBlob = new Blob([svgData], {
-      type: 'image/svg+xml;charset=utf-8',
-    });
-    const url = URL.createObjectURL(svgBlob);
+
+    // Use data URL instead of blob URL to avoid canvas tainting
+    const svgBase64 = btoa(unescape(encodeURIComponent(svgData)));
+    const dataUrl = `data:image/svg+xml;base64,${svgBase64}`;
 
     const img = new window.Image();
     img.onload = () => {
@@ -127,10 +127,8 @@ export function MermaidClient({ chart }: MermaidClientProps) {
         a.click();
         URL.revokeObjectURL(pngUrl);
       }, 'image/png');
-
-      URL.revokeObjectURL(url);
     };
-    img.src = url;
+    img.src = dataUrl;
   }, [resolvedTheme]);
 
   useEffect(() => {
