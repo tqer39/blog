@@ -13,6 +13,7 @@ import {
 } from '@blog/ui';
 import { ChevronDown } from 'lucide-react';
 import {
+  ALL_IMAGE_MODELS,
   ANTHROPIC_MODELS,
   GEMINI_IMAGE_MODELS,
   OPENAI_MODELS,
@@ -22,7 +23,7 @@ interface SplitButtonProps {
   children: React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
-  modelType: 'openai' | 'anthropic' | 'gemini';
+  modelType: 'openai' | 'anthropic' | 'gemini' | 'image';
   modelValue: string;
   onModelChange: (value: string) => void;
 }
@@ -40,14 +41,18 @@ export function SplitButton({
       ? OPENAI_MODELS
       : modelType === 'anthropic'
         ? ANTHROPIC_MODELS
-        : GEMINI_IMAGE_MODELS;
+        : modelType === 'image'
+          ? ALL_IMAGE_MODELS
+          : GEMINI_IMAGE_MODELS;
 
   const label =
     modelType === 'openai'
       ? 'OpenAI'
       : modelType === 'anthropic'
         ? 'Claude'
-        : 'Gemini';
+        : modelType === 'image'
+          ? 'Image'
+          : 'Gemini';
 
   return (
     <div className="inline-flex">
@@ -87,7 +92,16 @@ export function SplitButton({
               <SelectContent>
                 {models.map((m) => (
                   <SelectItem key={m.value} value={m.value}>
-                    {m.label}
+                    {'provider' in m ? (
+                      <span className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground">
+                          [{m.provider}]
+                        </span>
+                        {m.label}
+                      </span>
+                    ) : (
+                      m.label
+                    )}
                   </SelectItem>
                 ))}
               </SelectContent>

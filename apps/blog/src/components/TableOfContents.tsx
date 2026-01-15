@@ -170,7 +170,7 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
             y1={line.y1}
             x2={line.x2}
             y2={line.y2}
-            className="stroke-stone-300 dark:stroke-stone-600"
+            className="stroke-stone-300 dark:stroke-stone-500"
             strokeWidth="2"
           />
         ))}
@@ -198,8 +198,8 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
                   isActive
                     ? 'scale-110 border-blue-500 bg-blue-500'
                     : isPast
-                      ? 'border-stone-400 bg-stone-400 dark:border-stone-500 dark:bg-stone-500'
-                      : 'border-stone-300 bg-white group-hover:border-blue-400 group-hover:bg-blue-100 dark:border-stone-600 dark:bg-stone-800 dark:group-hover:border-blue-400 dark:group-hover:bg-blue-900'
+                      ? 'border-stone-400 bg-stone-400 dark:border-stone-400 dark:bg-stone-400'
+                      : 'border-stone-300 bg-white group-hover:border-blue-400 group-hover:bg-blue-100 dark:border-stone-400 dark:bg-stone-700 dark:group-hover:border-blue-400 dark:group-hover:bg-blue-900'
                 }`}
               />
 

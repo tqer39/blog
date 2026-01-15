@@ -4,6 +4,7 @@ import type {
   AnthropicModel,
   Article,
   ArticleInput,
+  ImageModel,
   OpenAIModel,
   ReviewArticleResponse,
 } from '@blog/cms-types';
@@ -603,9 +604,7 @@ export function ArticleEditor({
 
               {/* Generate button */}
               <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  size="sm"
+                <SplitButton
                   onClick={handleGenerateImage}
                   disabled={
                     isGeneratingImage ||
@@ -616,11 +615,15 @@ export function ArticleEditor({
                       !content.trim() &&
                       !imagePrompt.trim())
                   }
-                  className="gap-1.5"
+                  modelType="image"
+                  modelValue={aiSettings.image}
+                  onModelChange={(v) =>
+                    updateAISettings({ image: v as ImageModel })
+                  }
                 >
                   <Sparkles className="h-4 w-4" />
                   {isGeneratingImage ? 'Generating...' : 'Generate'}
-                </Button>
+                </SplitButton>
               </div>
             </div>
           )}

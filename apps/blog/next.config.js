@@ -32,6 +32,7 @@ const cspDirectives = {
   'img-src': [
     "'self'",
     'data:',
+    'blob:',
     DOMAINS.CDN,
     'https://picsum.photos',
     ...(isDev ? [DOMAINS.CMS_API_LOCAL] : []),

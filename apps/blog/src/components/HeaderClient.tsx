@@ -54,7 +54,7 @@ export function HeaderClient({ siteName }: HeaderClientProps) {
       <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
         <Link
           href="/"
-          className="text-xl font-bold text-stone-900 dark:text-stone-100"
+          className="text-2xl font-bold text-stone-900 dark:text-stone-100"
         >
           {siteName}
         </Link>

@@ -29,13 +29,34 @@ export const DEFAULT_OPENAI_MODEL: OpenAIModel = 'gpt-4o-mini';
 export const DEFAULT_ANTHROPIC_MODEL: AnthropicModel =
   'claude-sonnet-4-20250514';
 
-// Nano Banana (Gemini Image) models
-export const NANO_BANANA_MODELS = {
+// Gemini Image models
+export const GEMINI_IMAGE_MODELS = {
   'gemini-2.5-flash-image': 'gemini-2.5-flash-image',
   'gemini-3-pro-image-preview': 'gemini-3-pro-image-preview',
 } as const;
 
+// OpenAI DALL-E models
+export const OPENAI_IMAGE_MODELS = {
+  'dall-e-3': 'dall-e-3',
+  'dall-e-2': 'dall-e-2',
+} as const;
+
+// Combined image models
+export const ALL_IMAGE_MODELS = {
+  ...GEMINI_IMAGE_MODELS,
+  ...OPENAI_IMAGE_MODELS,
+} as const;
+
 export const DEFAULT_IMAGE_MODEL = 'gemini-2.5-flash-image';
+
+// Helper to detect provider from model name
+export function getImageProvider(
+  model: string
+): 'gemini' | 'openai' | null {
+  if (model in GEMINI_IMAGE_MODELS) return 'gemini';
+  if (model in OPENAI_IMAGE_MODELS) return 'openai';
+  return null;
+}
 
 // Anthropic API configuration
 export const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';

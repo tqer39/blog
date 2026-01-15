@@ -248,7 +248,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
 
   return (
     <>
-      <div className="group relative my-4 overflow-hidden rounded-lg">
+      <div className="group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900">
         <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
           <div className="flex items-center gap-2">
             {LangIcon && <LangIcon className="h-4 w-4" />}

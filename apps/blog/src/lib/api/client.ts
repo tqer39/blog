@@ -7,13 +7,13 @@ import type {
   CategoryInput,
   CategoryListResponse,
   ContinuationLength,
-  GeminiImageModel,
   GenerateImageRequest,
   GenerateImageResponse,
   GenerateMetadataRequest,
   GenerateMetadataResponse,
   GenerateOutlineRequest,
   GenerateOutlineResponse,
+  ImageModel,
   ImageUploadResponse,
   ReviewArticleRequest,
   ReviewArticleResponse,
@@ -32,7 +32,7 @@ import type {
 export type {
   ArticleCategory,
   ContinuationLength,
-  GeminiImageModel as ImageModel,
+  ImageModel,
   TransformAction,
 };
 

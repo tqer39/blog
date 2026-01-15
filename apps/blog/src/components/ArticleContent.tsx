@@ -1,6 +1,6 @@
 'use client';
 
-import { CodeBlock, Mermaid } from '@blog/ui';
+import { CodeBlock } from '@blog/ui';
 import { h } from 'hastscript';
 import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -60,7 +60,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const copyButton = target.closest('.anchor-copy');
+      const copyButton = target.closest('.anchor-copy') as HTMLElement | null;
 
       if (copyButton) {
         // Copy button clicked - copy URL to clipboard
@@ -70,6 +70,12 @@ export function ArticleContent({ content }: ArticleContentProps) {
         if (heading?.id) {
           const url = `${window.location.origin}${window.location.pathname}#${heading.id}`;
           navigator.clipboard.writeText(url);
+
+          // Show "Copied!" feedback
+          copyButton.classList.add('copied');
+          setTimeout(() => {
+            copyButton.classList.remove('copied');
+          }, 2000);
         }
       }
       // For anchor-hash (#), let the default anchor behavior work
@@ -147,25 +153,8 @@ export function ArticleContent({ content }: ArticleContentProps) {
           );
         },
         pre({ children, className }) {
-          if (className === 'mermaid') {
-            const codeEl = children as React.ReactElement<{ children?: string }>;
-            const code = codeEl?.props?.children;
-            if (typeof code === 'string') {
-              return <Mermaid chart={code} />;
-            }
-          }
-
-          const codeElement = children as React.ReactElement<{
-            className?: string;
-            children?: string;
-          }>;
-          if (codeElement?.props?.className === 'language-mermaid') {
-            const code = codeElement.props.children;
-            if (typeof code === 'string') {
-              return <Mermaid chart={code.trim()} />;
-            }
-          }
-
+          // Let CodeBlock handle mermaid via the code component
+          // This ensures consistent DOM structure: <pre><CodeBlock/></pre> or <pre><Mermaid/></pre>
           return <pre className={className}>{children}</pre>;
         },
       }}

@@ -139,7 +139,6 @@ export function MermaidClient({ chart }: MermaidClientProps) {
           theme: isDarkTheme ? 'dark' : 'neutral',
         });
 
-        // Generate unique ID for each render to avoid Mermaid ID conflicts
         renderCountRef.current += 1;
         const uniqueId = `mermaid-${instanceId.current}-${renderCountRef.current}`;
         const { svg } = await window.mermaid.render(uniqueId, chart);
@@ -158,21 +157,24 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     };
   }, [chart, resolvedTheme, mounted]);
 
-  const isDarkTheme = resolvedTheme === 'dark';
-  const bgClass = isDarkTheme ? 'bg-[#24292e]' : 'bg-white';
-
+  // Loading state - match CodeBlock skeleton exactly
   if (!svg) {
-    const lineWidths = [80, 65, 85, 70, 75];
+    const lineWidths = [85, 70, 90, 60, 75];
     return (
-      <div className="my-4 overflow-hidden rounded-lg">
-        <div className="flex items-center gap-2 rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
-          <SiMermaid className="h-4 w-4" />
-          <span>Mermaid</span>
+      <div className="group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900">
+        <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+          <div className="flex items-center gap-2">
+            <SiMermaid className="h-4 w-4" />
+            <span>Mermaid</span>
+          </div>
         </div>
-        <div className={`rounded-b-lg p-4 ${bgClass}`}>
-          <div className="flex flex-col items-center space-y-2 py-4">
+        <div className="overflow-x-auto bg-stone-100 p-4 dark:bg-stone-800">
+          <div className="space-y-2">
             {lineWidths.map((width, i) => (
-              <Skeleton key={i} className="h-4" style={{ width: `${width}%` }} />
+              <div key={i} className="flex items-center gap-4">
+                <Skeleton className="h-4 w-4 shrink-0" />
+                <Skeleton className="h-4" style={{ width: `${width}%` }} />
+              </div>
             ))}
           </div>
         </div>
@@ -180,21 +182,18 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     );
   }
 
+  // Mermaid content wrapper - matches CodeBlock's shiki-wrapper structure
   const mermaidContent = (
     <div
       ref={containerRef}
-      className="flex w-full justify-center [&_svg]:max-w-full"
+      className="mermaid-content not-prose rounded-b-lg overflow-x-auto p-4 flex justify-center [&_svg]:max-w-full"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
 
-  const buttonClass =
-    'flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100';
-
   return (
     <>
-      <div className="group relative my-4 overflow-hidden rounded-lg">
-        {/* Header bar - same style as CodeBlock */}
+      <div className="group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900">
         <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
           <div className="flex items-center gap-2">
             <SiMermaid className="h-4 w-4" />
@@ -203,8 +202,28 @@ export function MermaidClient({ chart }: MermaidClientProps) {
           <div className="flex items-center gap-1">
             <button
               type="button"
+              onClick={handleDownloadSvg}
+              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              aria-label="Download SVG"
+              title="Download SVG"
+            >
+              <Download className="h-4 w-4" />
+              <span className="text-xs">SVG</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadPng}
+              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              aria-label="Download PNG"
+              title="Download PNG"
+            >
+              <Image className="h-4 w-4" />
+              <span className="text-xs">PNG</span>
+            </button>
+            <button
+              type="button"
               onClick={handleCopyCode}
-              className={buttonClass}
+              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
               aria-label="Copy code"
             >
               {copied ? (
@@ -221,49 +240,22 @@ export function MermaidClient({ chart }: MermaidClientProps) {
             </button>
             <button
               type="button"
-              onClick={handleDownloadSvg}
-              className={buttonClass}
-              aria-label="Download SVG"
-              title="Download SVG"
-            >
-              <Download className="h-4 w-4" />
-              <span className="text-xs">SVG</span>
-            </button>
-            <button
-              type="button"
-              onClick={handleDownloadPng}
-              className={buttonClass}
-              aria-label="Download PNG"
-              title="Download PNG"
-            >
-              <Image className="h-4 w-4" />
-              <span className="text-xs">PNG</span>
-            </button>
-            <button
-              type="button"
               onClick={() => setIsFullscreen(true)}
-              className={buttonClass}
+              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
               aria-label="Fullscreen"
             >
               <Maximize2 className="h-4 w-4" />
             </button>
           </div>
         </div>
-        {/* Content area */}
-        <div className={`overflow-x-auto rounded-b-lg p-4 ${bgClass}`}>
-          {mermaidContent}
-        </div>
+        {mermaidContent}
       </div>
       <FullscreenModal
         isOpen={isFullscreen}
         onClose={() => setIsFullscreen(false)}
         title="Mermaid Diagram"
       >
-        <div
-          className={`flex h-full items-center justify-center overflow-auto rounded-lg p-8 ${bgClass}`}
-        >
-          {mermaidContent}
-        </div>
+        <div className="h-full overflow-auto rounded-lg">{mermaidContent}</div>
       </FullscreenModal>
     </>
   );

@@ -130,11 +130,6 @@ body {
   margin-right: -0.9rem !important;
 }
 
-/* Mermaid diagram styling for code blocks */
-div:has(svg[id^="mermaid"]) {
-  margin: -0.65rem -0.8rem !important;
-}
-
 /* Heading anchor links */
 .prose :is(h1, h2, h3, h4, h5, h6) {
   scroll-margin-top: 80px;
@@ -172,6 +167,19 @@ div:has(svg[id^="mermaid"]) {
 
 .prose .anchor-copy:hover {
   color: var(--color-foreground);
+}
+
+.prose .anchor-copy.copied svg {
+  display: none;
+}
+
+.prose .anchor-copy.copied::after {
+  content: "Copied!";
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  position: relative;
+  top: -0.15em;
 }
 
 .prose :is(h1, h2, h3, h4, h5, h6):hover .anchor-link {
@@ -224,4 +232,18 @@ div:has(svg[id^="mermaid"]) {
 
 .shiki-wrapper .line-content {
   padding-left: 1.5rem;
+}
+
+/* Mermaid content background to match CodeBlock */
+.mermaid-content {
+  background-color: white;
+}
+
+.dark .mermaid-content {
+  background-color: #24292e;
+}
+
+/* Dark mode: darker border for code blocks and mermaid */
+.dark .group.relative.my-4 {
+  --tw-ring-color: #333 !important;
 }
