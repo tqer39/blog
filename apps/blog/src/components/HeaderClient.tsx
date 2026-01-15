@@ -1,6 +1,6 @@
 'use client';
 
-import { BookOpen, Rss, Search, X } from 'lucide-react';
+import { BookOpen, Search, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -98,15 +98,6 @@ export function HeaderClient({ siteName }: HeaderClientProps) {
               </button>
             )}
           </div>
-          {/* Desktop only: RSS and Articles */}
-          <Link
-            href="/feed.xml"
-            className="hidden rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:block"
-            aria-label="RSS Feed"
-            title="RSS"
-          >
-            <Rss className="h-5 w-5" />
-          </Link>
           <ThemeSwitcher />
           <Link
             href="/articles"

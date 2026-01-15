@@ -1,4 +1,5 @@
 import { BsGithub, BsLink45Deg, BsTwitter } from 'react-icons/bs';
+import { FiRss } from 'react-icons/fi';
 import { getSiteSettings } from '@/lib/siteSettings';
 
 export async function Footer() {
@@ -42,6 +43,13 @@ export async function Footer() {
                 <BsLink45Deg className="h-6 w-6" />
               </a>
             )}
+            <a
+              href="/feed.xml"
+              className="text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+              aria-label="RSS Feed"
+            >
+              <FiRss className="h-6 w-6" />
+            </a>
           </div>
           <p className="text-sm text-stone-500 dark:text-stone-400">
             &copy; {new Date().getFullYear()} {settings.site_name}. All rights
