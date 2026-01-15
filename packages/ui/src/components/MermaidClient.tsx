@@ -92,7 +92,17 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const svgData = new XMLSerializer().serializeToString(svgElement);
+    // Get actual SVG dimensions from bounding box
+    const bbox = svgElement.getBoundingClientRect();
+    const svgWidth = bbox.width;
+    const svgHeight = bbox.height;
+
+    // Clone SVG and set explicit dimensions
+    const clonedSvg = svgElement.cloneNode(true) as SVGSVGElement;
+    clonedSvg.setAttribute('width', String(svgWidth));
+    clonedSvg.setAttribute('height', String(svgHeight));
+
+    const svgData = new XMLSerializer().serializeToString(clonedSvg);
     const svgBlob = new Blob([svgData], {
       type: 'image/svg+xml;charset=utf-8',
     });
@@ -101,12 +111,12 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     const img = new window.Image();
     img.onload = () => {
       const scale = 2;
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
+      canvas.width = svgWidth * scale;
+      canvas.height = svgHeight * scale;
       ctx.scale(scale, scale);
       ctx.fillStyle = resolvedTheme === 'dark' ? '#24292e' : '#ffffff';
-      ctx.fillRect(0, 0, img.width, img.height);
-      ctx.drawImage(img, 0, 0);
+      ctx.fillRect(0, 0, svgWidth, svgHeight);
+      ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
 
       canvas.toBlob((blob) => {
         if (!blob) return;
