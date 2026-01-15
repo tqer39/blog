@@ -89,18 +89,18 @@ export function TableOfContents({ readingTime }: TableOfContentsProps) {
       style={{ left: 'calc(50% + 28rem)' }}
       aria-label="目次"
     >
-      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
         目次
       </h2>
       {readingTime && (
-        <div className="mb-4 flex items-center gap-1.5 text-sm text-stone-500 dark:text-stone-400">
+        <div className="mb-4 flex items-center gap-1.5 text-base text-stone-500 dark:text-stone-400">
           <Clock className="h-4 w-4" />
           <span>約{readingTime}分で読めます</span>
         </div>
       )}
-      <div className="relative pl-4">
+      <div className="relative pl-8">
         {/* Timeline line */}
-        <div className="absolute left-1 top-2 bottom-2 w-0.5 bg-stone-200 dark:bg-stone-700" />
+        <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-stone-200 dark:bg-stone-700" />
 
         <ul className="space-y-1">
           {headings.map((heading, index) => {
@@ -108,12 +108,12 @@ export function TableOfContents({ readingTime }: TableOfContentsProps) {
             const isPast = headings.findIndex((h) => h.id === activeId) > index;
 
             return (
-              <li key={heading.id} className="relative">
+              <li key={heading.id} className="relative flex items-center">
                 {/* Timeline dot */}
                 <div
-                  className={`absolute -left-4 top-2.5 h-2.5 w-2.5 rounded-full border-2 transition-all duration-300 ${
+                  className={`absolute -left-8 h-4 w-4 rounded-full border-2 transition-all duration-300 ${
                     isActive
-                      ? 'scale-125 border-blue-500 bg-blue-500'
+                      ? 'scale-110 border-blue-500 bg-blue-500'
                       : isPast
                         ? 'border-stone-400 bg-stone-400 dark:border-stone-500 dark:bg-stone-500'
                         : 'border-stone-300 bg-white dark:border-stone-600 dark:bg-stone-900'
@@ -123,8 +123,8 @@ export function TableOfContents({ readingTime }: TableOfContentsProps) {
                 <a
                   href={`#${heading.id}`}
                   onClick={(e) => handleClick(e, heading.id)}
-                  className={`block py-1.5 text-sm leading-relaxed transition-colors ${
-                    heading.level === 3 ? 'pl-3 text-xs' : ''
+                  className={`block py-1.5 text-base leading-relaxed transition-colors ${
+                    heading.level === 3 ? 'pl-3 text-sm' : ''
                   } ${
                     isActive
                       ? 'font-medium text-blue-600 dark:text-blue-400'
