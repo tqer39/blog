@@ -89,7 +89,7 @@ export function AISettingsPopover({
             </Label>
             <Select
               value={settings.metadata}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 onSettingsChange({ metadata: v as OpenAIModel })
               }
             >
@@ -113,7 +113,7 @@ export function AISettingsPopover({
             </Label>
             <Select
               value={settings.image}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 onSettingsChange({ image: v as GeminiImageModel })
               }
             >
@@ -139,7 +139,7 @@ export function AISettingsPopover({
             <Label className="text-xs text-muted-foreground">Review</Label>
             <Select
               value={settings.review}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 onSettingsChange({ review: v as AnthropicModel })
               }
             >
@@ -161,7 +161,7 @@ export function AISettingsPopover({
             <Label className="text-xs text-muted-foreground">Outline</Label>
             <Select
               value={settings.outline}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 onSettingsChange({ outline: v as AnthropicModel })
               }
             >
@@ -183,7 +183,7 @@ export function AISettingsPopover({
             <Label className="text-xs text-muted-foreground">Transform</Label>
             <Select
               value={settings.transform}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 onSettingsChange({ transform: v as AnthropicModel })
               }
             >
@@ -207,7 +207,7 @@ export function AISettingsPopover({
             </Label>
             <Select
               value={settings.continuation}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 onSettingsChange({ continuation: v as AnthropicModel })
               }
             >

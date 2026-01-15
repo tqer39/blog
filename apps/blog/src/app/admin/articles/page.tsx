@@ -138,7 +138,7 @@ export default function ArticleListPage() {
       {/* Filter tabs */}
       <Tabs
         value={filter}
-        onValueChange={(v) => setFilter(v as typeof filter)}
+        onValueChange={(v: string) => setFilter(v as typeof filter)}
         className="mb-6"
       >
         <TabsList className="bg-muted/50 p-1">

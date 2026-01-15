@@ -117,7 +117,7 @@ export function CategoryEditor({ category, onClose }: CategoryEditorProps) {
               id="category-name"
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
               placeholder="Category name"
               autoFocus
             />
@@ -129,7 +129,7 @@ export function CategoryEditor({ category, onClose }: CategoryEditorProps) {
               id="category-slug"
               type="text"
               value={slug}
-              onChange={(e) => handleSlugChange(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSlugChange(e.target.value)}
               placeholder="category-slug"
             />
             <p className="text-xs text-muted-foreground">
