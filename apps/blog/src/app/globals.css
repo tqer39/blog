@@ -228,6 +228,7 @@ body {
   min-width: 2rem;
   flex-shrink: 0;
   text-align: right;
+  -webkit-user-select: none;
   user-select: none;
   color: #78716c; /* stone-500 */
 }
