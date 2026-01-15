@@ -23,7 +23,7 @@
   "devDependencies": {
     "@blog/config": "workspace:^",
     "@blog/test-utils": "workspace:*",
-    "@cloudflare/workers-types": "4.20260109.0",
+    "@cloudflare/workers-types": "4.20260115.0",
     "tsx": "4.21.0",
     "typescript": "5.9.3",
     "wrangler": "4.58.0"
