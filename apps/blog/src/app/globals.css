@@ -192,9 +192,10 @@ body {
 
 /* Category badge dark mode enhancement - use light text for readability */
 .dark .category-badge {
-  color: var(--color-stone-200) !important;
-  background-color: color-mix(in srgb, var(--category-color, currentColor) 40%, transparent) !important;
-  border-color: var(--category-color) !important;
+  color: #e7e5e4 !important; /* stone-200 */
+  background-color: transparent !important;
+  border-color: currentColor !important;
+  opacity: 0.9;
 }
 
 /* Shiki code block line styling */
