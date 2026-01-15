@@ -13,11 +13,15 @@ export function CategoryBadge({
   return (
     <Link
       href={`/articles?category=${category.slug}`}
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium transition-opacity hover:opacity-80 ${className}`}
-      style={{
-        backgroundColor: `${category.color}20`,
-        color: category.color,
-      }}
+      className={`category-badge inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium transition-opacity hover:opacity-80 ${className}`}
+      style={
+        {
+          '--category-color': category.color,
+          backgroundColor: `color-mix(in srgb, ${category.color} 15%, transparent)`,
+          borderColor: `color-mix(in srgb, ${category.color} 40%, transparent)`,
+          color: category.color,
+        } as React.CSSProperties
+      }
     >
       <span
         className="h-2 w-2 rounded-full"

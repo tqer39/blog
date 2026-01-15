@@ -181,3 +181,10 @@ div:has(svg[id^="mermaid"]) {
 .prose .anchor-link:hover {
   opacity: 1;
 }
+
+/* Category badge dark mode enhancement - use important to override inline styles */
+.dark .category-badge {
+  filter: brightness(1.8) contrast(1.1);
+  background-color: color-mix(in srgb, var(--category-color, currentColor) 25%, transparent) !important;
+  border-color: color-mix(in srgb, var(--category-color, currentColor) 50%, transparent) !important;
+}
