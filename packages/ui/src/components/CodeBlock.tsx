@@ -93,10 +93,15 @@ function getHighlighter(): Promise<Highlighter> {
 
 export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [highlightedHtml, setHighlightedHtml] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const match = /language-(\w+)(:?.+)?/.exec(className || '');
   const lang = match?.[1] || '';
@@ -115,6 +120,8 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   }, [code]);
 
   useEffect(() => {
+    if (!mounted) return;
+
     if (inline || !match) {
       setIsLoading(false);
       return;
@@ -132,6 +139,15 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
           : 'typescript'; // fallback to typescript for unknown languages
         const isDarkTheme = resolvedTheme === 'dark';
         const theme = isDarkTheme ? 'github-dark' : 'github-light';
+
+        console.log(
+          '[CodeBlock] resolvedTheme:',
+          resolvedTheme,
+          'isDarkTheme:',
+          isDarkTheme,
+          'theme:',
+          theme
+        );
 
         const html = highlighter.codeToHtml(code, {
           lang: language,
@@ -155,7 +171,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
     return () => {
       cancelled = true;
     };
-  }, [code, lang, resolvedTheme, inline, match]);
+  }, [code, lang, resolvedTheme, inline, match, mounted]);
 
   // Inline code
   if (inline || !match) {
@@ -232,14 +248,14 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
 
   const codeContent = (
     <div
-      className="shiki-wrapper not-prose rounded-b-lg [&_pre]:!m-0 [&_pre]:!py-4 [&_pre]:!px-0 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_code]:grid [&_code]:text-sm [&_.line]:flex [&_.line]:w-full [&_.line]:min-w-max [&_.line]:px-4 [&_.line]:isolate [&_.line:hover]:bg-stone-200 dark:[&_.line:hover]:bg-stone-700 [&_.line-number]:mr-6 [&_.line-number]:w-8 [&_.line-number]:shrink-0 [&_.line-number]:text-right [&_.line-number]:select-none [&_.line-number]:text-stone-500"
+      className="shiki-wrapper not-prose rounded-b-lg [&_pre]:m-0! [&_pre]:py-4! [&_pre]:px-0! [&_pre]:overflow-x-auto [&_pre]:rounded-lg"
       dangerouslySetInnerHTML={{ __html: htmlWithLineNumbers }}
     />
   );
 
   return (
     <>
-      <div className="group relative my-4 overflow-hidden rounded-lg">
+      <div className="group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900">
         <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
           <div className="flex items-center gap-2">
             {LangIcon && <LangIcon className="h-4 w-4" />}
@@ -249,7 +265,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
             <button
               type="button"
               onClick={handleCopy}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
+              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
               aria-label="Copy code"
             >
               {isCopied ? (
@@ -267,7 +283,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
             <button
               type="button"
               onClick={() => setIsFullscreen(true)}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-400 transition-colors hover:bg-stone-600 hover:text-stone-200"
+              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
               aria-label="Fullscreen"
             >
               <Maximize2 className="h-4 w-4" />

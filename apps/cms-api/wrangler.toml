@@ -13,12 +13,12 @@ ENVIRONMENT = "development"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "blog-cms"
+database_name = "blog-cms-local"
 database_id = "local"
 
 [[r2_buckets]]
 binding = "R2_BUCKET"
-bucket_name = "blog-assets"
+bucket_name = "blog-assets-local"
 
 # ==================== DEV ====================
 [env.dev]

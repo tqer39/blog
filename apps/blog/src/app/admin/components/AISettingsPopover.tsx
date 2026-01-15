@@ -4,6 +4,8 @@ import type {
   AIModelSettings,
   AnthropicModel,
   GeminiImageModel,
+  ImageModel,
+  OpenAIImageModel,
   OpenAIModel,
 } from '@blog/cms-types';
 import {
@@ -44,9 +46,25 @@ export const ANTHROPIC_MODELS: { value: AnthropicModel; label: string }[] = [
 
 export const GEMINI_IMAGE_MODELS: { value: GeminiImageModel; label: string }[] =
   [
-    { value: 'gemini-2.5-flash-image', label: '2.5 Flash (Fast)' },
-    { value: 'gemini-3-pro-image-preview', label: '3 Pro (Best)' },
+    { value: 'gemini-2.5-flash-image', label: 'Gemini 2.5 Flash (Fast)' },
+    { value: 'gemini-3-pro-image-preview', label: 'Gemini 3 Pro (Best)' },
   ];
+
+export const OPENAI_IMAGE_MODELS: { value: OpenAIImageModel; label: string }[] =
+  [
+    { value: 'dall-e-3', label: 'DALL-E 3 (Best)' },
+    { value: 'dall-e-2', label: 'DALL-E 2 (Fast)' },
+  ];
+
+// Combined image models for all providers
+export const ALL_IMAGE_MODELS: {
+  value: ImageModel;
+  label: string;
+  provider: string;
+}[] = [
+  ...GEMINI_IMAGE_MODELS.map((m) => ({ ...m, provider: 'Gemini' })),
+  ...OPENAI_IMAGE_MODELS.map((m) => ({ ...m, provider: 'OpenAI' })),
+];
 
 export function AISettingsPopover({
   settings,
@@ -89,7 +107,7 @@ export function AISettingsPopover({
             </Label>
             <Select
               value={settings.metadata}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 onSettingsChange({ metadata: v as OpenAIModel })
               }
             >
@@ -106,24 +124,29 @@ export function AISettingsPopover({
             </Select>
           </div>
 
-          {/* Image Generation (Gemini) */}
+          {/* Image Generation (Gemini / OpenAI) */}
           <div className="space-y-2">
             <Label className="text-xs text-muted-foreground">
-              Image (Gemini)
+              Image (Gemini / DALL-E)
             </Label>
             <Select
               value={settings.image}
-              onValueChange={(v) =>
-                onSettingsChange({ image: v as GeminiImageModel })
+              onValueChange={(v: string) =>
+                onSettingsChange({ image: v as ImageModel })
               }
             >
               <SelectTrigger className="h-8 text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {GEMINI_IMAGE_MODELS.map((m) => (
+                {ALL_IMAGE_MODELS.map((m) => (
                   <SelectItem key={m.value} value={m.value}>
-                    {m.label}
+                    <span className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">
+                        [{m.provider}]
+                      </span>
+                      {m.label}
+                    </span>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -139,7 +162,7 @@ export function AISettingsPopover({
             <Label className="text-xs text-muted-foreground">Review</Label>
             <Select
               value={settings.review}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 onSettingsChange({ review: v as AnthropicModel })
               }
             >
@@ -161,7 +184,7 @@ export function AISettingsPopover({
             <Label className="text-xs text-muted-foreground">Outline</Label>
             <Select
               value={settings.outline}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 onSettingsChange({ outline: v as AnthropicModel })
               }
             >
@@ -183,7 +206,7 @@ export function AISettingsPopover({
             <Label className="text-xs text-muted-foreground">Transform</Label>
             <Select
               value={settings.transform}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 onSettingsChange({ transform: v as AnthropicModel })
               }
             >
@@ -207,7 +230,7 @@ export function AISettingsPopover({
             </Label>
             <Select
               value={settings.continuation}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 onSettingsChange({ continuation: v as AnthropicModel })
               }
             >

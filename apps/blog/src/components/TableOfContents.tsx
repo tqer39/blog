@@ -1,7 +1,7 @@
 'use client';
 
 import { Clock } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface TocItem {
   id: string;
@@ -89,55 +89,140 @@ export function TableOfContents({ readingTime }: TableOfContentsProps) {
       style={{ left: 'calc(50% + 28rem)' }}
       aria-label="目次"
     >
-      <h2 className="mb-3 text-xs font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
         目次
       </h2>
       {readingTime && (
-        <div className="mb-4 flex items-center gap-1.5 text-sm text-stone-500 dark:text-stone-400">
+        <div className="mb-4 flex items-center gap-1.5 text-base text-stone-500 dark:text-stone-400">
           <Clock className="h-4 w-4" />
           <span>約{readingTime}分で読めます</span>
         </div>
       )}
-      <div className="relative pl-4">
-        {/* Timeline line */}
-        <div className="absolute left-1 top-2 bottom-2 w-0.5 bg-stone-200 dark:bg-stone-700" />
-
-        <ul className="space-y-1">
-          {headings.map((heading, index) => {
-            const isActive = activeId === heading.id;
-            const isPast = headings.findIndex((h) => h.id === activeId) > index;
-
-            return (
-              <li key={heading.id} className="relative">
-                {/* Timeline dot */}
-                <div
-                  className={`absolute -left-4 top-2.5 h-2.5 w-2.5 rounded-full border-2 transition-all duration-300 ${
-                    isActive
-                      ? 'scale-125 border-blue-500 bg-blue-500'
-                      : isPast
-                        ? 'border-stone-400 bg-stone-400 dark:border-stone-500 dark:bg-stone-500'
-                        : 'border-stone-300 bg-white dark:border-stone-600 dark:bg-stone-900'
-                  }`}
-                />
-
-                <a
-                  href={`#${heading.id}`}
-                  onClick={(e) => handleClick(e, heading.id)}
-                  className={`block py-1.5 text-sm leading-relaxed transition-colors ${
-                    heading.level === 3 ? 'pl-3 text-xs' : ''
-                  } ${
-                    isActive
-                      ? 'font-medium text-blue-600 dark:text-blue-400'
-                      : 'text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200'
-                  }`}
-                >
-                  {heading.text}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      <TocList
+        headings={headings}
+        activeId={activeId}
+        onItemClick={handleClick}
+      />
     </nav>
+  );
+}
+
+interface TocListProps {
+  headings: TocItem[];
+  activeId: string;
+  onItemClick: (e: React.MouseEvent<HTMLAnchorElement>, id: string) => void;
+}
+
+function TocList({ headings, activeId, onItemClick }: TocListProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [lines, setLines] = useState<
+    { x1: number; y1: number; x2: number; y2: number }[]
+  >([]);
+
+  useEffect(() => {
+    // Depend on headings.length to recalculate when headings change
+    const numHeadings = headings.length;
+    const calculateLines = () => {
+      if (!containerRef.current || numHeadings === 0) return;
+
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const newLines: { x1: number; y1: number; x2: number; y2: number }[] = [];
+
+      for (let i = 0; i < dotRefs.current.length - 1; i++) {
+        const dot1 = dotRefs.current[i];
+        const dot2 = dotRefs.current[i + 1];
+        if (!dot1 || !dot2) continue;
+
+        const rect1 = dot1.getBoundingClientRect();
+        const rect2 = dot2.getBoundingClientRect();
+
+        newLines.push({
+          x1: rect1.left - containerRect.left + rect1.width / 2,
+          y1: rect1.top - containerRect.top + rect1.height / 2,
+          x2: rect2.left - containerRect.left + rect2.width / 2,
+          y2: rect2.top - containerRect.top + rect2.height / 2,
+        });
+      }
+
+      setLines(newLines);
+    };
+
+    // Calculate after render
+    const timer = setTimeout(calculateLines, 50);
+    window.addEventListener('resize', calculateLines);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', calculateLines);
+    };
+  }, [headings.length]);
+
+  return (
+    <div ref={containerRef} className="relative">
+      {/* SVG for connecting lines */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        style={{ zIndex: 0 }}
+        aria-hidden="true"
+      >
+        {lines.map((line, index) => (
+          <line
+            key={index}
+            x1={line.x1}
+            y1={line.y1}
+            x2={line.x2}
+            y2={line.y2}
+            className="stroke-stone-300 dark:stroke-stone-500"
+            strokeWidth="2"
+          />
+        ))}
+      </svg>
+
+      <ul className="relative space-y-1" style={{ zIndex: 1 }}>
+        {headings.map((heading, index) => {
+          const isActive = activeId === heading.id;
+          const isPast = headings.findIndex((h) => h.id === activeId) > index;
+          const isH3 = heading.level === 3;
+
+          return (
+            <li
+              key={heading.id}
+              className={`group relative flex items-center ${isH3 ? 'ml-6' : ''}`}
+            >
+              {/* Timeline dot */}
+              <div
+                ref={(el) => {
+                  dotRefs.current[index] = el;
+                }}
+                className={`relative z-10 shrink-0 rounded-full border-2 transition-all duration-300 ${
+                  isH3 ? 'h-3 w-3' : 'h-4 w-4'
+                } ${
+                  isActive
+                    ? 'scale-110 border-blue-500 bg-blue-500'
+                    : isPast
+                      ? 'border-stone-400 bg-stone-400 dark:border-stone-400 dark:bg-stone-400'
+                      : 'border-stone-300 bg-white group-hover:border-blue-400 group-hover:bg-blue-100 dark:border-stone-400 dark:bg-stone-700 dark:group-hover:border-blue-400 dark:group-hover:bg-blue-900'
+                }`}
+              />
+
+              <a
+                href={`#${heading.id}`}
+                onClick={(e) => onItemClick(e, heading.id)}
+                className={`block py-1.5 leading-relaxed transition-colors ${
+                  isH3 ? 'pl-3 text-sm' : 'pl-4 text-base'
+                } ${
+                  isActive
+                    ? 'font-medium text-blue-600 dark:text-blue-400'
+                    : 'text-stone-600 hover:text-blue-600 dark:text-stone-400 dark:hover:text-blue-400'
+                }`}
+              >
+                {heading.text}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }

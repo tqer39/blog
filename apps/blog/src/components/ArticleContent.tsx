@@ -1,6 +1,6 @@
 'use client';
 
-import { CodeBlock, Mermaid } from '@blog/ui';
+import { CodeBlock } from '@blog/ui';
 import { h } from 'hastscript';
 import { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
@@ -60,7 +60,7 @@ export function ArticleContent({ content }: ArticleContentProps) {
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const copyButton = target.closest('.anchor-copy');
+      const copyButton = target.closest('.anchor-copy') as HTMLElement | null;
 
       if (copyButton) {
         // Copy button clicked - copy URL to clipboard
@@ -70,6 +70,12 @@ export function ArticleContent({ content }: ArticleContentProps) {
         if (heading?.id) {
           const url = `${window.location.origin}${window.location.pathname}#${heading.id}`;
           navigator.clipboard.writeText(url);
+
+          // Show "Copied!" feedback
+          copyButton.classList.add('copied');
+          setTimeout(() => {
+            copyButton.classList.remove('copied');
+          }, 2000);
         }
       }
       // For anchor-hash (#), let the default anchor behavior work
@@ -80,93 +86,81 @@ export function ArticleContent({ content }: ArticleContentProps) {
   }, []);
 
   return (
-    <ReactMarkdown
-      rehypePlugins={[
-        rehypeRaw,
-        [rehypeSanitize, sanitizeSchema],
-        rehypeSlug,
-        [
-          rehypeAutolinkHeadings,
-          {
-            behavior: 'append',
-            properties: {
-              className: ['anchor-link'],
-              ariaLabel: 'Link to this section',
+    <div className="prose prose-stone max-w-none dark:prose-invert">
+      <ReactMarkdown
+        rehypePlugins={[
+          rehypeRaw,
+          [rehypeSanitize, sanitizeSchema],
+          rehypeSlug,
+          [
+            rehypeAutolinkHeadings,
+            {
+              behavior: 'append',
+              properties: {
+                className: ['anchor-link'],
+                ariaLabel: 'Link to this section',
+              },
+              content: [
+                h('span', { className: 'anchor-hash' }, '#'),
+                h(
+                  'button',
+                  {
+                    type: 'button',
+                    className: 'anchor-copy',
+                    ariaLabel: 'Copy link to clipboard',
+                  },
+                  [
+                    h(
+                      'svg',
+                      {
+                        xmlns: 'http://www.w3.org/2000/svg',
+                        width: 18,
+                        height: 18,
+                        viewBox: '0 0 24 24',
+                        fill: 'none',
+                        stroke: 'currentColor',
+                        strokeWidth: 2,
+                        strokeLinecap: 'round',
+                        strokeLinejoin: 'round',
+                      },
+                      [
+                        h('rect', {
+                          x: 9,
+                          y: 9,
+                          width: 13,
+                          height: 13,
+                          rx: 2,
+                          ry: 2,
+                        }),
+                        h('path', {
+                          d: 'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1',
+                        }),
+                      ]
+                    ),
+                  ]
+                ),
+              ],
             },
-            content: [
-              h('span', { className: 'anchor-hash' }, '#'),
-              h(
-                'button',
-                {
-                  type: 'button',
-                  className: 'anchor-copy',
-                  ariaLabel: 'Copy link to clipboard',
-                },
-                [
-                  h(
-                    'svg',
-                    {
-                      xmlns: 'http://www.w3.org/2000/svg',
-                      width: 18,
-                      height: 18,
-                      viewBox: '0 0 24 24',
-                      fill: 'none',
-                      stroke: 'currentColor',
-                      strokeWidth: 2,
-                      strokeLinecap: 'round',
-                      strokeLinejoin: 'round',
-                    },
-                    [
-                      h('rect', {
-                        x: 9,
-                        y: 9,
-                        width: 13,
-                        height: 13,
-                        rx: 2,
-                        ry: 2,
-                      }),
-                      h('path', {
-                        d: 'M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1',
-                      }),
-                    ]
-                  ),
-                ]
-              ),
-            ],
+          ],
+        ]}
+        remarkPlugins={[remarkGfm]}
+        components={{
+          code({ children, className, ...props }) {
+            return (
+              <CodeBlock className={className} {...props}>
+                {String(children)}
+              </CodeBlock>
+            );
           },
-        ],
-      ]}
-      remarkPlugins={[remarkGfm]}
-      className="prose prose-stone max-w-none dark:prose-invert"
-      components={{
-        code({ children, className, ...props }) {
-          return (
-            <CodeBlock className={className} {...props}>
-              {String(children)}
-            </CodeBlock>
-          );
-        },
-        pre({ children, className }) {
-          if (className === 'mermaid') {
-            const code = (children as React.ReactElement)?.props?.children;
-            if (typeof code === 'string') {
-              return <Mermaid chart={code} />;
-            }
-          }
-
-          const codeElement = children as React.ReactElement;
-          if (codeElement?.props?.className === 'language-mermaid') {
-            const code = codeElement.props.children;
-            if (typeof code === 'string') {
-              return <Mermaid chart={code.trim()} />;
-            }
-          }
-
-          return <pre className={className}>{children}</pre>;
-        },
-      }}
-    >
-      {processedContent}
-    </ReactMarkdown>
+          pre({ children, className }) {
+            // Let CodeBlock handle mermaid via the code component
+            // This ensures consistent DOM structure: <pre><CodeBlock/></pre> or <pre><Mermaid/></pre>
+            return <pre className={className}>{children}</pre>;
+          },
+        }}
+      >
+        {processedContent}
+      </ReactMarkdown>
+    </div>
   );
 }

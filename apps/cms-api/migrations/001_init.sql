@@ -1,3 +1,16 @@
+-- Categories table (master data)
+CREATE TABLE IF NOT EXISTS categories (
+  id TEXT PRIMARY KEY,
+  name TEXT UNIQUE NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  color TEXT NOT NULL DEFAULT '#6B7280',
+  display_order INTEGER NOT NULL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
+CREATE INDEX IF NOT EXISTS idx_categories_display_order ON categories(display_order);
+
 -- Articles table
 CREATE TABLE IF NOT EXISTS articles (
   id TEXT PRIMARY KEY,
@@ -11,12 +24,14 @@ CREATE TABLE IF NOT EXISTS articles (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   header_image_id TEXT REFERENCES images(id) ON DELETE SET NULL,
   review_result TEXT,
-  review_updated_at TEXT
+  review_updated_at TEXT,
+  category_id TEXT REFERENCES categories(id) ON DELETE SET NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_articles_status ON articles(status);
 CREATE INDEX IF NOT EXISTS idx_articles_published_at ON articles(published_at DESC);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_articles_hash ON articles(hash);
+CREATE INDEX IF NOT EXISTS idx_articles_category ON articles(category_id);
 
 -- Tags table
 CREATE TABLE IF NOT EXISTS tags (
@@ -61,7 +76,13 @@ CREATE TABLE IF NOT EXISTS site_settings (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert default values
+-- Seed initial categories
+INSERT INTO categories (id, name, slug, color, display_order) VALUES
+  ('cat_tech', 'Tech', 'tech', '#3B82F6', 1),
+  ('cat_life', 'Life', 'life', '#10B981', 2),
+  ('cat_books', 'Books', 'books', '#F59E0B', 3);
+
+-- Insert default site settings
 INSERT INTO site_settings (key, value) VALUES
   ('site_name', 'tB'),
   ('site_description', '未来の自分に向けた技術ログ'),

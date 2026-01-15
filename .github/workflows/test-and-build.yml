@@ -95,7 +95,7 @@ jobs:
         run: |
           cd apps/cms-api
           for migration in migrations/*.sql; do
-            pnpm wrangler d1 execute blog-cms --local --file="$migration"
+            pnpm wrangler d1 execute blog-cms-local --local --file="$migration"
           done
 
       - name: Load secrets from 1Password

@@ -4,6 +4,7 @@ import type {
   AnthropicModel,
   Article,
   ArticleInput,
+  ImageModel,
   OpenAIModel,
   ReviewArticleResponse,
 } from '@blog/cms-types';
@@ -178,11 +179,21 @@ export function ArticleEditor({
     let finalPrompt = '';
 
     if (useArticleContent) {
-      // Build prompt from article content (title + description)
-      const articlePrompt = `${title.trim()}${description.trim() ? `: ${description.trim()}` : ''}`;
+      // Build prompt from article content (title + description + content)
+      const parts: string[] = [];
+      if (title.trim()) parts.push(title.trim());
+      if (description.trim()) parts.push(description.trim());
+      if (content.trim()) {
+        // Extract first 500 chars of content for image context
+        const contentSummary = content.trim().slice(0, 500);
+        parts.push(contentSummary);
+      }
+      const articlePrompt = parts.join('. ');
 
       if (!articlePrompt && !imagePrompt.trim()) {
-        setError('タイトルまたはカスタムプロンプトを入力してください');
+        setError(
+          'タイトル、説明文、本文のいずれか、またはカスタムプロンプトを入力してください'
+        );
         return;
       }
 
@@ -425,7 +436,9 @@ export function ArticleEditor({
             id="title"
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setTitle(e.target.value)
+            }
             placeholder="Article title"
             className="text-xl font-semibold"
           />
@@ -460,7 +473,9 @@ export function ArticleEditor({
             <Textarea
               id="description"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                setDescription(e.target.value)
+              }
               placeholder="Brief description for SEO (100-160 characters)"
               rows={2}
             />
@@ -539,7 +554,9 @@ export function ArticleEditor({
                 <input
                   type="checkbox"
                   checked={useArticleContent}
-                  onChange={(e) => setUseArticleContent(e.target.checked)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setUseArticleContent(e.target.checked)
+                  }
                   className="h-4 w-4 rounded border-gray-300"
                 />
                 記事の内容をプロンプトとして使用
@@ -554,7 +571,9 @@ export function ArticleEditor({
                 <Textarea
                   id="imagePrompt"
                   value={imagePrompt}
-                  onChange={(e) => setImagePrompt(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setImagePrompt(e.target.value)
+                  }
                   placeholder={
                     useArticleContent
                       ? '追加の指示があれば入力...'
@@ -595,20 +614,26 @@ export function ArticleEditor({
 
               {/* Generate button */}
               <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  size="sm"
+                <SplitButton
                   onClick={handleGenerateImage}
                   disabled={
                     isGeneratingImage ||
                     (!useArticleContent && !imagePrompt.trim()) ||
-                    (useArticleContent && !title.trim() && !imagePrompt.trim())
+                    (useArticleContent &&
+                      !title.trim() &&
+                      !description.trim() &&
+                      !content.trim() &&
+                      !imagePrompt.trim())
                   }
-                  className="gap-1.5"
+                  modelType="image"
+                  modelValue={aiSettings.image}
+                  onModelChange={(v) =>
+                    updateAISettings({ image: v as ImageModel })
+                  }
                 >
                   <Sparkles className="h-4 w-4" />
                   {isGeneratingImage ? 'Generating...' : 'Generate'}
-                </Button>
+                </SplitButton>
               </div>
             </div>
           )}

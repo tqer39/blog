@@ -557,7 +557,7 @@ export function MarkdownEditor({
             <ToggleGroup
               type="single"
               value={previewMode}
-              onValueChange={(v) =>
+              onValueChange={(v: string) =>
                 v && setPreviewMode(v as typeof previewMode)
               }
               size="sm"

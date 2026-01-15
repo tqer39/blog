@@ -140,6 +140,12 @@ export type GeminiImageModel =
   | 'gemini-2.5-flash-image'
   | 'gemini-3-pro-image-preview';
 
+export type OpenAIImageModel = 'dall-e-3' | 'dall-e-2';
+
+export type ImageModel = GeminiImageModel | OpenAIImageModel;
+
+export type ImageProvider = 'gemini' | 'openai';
+
 // AI Model Settings
 export interface AIModelSettings {
   metadata: OpenAIModel;
@@ -147,7 +153,7 @@ export interface AIModelSettings {
   outline: AnthropicModel;
   transform: AnthropicModel;
   continuation: AnthropicModel;
-  image: GeminiImageModel;
+  image: ImageModel;
 }
 
 export const DEFAULT_AI_MODEL_SETTINGS: AIModelSettings = {
@@ -261,7 +267,7 @@ export interface GenerateMetadataResponse {
 export interface GenerateImageRequest {
   prompt: string;
   title?: string;
-  model?: GeminiImageModel;
+  model?: ImageModel;
 }
 
 export interface GenerateImageResponse {
