@@ -201,6 +201,45 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     />
   );
 
+  // Fullscreen content - scales SVG to fit the screen
+  // Modify SVG to remove fixed dimensions and add viewBox for scaling
+  const getScalableSvg = () => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svg, 'image/svg+xml');
+    const svgEl = doc.querySelector('svg');
+    if (!svgEl) return svg;
+
+    // Get current dimensions
+    const width = svgEl.getAttribute('width') || svgEl.style.width;
+    const height = svgEl.getAttribute('height') || svgEl.style.height;
+
+    // Set viewBox if not present
+    if (!svgEl.getAttribute('viewBox') && width && height) {
+      const w = Number.parseFloat(width);
+      const h = Number.parseFloat(height);
+      if (!Number.isNaN(w) && !Number.isNaN(h)) {
+        svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      }
+    }
+
+    // Remove fixed dimensions to allow scaling
+    svgEl.removeAttribute('width');
+    svgEl.removeAttribute('height');
+    svgEl.style.width = '100%';
+    svgEl.style.height = '100%';
+    svgEl.style.maxWidth = '100%';
+    svgEl.style.maxHeight = '100%';
+
+    return new XMLSerializer().serializeToString(doc);
+  };
+
+  const fullscreenContent = (
+    <div
+      className="mermaid-content not-prose h-full w-full flex items-center justify-center p-4"
+      dangerouslySetInnerHTML={{ __html: getScalableSvg() }}
+    />
+  );
+
   return (
     <>
       <div className="group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900">
@@ -265,7 +304,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
         onClose={() => setIsFullscreen(false)}
         title="Mermaid Diagram"
       >
-        <div className="h-full overflow-auto rounded-lg">{mermaidContent}</div>
+        <div className="h-full w-full">{fullscreenContent}</div>
       </FullscreenModal>
     </>
   );
