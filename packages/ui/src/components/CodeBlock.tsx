@@ -241,7 +241,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
 
   const codeContent = (
     <div
-      className="shiki-wrapper not-prose rounded-b-lg [&_pre]:!m-0 [&_pre]:!py-4 [&_pre]:!px-0 [&_pre]:overflow-x-auto [&_pre]:rounded-lg"
+      className="shiki-wrapper not-prose rounded-b-lg [&_pre]:m-0! [&_pre]:py-4! [&_pre]:px-0! [&_pre]:overflow-x-auto [&_pre]:rounded-lg"
       dangerouslySetInnerHTML={{ __html: htmlWithLineNumbers }}
     />
   );
