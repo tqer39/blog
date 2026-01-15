@@ -241,7 +241,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
 
   const codeContent = (
     <div
-      className="shiki-wrapper not-prose rounded-b-lg [&_pre]:!m-0 [&_pre]:!py-4 [&_pre]:!px-0 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_code]:grid [&_code]:text-sm [&_.line]:flex [&_.line]:w-full [&_.line]:min-w-max [&_.line]:px-4 [&_.line]:isolate [&_.line:hover]:bg-stone-200 dark:[&_.line:hover]:bg-stone-700 [&_.line-number]:mr-6 [&_.line-number]:w-8 [&_.line-number]:shrink-0 [&_.line-number]:text-right [&_.line-number]:select-none [&_.line-number]:text-stone-500"
+      className="shiki-wrapper not-prose rounded-b-lg [&_pre]:!m-0 [&_pre]:!py-4 [&_pre]:!px-0 [&_pre]:overflow-x-auto [&_pre]:rounded-lg"
       dangerouslySetInnerHTML={{ __html: htmlWithLineNumbers }}
     />
   );

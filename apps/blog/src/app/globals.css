@@ -188,3 +188,40 @@ div:has(svg[id^="mermaid"]) {
   background-color: color-mix(in srgb, var(--category-color, currentColor) 40%, transparent) !important;
   border-color: var(--category-color) !important;
 }
+
+/* Shiki code block line styling */
+.shiki-wrapper code {
+  display: grid;
+  font-size: 0.875rem;
+}
+
+.shiki-wrapper .line {
+  display: flex;
+  width: 100%;
+  min-width: max-content;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  transition: background-color 0.15s;
+}
+
+.shiki-wrapper .line:hover {
+  background-color: #e7e5e4; /* stone-200 */
+}
+
+.dark .shiki-wrapper .line:hover {
+  background-color: #44403c; /* stone-700 */
+}
+
+.shiki-wrapper .line-number {
+  display: inline-block;
+  width: 2rem;
+  min-width: 2rem;
+  flex-shrink: 0;
+  text-align: right;
+  user-select: none;
+  color: #78716c; /* stone-500 */
+}
+
+.shiki-wrapper .line-content {
+  padding-left: 1.5rem;
+}
