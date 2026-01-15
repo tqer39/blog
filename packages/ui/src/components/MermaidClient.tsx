@@ -55,12 +55,19 @@ function loadMermaid(): Promise<void> {
 
 export function MermaidClient({ chart }: MermaidClientProps) {
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [svg, setSvg] = useState<string>('');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const instanceId = useRef(Math.random().toString(36).substring(2, 9));
   const renderCountRef = useRef(0);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     let cancelled = false;
 
     const renderChart = async () => {
@@ -91,7 +98,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     return () => {
       cancelled = true;
     };
-  }, [chart, resolvedTheme]);
+  }, [chart, resolvedTheme, mounted]);
 
   const isDarkTheme = resolvedTheme === 'dark';
   const bgClass = isDarkTheme ? 'bg-[#24292e]' : 'bg-white';

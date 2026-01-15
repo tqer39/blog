@@ -182,9 +182,9 @@ div:has(svg[id^="mermaid"]) {
   opacity: 1;
 }
 
-/* Category badge dark mode enhancement - use important to override inline styles */
+/* Category badge dark mode enhancement - use light text for readability */
 .dark .category-badge {
-  filter: brightness(1.8) contrast(1.1);
-  background-color: color-mix(in srgb, var(--category-color, currentColor) 25%, transparent) !important;
-  border-color: color-mix(in srgb, var(--category-color, currentColor) 50%, transparent) !important;
+  color: var(--color-stone-200) !important;
+  background-color: color-mix(in srgb, var(--category-color, currentColor) 40%, transparent) !important;
+  border-color: var(--category-color) !important;
 }

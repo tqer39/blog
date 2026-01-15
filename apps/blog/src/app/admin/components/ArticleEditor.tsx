@@ -178,11 +178,19 @@ export function ArticleEditor({
     let finalPrompt = '';
 
     if (useArticleContent) {
-      // Build prompt from article content (title + description)
-      const articlePrompt = `${title.trim()}${description.trim() ? `: ${description.trim()}` : ''}`;
+      // Build prompt from article content (title + description + content)
+      const parts: string[] = [];
+      if (title.trim()) parts.push(title.trim());
+      if (description.trim()) parts.push(description.trim());
+      if (content.trim()) {
+        // Extract first 500 chars of content for image context
+        const contentSummary = content.trim().slice(0, 500);
+        parts.push(contentSummary);
+      }
+      const articlePrompt = parts.join('. ');
 
       if (!articlePrompt && !imagePrompt.trim()) {
-        setError('タイトルまたはカスタムプロンプトを入力してください');
+        setError('タイトル、説明文、本文のいずれか、またはカスタムプロンプトを入力してください');
         return;
       }
 
@@ -602,7 +610,11 @@ export function ArticleEditor({
                   disabled={
                     isGeneratingImage ||
                     (!useArticleContent && !imagePrompt.trim()) ||
-                    (useArticleContent && !title.trim() && !imagePrompt.trim())
+                    (useArticleContent &&
+                      !title.trim() &&
+                      !description.trim() &&
+                      !content.trim() &&
+                      !imagePrompt.trim())
                   }
                   className="gap-1.5"
                 >

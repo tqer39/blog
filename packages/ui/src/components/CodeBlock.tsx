@@ -93,10 +93,15 @@ function getHighlighter(): Promise<Highlighter> {
 
 export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [highlightedHtml, setHighlightedHtml] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const match = /language-(\w+)(:?.+)?/.exec(className || '');
   const lang = match?.[1] || '';
@@ -115,6 +120,8 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   }, [code]);
 
   useEffect(() => {
+    if (!mounted) return;
+
     if (inline || !match) {
       setIsLoading(false);
       return;
@@ -132,6 +139,8 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
           : 'typescript'; // fallback to typescript for unknown languages
         const isDarkTheme = resolvedTheme === 'dark';
         const theme = isDarkTheme ? 'github-dark' : 'github-light';
+
+        console.log('[CodeBlock] resolvedTheme:', resolvedTheme, 'isDarkTheme:', isDarkTheme, 'theme:', theme);
 
         const html = highlighter.codeToHtml(code, {
           lang: language,
@@ -155,7 +164,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
     return () => {
       cancelled = true;
     };
-  }, [code, lang, resolvedTheme, inline, match]);
+  }, [code, lang, resolvedTheme, inline, match, mounted]);
 
   // Inline code
   if (inline || !match) {
