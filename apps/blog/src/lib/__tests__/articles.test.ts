@@ -27,6 +27,7 @@ const sampleArticle: Article = {
   headerImageId: null,
   headerImageUrl: null,
   slideMode: false,
+  slideDuration: null,
 };
 
 const sampleArticle2: Article = {
@@ -45,6 +46,7 @@ const sampleArticle2: Article = {
   headerImageId: null,
   headerImageUrl: null,
   slideMode: false,
+  slideDuration: null,
 };
 
 const sampleTags: Tag[] = [

@@ -4,12 +4,18 @@ import { FullscreenModal } from '@blog/ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ArticleContent } from './ArticleContent';
+import { SlideTimer } from './SlideTimer';
+
+/** Default timer duration in seconds (3 minutes) */
+const DEFAULT_DURATION = 180;
 
 interface SlideViewerProps {
   isOpen: boolean;
   onClose: () => void;
   content: string;
   title: string;
+  /** Timer duration in seconds, null means use default (180 seconds) */
+  slideDuration?: number | null;
 }
 
 /**
@@ -62,6 +68,7 @@ export function SlideViewer({
   onClose,
   content,
   title,
+  slideDuration,
 }: SlideViewerProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -159,6 +166,12 @@ export function SlideViewer({
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
+        {/* Timer */}
+        <SlideTimer
+          duration={slideDuration ?? DEFAULT_DURATION}
+          isOpen={isOpen}
+        />
+
         {/* Slide content area */}
         <div className="flex flex-1 items-center justify-center overflow-auto p-4 sm:p-8 lg:p-12">
           <div className="slide-content w-full max-w-5xl">

@@ -74,6 +74,9 @@ export function ArticleEditor({
     initialData?.headerImageUrl ?? null
   );
   const [slideMode, setSlideMode] = useState(initialData?.slideMode ?? false);
+  const [slideDuration, setSlideDuration] = useState<number | null>(
+    initialData?.slideDuration ?? null
+  );
   const [isUploadingHeader, setIsUploadingHeader] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
@@ -312,6 +315,7 @@ export function ArticleEditor({
         status,
         headerImageId,
         slideMode,
+        slideDuration,
       });
       setSaveSuccess(true);
     } catch (err) {
@@ -505,6 +509,35 @@ export function ArticleEditor({
               (記事を「---」で区切ってスライドとして表示)
             </span>
           </div>
+
+          {/* Slide Timer Duration - only shown when slideMode is enabled */}
+          {slideMode && (
+            <div className="mt-3 flex items-center gap-3">
+              <Label
+                htmlFor="slideDuration"
+                className="text-sm whitespace-nowrap"
+              >
+                制限時間
+              </Label>
+              <Input
+                id="slideDuration"
+                type="number"
+                min={30}
+                max={3600}
+                step={30}
+                value={slideDuration ?? ''}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const value = e.target.value;
+                  setSlideDuration(value === '' ? null : Number(value));
+                }}
+                placeholder="180"
+                className="w-24"
+              />
+              <span className="text-xs text-muted-foreground">
+                秒（未設定時は3分）
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Header Image */}

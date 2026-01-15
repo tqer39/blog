@@ -20,6 +20,7 @@ export interface Article {
   headerImageId: string | null;
   headerImageUrl: string | null;
   slideMode: boolean;
+  slideDuration: number | null;
   reviewResult?: ReviewArticleResponse | null;
   reviewUpdatedAt?: string | null;
 }
@@ -33,6 +34,7 @@ export interface ArticleInput {
   categoryId?: string | null;
   headerImageId?: string | null;
   slideMode?: boolean;
+  slideDuration?: number | null;
 }
 
 export interface ArticleListResponse {

@@ -7,9 +7,15 @@ import { SlideViewer } from './SlideViewer';
 interface SlideModeButtonProps {
   content: string;
   title: string;
+  /** Timer duration in seconds, null means use default (180 seconds) */
+  slideDuration?: number | null;
 }
 
-export function SlideModeButton({ content, title }: SlideModeButtonProps) {
+export function SlideModeButton({
+  content,
+  title,
+  slideDuration,
+}: SlideModeButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -28,6 +34,7 @@ export function SlideModeButton({ content, title }: SlideModeButtonProps) {
         onClose={() => setIsOpen(false)}
         content={content}
         title={title}
+        slideDuration={slideDuration}
       />
     </>
   );

@@ -169,6 +169,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <SlideModeButton
                 content={article.content}
                 title={article.title}
+                slideDuration={article.slideDuration}
               />
             )}
             <div className="flex flex-wrap gap-2">

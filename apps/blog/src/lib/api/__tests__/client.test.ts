@@ -37,6 +37,7 @@ const sampleArticle: Article = {
   headerImageId: null,
   headerImageUrl: null,
   slideMode: false,
+  slideDuration: null,
 };
 
 const sampleTag: Tag = {
