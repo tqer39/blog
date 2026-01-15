@@ -5,6 +5,8 @@ import type {
   Category,
   CategoryInput,
   CategoryListResponse,
+  GenerateImageRequest,
+  GenerateImageResponse,
   GenerateOutlineRequest,
   GenerateOutlineResponse,
   ImageUploadResponse,
