@@ -9,6 +9,7 @@ import { ArticleNavigation } from '@/components/ArticleNavigation';
 import { ArticleTitle } from '@/components/ArticleTitle';
 import { CategoryBadge } from '@/components/CategoryBadge';
 import { JsonLd } from '@/components/JsonLd';
+import { SlideModeButton } from '@/components/SlideModeButton';
 import { TableOfContents } from '@/components/TableOfContents';
 import { TagLink } from '@/components/TagLink';
 import { getAllArticles, getArticleByHash } from '@/lib/articles';
@@ -164,6 +165,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <Clock className="h-4 w-4" />約{readingTime}分で読めます
             </span>
             {article.category && <CategoryBadge category={article.category} />}
+            {article.slideMode && (
+              <SlideModeButton
+                content={article.content}
+                title={article.title}
+              />
+            )}
             <div className="flex flex-wrap gap-2">
               {article.tags.map((tag) => (
                 <TagLink key={tag} tag={tag} size="md" />

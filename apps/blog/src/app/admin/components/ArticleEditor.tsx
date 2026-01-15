@@ -73,6 +73,7 @@ export function ArticleEditor({
   const [headerImageUrl, setHeaderImageUrl] = useState<string | null>(
     initialData?.headerImageUrl ?? null
   );
+  const [slideMode, setSlideMode] = useState(initialData?.slideMode ?? false);
   const [isUploadingHeader, setIsUploadingHeader] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
@@ -310,6 +311,7 @@ export function ArticleEditor({
         categoryId,
         status,
         headerImageId,
+        slideMode,
       });
       setSaveSuccess(true);
     } catch (err) {
@@ -485,6 +487,24 @@ export function ArticleEditor({
           </div>
           <TagSelector value={tags} onChange={setTags} />
           <CategorySelector value={categoryId} onChange={setCategoryId} />
+
+          {/* Slide Mode Toggle */}
+          <div className="flex items-center gap-3">
+            <label className="flex cursor-pointer items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={slideMode}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSlideMode(e.target.checked)
+                }
+                className="h-4 w-4 rounded border-gray-300"
+              />
+              <span>スライドモードを有効にする</span>
+            </label>
+            <span className="text-xs text-muted-foreground">
+              (記事を「---」で区切ってスライドとして表示)
+            </span>
+          </div>
         </div>
 
         {/* Header Image */}

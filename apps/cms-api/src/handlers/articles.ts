@@ -166,8 +166,8 @@ articlesHandler.post('/', async (c) => {
 
   try {
     await c.env.DB.prepare(
-      `INSERT INTO articles (id, hash, title, description, content, status, published_at, header_image_id, category_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      `INSERT INTO articles (id, hash, title, description, content, status, published_at, header_image_id, category_id, slide_mode)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
       .bind(
         id,
@@ -178,7 +178,8 @@ articlesHandler.post('/', async (c) => {
         status,
         publishedAt,
         input.headerImageId || null,
-        input.categoryId || null
+        input.categoryId || null,
+        input.slideMode ? 1 : 0
       )
       .run();
 
@@ -248,6 +249,10 @@ articlesHandler.put('/:hash', async (c) => {
   if (input.categoryId !== undefined) {
     updates.push('category_id = ?');
     params.push(input.categoryId || null);
+  }
+  if (input.slideMode !== undefined) {
+    updates.push('slide_mode = ?');
+    params.push(input.slideMode ? '1' : '0');
   }
 
   // Clear review results if title or content changed
@@ -573,6 +578,7 @@ function mapRowToArticle(
     category,
     headerImageId: row.header_image_id,
     headerImageUrl,
+    slideMode: Boolean(row.slide_mode),
     reviewResult: row.review_result ? JSON.parse(row.review_result) : null,
     reviewUpdatedAt: row.review_updated_at,
   };
