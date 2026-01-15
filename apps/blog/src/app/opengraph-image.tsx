@@ -1,8 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { getSiteSettings } from '@/lib/siteSettings';
 
-export const runtime = 'edge';
-
 export const size = {
   width: 1200,
   height: 630,
@@ -93,6 +91,7 @@ export async function generateImageMetadata() {
   const settings = await getSiteSettings();
   return [
     {
+      id: 'default',
       alt: `${settings.site_name} - ${settings.site_description}`,
     },
   ];
