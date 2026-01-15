@@ -19,6 +19,7 @@ export interface Article {
   category: Category | null;
   headerImageId: string | null;
   headerImageUrl: string | null;
+  slideMode: boolean;
   reviewResult?: ReviewArticleResponse | null;
   reviewUpdatedAt?: string | null;
 }
@@ -31,6 +32,7 @@ export interface ArticleInput {
   tags?: string[];
   categoryId?: string | null;
   headerImageId?: string | null;
+  slideMode?: boolean;
 }
 
 export interface ArticleListResponse {
