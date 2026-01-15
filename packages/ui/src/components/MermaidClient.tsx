@@ -1,8 +1,9 @@
 'use client';
 
-import { Check, Code, Download, Image, Maximize2 } from 'lucide-react';
+import { Check, Copy, Download, Image, Maximize2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { SiMermaid } from 'react-icons/si';
 import { FullscreenModal } from './FullscreenModal';
 import { Skeleton } from './ui/skeleton';
 
@@ -163,11 +164,17 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   if (!svg) {
     const lineWidths = [80, 65, 85, 70, 75];
     return (
-      <div className={`my-4 w-full rounded-lg p-4 ${bgClass}`}>
-        <div className="flex flex-col items-center space-y-2 py-4">
-          {lineWidths.map((width, i) => (
-            <Skeleton key={i} className="h-4" style={{ width: `${width}%` }} />
-          ))}
+      <div className="my-4 overflow-hidden rounded-lg">
+        <div className="flex items-center gap-2 rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+          <SiMermaid className="h-4 w-4" />
+          <span>Mermaid</span>
+        </div>
+        <div className={`rounded-b-lg p-4 ${bgClass}`}>
+          <div className="flex flex-col items-center space-y-2 py-4">
+            {lineWidths.map((width, i) => (
+              <Skeleton key={i} className="h-4" style={{ width: `${width}%` }} />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -181,63 +188,71 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     />
   );
 
-  const toolbarButtonClass = isDarkTheme
-    ? 'text-stone-400 hover:text-stone-200 hover:bg-stone-700/50'
-    : 'text-stone-500 hover:text-stone-700 hover:bg-stone-200/50';
-
-  const toolbar = (
-    <div className="absolute right-2 top-2 flex items-center gap-1 rounded-md border border-stone-700/30 bg-stone-800/90 p-1 opacity-0 shadow-lg backdrop-blur-sm transition-opacity group-hover:opacity-100 dark:border-stone-600/30 dark:bg-stone-800/90">
-      <button
-        type="button"
-        onClick={handleCopyCode}
-        className={`rounded p-1.5 transition-colors ${toolbarButtonClass}`}
-        aria-label="Copy code"
-        title="Copy code"
-      >
-        {copied ? (
-          <Check className="h-4 w-4 text-green-500" />
-        ) : (
-          <Code className="h-4 w-4" />
-        )}
-      </button>
-      <button
-        type="button"
-        onClick={handleDownloadSvg}
-        className={`rounded p-1.5 transition-colors ${toolbarButtonClass}`}
-        aria-label="Download SVG"
-        title="Download SVG"
-      >
-        <Download className="h-4 w-4" />
-      </button>
-      <button
-        type="button"
-        onClick={handleDownloadPng}
-        className={`rounded p-1.5 transition-colors ${toolbarButtonClass}`}
-        aria-label="Download PNG"
-        title="Download PNG"
-      >
-        <Image className="h-4 w-4" />
-      </button>
-      <div className="mx-0.5 h-4 w-px bg-stone-600/50" />
-      <button
-        type="button"
-        onClick={() => setIsFullscreen(true)}
-        className={`rounded p-1.5 transition-colors ${toolbarButtonClass}`}
-        aria-label="Fullscreen"
-        title="Fullscreen"
-      >
-        <Maximize2 className="h-4 w-4" />
-      </button>
-    </div>
-  );
+  const buttonClass =
+    'flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100';
 
   return (
     <>
-      <div
-        className={`group relative my-4 w-full overflow-x-auto rounded-lg p-4 ${bgClass}`}
-      >
-        {toolbar}
-        {mermaidContent}
+      <div className="group relative my-4 overflow-hidden rounded-lg">
+        {/* Header bar - same style as CodeBlock */}
+        <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+          <div className="flex items-center gap-2">
+            <SiMermaid className="h-4 w-4" />
+            <span>Mermaid</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={handleCopyCode}
+              className={buttonClass}
+              aria-label="Copy code"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-4 w-4" />
+                  <span className="text-xs">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4" />
+                  <span className="text-xs">Copy</span>
+                </>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadSvg}
+              className={buttonClass}
+              aria-label="Download SVG"
+              title="Download SVG"
+            >
+              <Download className="h-4 w-4" />
+              <span className="text-xs">SVG</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadPng}
+              className={buttonClass}
+              aria-label="Download PNG"
+              title="Download PNG"
+            >
+              <Image className="h-4 w-4" />
+              <span className="text-xs">PNG</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsFullscreen(true)}
+              className={buttonClass}
+              aria-label="Fullscreen"
+            >
+              <Maximize2 className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+        {/* Content area */}
+        <div className={`overflow-x-auto rounded-b-lg p-4 ${bgClass}`}>
+          {mermaidContent}
+        </div>
       </div>
       <FullscreenModal
         isOpen={isFullscreen}
