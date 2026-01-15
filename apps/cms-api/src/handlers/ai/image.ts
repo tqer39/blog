@@ -162,7 +162,9 @@ imageHandler.post('/', async (c) => {
   const apiKey =
     provider === 'gemini' ? c.env.GEMINI_API_KEY : c.env.OPENAI_API_KEY;
   if (!apiKey) {
-    internalError(`${provider === 'gemini' ? 'Gemini' : 'OpenAI'} API key not configured`);
+    internalError(
+      `${provider === 'gemini' ? 'Gemini' : 'OpenAI'} API key not configured`
+    );
   }
 
   // Build 3-layer prompt: system instructions + article content + user prompt

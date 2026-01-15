@@ -145,19 +145,19 @@ export function ArticleContent({ content }: ArticleContentProps) {
         ]}
         remarkPlugins={[remarkGfm]}
         components={{
-        code({ children, className, ...props }) {
-          return (
-            <CodeBlock className={className} {...props}>
-              {String(children)}
-            </CodeBlock>
-          );
-        },
-        pre({ children, className }) {
-          // Let CodeBlock handle mermaid via the code component
-          // This ensures consistent DOM structure: <pre><CodeBlock/></pre> or <pre><Mermaid/></pre>
-          return <pre className={className}>{children}</pre>;
-        },
-      }}
+          code({ children, className, ...props }) {
+            return (
+              <CodeBlock className={className} {...props}>
+                {String(children)}
+              </CodeBlock>
+            );
+          },
+          pre({ children, className }) {
+            // Let CodeBlock handle mermaid via the code component
+            // This ensures consistent DOM structure: <pre><CodeBlock/></pre> or <pre><Mermaid/></pre>
+            return <pre className={className}>{children}</pre>;
+          },
+        }}
       >
         {processedContent}
       </ReactMarkdown>

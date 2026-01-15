@@ -140,7 +140,14 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
         const isDarkTheme = resolvedTheme === 'dark';
         const theme = isDarkTheme ? 'github-dark' : 'github-light';
 
-        console.log('[CodeBlock] resolvedTheme:', resolvedTheme, 'isDarkTheme:', isDarkTheme, 'theme:', theme);
+        console.log(
+          '[CodeBlock] resolvedTheme:',
+          resolvedTheme,
+          'isDarkTheme:',
+          isDarkTheme,
+          'theme:',
+          theme
+        );
 
         const html = highlighter.codeToHtml(code, {
           lang: language,

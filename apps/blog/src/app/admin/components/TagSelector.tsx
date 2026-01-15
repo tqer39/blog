@@ -96,7 +96,9 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
         <Input
           type="text"
           value={inputValue}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setInputValue(e.target.value)
+          }
           onKeyDown={handleKeyDown}
           placeholder={isLoading ? 'Loading tags...' : 'Add tags (press Enter)'}
           disabled={isLoading}

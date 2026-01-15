@@ -121,8 +121,10 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
   >([]);
 
   useEffect(() => {
+    // Depend on headings.length to recalculate when headings change
+    const numHeadings = headings.length;
     const calculateLines = () => {
-      if (!containerRef.current) return;
+      if (!containerRef.current || numHeadings === 0) return;
 
       const containerRect = containerRef.current.getBoundingClientRect();
       const newLines: { x1: number; y1: number; x2: number; y2: number }[] = [];
@@ -154,7 +156,7 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
       clearTimeout(timer);
       window.removeEventListener('resize', calculateLines);
     };
-  }, [headings]);
+  }, [headings.length]);
 
   return (
     <div ref={containerRef} className="relative">
@@ -162,6 +164,7 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={{ zIndex: 0 }}
+        aria-hidden="true"
       >
         {lines.map((line, index) => (
           <line

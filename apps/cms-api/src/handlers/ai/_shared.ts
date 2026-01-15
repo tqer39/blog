@@ -50,9 +50,7 @@ export const ALL_IMAGE_MODELS = {
 export const DEFAULT_IMAGE_MODEL = 'gemini-2.5-flash-image';
 
 // Helper to detect provider from model name
-export function getImageProvider(
-  model: string
-): 'gemini' | 'openai' | null {
+export function getImageProvider(model: string): 'gemini' | 'openai' | null {
   if (model in GEMINI_IMAGE_MODELS) return 'gemini';
   if (model in OPENAI_IMAGE_MODELS) return 'openai';
   return null;

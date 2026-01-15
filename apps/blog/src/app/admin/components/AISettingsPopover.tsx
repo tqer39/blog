@@ -3,9 +3,9 @@
 import type {
   AIModelSettings,
   AnthropicModel,
+  GeminiImageModel,
   ImageModel,
   OpenAIImageModel,
-  GeminiImageModel,
   OpenAIModel,
 } from '@blog/cms-types';
 import {
@@ -57,11 +57,14 @@ export const OPENAI_IMAGE_MODELS: { value: OpenAIImageModel; label: string }[] =
   ];
 
 // Combined image models for all providers
-export const ALL_IMAGE_MODELS: { value: ImageModel; label: string; provider: string }[] =
-  [
-    ...GEMINI_IMAGE_MODELS.map((m) => ({ ...m, provider: 'Gemini' })),
-    ...OPENAI_IMAGE_MODELS.map((m) => ({ ...m, provider: 'OpenAI' })),
-  ];
+export const ALL_IMAGE_MODELS: {
+  value: ImageModel;
+  label: string;
+  provider: string;
+}[] = [
+  ...GEMINI_IMAGE_MODELS.map((m) => ({ ...m, provider: 'Gemini' })),
+  ...OPENAI_IMAGE_MODELS.map((m) => ({ ...m, provider: 'OpenAI' })),
+];
 
 export function AISettingsPopover({
   settings,

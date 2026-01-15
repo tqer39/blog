@@ -12,7 +12,8 @@
   --radius-sm: calc(var(--radius) - 4px);
 
   /* Font families - use inline to allow runtime CSS variables from Next.js font */
-  --font-sans: var(--font-biz-ud-gothic), "BIZ UDGothic", -apple-system,
+  --font-sans:
+    var(--font-biz-ud-gothic), "BIZ UDGothic", -apple-system,
     BlinkMacSystemFont, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
