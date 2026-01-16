@@ -13,6 +13,7 @@ import { SlideModeButton } from '@/components/SlideModeButton';
 import { TableOfContents } from '@/components/TableOfContents';
 import { TagLink } from '@/components/TagLink';
 import { getAllArticles, getArticleByHash } from '@/lib/articles';
+import { isAuthenticated } from '@/lib/auth';
 import { generateArticleJsonLd, generateBreadcrumbJsonLd } from '@/lib/jsonld';
 import { calculateReadingTime } from '@/lib/readingTime';
 import { getSiteSettings } from '@/lib/siteSettings';
@@ -89,11 +90,13 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { hash } = await params;
-  const [articleResult, allArticlesResult, settings] = await Promise.all([
-    getArticleByHash(hash),
-    getAllArticles(),
-    getSiteSettings(),
-  ]);
+  const [articleResult, allArticlesResult, settings, isLoggedIn] =
+    await Promise.all([
+      getArticleByHash(hash),
+      getAllArticles(),
+      getSiteSettings(),
+      isAuthenticated(),
+    ]);
 
   if (!articleResult.ok || !articleResult.data) {
     notFound();
@@ -153,7 +156,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         )}
         <header className="mb-8">
-          <ArticleTitle title={article.title} />
+          <ArticleTitle
+            title={article.title}
+            hash={hash}
+            isLoggedIn={isLoggedIn}
+          />
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <time
               dateTime={displayDate}
