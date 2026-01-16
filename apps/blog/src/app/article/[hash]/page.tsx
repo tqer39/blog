@@ -148,6 +148,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               className="object-cover"
               priority
               sizes="(max-width: 768px) 100vw, 896px"
+              unoptimized={article.headerImageUrl.includes('localhost')}
             />
           </div>
         )}

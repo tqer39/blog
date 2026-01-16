@@ -93,23 +93,22 @@ export function SlideTimer({ duration, isOpen, onTimeUp }: SlideTimerProps) {
   return (
     <div className="flex items-center gap-3 px-4 py-2 bg-stone-50 dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-700">
       {/* Track with runner */}
-      <div className="relative flex-1 h-6 flex items-center">
+      <div className="relative flex-1 h-8 flex items-end pb-1">
         {/* Track background */}
-        <div className="absolute inset-x-0 h-1 bg-stone-200 dark:bg-stone-700 rounded-full" />
+        <div className="absolute inset-x-0 bottom-1 h-1 bg-stone-200 dark:bg-stone-700 rounded-full" />
 
         {/* Progress track */}
         <div
-          className="absolute left-0 h-1 bg-amber-400 dark:bg-amber-500 rounded-full transition-all duration-1000 ease-linear"
+          className="absolute left-0 bottom-1 h-1 bg-amber-400 dark:bg-amber-500 rounded-full transition-all duration-1000 ease-linear"
           style={{ width: `${progress}%` }}
         />
 
-        {/* Runner character */}
+        {/* Runner character (sushi) */}
         <div
           className="absolute transition-all duration-1000 ease-linear"
           style={{
-            left: `calc(${progress}% - 8px)`,
-            top: '50%',
-            transform: 'translateY(-50%)',
+            left: `calc(${progress}% - 12px)`,
+            bottom: '-2px',
           }}
         >
           <PixelRunner
@@ -119,9 +118,9 @@ export function SlideTimer({ duration, isOpen, onTimeUp }: SlideTimerProps) {
         </div>
 
         {/* Finish flag */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2">
+        <div className="absolute right-0 bottom-1">
           <Flag
-            className={`h-4 w-4 ${isFinished ? 'text-amber-500' : 'text-stone-400 dark:text-stone-500'}`}
+            className={`h-5 w-5 ${isFinished ? 'text-amber-500' : 'text-stone-400 dark:text-stone-500'}`}
           />
         </div>
       </div>
