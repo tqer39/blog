@@ -326,8 +326,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       tailwind-merge:
-        specifier: 3.0.0
-        version: 3.0.0
+        specifier: 3.4.0
+        version: 3.4.0
       ulidx:
         specifier: 2.4.1
         version: 2.4.1
@@ -2739,9 +2739,6 @@ packages:
   supports-color@8.1.1:
     resolution: {integrity: sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==}
     engines: {node: '>=10'}
-
-  tailwind-merge@3.0.0:
-    resolution: {integrity: sha512-y6SRDRD+NJldSrsMcFBL2kuwwlnrzhNFuS6C/NI+dA1sqj7T5S4Jkl7bsltpD45cwEKlWlDnZA5PC+LDtz+vXQ==}
 
   tailwind-merge@3.4.0:
     resolution: {integrity: sha512-uSaO4gnW+b3Y2aWoWfFpX62vn2sR3skfhbjsEnaBI81WD1wBLlHZe5sWf0AqjksNdYTbGBEd0UasQMT3SNV15g==}
@@ -5502,8 +5499,6 @@ snapshots:
   supports-color@8.1.1:
     dependencies:
       has-flag: 4.0.0
-
-  tailwind-merge@3.0.0: {}
 
   tailwind-merge@3.4.0: {}
 
