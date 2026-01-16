@@ -163,7 +163,7 @@ export function SlideViewer({
         onTouchEnd={handleTouchEnd}
       >
         {/* Slide content area */}
-        <div className="flex flex-1 items-center justify-center overflow-auto p-4 sm:p-8 lg:p-12">
+        <div className="flex flex-1 items-center justify-center overflow-hidden p-4 sm:p-8 lg:p-12">
           <div className="slide-content w-full max-w-5xl">
             <ArticleContent content={slides[currentSlide]} keepFirstH1 />
           </div>
