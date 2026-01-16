@@ -12,10 +12,14 @@ resource "vercel_project" "blog" {
   build_command    = var.build_command
   output_directory = var.output_directory
 
+  # Set to valid default to avoid state drift errors
+  # Valid values: "" (default), "enhanced", "turbo"
+  resource_config = {
+    build_machine_type = ""
+  }
+
   lifecycle {
     ignore_changes = [
-      build_machine_type,
-      resource_config,
       serverless_function_region,
     ]
   }
