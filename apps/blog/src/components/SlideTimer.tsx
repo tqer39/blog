@@ -109,21 +109,21 @@ export function SlideTimer({
       {/* Two tracks container */}
       <div className="flex-1 flex flex-col gap-1">
         {/* Time track with cat */}
-        <div className="relative h-6 flex items-center">
+        <div className="relative h-6 flex items-center pr-6">
           {/* Track background */}
-          <div className="absolute inset-x-0 h-1 bg-stone-200 dark:bg-stone-700 rounded-full" />
+          <div className="absolute left-0 right-6 h-1 bg-stone-200 dark:bg-stone-700 rounded-full" />
 
           {/* Progress track */}
           <div
             className="absolute left-0 h-1 bg-amber-400 dark:bg-amber-500 rounded-full transition-all duration-1000 ease-linear"
-            style={{ width: `${timeProgress}%` }}
+            style={{ width: `calc((100% - 1.5rem) * ${timeProgress / 100})` }}
           />
 
           {/* Cat runner */}
           <div
             className="absolute transition-all duration-1000 ease-linear"
             style={{
-              left: `calc(${timeProgress}% - 10px)`,
+              left: `calc((100% - 1.5rem) * ${timeProgress / 100} - 10px)`,
               top: '50%',
               transform: 'translateY(-50%)',
             }}
@@ -144,21 +144,21 @@ export function SlideTimer({
         </div>
 
         {/* Slide progress track with fish */}
-        <div className="relative h-6 flex items-center">
+        <div className="relative h-6 flex items-center pr-10">
           {/* Track background */}
-          <div className="absolute inset-x-0 h-1 bg-stone-200 dark:bg-stone-700 rounded-full" />
+          <div className="absolute left-0 right-10 h-1 bg-stone-200 dark:bg-stone-700 rounded-full" />
 
           {/* Progress track */}
           <div
             className="absolute left-0 h-1 bg-blue-400 dark:bg-blue-500 rounded-full transition-all duration-300 ease-out"
-            style={{ width: `${slideProgress}%` }}
+            style={{ width: `calc((100% - 2.5rem) * ${slideProgress / 100})` }}
           />
 
           {/* Fish runner */}
           <div
             className="absolute transition-all duration-300 ease-out"
             style={{
-              left: `calc(${slideProgress}% - 10px)`,
+              left: `calc((100% - 2.5rem) * ${slideProgress / 100} - 10px)`,
               top: '50%',
               transform: 'translateY(-50%)',
             }}
