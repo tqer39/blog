@@ -9,6 +9,10 @@ interface SlideTimerProps {
   duration: number;
   /** Whether the slide viewer is open */
   isOpen: boolean;
+  /** Current slide index (0-based) */
+  currentSlide: number;
+  /** Total number of slides */
+  totalSlides: number;
   /** Callback when time runs out */
   onTimeUp?: () => void;
 }
@@ -22,7 +26,13 @@ function formatTime(seconds: number): string {
   return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
-export function SlideTimer({ duration, isOpen, onTimeUp }: SlideTimerProps) {
+export function SlideTimer({
+  duration,
+  isOpen,
+  currentSlide,
+  totalSlides,
+  onTimeUp,
+}: SlideTimerProps) {
   const [remaining, setRemaining] = useState(duration);
   const [isPaused, setIsPaused] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
@@ -78,9 +88,13 @@ export function SlideTimer({ duration, isOpen, onTimeUp }: SlideTimerProps) {
     }
   }, [isFinished]);
 
-  // Calculate progress percentage (0 to 100)
+  // Calculate time progress percentage (0 to 100)
   const elapsed = duration - remaining;
-  const progress = Math.min((elapsed / duration) * 100, 100);
+  const timeProgress = Math.min((elapsed / duration) * 100, 100);
+
+  // Calculate slide progress percentage (0 to 100)
+  const slideProgress =
+    totalSlides > 1 ? (currentSlide / (totalSlides - 1)) * 100 : 100;
 
   // Determine time display color based on remaining time
   const timeColorClass =
@@ -91,47 +105,90 @@ export function SlideTimer({ duration, isOpen, onTimeUp }: SlideTimerProps) {
         : 'text-stone-600 dark:text-stone-400';
 
   return (
-    <div className="flex items-center gap-3 px-4 py-2 bg-stone-50 dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-700">
-      {/* Track with runner */}
-      <div className="relative flex-1 h-8 flex items-end pb-1">
-        {/* Track background */}
-        <div className="absolute inset-x-0 bottom-1 h-1 bg-stone-200 dark:bg-stone-700 rounded-full" />
+    <div className="flex items-center gap-4 px-4 py-2 bg-stone-50 dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-700">
+      {/* Two tracks container */}
+      <div className="flex-1 flex flex-col gap-1">
+        {/* Time track with cat */}
+        <div className="relative h-6 flex items-center">
+          {/* Track background */}
+          <div className="absolute inset-x-0 h-1 bg-stone-200 dark:bg-stone-700 rounded-full" />
 
-        {/* Progress track */}
-        <div
-          className="absolute left-0 bottom-1 h-1 bg-amber-400 dark:bg-amber-500 rounded-full transition-all duration-1000 ease-linear"
-          style={{ width: `${progress}%` }}
-        />
-
-        {/* Runner character (sushi) */}
-        <div
-          className="absolute transition-all duration-1000 ease-linear"
-          style={{
-            left: `calc(${progress}% - 12px)`,
-            bottom: '-2px',
-          }}
-        >
-          <PixelRunner
-            isRunning={!isPaused && !isFinished}
-            isFinished={isFinished}
+          {/* Progress track */}
+          <div
+            className="absolute left-0 h-1 bg-amber-400 dark:bg-amber-500 rounded-full transition-all duration-1000 ease-linear"
+            style={{ width: `${timeProgress}%` }}
           />
+
+          {/* Cat runner */}
+          <div
+            className="absolute transition-all duration-1000 ease-linear"
+            style={{
+              left: `calc(${timeProgress}% - 10px)`,
+              top: '50%',
+              transform: 'translateY(-50%)',
+            }}
+          >
+            <PixelRunner
+              isRunning={!isPaused && !isFinished}
+              isFinished={isFinished}
+              emoji="🐱"
+            />
+          </div>
+
+          {/* Finish flag */}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2">
+            <Flag
+              className={`h-4 w-4 ${isFinished ? 'text-amber-500' : 'text-stone-400 dark:text-stone-500'}`}
+            />
+          </div>
         </div>
 
-        {/* Finish flag */}
-        <div className="absolute right-0 bottom-1">
-          <Flag
-            className={`h-5 w-5 ${isFinished ? 'text-amber-500' : 'text-stone-400 dark:text-stone-500'}`}
+        {/* Slide progress track with fish */}
+        <div className="relative h-6 flex items-center">
+          {/* Track background */}
+          <div className="absolute inset-x-0 h-1 bg-stone-200 dark:bg-stone-700 rounded-full" />
+
+          {/* Progress track */}
+          <div
+            className="absolute left-0 h-1 bg-blue-400 dark:bg-blue-500 rounded-full transition-all duration-300 ease-out"
+            style={{ width: `${slideProgress}%` }}
           />
+
+          {/* Fish runner */}
+          <div
+            className="absolute transition-all duration-300 ease-out"
+            style={{
+              left: `calc(${slideProgress}% - 10px)`,
+              top: '50%',
+              transform: 'translateY(-50%)',
+            }}
+          >
+            <span className="text-lg select-none" aria-hidden="true">
+              🐟
+            </span>
+          </div>
+
+          {/* End marker */}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 text-xs text-stone-400 dark:text-stone-500">
+            {totalSlides}
+          </div>
         </div>
       </div>
 
-      {/* Time display */}
-      <div className={`font-mono text-sm tabular-nums ${timeColorClass}`}>
-        {isFinished ? (
-          <span className="animate-pulse">Time&apos;s up!</span>
-        ) : (
-          formatTime(remaining)
-        )}
+      {/* Info display */}
+      <div className="flex flex-col items-end gap-0.5 min-w-[70px]">
+        {/* Time display */}
+        <div className={`font-mono text-sm tabular-nums ${timeColorClass}`}>
+          {isFinished ? (
+            <span className="animate-pulse">Done!</span>
+          ) : (
+            formatTime(remaining)
+          )}
+        </div>
+        {/* Slide counter */}
+        <div className="text-xs text-stone-500 dark:text-stone-400">
+          {currentSlide + 1} / {totalSlides}
+        </div>
       </div>
 
       {/* Pause/Play button */}

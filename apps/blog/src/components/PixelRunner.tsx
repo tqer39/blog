@@ -3,24 +3,26 @@
 interface PixelRunnerProps {
   isRunning: boolean;
   isFinished?: boolean;
+  emoji?: string;
 }
 
 /**
- * A sushi character that runs across the timer track.
+ * An emoji character that moves across the timer track.
  */
 export function PixelRunner({
   isRunning,
   isFinished = false,
+  emoji = '🐱',
 }: PixelRunnerProps) {
   return (
     <div
-      className={`text-xl select-none ${isRunning ? 'animate-bounce' : ''} ${isFinished ? 'animate-spin' : ''}`}
+      className={`text-lg select-none ${isRunning ? 'animate-pulse-slow' : ''} ${isFinished ? 'animate-spin' : ''}`}
       style={{
-        animationDuration: isRunning ? '0.3s' : '0.5s',
+        animationDuration: isFinished ? '0.5s' : '5s',
       }}
       aria-hidden="true"
     >
-      {isFinished ? '🎉' : '🍣'}
+      {isFinished ? '🎉' : emoji}
     </div>
   );
 }

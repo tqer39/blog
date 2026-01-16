@@ -170,6 +170,8 @@ export function SlideViewer({
         <SlideTimer
           duration={slideDuration ?? DEFAULT_DURATION}
           isOpen={isOpen}
+          currentSlide={currentSlide}
+          totalSlides={slides.length}
         />
 
         {/* Slide content area */}
