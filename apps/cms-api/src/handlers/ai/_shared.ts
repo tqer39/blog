@@ -27,7 +27,7 @@ export const VALID_ANTHROPIC_MODELS: AnthropicModel[] = [
 // Default models
 export const DEFAULT_OPENAI_MODEL: OpenAIModel = 'gpt-4o-mini';
 export const DEFAULT_ANTHROPIC_MODEL: AnthropicModel =
-  'claude-sonnet-4-20250514';
+  'claude-3-5-sonnet-20241022';
 
 // Gemini Image models
 export const GEMINI_IMAGE_MODELS = {
