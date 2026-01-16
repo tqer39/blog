@@ -2,13 +2,8 @@
 name: Deploy CMS API (Dev)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "apps/cms-api/**"
-      - ".github/workflows/deploy-cms-api-dev.yml"
-      - ".github/actions/deploy-cms-api/**"
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

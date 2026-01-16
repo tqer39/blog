@@ -20,3 +20,9 @@ variable "vercel_team_id" {
   type        = string
   default     = null
 }
+
+variable "cms_api_key" {
+  description = "CMS API Key for Vercel environment"
+  type        = string
+  sensitive   = true
+}

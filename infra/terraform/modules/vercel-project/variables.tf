@@ -41,3 +41,14 @@ variable "domain" {
   description = "Custom domain"
   type        = string
 }
+
+variable "environment_variables" {
+  description = "Environment variables for the Vercel project"
+  type = list(object({
+    key       = string
+    value     = string
+    target    = list(string) # ["production", "preview", "development"]
+    sensitive = optional(bool, false)
+  }))
+  default = []
+}

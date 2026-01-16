@@ -30,3 +30,14 @@ resource "vercel_project_domain" "blog" {
   project_id = vercel_project.blog.id
   domain     = var.domain
 }
+
+# Environment Variables
+resource "vercel_project_environment_variable" "env" {
+  for_each = { for env in var.environment_variables : env.key => env }
+
+  project_id = vercel_project.blog.id
+  key        = each.value.key
+  value      = each.value.value
+  target     = each.value.target
+  sensitive  = each.value.sensitive
+}

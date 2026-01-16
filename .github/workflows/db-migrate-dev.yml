@@ -2,12 +2,8 @@
 name: DB Migration (Dev)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "apps/cms-api/migrations/**"
-      - ".github/actions/db-migrate/**"
   workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

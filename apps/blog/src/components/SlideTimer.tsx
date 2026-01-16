@@ -176,7 +176,7 @@ export function SlideTimer({
       </div>
 
       {/* Info display */}
-      <div className="flex flex-col items-end gap-0.5 min-w-[70px]">
+      <div className="flex flex-col items-end gap-0.5 min-w-17.5">
         {/* Time display */}
         <div className={`font-mono text-sm tabular-nums ${timeColorClass}`}>
           {isFinished ? (
