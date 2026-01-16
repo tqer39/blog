@@ -1,0 +1,48 @@
+---
+name: Deploy (Prod)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+jobs:
+  terraform:
+    name: Terraform
+    uses: ./.github/workflows/terraform-prod.yml
+    with:
+      RUN_APPLY: true
+    secrets: inherit
+
+  db-migrate:
+    name: DB Migration
+    needs: terraform
+    uses: ./.github/workflows/db-migrate-prod.yml
+    secrets: inherit
+
+  deploy-api:
+    name: Deploy CMS API
+    needs: db-migrate
+    uses: ./.github/workflows/deploy-cms-api-prod.yml
+    secrets: inherit
+
+  notify-success:
+    name: Notify Success
+    needs: deploy-api
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Discord Notification
+        uses: ./.github/actions/discord-notify
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
+          title: "Production Deploy Complete"
+          message: "Tag: ${{ github.ref_name }}"
+          color: "3066993"
