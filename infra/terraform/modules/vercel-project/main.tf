@@ -12,28 +12,17 @@ resource "vercel_project" "blog" {
   build_command    = var.build_command
   output_directory = var.output_directory
 
-  environment = [
-    for env_var in var.environment_variables : {
-      key    = env_var.key
-      value  = env_var.value
-      target = env_var.target
-    }
-  ]
+  lifecycle {
+    ignore_changes = [
+      build_machine_type,
+      resource_config,
+      serverless_function_region,
+    ]
+  }
 }
 
 # Custom Domain
 resource "vercel_project_domain" "blog" {
   project_id = vercel_project.blog.id
   domain     = var.domain
-}
-
-# Sensitive Environment Variables
-resource "vercel_project_environment_variable" "sensitive" {
-  for_each = { for env_var in var.sensitive_environment_variables : env_var.key => env_var }
-
-  project_id = vercel_project.blog.id
-  key        = each.value.key
-  value      = each.value.value
-  target     = each.value.target
-  sensitive  = true
 }

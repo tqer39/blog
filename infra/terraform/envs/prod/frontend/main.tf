@@ -14,6 +14,7 @@ module "cloudflare_dns" {
 }
 
 # Vercel Project
+# Note: Environment variables are managed via Vercel CLI in sync-secrets.yml
 module "vercel_project" {
   source = "../../../modules/vercel-project"
 
@@ -25,27 +26,6 @@ module "vercel_project" {
   build_command    = local.environment.vercel.build_command
   output_directory = local.environment.vercel.output_directory
   domain           = local.domain
-
-  environment_variables = [
-    {
-      key    = "CMS_API_URL"
-      value  = "https://cms-api.tqer39.workers.dev/v1"
-      target = ["production", "preview", "development"]
-    },
-    {
-      key    = "NEXT_PUBLIC_SITE_URL"
-      value  = "https://${local.domain}"
-      target = ["production", "preview", "development"]
-    }
-  ]
-
-  sensitive_environment_variables = [
-    {
-      key    = "CMS_API_KEY"
-      value  = var.cms_api_key
-      target = ["production", "preview"]
-    }
-  ]
 }
 
 # Note: Vercel domain verification TXT record must be added manually in CloudFlare
