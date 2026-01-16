@@ -20,3 +20,28 @@ variable "vercel_team_id" {
   type        = string
   default     = null
 }
+
+# Vercel Environment Variables (sensitive)
+variable "cms_api_key" {
+  description = "CMS API Key for authentication"
+  type        = string
+  sensitive   = true
+}
+
+variable "basic_auth_user" {
+  description = "Basic Auth username"
+  type        = string
+  sensitive   = true
+}
+
+variable "basic_auth_pass" {
+  description = "Basic Auth password"
+  type        = string
+  sensitive   = true
+}
+
+variable "admin_password_hash" {
+  description = "Admin password hash"
+  type        = string
+  sensitive   = true
+}

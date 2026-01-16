@@ -1,0 +1,36 @@
+---
+name: Deploy (Dev)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/cms-api/**"
+      - "infra/terraform/envs/dev/**"
+      - "infra/terraform/modules/**"
+      - ".github/workflows/deploy-dev.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-dev-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  terraform:
+    name: Terraform
+    uses: ./.github/workflows/terraform-dev.yml
+    with:
+      RUN_APPLY: true
+    secrets: inherit
+
+  db-migrate:
+    name: DB Migration
+    needs: terraform
+    uses: ./.github/workflows/db-migrate-dev.yml
+    secrets: inherit
+
+  deploy-api:
+    name: Deploy CMS API
+    needs: db-migrate
+    uses: ./.github/workflows/deploy-cms-api-dev.yml
+    secrets: inherit
