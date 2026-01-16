@@ -23,6 +23,13 @@ on:
         required: true
         type: boolean
         default: false
+  workflow_call:
+    inputs:
+      RUN_APPLY:
+        description: "Apply実行フラグ（falseの場合はplanのみ）"
+        required: false
+        type: boolean
+        default: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
