@@ -105,7 +105,7 @@ export function SlideTimer({
         : 'text-stone-600 dark:text-stone-400';
 
   return (
-    <div className="flex items-center gap-4 px-4 py-2 bg-stone-50 dark:bg-stone-800/50 border-b border-stone-200 dark:border-stone-700">
+    <div className="flex items-center gap-4 px-4 py-2 bg-stone-50 dark:bg-stone-800/50 border-t border-stone-200 dark:border-stone-700">
       {/* Two tracks container */}
       <div className="flex-1 flex flex-col gap-1">
         {/* Time track with cat */}
@@ -184,10 +184,6 @@ export function SlideTimer({
           ) : (
             formatTime(remaining)
           )}
-        </div>
-        {/* Slide counter */}
-        <div className="text-xs text-stone-500 dark:text-stone-400">
-          {currentSlide + 1} / {totalSlides}
         </div>
       </div>
 

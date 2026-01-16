@@ -90,10 +90,6 @@ export function SlideViewer({
     setCurrentSlide((prev) => Math.max(prev - 1, 0));
   }, []);
 
-  const goToSlide = useCallback((index: number) => {
-    setCurrentSlide(index);
-  }, []);
-
   // Keyboard navigation
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -166,6 +162,13 @@ export function SlideViewer({
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
+        {/* Slide content area */}
+        <div className="flex flex-1 items-center justify-center overflow-auto p-4 sm:p-8 lg:p-12">
+          <div className="slide-content w-full max-w-5xl">
+            <ArticleContent content={slides[currentSlide]} keepFirstH1 />
+          </div>
+        </div>
+
         {/* Timer */}
         <SlideTimer
           duration={slideDuration ?? DEFAULT_DURATION}
@@ -174,16 +177,8 @@ export function SlideViewer({
           totalSlides={slides.length}
         />
 
-        {/* Slide content area */}
-        <div className="flex flex-1 items-center justify-center overflow-auto p-4 sm:p-8 lg:p-12">
-          <div className="slide-content w-full max-w-5xl">
-            <ArticleContent content={slides[currentSlide]} />
-          </div>
-        </div>
-
         {/* Navigation controls */}
         <div className="flex items-center justify-between border-t border-stone-200 bg-white px-4 py-3 dark:border-stone-700 dark:bg-stone-900">
-          {/* Left: Previous button */}
           <button
             type="button"
             onClick={goPrev}
@@ -195,32 +190,6 @@ export function SlideViewer({
             <span className="hidden sm:inline">Previous</span>
           </button>
 
-          {/* Center: Slide counter with progress dots */}
-          <div className="flex items-center gap-3">
-            {/* Progress dots (hide on small screens if too many) */}
-            {slides.length <= 10 && (
-              <div className="hidden gap-1 sm:flex">
-                {slides.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => goToSlide(i)}
-                    className={`h-2 w-2 rounded-full transition-colors ${
-                      i === currentSlide
-                        ? 'bg-stone-900 dark:bg-stone-100'
-                        : 'bg-stone-300 hover:bg-stone-400 dark:bg-stone-600 dark:hover:bg-stone-500'
-                    }`}
-                    aria-label={`Go to slide ${i + 1}`}
-                  />
-                ))}
-              </div>
-            )}
-            <span className="text-sm text-stone-500 dark:text-stone-400">
-              {currentSlide + 1} / {slides.length}
-            </span>
-          </div>
-
-          {/* Right: Next button */}
           <button
             type="button"
             onClick={goNext}
