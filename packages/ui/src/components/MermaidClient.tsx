@@ -144,7 +144,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
         const isDarkTheme = resolvedTheme === 'dark';
         window.mermaid.initialize({
           startOnLoad: false,
-          theme: isDarkTheme ? 'dark' : 'neutral',
+          theme: isDarkTheme ? 'dark' : 'default',
         });
 
         renderCountRef.current += 1;

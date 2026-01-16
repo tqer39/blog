@@ -1,13 +1,21 @@
 'use client';
 
-import { Copy } from 'lucide-react';
+import { Copy, Pencil } from 'lucide-react';
+import Link from 'next/link';
 
 interface ArticleTitleProps {
   title: string;
   id?: string;
+  hash?: string;
+  isLoggedIn?: boolean;
 }
 
-export function ArticleTitle({ title, id = 'title' }: ArticleTitleProps) {
+export function ArticleTitle({
+  title,
+  id = 'title',
+  hash,
+  isLoggedIn,
+}: ArticleTitleProps) {
   const handleCopyLink = () => {
     const url = `${window.location.origin}${window.location.pathname}#${id}`;
     navigator.clipboard.writeText(url);
@@ -32,6 +40,16 @@ export function ArticleTitle({ title, id = 'title' }: ArticleTitleProps) {
         >
           <Copy className="h-5 w-5" />
         </button>
+        {isLoggedIn && hash && (
+          <Link
+            href={`/admin/articles/${hash}/edit`}
+            className="ml-1 text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300"
+            aria-label="Edit article"
+            title="記事を編集"
+          >
+            <Pencil className="h-5 w-5" />
+          </Link>
+        )}
       </span>
     </h1>
   );

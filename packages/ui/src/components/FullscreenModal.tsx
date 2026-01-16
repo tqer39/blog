@@ -29,19 +29,17 @@ export function FullscreenModal({
   useEffect(() => {
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
     };
   }, [isOpen, handleKeyDown]);
 
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex flex-col bg-white dark:bg-stone-900">
+    <div className="fixed inset-0 z-[100] flex flex-col overflow-hidden bg-white dark:bg-stone-900">
       <div className="flex items-center justify-between border-b border-stone-200 px-4 py-3 dark:border-stone-700">
         {title && (
           <span className="text-sm font-medium text-stone-600 dark:text-stone-400">
@@ -59,7 +57,7 @@ export function FullscreenModal({
           <X className="h-5 w-5" />
         </button>
       </div>
-      <div className="flex-1 overflow-auto p-4">{children}</div>
+      <div className="flex-1 overflow-hidden">{children}</div>
     </div>,
     document.body
   );

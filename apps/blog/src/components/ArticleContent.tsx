@@ -47,6 +47,8 @@ const sanitizeSchema = {
 
 interface ArticleContentProps {
   content: string;
+  /** Skip removing the first H1 heading (useful for slide mode) */
+  keepFirstH1?: boolean;
 }
 
 // Remove the first h1 heading from markdown (since it's already shown in the page header)
@@ -54,8 +56,11 @@ function removeFirstH1(content: string): string {
   return content.replace(/^#\s+.+\n+/, '');
 }
 
-export function ArticleContent({ content }: ArticleContentProps) {
-  const processedContent = removeFirstH1(content);
+export function ArticleContent({
+  content,
+  keepFirstH1 = false,
+}: ArticleContentProps) {
+  const processedContent = keepFirstH1 ? content : removeFirstH1(content);
 
   useEffect(() => {
     const handleAnchorClick = (e: MouseEvent) => {

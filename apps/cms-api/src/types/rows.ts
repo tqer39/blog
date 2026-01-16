@@ -17,6 +17,8 @@ export interface ArticleRow {
   category_id: string | null;
   review_result: string | null;
   review_updated_at: string | null;
+  slide_mode: number;
+  slide_duration: number | null;
 }
 
 export interface TagRow {

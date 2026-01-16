@@ -13,6 +13,7 @@ interface ArticleInput {
   tags: string[];
   status: 'draft' | 'published';
   headerImageId?: string;
+  slideMode?: boolean;
 }
 
 // Upload a placeholder image from picsum.photos
@@ -573,6 +574,145 @@ const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
 パフォーマンスを意識して、ユーザー体験を向上させましょう。`,
     tags: ['Performance', 'Web'],
     status: 'published',
+  },
+  {
+    title: 'TypeScript 入門スライド',
+    description:
+      'TypeScriptの基礎をスライド形式で学べるプレゼンテーション。スライドモードで閲覧できます。',
+    content: `# TypeScript 入門
+
+初心者向け TypeScript 基礎講座
+
+---
+
+## TypeScript とは？
+
+- JavaScript に**型**を追加した言語
+- Microsoft が開発
+- 大規模開発に最適
+
+\`\`\`typescript
+// JavaScript
+const name = "John";
+
+// TypeScript
+const name: string = "John";
+\`\`\`
+
+---
+
+## 基本的な型
+
+| 型 | 説明 | 例 |
+|---|---|---|
+| string | 文字列 | "hello" |
+| number | 数値 | 42 |
+| boolean | 真偽値 | true |
+| array | 配列 | [1, 2, 3] |
+
+---
+
+## 型注釈
+
+変数に型を明示的に指定できます。
+
+\`\`\`typescript
+// 基本型
+let message: string = "Hello";
+let count: number = 10;
+let isActive: boolean = true;
+
+// 配列
+let numbers: number[] = [1, 2, 3];
+let names: Array<string> = ["Alice", "Bob"];
+\`\`\`
+
+---
+
+## インターフェース
+
+オブジェクトの形を定義します。
+
+\`\`\`typescript
+interface User {
+  id: number;
+  name: string;
+  email?: string; // オプショナル
+}
+
+const user: User = {
+  id: 1,
+  name: "Alice"
+};
+\`\`\`
+
+---
+
+## 関数の型
+
+引数と戻り値に型を指定できます。
+
+\`\`\`typescript
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+// アロー関数
+const multiply = (a: number, b: number): number => {
+  return a * b;
+};
+\`\`\`
+
+---
+
+## Union Types
+
+複数の型を許容できます。
+
+\`\`\`typescript
+type Status = "pending" | "approved" | "rejected";
+
+function handleStatus(status: Status) {
+  switch (status) {
+    case "pending":
+      return "審査中";
+    case "approved":
+      return "承認済み";
+    case "rejected":
+      return "却下";
+  }
+}
+\`\`\`
+
+---
+
+## Generics
+
+型をパラメータ化できます。
+
+\`\`\`typescript
+function identity<T>(value: T): T {
+  return value;
+}
+
+const str = identity<string>("hello");
+const num = identity<number>(42);
+\`\`\`
+
+---
+
+## まとめ
+
+- TypeScript は JavaScript + 型
+- 型注釈でバグを早期発見
+- インターフェースでオブジェクト構造を定義
+- Union Types で柔軟な型定義
+- Generics で再利用可能なコード
+
+**次のステップ**: 実際にプロジェクトで使ってみよう！`,
+    tags: ['TypeScript', 'Tutorial'],
+    status: 'published',
+    slideMode: true,
   },
 ];
 

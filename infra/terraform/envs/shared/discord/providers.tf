@@ -1,10 +1,10 @@
 terraform {
-  required_version = ">= 1.0"
+  required_version = "1.14.3"
 
   required_providers {
     discord = {
       source  = "Lucky3028/discord"
-      version = "~> 2.2"
+      version = "2.2.2"
     }
   }
 }

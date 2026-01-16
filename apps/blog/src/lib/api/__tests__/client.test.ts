@@ -36,6 +36,8 @@ const sampleArticle: Article = {
   updatedAt: '2024-01-15T00:00:00Z',
   headerImageId: null,
   headerImageUrl: null,
+  slideMode: false,
+  slideDuration: null,
 };
 
 const sampleTag: Tag = {

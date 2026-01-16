@@ -536,7 +536,11 @@ export function MarkdownEditor({
                 <Button
                   variant={inlineCompletionEnabled ? 'default' : 'ghost'}
                   size="sm"
-                  className="h-8 w-8 p-0"
+                  className={`h-8 w-8 p-0 ${
+                    inlineCompletionEnabled
+                      ? 'bg-violet-600 hover:bg-violet-700 text-white'
+                      : ''
+                  }`}
                   onClick={() =>
                     setInlineCompletionEnabled(!inlineCompletionEnabled)
                   }

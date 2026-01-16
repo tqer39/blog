@@ -59,19 +59,16 @@ const nextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: String(PORTS.R2_LOCAL),
-        pathname: '/blog-assets/**',
+        port: '3101',
       },
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: String(PORTS.CMS_API),
-        pathname: '/v1/images/**',
+        port: '3102',
       },
       {
         protocol: 'https',
-        hostname: `cdn.${BASE_DOMAIN}`, // cdn.tqer39.dev
-        pathname: '/**',
+        hostname: `cdn.${BASE_DOMAIN}`,
       },
     ],
   },

@@ -9,9 +9,11 @@ import { ArticleNavigation } from '@/components/ArticleNavigation';
 import { ArticleTitle } from '@/components/ArticleTitle';
 import { CategoryBadge } from '@/components/CategoryBadge';
 import { JsonLd } from '@/components/JsonLd';
+import { SlideModeButton } from '@/components/SlideModeButton';
 import { TableOfContents } from '@/components/TableOfContents';
 import { TagLink } from '@/components/TagLink';
 import { getAllArticles, getArticleByHash } from '@/lib/articles';
+import { isAuthenticated } from '@/lib/auth';
 import { generateArticleJsonLd, generateBreadcrumbJsonLd } from '@/lib/jsonld';
 import { calculateReadingTime } from '@/lib/readingTime';
 import { getSiteSettings } from '@/lib/siteSettings';
@@ -88,11 +90,13 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { hash } = await params;
-  const [articleResult, allArticlesResult, settings] = await Promise.all([
-    getArticleByHash(hash),
-    getAllArticles(),
-    getSiteSettings(),
-  ]);
+  const [articleResult, allArticlesResult, settings, isLoggedIn] =
+    await Promise.all([
+      getArticleByHash(hash),
+      getAllArticles(),
+      getSiteSettings(),
+      isAuthenticated(),
+    ]);
 
   if (!articleResult.ok || !articleResult.data) {
     notFound();
@@ -147,11 +151,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               className="object-cover"
               priority
               sizes="(max-width: 768px) 100vw, 896px"
+              unoptimized={article.headerImageUrl.includes('localhost')}
             />
           </div>
         )}
         <header className="mb-8">
-          <ArticleTitle title={article.title} />
+          <ArticleTitle
+            title={article.title}
+            hash={hash}
+            isLoggedIn={isLoggedIn}
+          />
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <time
               dateTime={displayDate}
@@ -164,6 +173,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               <Clock className="h-4 w-4" />約{readingTime}分で読めます
             </span>
             {article.category && <CategoryBadge category={article.category} />}
+            {article.slideMode && (
+              <SlideModeButton
+                content={article.content}
+                title={article.title}
+                slideDuration={article.slideDuration}
+              />
+            )}
             <div className="flex flex-wrap gap-2">
               {article.tags.map((tag) => (
                 <TagLink key={tag} tag={tag} size="md" />

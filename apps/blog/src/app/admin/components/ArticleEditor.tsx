@@ -73,6 +73,10 @@ export function ArticleEditor({
   const [headerImageUrl, setHeaderImageUrl] = useState<string | null>(
     initialData?.headerImageUrl ?? null
   );
+  const [slideMode, setSlideMode] = useState(initialData?.slideMode ?? false);
+  const [slideDuration, setSlideDuration] = useState<number | null>(
+    initialData?.slideDuration ?? null
+  );
   const [isUploadingHeader, setIsUploadingHeader] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
@@ -310,6 +314,8 @@ export function ArticleEditor({
         categoryId,
         status,
         headerImageId,
+        slideMode,
+        slideDuration,
       });
       setSaveSuccess(true);
     } catch (err) {
@@ -485,6 +491,53 @@ export function ArticleEditor({
           </div>
           <TagSelector value={tags} onChange={setTags} />
           <CategorySelector value={categoryId} onChange={setCategoryId} />
+
+          {/* Slide Mode Toggle */}
+          <div className="flex items-center gap-3">
+            <label className="flex cursor-pointer items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={slideMode}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSlideMode(e.target.checked)
+                }
+                className="h-4 w-4 rounded border-gray-300"
+              />
+              <span>スライドモードを有効にする</span>
+            </label>
+            <span className="text-xs text-muted-foreground">
+              (記事を「---」で区切ってスライドとして表示)
+            </span>
+          </div>
+
+          {/* Slide Timer Duration - only shown when slideMode is enabled */}
+          {slideMode && (
+            <div className="mt-3 flex items-center gap-3">
+              <Label
+                htmlFor="slideDuration"
+                className="text-sm whitespace-nowrap"
+              >
+                制限時間
+              </Label>
+              <Input
+                id="slideDuration"
+                type="number"
+                min={30}
+                max={3600}
+                step={30}
+                value={slideDuration ?? ''}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const value = e.target.value;
+                  setSlideDuration(value === '' ? null : Number(value));
+                }}
+                placeholder="180"
+                className="w-24"
+              />
+              <span className="text-xs text-muted-foreground">
+                秒（未設定時は3分）
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Header Image */}
@@ -691,6 +744,8 @@ export function ArticleEditor({
         tags={tags}
         headerImageUrl={headerImageUrl}
         publishedAt={initialData?.publishedAt}
+        slideMode={slideMode}
+        slideDuration={slideDuration}
       />
     </div>
   );

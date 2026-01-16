@@ -8,7 +8,7 @@
     "deploy": "wrangler deploy",
     "db:migrate:local": "wrangler d1 execute blog-cms --local --file=./migrations/001_init.sql",
     "db:migrate:remote": "wrangler d1 execute blog-cms --remote --file=./migrations/001_init.sql",
-    "seed": "npx tsx scripts/seed.ts",
+    "seed": "tsx scripts/seed.ts",
     "lint": "biome lint --write .",
     "check": "biome check --write .",
     "typecheck": "tsc --noEmit",
@@ -21,7 +21,7 @@
     "hono": "4.11.4"
   },
   "devDependencies": {
-    "@blog/config": "workspace:^",
+    "@blog/config": "workspace:*",
     "@blog/test-utils": "workspace:*",
     "@cloudflare/workers-types": "4.20260116.0",
     "tsx": "4.21.0",
