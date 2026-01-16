@@ -158,13 +158,13 @@ export function SlideViewer({
   return (
     <FullscreenModal isOpen={isOpen} onClose={onClose} title={title}>
       <div
-        className="flex h-full flex-col"
+        className="flex h-full flex-col overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
         {/* Slide content area */}
-        <div className="flex flex-1 items-center justify-center overflow-hidden p-4 sm:p-8 lg:p-12">
-          <div className="slide-content w-full max-w-5xl">
+        <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden p-4 sm:p-8 lg:p-12">
+          <div className="slide-content w-full max-w-5xl max-h-full overflow-hidden">
             <ArticleContent content={slides[currentSlide]} keepFirstH1 />
           </div>
         </div>

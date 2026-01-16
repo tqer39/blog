@@ -67,6 +67,7 @@ ${contextBefore}
 ${contextAfter || '（なし）'}`;
 
   try {
+    console.log('Calling Anthropic API with model:', model);
     const response = await fetch(ANTHROPIC_API_URL, {
       method: 'POST',
       headers: {
@@ -82,10 +83,11 @@ ${contextAfter || '（なし）'}`;
       }),
     });
 
+    console.log('Anthropic API response status:', response.status);
     if (!response.ok) {
       const error = await response.text();
       console.error('Anthropic API error:', error);
-      internalError('Failed to suggest continuation');
+      internalError(`Anthropic API error (${response.status}): ${error}`);
     }
 
     const data = await response.json<{
@@ -117,6 +119,8 @@ ${contextAfter || '（なし）'}`;
     return c.json(sanitizedResult);
   } catch (error) {
     console.error('Error suggesting continuation:', error);
-    internalError('Failed to suggest continuation');
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('Error details:', message);
+    internalError(`Failed to suggest continuation: ${message}`);
   }
 });

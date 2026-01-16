@@ -162,10 +162,10 @@ export interface AIModelSettings {
 
 export const DEFAULT_AI_MODEL_SETTINGS: AIModelSettings = {
   metadata: 'gpt-4o-mini',
-  review: 'claude-3-5-sonnet-20241022',
-  outline: 'claude-3-5-sonnet-20241022',
-  transform: 'claude-3-5-sonnet-20241022',
-  continuation: 'claude-3-5-sonnet-20241022',
+  review: 'claude-sonnet-4-20250514',
+  outline: 'claude-sonnet-4-20250514',
+  transform: 'claude-sonnet-4-20250514',
+  continuation: 'claude-sonnet-4-20250514',
   image: 'gemini-2.5-flash-image',
 };
 

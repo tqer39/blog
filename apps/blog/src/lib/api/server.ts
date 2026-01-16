@@ -14,6 +14,8 @@ import type {
   ReviewArticleResponse,
   SiteSettingsInput,
   SiteSettingsResponse,
+  SuggestContinuationRequest,
+  SuggestContinuationResponse,
   Tag,
   TagInput,
   TagListResponse,
@@ -218,6 +220,16 @@ export async function transformText(
   request: TransformTextRequest
 ): Promise<TransformTextResponse> {
   return fetchApi('/ai/transform-text', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(request),
+  });
+}
+
+export async function suggestContinuation(
+  request: SuggestContinuationRequest
+): Promise<SuggestContinuationResponse> {
+  return fetchApi('/ai/suggest-continuation', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
