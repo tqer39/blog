@@ -168,9 +168,9 @@ export function SlideTimer({
             </span>
           </div>
 
-          {/* End marker */}
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 text-xs text-stone-400 dark:text-stone-500">
-            {totalSlides}
+          {/* Slide counter */}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 text-xs font-mono tabular-nums text-stone-500 dark:text-stone-400">
+            {currentSlide + 1}/{totalSlides}
           </div>
         </div>
       </div>
