@@ -744,6 +744,8 @@ export function ArticleEditor({
         tags={tags}
         headerImageUrl={headerImageUrl}
         publishedAt={initialData?.publishedAt}
+        slideMode={slideMode}
+        slideDuration={slideDuration}
       />
     </div>
   );
