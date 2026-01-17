@@ -6,6 +6,13 @@
 const API_URL = process.env.CMS_API_URL || 'http://localhost:3101/v1';
 const API_KEY = process.env.CMS_API_KEY || 'dev-api-key';
 
+interface CategoryInput {
+  name: string;
+  slug: string;
+  color: string;
+  displayOrder: number;
+}
+
 interface ArticleInput {
   title: string;
   description: string;
@@ -14,6 +21,38 @@ interface ArticleInput {
   status: 'draft' | 'published';
   headerImageId?: string;
   slideMode?: boolean;
+}
+
+const categories: CategoryInput[] = [
+  { name: 'Tech', slug: 'tech', color: '#3B82F6', displayOrder: 1 },
+  { name: 'Life', slug: 'life', color: '#10B981', displayOrder: 2 },
+  { name: 'Books', slug: 'books', color: '#F59E0B', displayOrder: 3 },
+];
+
+async function createCategory(category: CategoryInput): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/categories`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${API_KEY}`,
+      },
+      body: JSON.stringify(category),
+    });
+
+    if (res.ok) {
+      console.log(`  ✅ Created: ${category.name}`);
+      return true;
+    }
+    const error = await res.json();
+    console.log(`  ⚠️  Skipped: ${category.name} (${error.error})`);
+    return false;
+  } catch (e) {
+    console.log(
+      `  ❌ Error: ${category.name} (${e instanceof Error ? e.message : 'Unknown error'})`
+    );
+    return false;
+  }
 }
 
 // Upload a placeholder image from picsum.photos
@@ -745,8 +784,14 @@ async function createArticle(article: ArticleInput): Promise<boolean> {
 async function seed() {
   console.log('🌱 Seeding sample data...\n');
 
+  // Create categories
+  console.log('📁 Creating categories...\n');
+  for (const category of categories) {
+    await createCategory(category);
+  }
+
   // Upload placeholder images for first few articles
-  console.log('📷 Uploading placeholder images...\n');
+  console.log('\n📷 Uploading placeholder images...\n');
   const imageIds: (string | null)[] = [];
   const NUM_IMAGES = 3; // Number of articles to add images to
 

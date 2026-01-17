@@ -76,12 +76,6 @@ CREATE TABLE IF NOT EXISTS site_settings (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Seed initial categories
-INSERT INTO categories (id, name, slug, color, display_order) VALUES
-  ('cat_tech', 'Tech', 'tech', '#3B82F6', 1),
-  ('cat_life', 'Life', 'life', '#10B981', 2),
-  ('cat_books', 'Books', 'books', '#F59E0B', 3);
-
 -- Insert default site settings
 INSERT INTO site_settings (key, value) VALUES
   ('site_name', 'tB'),
