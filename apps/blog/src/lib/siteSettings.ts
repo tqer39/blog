@@ -12,6 +12,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   social_github: 'https://github.com/tqer39',
   social_twitter: 'https://twitter.com/tqer39',
   social_bento: 'https://bento.me/tqer39',
+  show_rss_link: 'true',
 };
 
 /**

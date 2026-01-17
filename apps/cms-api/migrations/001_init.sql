@@ -84,7 +84,8 @@ INSERT INTO site_settings (key, value) VALUES
   ('footer_text', ''),
   ('social_github', 'https://github.com/tqer39'),
   ('social_twitter', 'https://twitter.com/tqer39'),
-  ('social_bento', 'https://bento.me/tqer39')
+  ('social_bento', 'https://bento.me/tqer39'),
+  ('show_rss_link', 'true')
 ON CONFLICT (key) DO NOTHING;
 
 -- Trigger to update updated_at on articles

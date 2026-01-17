@@ -44,13 +44,15 @@ export async function Footer() {
                 <LayoutGrid className="h-6 w-6" />
               </a>
             )}
-            <a
-              href="/feed.xml"
-              className="text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
-              aria-label="RSS Feed"
-            >
-              <FiRss className="h-6 w-6" />
-            </a>
+            {settings.show_rss_link === 'true' && (
+              <a
+                href="/feed.xml"
+                className="text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                aria-label="RSS Feed"
+              >
+                <FiRss className="h-6 w-6" />
+              </a>
+            )}
           </div>
           <p className="text-sm text-stone-500 dark:text-stone-400">
             &copy; {new Date().getFullYear()} {settings.site_name}. All rights

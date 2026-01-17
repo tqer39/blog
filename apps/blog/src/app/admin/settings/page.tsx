@@ -57,6 +57,13 @@ export default function SettingsPage() {
     setMessage(null);
   }
 
+  function handleToggle(key: keyof SiteSettings) {
+    if (!settings) return;
+    const currentValue = settings[key] === 'true';
+    setSettings({ ...settings, [key]: currentValue ? 'false' : 'true' });
+    setMessage(null);
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -221,6 +228,44 @@ export default function SettingsPage() {
                 className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 placeholder="https://bento.me/username"
               />
+            </div>
+          </div>
+        </div>
+
+        {/* Display Options */}
+        <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+          <h2 className="mb-6 text-xl font-semibold">Display Options</h2>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <label
+                  htmlFor="show_rss_link"
+                  className="block text-sm font-medium"
+                >
+                  Show RSS Link
+                </label>
+                <p className="text-sm text-muted-foreground">
+                  Display RSS feed link in the footer
+                </p>
+              </div>
+              <button
+                id="show_rss_link"
+                type="button"
+                role="switch"
+                aria-checked={settings?.show_rss_link === 'true'}
+                onClick={() => handleToggle('show_rss_link')}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                  settings?.show_rss_link === 'true' ? 'bg-primary' : 'bg-muted'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    settings?.show_rss_link === 'true'
+                      ? 'translate-x-6'
+                      : 'translate-x-1'
+                  }`}
+                />
+              </button>
             </div>
           </div>
         </div>
