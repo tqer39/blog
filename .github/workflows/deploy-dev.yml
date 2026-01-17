@@ -16,8 +16,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  sync-secrets:
+    name: Sync Secrets
+    uses: ./.github/workflows/sync-secrets.yml
+    with:
+      target: wrangler
+      environment: dev
+    secrets: inherit
+
   terraform:
     name: Terraform
+    needs: sync-secrets
     uses: ./.github/workflows/terraform-dev.yml
     with:
       RUN_APPLY: true
