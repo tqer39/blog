@@ -77,7 +77,7 @@ export async function middleware(request: NextRequest) {
     if (token) {
       const isValid = await verifySession(token);
       if (isValid) {
-        return NextResponse.redirect(new URL('/admin', request.url));
+        return NextResponse.redirect(new URL('/admin/dashboard', request.url));
       }
     }
   }

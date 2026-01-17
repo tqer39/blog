@@ -29,7 +29,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
           <ul className="space-y-2">
             <li>
               <Link
-                href="/admin"
+                href="/admin/dashboard"
                 className="block rounded-lg px-4 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 Dashboard
