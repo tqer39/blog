@@ -1,6 +1,6 @@
 # Architecture Guide
 
-[🇯🇵 日本語版](docs/ARCHITECTURE.ja.md)
+[🇯🇵 日本語版](ARCHITECTURE.ja.md)
 
 > **Purpose**: Record system design decisions, trade-offs, and context
 > **Target Audience**: Future self (6+ months later), new contributors
@@ -1055,19 +1055,19 @@ just fmt               # Format code
 
 ### Core Documentation
 
-- [CLAUDE.md](CLAUDE.md) - AI assistant guidance for this repository
-- [DEVELOPMENT.md](docs/DEVELOPMENT.md) - Detailed local development instructions
-- [ENVIRONMENT.md](docs/ENVIRONMENT.md) - Environment configuration guide
+- [CLAUDE.md](../CLAUDE.md) - AI assistant guidance for this repository
+- [DEVELOPMENT.md](DEVELOPMENT.md) - Detailed local development instructions
+- [ENVIRONMENT.md](ENVIRONMENT.md) - Environment configuration guide
 
 ### Feature Documentation
 
-- [AI-INTEGRATION.md](docs/AI-INTEGRATION.md) - AI features and workflows
-- [SECRETS.md](docs/SECRETS.md) - GitHub Secrets and API keys management
+- [AI-INTEGRATION.md](AI-INTEGRATION.md) - AI features and workflows
+- [SECRETS.md](SECRETS.md) - GitHub Secrets and API keys management
 
 ### Infrastructure Documentation
 
-- [terraform/](terraform/) - Infrastructure as Code (Cloudflare, AWS, Vercel)
-- [.github/workflows/](.github/workflows/) - CI/CD workflows
+- [infra/terraform/](../infra/terraform/) - Infrastructure as Code (Cloudflare, AWS, Vercel)
+- [.github/workflows/](../.github/workflows/) - CI/CD workflows
 
 ---
 

@@ -1,6 +1,6 @@
 # アーキテクチャガイド
 
-[🇬🇧 English version](../ARCHITECTURE.md)
+[🇺🇸 English](ARCHITECTURE.md)
 
 > **目的**: システム設計決定、トレードオフ、コンテキストの記録
 > **対象読者**: 未来の自分(6ヶ月以上後)、新規貢献者
@@ -1063,7 +1063,7 @@ just fmt               # コードをフォーマット
 
 ### インフラストラクチャドキュメント
 
-- [terraform/](../terraform/) - Infrastructure as Code (Cloudflare、AWS、Vercel)
+- [infra/terraform/](../infra/terraform/) - Infrastructure as Code (Cloudflare、AWS、Vercel)
 - [.github/workflows/](../.github/workflows/) - CI/CDワークフロー
 
 ---
