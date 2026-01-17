@@ -5,7 +5,7 @@ const API_URL = process.env.CMS_API_URL || DEFAULT_API_URL;
 
 // Default values (fallback when API is unavailable)
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
-  site_name: 'tB',
+  site_name: "tqer39's blog",
   site_description: '未来の自分に向けた技術ログ',
   author_name: 'tqer39',
   footer_text: '',

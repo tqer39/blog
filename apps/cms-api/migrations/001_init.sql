@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS site_settings (
 
 -- Insert default site settings
 INSERT INTO site_settings (key, value) VALUES
-  ('site_name', 'tB'),
+  ('site_name', 'tqer39''s blog'),
   ('site_description', '未来の自分に向けた技術ログ'),
   ('author_name', 'tqer39'),
   ('footer_text', ''),
