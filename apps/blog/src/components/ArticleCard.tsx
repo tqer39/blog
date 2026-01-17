@@ -38,7 +38,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <time
           dateTime={displayDate}
-          className="text-xs text-stone-500 dark:text-stone-500"
+          className="text-xs text-stone-600 dark:text-stone-400"
         >
           {dayjs(displayDate).format('YYYY/MM/DD')}
         </time>
