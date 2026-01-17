@@ -38,7 +38,7 @@ open http://localhost:3100
 
 ## Documentation
 
-- [Architecture Guide](ARCHITECTURE.md) - System architecture and design decisions
+- [Architecture Guide](docs/ARCHITECTURE.md) - System architecture and design decisions
 - [Development Guide](docs/DEVELOPMENT.md) - Detailed local development instructions
 - [Claude Code Guide](CLAUDE.md) - AI assistant guidance for this repository
 

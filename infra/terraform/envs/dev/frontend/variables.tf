@@ -45,3 +45,9 @@ variable "admin_password_hash" {
   type        = string
   sensitive   = true
 }
+
+variable "auth_secret" {
+  description = "Auth secret for session signing"
+  type        = string
+  sensitive   = true
+}

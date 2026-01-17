@@ -60,7 +60,7 @@ All articles are "for my past self" - complaints are OK, but must end with insig
 
 Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 
-- **System architecture**: See [ARCHITECTURE.md](ARCHITECTURE.md) for comprehensive design decisions and data flows
+- **System architecture**: See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for comprehensive design decisions and data flows
 - **Directory structure**: See [README.md](README.md)
 - **Development commands**: Run `just --list`
 - **GitHub Secrets**: See [docs/SECRETS.md](docs/SECRETS.md)
@@ -72,7 +72,7 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 - Dev: `blog-dev.tqer39.dev`
 - Prod: `blog.tqer39.dev`
 
-**Detailed documentation**: See [ARCHITECTURE.md](ARCHITECTURE.md) for:
+**Detailed documentation**: See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for:
 - 3-environment structure and configuration
 - CI/CD and release flow
 - Authentication layers (Basic Auth, API Key, Password)
@@ -84,4 +84,4 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 - Next.js 15 (App Router) + Hono + Cloudflare (D1/R2/Workers)
 - TypeScript + Tailwind CSS + Turborepo + pnpm
 
-**Detailed documentation**: See [ARCHITECTURE.md](ARCHITECTURE.md) for complete tech stack and architecture decisions
+**Detailed documentation**: See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for complete tech stack and architecture decisions

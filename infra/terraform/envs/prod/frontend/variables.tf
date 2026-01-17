@@ -26,3 +26,15 @@ variable "cms_api_key" {
   type        = string
   sensitive   = true
 }
+
+variable "admin_password_hash" {
+  description = "Admin password hash"
+  type        = string
+  sensitive   = true
+}
+
+variable "auth_secret" {
+  description = "Auth secret for session signing"
+  type        = string
+  sensitive   = true
+}

@@ -18,11 +18,6 @@ resource "vercel_project" "blog" {
     build_machine_type = ""
   }
 
-  lifecycle {
-    ignore_changes = [
-      serverless_function_region,
-    ]
-  }
 }
 
 # Custom Domain
