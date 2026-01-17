@@ -2,7 +2,7 @@
 @plugin "@tailwindcss/typography";
 
 /* Use class-based dark mode for next-themes compatibility */
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where(.dark, .dark *, .tokyonight, .tokyonight *));
 
 /* Theme configuration for v4 */
 @theme inline {
@@ -102,6 +102,33 @@
   --chart-3: 30 80% 55%;
   --chart-4: 280 65% 60%;
   --chart-5: 340 75% 55%;
+}
+
+.tokyonight {
+  --background: 235 18.8% 12.5%;        /* #1a1b26 */
+  --foreground: 228.7 72.6% 85.7%;      /* #c0caf5 */
+  --card: 235 18.8% 12.5%;
+  --card-foreground: 228.7 72.6% 85.7%;
+  --popover: 235 18.8% 12.5%;
+  --popover-foreground: 228.7 72.6% 85.7%;
+  --primary: 220.8 88.7% 72.4%;         /* #7aa2f7 Blue */
+  --primary-foreground: 235 18.8% 12.5%;
+  --secondary: 224.7 37% 24.9%;         /* #283457 Selection */
+  --secondary-foreground: 228.7 72.6% 85.7%;
+  --muted: 224.7 37% 24.9%;
+  --muted-foreground: 229.4 22.9% 43.7%; /* #565f89 Comment */
+  --accent: 261.3 85.3% 78.6%;          /* #bb9af7 Magenta */
+  --accent-foreground: 235 18.8% 12.5%;
+  --destructive: 348.8 89% 71.6%;       /* #f7768e Red */
+  --destructive-foreground: 235 18.8% 12.5%;
+  --border: 224.7 37% 24.9%;
+  --input: 224.7 37% 24.9%;
+  --ring: 220.8 88.7% 72.4%;
+  --chart-1: 220.8 88.7% 72.4%;         /* Blue */
+  --chart-2: 202.2 100% 74.5%;          /* #7dcfff Cyan */
+  --chart-3: 88.8 50.5% 61.2%;          /* #9ece6a Green */
+  --chart-4: 261.5 54.1% 66.7%;         /* #9d7cd8 Purple */
+  --chart-5: 35.5 65.9% 64.3%;          /* #e0af68 Yellow */
 }
 
 /* Base styles */
@@ -345,4 +372,114 @@ body {
 
 .animate-pulse-slow {
   animation: pulse-slow 5s ease-in-out infinite;
+}
+
+/* Fix: Primary button text color for both light and dark modes */
+.bg-primary {
+  color: hsl(0 0% 98%); /* White text in light mode */
+}
+
+.dark .bg-primary {
+  color: hsl(0 0% 9%); /* Dark text in dark mode */
+}
+
+.tokyonight .bg-primary {
+  color: hsl(235 18.8% 12.5%);
+}
+
+.tokyonight .shiki-wrapper .line:hover {
+  background-color: #283457;
+}
+
+.tokyonight .category-badge {
+  color: #c0caf5 !important;
+  background-color: transparent !important;
+  border-color: currentColor !important;
+}
+
+.tokyonight .prose pre {
+  background-color: #1a1b26;
+}
+
+.tokyonight .mermaid-content {
+  background-color: #1a1b26;
+}
+
+/* Tokyo Night: Links and interactive elements */
+.tokyonight a {
+  color: #7aa2f7;
+}
+
+.tokyonight a:hover {
+  color: #7dcfff;
+}
+
+/* Tokyo Night: Headings */
+.tokyonight h1,
+.tokyonight h2 {
+  color: #7aa2f7;
+}
+
+.tokyonight h3,
+.tokyonight h4,
+.tokyonight h5,
+.tokyonight h6 {
+  color: #bb9af7;
+}
+
+/* Tokyo Night: Tag badges with colorful borders */
+.tokyonight .tag-badge,
+.tokyonight [class*="rounded"][class*="border"][class*="text-xs"],
+.tokyonight [class*="rounded"][class*="border"][class*="text-sm"] {
+  border-color: #7aa2f7 !important;
+  color: #7dcfff !important;
+}
+
+.tokyonight .tag-badge:hover,
+.tokyonight [class*="rounded"][class*="border"][class*="text-xs"]:hover,
+.tokyonight [class*="rounded"][class*="border"][class*="text-sm"]:hover {
+  background-color: #283457 !important;
+  border-color: #7dcfff !important;
+}
+
+/* Tokyo Night: Search result box */
+.tokyonight [class*="bg-stone-100"],
+.tokyonight [class*="bg-muted"] {
+  background-color: #24283b !important;
+}
+
+/* Tokyo Night: Card hover effects */
+.tokyonight [class*="hover:bg-stone"] {
+  transition: background-color 0.2s ease;
+}
+
+.tokyonight [class*="hover:bg-stone"]:hover {
+  background-color: #24283b !important;
+}
+
+/* Tokyo Night: Border colors */
+.tokyonight [class*="border-stone"],
+.tokyonight [class*="divide-stone"] > * {
+  border-color: #283457 !important;
+}
+
+/* Tokyo Night: Muted text */
+.tokyonight [class*="text-stone-500"],
+.tokyonight [class*="text-stone-600"],
+.tokyonight [class*="text-muted"] {
+  color: #565f89 !important;
+}
+
+/* Tokyo Night: Footer */
+.tokyonight footer {
+  color: #565f89;
+}
+
+.tokyonight footer a {
+  color: #7aa2f7;
+}
+
+/* Tokyo Night: Button hover */
+.tokyonight button:hover {
+  background-color: #24283b;
 }

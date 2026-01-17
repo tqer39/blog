@@ -2,9 +2,14 @@
 
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { BsDisplay, BsFillMoonFill, BsFillSunFill } from 'react-icons/bs';
+import {
+  BsDisplay,
+  BsFillMoonFill,
+  BsFillMoonStarsFill,
+  BsFillSunFill,
+} from 'react-icons/bs';
 
-const themes = ['light', 'dark', 'system'] as const;
+const themes = ['light', 'dark', 'tokyonight', 'system'] as const;
 type Theme = (typeof themes)[number];
 
 export function FloatingThemeSwitcher() {
@@ -27,6 +32,8 @@ export function FloatingThemeSwitcher() {
         return <BsFillSunFill className="h-5 w-5 text-yellow-500" />;
       case 'dark':
         return <BsFillMoonFill className="h-5 w-5 text-blue-400" />;
+      case 'tokyonight':
+        return <BsFillMoonStarsFill className="h-5 w-5 text-indigo-400" />;
       default:
         return (
           <BsDisplay className="h-5 w-5 text-stone-500 dark:text-stone-400" />
@@ -40,6 +47,8 @@ export function FloatingThemeSwitcher() {
         return 'ライトモード';
       case 'dark':
         return 'ダークモード';
+      case 'tokyonight':
+        return 'Tokyo Night';
       default:
         return 'システム設定';
     }

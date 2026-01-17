@@ -114,7 +114,10 @@ export function MermaidClient({ chart }: MermaidClientProps) {
       canvas.width = svgWidth * scale;
       canvas.height = svgHeight * scale;
       ctx.scale(scale, scale);
-      ctx.fillStyle = resolvedTheme === 'dark' ? '#24292e' : '#ffffff';
+      ctx.fillStyle =
+        resolvedTheme === 'dark' || resolvedTheme === 'tokyonight'
+          ? '#24292e'
+          : '#ffffff';
       ctx.fillRect(0, 0, svgWidth, svgHeight);
       ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
 
@@ -141,7 +144,8 @@ export function MermaidClient({ chart }: MermaidClientProps) {
         await loadMermaid();
         if (cancelled || !window.mermaid) return;
 
-        const isDarkTheme = resolvedTheme === 'dark';
+        const isDarkTheme =
+          resolvedTheme === 'dark' || resolvedTheme === 'tokyonight';
         window.mermaid.initialize({
           startOnLoad: false,
           theme: isDarkTheme ? 'dark' : 'default',

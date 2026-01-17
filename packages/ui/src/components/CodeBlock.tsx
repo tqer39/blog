@@ -137,7 +137,8 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
         const language = SUPPORTED_LANGUAGES.includes(lang as BundledLanguage)
           ? (lang as BundledLanguage)
           : 'typescript'; // fallback to typescript for unknown languages
-        const isDarkTheme = resolvedTheme === 'dark';
+        const isDarkTheme =
+          resolvedTheme === 'dark' || resolvedTheme === 'tokyonight';
         const theme = isDarkTheme ? 'github-dark' : 'github-light';
 
         console.log(
@@ -176,7 +177,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   // Inline code
   if (inline || !match) {
     return (
-      <code className="rounded bg-stone-200 px-1 py-0.5 text-red-600 dark:bg-stone-700 dark:text-red-400">
+      <code className="rounded bg-stone-200 px-1 py-0.5 text-red-600 dark:bg-stone-700 dark:text-[#f7768e]">
         {children}
       </code>
     );
