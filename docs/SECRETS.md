@@ -93,10 +93,12 @@ Secrets are stored in two vaults:
 
 #### auth-secret (op://blog-secrets/auth-secret)
 
-| Field  | Maps To     | Target        |
-| ------ | ----------- | ------------- |
-| `dev`  | AUTH_SECRET | Wrangler dev  |
-| `prod` | AUTH_SECRET | Wrangler prod |
+| Field  | Maps To         | Target        |
+| ------ | --------------- | ------------- |
+| `dev`  | AUTH_SECRET     | Wrangler dev  |
+| `dev`  | AUTH_SECRET_DEV | GitHub        |
+| `prod` | AUTH_SECRET     | Wrangler prod |
+| `prod` | AUTH_SECRET_PROD| GitHub        |
 
 #### admin-password-hash (op://blog-secrets/admin-password-hash-{env}/hash)
 

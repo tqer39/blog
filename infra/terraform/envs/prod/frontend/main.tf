@@ -45,6 +45,18 @@ module "vercel_project" {
       target    = ["production", "preview"]
       sensitive = true
     },
+    {
+      key       = "ADMIN_PASSWORD_HASH"
+      value     = var.admin_password_hash
+      target    = ["production", "preview"]
+      sensitive = true
+    },
+    {
+      key       = "AUTH_SECRET"
+      value     = var.auth_secret
+      target    = ["production", "preview"]
+      sensitive = true
+    },
   ]
 }
 

@@ -68,6 +68,12 @@ module "vercel_project" {
       target    = ["production", "preview"]
       sensitive = true
     },
+    {
+      key       = "AUTH_SECRET"
+      value     = var.auth_secret
+      target    = ["production", "preview"]
+      sensitive = true
+    },
   ]
 }
 
