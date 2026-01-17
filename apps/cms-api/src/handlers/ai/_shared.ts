@@ -13,21 +13,21 @@ import type {
 export const VALID_OPENAI_MODELS: OpenAIModel[] = [
   'gpt-4o-mini',
   'gpt-4o',
-  'gpt-4-turbo',
-  'gpt-3.5-turbo',
+  'gpt-4.1-mini-2025-04-14',
+  'gpt-4.1-2025-04-14',
 ];
 
 export const VALID_ANTHROPIC_MODELS: AnthropicModel[] = [
   'claude-sonnet-4-20250514',
-  'claude-3-5-sonnet-20241022',
-  'claude-3-opus-20240229',
-  'claude-3-haiku-20240307',
+  'claude-sonnet-4-5-20250929',
+  'claude-opus-4-5-20251101',
+  'claude-haiku-4-5-20251001',
 ];
 
 // Default models
 export const DEFAULT_OPENAI_MODEL: OpenAIModel = 'gpt-4o-mini';
 export const DEFAULT_ANTHROPIC_MODEL: AnthropicModel =
-  'claude-sonnet-4-20250514';
+  'claude-sonnet-4-5-20250929';
 
 // Gemini Image models
 export const GEMINI_IMAGE_MODELS = {

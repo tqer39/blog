@@ -32,16 +32,16 @@ interface AISettingsPopoverProps {
 // Model options with display labels (exported for reuse)
 export const OPENAI_MODELS: { value: OpenAIModel; label: string }[] = [
   { value: 'gpt-4o-mini', label: 'GPT-4o Mini (Fast)' },
-  { value: 'gpt-4o', label: 'GPT-4o (Best)' },
-  { value: 'gpt-4-turbo', label: 'GPT-4 Turbo' },
-  { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo (Economy)' },
+  { value: 'gpt-4o', label: 'GPT-4o' },
+  { value: 'gpt-4.1-mini-2025-04-14', label: 'GPT-4.1 Mini' },
+  { value: 'gpt-4.1-2025-04-14', label: 'GPT-4.1 (Best)' },
 ];
 
 export const ANTHROPIC_MODELS: { value: AnthropicModel; label: string }[] = [
-  { value: 'claude-sonnet-4-20250514', label: 'Claude 4 Sonnet (Latest)' },
-  { value: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet' },
-  { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus (Best)' },
-  { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku (Fast)' },
+  { value: 'claude-haiku-4-5-20251001', label: 'Claude Haiku 4.5 (Fast)' },
+  { value: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4' },
+  { value: 'claude-sonnet-4-5-20250929', label: 'Claude Sonnet 4.5 (Best)' },
+  { value: 'claude-opus-4-5-20251101', label: 'Claude Opus 4.5 (Premium)' },
 ];
 
 export const GEMINI_IMAGE_MODELS: { value: GeminiImageModel; label: string }[] =
