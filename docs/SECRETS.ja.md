@@ -71,6 +71,24 @@
 | ---------------- | ---------------- | ------ |
 | `blog-api-token` | VERCEL_API_TOKEN | GitHub |
 
+#### Vercel 環境変数（Terraform 管理）
+
+Vercel プロジェクトの環境変数は 1Password sync ではなく Terraform で管理されています。
+設定は `infra/terraform/envs/{env}/frontend/main.tf` を参照してください。
+
+| 変数名               | ソース                      | 環境                      |
+| -------------------- | --------------------------- | ------------------------- |
+| CMS_API_URL          | Terraform にハードコード    | production, preview, dev  |
+| NEXT_PUBLIC_SITE_URL | Terraform にハードコード    | production, preview, dev  |
+| CMS_API_KEY          | GitHub: CMS_API_KEY_{ENV}   | production, preview       |
+| ADMIN_PASSWORD_HASH  | GitHub: ADMIN_PASSWORD_HASH_{ENV} | production, preview |
+| AUTH_SECRET          | GitHub: AUTH_SECRET_{ENV}   | production, preview       |
+| BASIC_AUTH_ENABLED   | ハードコード (dev のみ)     | production, preview       |
+| BASIC_AUTH_USER      | GitHub (dev のみ)           | production, preview       |
+| BASIC_AUTH_PASS      | GitHub (dev のみ)           | production, preview       |
+
+注: Basic Auth 変数は dev 環境でのみ使用されます。
+
 ### OpenAI (op://shared-secrets/openai)
 
 | フィールド名      | 環境変数       | 同期先                       |

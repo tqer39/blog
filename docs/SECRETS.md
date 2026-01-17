@@ -71,6 +71,24 @@ Secrets are stored in two vaults:
 | ---------------- | ---------------- | ------ |
 | `blog-api-token` | VERCEL_API_TOKEN | GitHub |
 
+#### Vercel Environment Variables (Terraform-managed)
+
+Vercel project environment variables are managed via Terraform, not 1Password sync.
+See `infra/terraform/envs/{env}/frontend/main.tf` for configuration.
+
+| Variable             | Source                    | Environments              |
+| -------------------- | ------------------------- | ------------------------- |
+| CMS_API_URL          | Hardcoded in Terraform    | production, preview, dev  |
+| NEXT_PUBLIC_SITE_URL | Hardcoded in Terraform    | production, preview, dev  |
+| CMS_API_KEY          | GitHub: CMS_API_KEY_{ENV} | production, preview       |
+| ADMIN_PASSWORD_HASH  | GitHub: ADMIN_PASSWORD_HASH_{ENV} | production, preview |
+| AUTH_SECRET          | GitHub: AUTH_SECRET_{ENV} | production, preview       |
+| BASIC_AUTH_ENABLED   | Hardcoded (dev only)      | production, preview       |
+| BASIC_AUTH_USER      | GitHub (dev only)         | production, preview       |
+| BASIC_AUTH_PASS      | GitHub (dev only)         | production, preview       |
+
+Note: Basic Auth variables are only used in dev environment.
+
 ### OpenAI (op://shared-secrets/openai)
 
 | Field Name        | Maps To        | Target                       |
