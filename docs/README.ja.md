@@ -38,6 +38,7 @@ open http://localhost:3100
 
 ## ドキュメント
 
+- [アーキテクチャガイド](ARCHITECTURE.ja.md) - システムアーキテクチャと設計決定
 - [開発ガイド](DEVELOPMENT.ja.md) - 詳細なローカル開発手順
 - [Claude Code ガイド](CLAUDE.ja.md) - AI アシスタント向けガイダンス
 
