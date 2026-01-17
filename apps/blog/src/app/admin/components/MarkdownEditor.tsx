@@ -534,13 +534,14 @@ export function MarkdownEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant={inlineCompletionEnabled ? 'default' : 'ghost'}
+                  variant="ghost"
                   size="sm"
-                  className={`h-8 w-8 p-0 ${
+                  className="h-8 w-8 p-0"
+                  style={
                     inlineCompletionEnabled
-                      ? 'bg-violet-600 hover:bg-violet-700 text-white'
-                      : ''
-                  }`}
+                      ? { backgroundColor: '#7c3aed', color: 'white' }
+                      : undefined
+                  }
                   onClick={() =>
                     setInlineCompletionEnabled(!inlineCompletionEnabled)
                   }
