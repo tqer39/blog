@@ -1,13 +1,8 @@
 'use client';
 
+import { Monitor, Moon, MoonStar, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import {
-  BsDisplay,
-  BsFillMoonFill,
-  BsFillMoonStarsFill,
-  BsFillSunFill,
-} from 'react-icons/bs';
 
 const themes = ['light', 'dark', 'tokyonight', 'system'] as const;
 type Theme = (typeof themes)[number];
@@ -29,14 +24,14 @@ export function ThemeSwitcher() {
   const getIcon = () => {
     switch (theme) {
       case 'light':
-        return <BsFillSunFill className="h-5 w-5 text-yellow-500" />;
+        return <Sun className="h-5 w-5 text-yellow-500" />;
       case 'dark':
-        return <BsFillMoonFill className="h-5 w-5 text-blue-400" />;
+        return <Moon className="h-5 w-5 text-blue-400" />;
       case 'tokyonight':
-        return <BsFillMoonStarsFill className="h-5 w-5 text-indigo-400" />;
+        return <MoonStar className="h-5 w-5 text-indigo-400" />;
       default:
         return (
-          <BsDisplay className="h-5 w-5 text-stone-500 dark:text-stone-400" />
+          <Monitor className="h-5 w-5 text-stone-500 dark:text-stone-400" />
         );
     }
   };
