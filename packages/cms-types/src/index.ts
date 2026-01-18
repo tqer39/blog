@@ -302,6 +302,7 @@ export interface SiteSettings {
   show_linkedin_link: string; // "true" or "false" (stored as text in DB)
   show_wantedly_link: string; // "true" or "false" (stored as text in DB)
   show_lapras_link: string; // "true" or "false" (stored as text in DB)
+  default_theme: string; // "system" | "light" | "dark" | "tokyonight" | "nord-light" | "autumn"
 }
 
 export interface SiteSettingsResponse {

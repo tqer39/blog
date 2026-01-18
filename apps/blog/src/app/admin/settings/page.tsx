@@ -493,6 +493,36 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
+
+        {/* Appearance */}
+        <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+          <h2 className="mb-6 text-xl font-semibold">Appearance</h2>
+          <div>
+            <label
+              htmlFor="default_theme"
+              className="mb-2 block text-sm font-medium"
+            >
+              Default Theme
+            </label>
+            <p className="mb-2 text-sm text-muted-foreground">
+              Theme for first-time visitors (users can override with their
+              preference)
+            </p>
+            <select
+              id="default_theme"
+              value={settings?.default_theme || 'system'}
+              onChange={(e) => handleChange('default_theme', e.target.value)}
+              className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="system">システム設定に従う</option>
+              <option value="light">ライトモード</option>
+              <option value="dark">ダークモード</option>
+              <option value="tokyonight">Tokyo Night</option>
+              <option value="nord-light">Nord Light</option>
+              <option value="autumn">Autumn</option>
+            </select>
+          </div>
+        </div>
       </div>
     </div>
   );

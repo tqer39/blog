@@ -26,6 +26,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   show_linkedin_link: 'true',
   show_wantedly_link: 'true',
   show_lapras_link: 'true',
+  default_theme: 'system',
 };
 
 /**

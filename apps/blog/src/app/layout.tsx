@@ -56,11 +56,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const settings = await getSiteSettings();
+
   return (
     <html lang="ja" suppressHydrationWarning>
       {GA_ID && (
@@ -83,7 +85,7 @@ export default function RootLayout({
         className={`${bizUDGothic.variable} font-sans flex min-h-screen flex-col bg-background text-foreground`}
         suppressHydrationWarning
       >
-        <Providers>
+        <Providers defaultTheme={settings.default_theme}>
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
