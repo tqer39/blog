@@ -116,7 +116,7 @@
   --secondary: 224.7 37% 24.9%;         /* #283457 Selection */
   --secondary-foreground: 228.7 72.6% 85.7%;
   --muted: 224.7 37% 24.9%;
-  --muted-foreground: 229.4 22.9% 43.7%; /* #565f89 Comment */
+  --muted-foreground: 228.6 30% 60%;     /* #7982a9 Brighter comment */
   --accent: 261.3 85.3% 78.6%;          /* #bb9af7 Magenta */
   --accent-foreground: 235 18.8% 12.5%;
   --destructive: 348.8 89% 71.6%;       /* #f7768e Red */
@@ -383,10 +383,6 @@ body {
   color: hsl(0 0% 9%); /* Dark text in dark mode */
 }
 
-.tokyonight .bg-primary {
-  color: hsl(235 18.8% 12.5%);
-}
-
 .tokyonight .shiki-wrapper .line:hover {
   background-color: #283457;
 }
@@ -467,19 +463,49 @@ body {
 .tokyonight [class*="text-stone-500"],
 .tokyonight [class*="text-stone-600"],
 .tokyonight [class*="text-muted"] {
-  color: #565f89 !important;
+  color: #7982a9 !important;
 }
 
 /* Tokyo Night: Footer */
 .tokyonight footer {
-  color: #565f89;
+  color: #7982a9;
 }
 
 .tokyonight footer a {
   color: #7aa2f7;
 }
 
-/* Tokyo Night: Button hover */
-.tokyonight button:hover {
+/* Tokyo Night: Button styles */
+.tokyonight .bg-primary {
+  background-color: #7aa2f7 !important;
+  color: #1a1b26 !important;
+}
+
+.tokyonight .bg-primary:hover {
+  background-color: #6690e6 !important;
+  color: #1a1b26 !important;
+}
+
+/* Tokyo Night: Ghost/transparent button hover */
+.tokyonight button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
   background-color: #24283b;
+}
+
+/* Tokyo Night: Input field styling for better contrast */
+.tokyonight input,
+.tokyonight textarea,
+.tokyonight select {
+  background-color: #24283b !important;
+  border-color: #3b4261 !important;
+  color: #c0caf5 !important;
+}
+
+.tokyonight input::placeholder,
+.tokyonight textarea::placeholder {
+  color: #565f89 !important;
+}
+
+/* Tokyo Night: Labels and form text */
+.tokyonight label {
+  color: #a9b1d6;
 }
