@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { cn } from "@blog/utils";
-import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { cn } from '@blog/utils';
+import useEmblaCarousel from 'embla-carousel-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface ImageData {
   alt: string;
@@ -27,7 +27,7 @@ function parseImages(content: string): ImageData[] {
   match = imageRegex.exec(content);
   while (match !== null) {
     images.push({
-      alt: match[1] || "",
+      alt: match[1] || '',
       src: match[2],
     });
     match = imageRegex.exec(content);
@@ -59,11 +59,11 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
   useEffect(() => {
     if (!emblaApi) return;
     onSelect();
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
     return () => {
-      emblaApi.off("select", onSelect);
-      emblaApi.off("reInit", onSelect);
+      emblaApi.off('select', onSelect);
+      emblaApi.off('reInit', onSelect);
     };
   }, [emblaApi, onSelect]);
 
@@ -82,7 +82,7 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
   // Single image - no carousel needed
   if (images.length === 1) {
     return (
-      <figure className={cn("my-4", className)}>
+      <figure className={cn('my-4', className)}>
         {/* biome-ignore lint/performance/noImgElement: External URLs from user content require native img element */}
         <img
           src={images[0].src}
@@ -102,16 +102,16 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
   const currentImage = images[currentIndex];
 
   return (
-    <div className={cn("image-carousel", className)}>
+    <div className={cn('image-carousel', className)}>
       <div className="relative">
         {/* Carousel viewport */}
-        <div ref={emblaRef} className="overflow-hidden">
-          <div className="flex" style={{ backfaceVisibility: "hidden" }}>
+        <div ref={emblaRef} className="overflow-hidden rounded-lg">
+          <div className="flex" style={{ backfaceVisibility: 'hidden' }}>
             {images.map((image, index) => (
               <div
                 key={index}
                 className="relative"
-                style={{ flex: "0 0 100%", minWidth: 0 }}
+                style={{ flex: '0 0 100%', minWidth: 0 }}
               >
                 {imageErrors[index] ? (
                   <div className="flex h-[200px] w-full items-center justify-center text-center text-muted-foreground">
@@ -125,7 +125,7 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
                   <img
                     src={image.src}
                     alt={image.alt}
-                    className="max-h-[500px] w-full rounded-lg object-contain"
+                    className="max-h-[500px] w-full object-contain"
                     onError={() => handleImageError(index)}
                   />
                 )}
@@ -155,7 +155,7 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
 
       {/* Caption bar below image */}
       <div className="mt-3 flex items-center justify-between gap-4 px-1 text-sm text-stone-600 dark:text-stone-400">
-        <span className="truncate">{currentImage?.alt || ""}</span>
+        <span className="truncate">{currentImage?.alt || ''}</span>
         <div className="flex shrink-0 items-center gap-3">
           {/* Dot pagination - timeline style like TOC */}
           <div className="flex items-center">
@@ -169,28 +169,26 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
                     type="button"
                     onClick={() => emblaApi?.scrollTo(index)}
                     style={{
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      border: "2px solid",
-                      borderColor: isActive
-                        ? "#3b82f6"
-                        : "#d1d5db",
+                      width: '10px',
+                      height: '10px',
+                      borderRadius: '50%',
+                      border: '2px solid',
+                      borderColor: isActive ? '#3b82f6' : '#d1d5db',
                       backgroundColor: isActive
-                        ? "#3b82f6"
+                        ? '#3b82f6'
                         : isPast
-                          ? "#9ca3af"
-                          : "white",
-                      transition: "all 0.2s",
+                          ? '#9ca3af'
+                          : 'white',
+                      transition: 'all 0.2s',
                     }}
                     aria-label={`Go to image ${index + 1}`}
                   />
                   {!isLast && (
                     <div
                       style={{
-                        height: "2px",
-                        width: "16px",
-                        backgroundColor: "#d1d5db",
+                        height: '2px',
+                        width: '16px',
+                        backgroundColor: '#d1d5db',
                       }}
                     />
                   )}
