@@ -24,6 +24,107 @@ function parseLines(content: string): TerminalLine[] {
     }));
 }
 
+interface HighlightedPart {
+  text: string;
+  type: 'prompt' | 'command' | 'flag' | 'string' | 'path' | 'number' | 'text';
+}
+
+function highlightCommand(line: string): HighlightedPart[] {
+  const parts: HighlightedPart[] = [];
+  const trimmed = line.trimStart();
+
+  if (!trimmed.startsWith('$')) {
+    return [{ text: line, type: 'text' }];
+  }
+
+  // Find the leading whitespace
+  const leadingSpace = line.slice(0, line.length - trimmed.length);
+  if (leadingSpace) {
+    parts.push({ text: leadingSpace, type: 'text' });
+  }
+
+  // Add the $ prompt
+  parts.push({ text: '$', type: 'prompt' });
+
+  // Get the rest after $
+  const afterPrompt = trimmed.slice(1);
+  if (!afterPrompt) {
+    return parts;
+  }
+
+  // Tokenize the rest
+  const tokens = afterPrompt.match(/\s+|"[^"]*"|'[^']*'|[^\s"']+/g) || [];
+  let isFirstWord = true;
+
+  for (const token of tokens) {
+    // Whitespace
+    if (/^\s+$/.test(token)) {
+      parts.push({ text: token, type: 'text' });
+      continue;
+    }
+
+    // String (quoted)
+    if (/^["'].*["']$/.test(token)) {
+      parts.push({ text: token, type: 'string' });
+      isFirstWord = false;
+      continue;
+    }
+
+    // First word is the command
+    if (isFirstWord) {
+      parts.push({ text: token, type: 'command' });
+      isFirstWord = false;
+      continue;
+    }
+
+    // Flags (starting with -)
+    if (token.startsWith('-')) {
+      parts.push({ text: token, type: 'flag' });
+      continue;
+    }
+
+    // Paths (containing /)
+    if (token.includes('/')) {
+      parts.push({ text: token, type: 'path' });
+      continue;
+    }
+
+    // Numbers
+    if (/^\d+(\.\d+)?$/.test(token)) {
+      parts.push({ text: token, type: 'number' });
+      continue;
+    }
+
+    // Default text
+    parts.push({ text: token, type: 'text' });
+  }
+
+  return parts;
+}
+
+const highlightColors: Record<HighlightedPart['type'], string> = {
+  prompt: 'text-green-500',
+  command: 'text-sky-400',
+  flag: 'text-pink-400',
+  string: 'text-amber-300',
+  path: 'text-violet-400',
+  number: 'text-orange-400',
+  text: 'text-white',
+};
+
+function HighlightedLine({ line }: { line: string }) {
+  const parts = highlightCommand(line);
+  return (
+    <>
+      {parts.map((part, i) => (
+        <span key={i} className={highlightColors[part.type]}>
+          {part.text}
+        </span>
+      ))}
+    </>
+  );
+}
+
 export function Terminal({ content, className }: TerminalProps) {
   const lines = parseLines(content);
   const [displayedLines, setDisplayedLines] = useState<string[]>([]);
@@ -189,9 +290,9 @@ export function Terminal({ content, className }: TerminalProps) {
           return (
             <div key={index} className="leading-relaxed">
               {isCommand ? (
-                <span className="text-green-400">{line}</span>
+                <HighlightedLine line={line} />
               ) : (
-                <span className="text-stone-300">{line}</span>
+                <span className="text-stone-400">{line}</span>
               )}
             </div>
           );
