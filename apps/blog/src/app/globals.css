@@ -413,6 +413,21 @@ body {
   margin-bottom: 0.75em;
 }
 
+/* Hide ImageCarousel navigation buttons in slide mode (including background page) */
+body[data-slide-mode="true"] .image-carousel__button {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  box-shadow: none !important;
+}
+
+/* Also hide the pagination dots in slide mode */
+body[data-slide-mode="true"] .image-carousel__dot {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* Slow pulse animation for slide timer runner */
 @keyframes pulse-slow {
   0%,

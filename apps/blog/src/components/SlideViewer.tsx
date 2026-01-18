@@ -105,6 +105,18 @@ export function SlideViewer({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (isOpen) {
+      document.body.dataset.slideMode = "true";
+    } else {
+      delete document.body.dataset.slideMode;
+    }
+    return () => {
+      delete document.body.dataset.slideMode;
+    };
+  }, [isOpen]);
+
   const goNext = useCallback(() => {
     setCurrentSlide((prev) => Math.min(prev + 1, slides.length - 1));
   }, [slides.length]);

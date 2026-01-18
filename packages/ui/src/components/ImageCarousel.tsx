@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { cn } from '@blog/utils';
-import useEmblaCarousel from 'embla-carousel-react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { cn } from "@blog/utils";
+import useEmblaCarousel from "embla-carousel-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 interface ImageData {
   alt: string;
@@ -27,7 +27,7 @@ function parseImages(content: string): ImageData[] {
   match = imageRegex.exec(content);
   while (match !== null) {
     images.push({
-      alt: match[1] || '',
+      alt: match[1] || "",
       src: match[2],
     });
     match = imageRegex.exec(content);
@@ -59,11 +59,11 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
   useEffect(() => {
     if (!emblaApi) return;
     onSelect();
-    emblaApi.on('select', onSelect);
-    emblaApi.on('reInit', onSelect);
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
     return () => {
-      emblaApi.off('select', onSelect);
-      emblaApi.off('reInit', onSelect);
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
     };
   }, [emblaApi, onSelect]);
 
@@ -82,7 +82,7 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
   // Single image - no carousel needed
   if (images.length === 1) {
     return (
-      <figure className={cn('my-4', className)}>
+      <figure className={cn("my-4", className)}>
         {/* biome-ignore lint/performance/noImgElement: External URLs from user content require native img element */}
         <img
           src={images[0].src}
@@ -102,16 +102,16 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
   const currentImage = images[currentIndex];
 
   return (
-    <div className={cn(className)}>
+    <div className={cn("image-carousel", className)}>
       <div className="relative">
         {/* Carousel viewport */}
         <div ref={emblaRef} className="overflow-hidden">
-          <div className="flex" style={{ backfaceVisibility: 'hidden' }}>
+          <div className="flex" style={{ backfaceVisibility: "hidden" }}>
             {images.map((image, index) => (
               <div
                 key={index}
                 className="relative"
-                style={{ flex: '0 0 100%', minWidth: 0 }}
+                style={{ flex: "0 0 100%", minWidth: 0 }}
               >
                 {imageErrors[index] ? (
                   <div className="flex h-[200px] w-full items-center justify-center text-center text-muted-foreground">
@@ -138,7 +138,7 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
         <button
           type="button"
           onClick={scrollPrev}
-          className="absolute left-4 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
+          className="image-carousel__button absolute left-4 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
           aria-label="Previous image"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -146,7 +146,7 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
         <button
           type="button"
           onClick={scrollNext}
-          className="absolute right-4 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
+          className="image-carousel__button absolute right-4 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
           aria-label="Next image"
         >
           <ChevronRight className="h-5 w-5" />
@@ -155,7 +155,7 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
 
       {/* Caption and pagination */}
       <div className="flex items-center justify-between text-xs text-stone-600 dark:text-stone-400">
-        <span className="truncate">{currentImage?.alt || ''}</span>
+        <span className="truncate">{currentImage?.alt || ""}</span>
         <div className="flex shrink-0 items-center gap-1">
           {images.map((_, index) => (
             <button
@@ -163,10 +163,10 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
               type="button"
               onClick={() => emblaApi?.scrollTo(index)}
               className={cn(
-                'h-1.5 w-1.5 rounded-full transition-colors',
+                "image-carousel__dot h-1.5 w-1.5 rounded-full transition-colors",
                 index === currentIndex
-                  ? 'bg-primary'
-                  : 'bg-stone-300 hover:bg-stone-400 dark:bg-stone-600 dark:hover:bg-stone-500'
+                  ? "bg-primary"
+                  : "bg-stone-300 hover:bg-stone-400 dark:bg-stone-600 dark:hover:bg-stone-500",
               )}
               aria-label={`Go to image ${index + 1}`}
             />
