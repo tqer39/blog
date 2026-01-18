@@ -54,7 +54,7 @@ export function AdminSidebar() {
 
   return (
     <aside
-      className={`sticky top-0 flex h-screen flex-col border-r bg-background transition-all duration-300 ${
+      className={`sticky top-0 flex h-full flex-col border-r bg-background transition-all duration-300 ${
         isCollapsed ? 'w-16' : 'w-64'
       }`}
     >
