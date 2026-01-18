@@ -104,17 +104,6 @@ Generate continuation options for article text at cursor position.
   - Context-aware: extracts 2000 chars before + 500 chars after cursor
 - **UI**: Popover with suggestions, keyboard shortcut (Cmd+J)
 
-#### Inline Completion
-
-Copilot-style real-time suggestions while typing.
-
-- **Model**: Claude Sonnet 4 (via suggest-continuation API)
-- **Features**:
-  - Debounced API calls (800ms after typing stops)
-  - Ghost text overlay at cursor position
-  - Tab to accept, Esc to dismiss
-- **UI**: Toggle button in toolbar (Sparkles icon)
-
 #### Outline Generation
 
 Generate article structure based on title and category.

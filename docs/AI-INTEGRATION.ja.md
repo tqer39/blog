@@ -105,17 +105,6 @@ Model Context Protocolサーバーによる拡張機能:
   - コンテキスト認識: カーソル前2000文字 + 後500文字を抽出
 - **UI**: Popoverで提案表示、キーボードショートカット（Cmd+J）
 
-#### インライン補完（Inline Completion）
-
-入力中にCopilot風のリアルタイム提案を表示します。
-
-- **モデル**: Claude Sonnet 4（suggest-continuation APIを利用）
-- **機能**:
-  - デバウンスされたAPI呼び出し（入力停止後800ms）
-  - カーソル位置にゴーストテキストをオーバーレイ
-  - Tabで挿入、Escで取消
-- **UI**: ツールバーのトグルボタン（Sparklesアイコン）
-
 #### アウトライン生成（Outline Generation）
 
 タイトルとカテゴリから記事構成を生成します。

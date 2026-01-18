@@ -959,15 +959,7 @@ headers.set('Cache-Control', 'public, max-age=3600');
    - Public CDN for production images
    - Fast global delivery
 
-### 4. Debounced AI Requests
-
-**Inline completion**: 800ms debounce on AI continuation requests
-
-**Rationale**:
-- Reduce unnecessary API calls
-- Balance responsiveness with cost
-
-### 5. Cloudflare Edge Distribution
+### 4. Cloudflare Edge Distribution
 
 **CMS API**: Deployed to all Cloudflare edge locations
 
