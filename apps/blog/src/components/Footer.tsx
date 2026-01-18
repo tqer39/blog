@@ -14,7 +14,7 @@ export async function Footer() {
                 href={settings.social_github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
                 aria-label="GitHub"
               >
                 <Github className="h-6 w-6" />
@@ -25,7 +25,7 @@ export async function Footer() {
                 href={settings.social_twitter}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
                 aria-label="Twitter"
               >
                 <Twitter className="h-6 w-6" />
@@ -36,7 +36,7 @@ export async function Footer() {
                 href={settings.social_bento}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
                 aria-label="Bento"
               >
                 <LayoutGrid className="h-6 w-6" />
@@ -45,7 +45,7 @@ export async function Footer() {
             {settings.show_rss_link === 'true' && (
               <a
                 href="/feed.xml"
-                className="text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
                 aria-label="RSS Feed"
               >
                 <Rss className="h-6 w-6" />

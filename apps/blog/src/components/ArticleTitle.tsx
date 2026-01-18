@@ -35,7 +35,7 @@ export function ArticleTitle({
         <button
           type="button"
           onClick={handleCopyLink}
-          className="ml-1 text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300"
+          className="cursor-pointer ml-1 text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300"
           aria-label="Copy link to clipboard"
         >
           <Copy className="h-5 w-5" />

@@ -183,7 +183,7 @@ export function SlideViewer({
             type="button"
             onClick={goPrev}
             disabled={currentSlide === 0}
-            className="flex items-center gap-1 rounded-lg px-3 py-2 text-stone-600 transition-colors hover:bg-stone-100 disabled:opacity-30 disabled:hover:bg-transparent dark:text-stone-400 dark:hover:bg-stone-800"
+            className="cursor-pointer flex items-center gap-1 rounded-lg px-3 py-2 text-stone-600 transition-colors hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent dark:text-stone-400 dark:hover:bg-stone-800"
             aria-label="Previous slide"
           >
             <ChevronLeft className="h-5 w-5" />
@@ -194,7 +194,7 @@ export function SlideViewer({
             type="button"
             onClick={goNext}
             disabled={currentSlide === slides.length - 1}
-            className="flex items-center gap-1 rounded-lg px-3 py-2 text-stone-600 transition-colors hover:bg-stone-100 disabled:opacity-30 disabled:hover:bg-transparent dark:text-stone-400 dark:hover:bg-stone-800"
+            className="cursor-pointer flex items-center gap-1 rounded-lg px-3 py-2 text-stone-600 transition-colors hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent dark:text-stone-400 dark:hover:bg-stone-800"
             aria-label="Next slide"
           >
             <span className="hidden sm:inline">Next</span>

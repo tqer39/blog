@@ -42,7 +42,7 @@ export function MobileMenu({ isOpen, onToggle }: MobileMenuProps) {
       <button
         type="button"
         onClick={onToggle}
-        className="rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:hidden"
+        className="cursor-pointer rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:hidden"
         aria-label={ariaLabel}
         aria-expanded={ariaExpanded}
       >

@@ -21,7 +21,7 @@ export function ArticleNavigation({
       <button
         type="button"
         onClick={scrollToTop}
-        className={`flex w-full items-center justify-center gap-2 rounded-lg border border-stone-200 p-3 text-stone-600 transition-colors hover:border-stone-400 hover:bg-stone-50 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:border-stone-500 dark:hover:bg-stone-800 dark:hover:text-stone-100 ${prevArticle || nextArticle ? 'mb-6' : ''}`}
+        className={`cursor-pointer flex w-full items-center justify-center gap-2 rounded-lg border border-stone-200 p-3 text-stone-600 transition-colors hover:border-stone-400 hover:bg-stone-50 hover:text-stone-900 dark:border-stone-700 dark:text-stone-400 dark:hover:border-stone-500 dark:hover:bg-stone-800 dark:hover:text-stone-100 ${prevArticle || nextArticle ? 'mb-6' : ''}`}
       >
         <ChevronUp className="h-5 w-5" />
         トップに戻る

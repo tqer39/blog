@@ -80,7 +80,7 @@ export function HeaderClient({ siteName }: HeaderClientProps) {
               <button
                 type="button"
                 onClick={handleClose}
-                className="rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+                className="cursor-pointer rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
                 aria-label="検索を閉じる"
                 title="検索を閉じる"
               >
@@ -90,7 +90,7 @@ export function HeaderClient({ siteName }: HeaderClientProps) {
               <button
                 type="button"
                 onClick={() => setIsSearchOpen(true)}
-                className="rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+                className="cursor-pointer rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
                 aria-label="検索を開く"
                 title="検索"
               >

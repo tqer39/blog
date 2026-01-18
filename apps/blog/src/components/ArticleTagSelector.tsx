@@ -89,7 +89,7 @@ export function ArticleTagSelector({ allTags }: ArticleTagSelectorProps) {
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-3 flex items-center gap-1 text-sm text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200"
+          className="cursor-pointer mt-3 flex items-center gap-1 text-sm text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200"
         >
           {isExpanded ? (
             <>

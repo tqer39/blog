@@ -55,7 +55,7 @@ export function FloatingThemeSwitcher() {
         <button
           type="button"
           aria-label="Toggle theme"
-          className="rounded-full bg-white p-3 shadow-lg dark:bg-stone-800"
+          className="cursor-pointer rounded-full bg-white p-3 shadow-lg dark:bg-stone-800"
         >
           <div className="h-5 w-5" />
         </button>
@@ -70,7 +70,7 @@ export function FloatingThemeSwitcher() {
         aria-label="Toggle theme"
         title={getLabel()}
         onClick={cycleTheme}
-        className="rounded-full bg-white p-3 shadow-lg transition-transform hover:scale-110 dark:bg-stone-800"
+        className="cursor-pointer rounded-full bg-white p-3 shadow-lg transition-transform hover:scale-110 dark:bg-stone-800"
       >
         {getIcon()}
       </button>
