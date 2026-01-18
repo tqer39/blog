@@ -70,11 +70,11 @@ export function HeaderClient({
   };
 
   return (
-    <header className="border-b border-stone-200 dark:border-stone-700">
+    <header className="border-b border-border">
       <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
         <Link
           href="/"
-          className="text-2xl font-bold text-stone-900 dark:text-stone-100"
+          className="text-2xl font-bold text-foreground"
         >
           {siteName}
         </Link>
@@ -92,7 +92,7 @@ export function HeaderClient({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="検索..."
-                  className="w-full rounded-md border border-stone-300 bg-white px-3 py-1.5 text-sm text-stone-900 placeholder-stone-400 focus:border-stone-500 focus:outline-none focus:ring-1 focus:ring-stone-500 dark:border-stone-600 dark:bg-stone-800 dark:text-stone-100 dark:placeholder-stone-500 dark:focus:border-stone-400 dark:focus:ring-stone-400"
+                  className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm text-foreground placeholder-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </form>
             </div>
@@ -100,7 +100,7 @@ export function HeaderClient({
               <button
                 type="button"
                 onClick={handleClose}
-                className="cursor-pointer rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+                className="cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 aria-label="検索を閉じる"
                 title="検索を閉じる"
               >
@@ -110,7 +110,7 @@ export function HeaderClient({
               <button
                 type="button"
                 onClick={() => setIsSearchOpen(true)}
-                className="cursor-pointer rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
+                className="cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 aria-label="検索を開く"
                 title="検索"
               >
@@ -121,7 +121,7 @@ export function HeaderClient({
           <ThemeSwitcher />
           <Link
             href="/articles"
-            className="hidden rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:block"
+            className="hidden rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:block"
             aria-label="Articles"
             title="記事一覧"
           >
@@ -131,7 +131,7 @@ export function HeaderClient({
             <>
               <Link
                 href="/admin"
-                className="hidden rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:block"
+                className="hidden rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:block"
                 aria-label="Admin"
                 title="管理画面"
               >
@@ -140,7 +140,7 @@ export function HeaderClient({
               <button
                 type="button"
                 onClick={handleLogout}
-                className="hidden cursor-pointer rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:block"
+                className="hidden cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:block"
                 aria-label="Logout"
                 title="ログアウト"
               >
@@ -150,7 +150,7 @@ export function HeaderClient({
           ) : (
             <Link
               href="/admin/login"
-              className="hidden rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:block"
+              className="hidden rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:block"
               aria-label="Login"
               title="ログイン"
             >

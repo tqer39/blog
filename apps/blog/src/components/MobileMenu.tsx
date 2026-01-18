@@ -42,7 +42,7 @@ export function MobileMenu({ isOpen, onToggle }: MobileMenuProps) {
       <button
         type="button"
         onClick={onToggle}
-        className="cursor-pointer rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:hidden"
+        className="cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:hidden"
         aria-label={ariaLabel}
         aria-expanded={ariaExpanded}
       >
@@ -60,7 +60,7 @@ export function MobileMenu({ isOpen, onToggle }: MobileMenuProps) {
 
       {/* Drawer menu */}
       <div
-        className={`fixed left-0 right-0 top-[57px] z-50 transform border-b border-stone-200 bg-white transition-all duration-300 ease-in-out dark:border-stone-700 dark:bg-stone-900 md:hidden ${
+        className={`fixed left-0 right-0 top-[57px] z-50 transform border-b border-border bg-background transition-all duration-300 ease-in-out md:hidden ${
           isOpen
             ? 'translate-y-0 opacity-100'
             : '-translate-y-full opacity-0 pointer-events-none'
@@ -72,7 +72,7 @@ export function MobileMenu({ isOpen, onToggle }: MobileMenuProps) {
               <Link
                 href="/articles"
                 onClick={onToggle}
-                className="flex items-center gap-2 text-lg text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                className="flex items-center gap-2 text-lg text-muted-foreground hover:text-foreground"
               >
                 <BookOpen className="h-5 w-5" />
                 Articles
@@ -82,7 +82,7 @@ export function MobileMenu({ isOpen, onToggle }: MobileMenuProps) {
               <Link
                 href="/feed.xml"
                 onClick={onToggle}
-                className="flex items-center gap-2 text-lg text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                className="flex items-center gap-2 text-lg text-muted-foreground hover:text-foreground"
               >
                 <Rss className="h-5 w-5" />
                 RSS Feed

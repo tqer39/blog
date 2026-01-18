@@ -69,7 +69,7 @@ export function ThemeSwitcher() {
       <button
         type="button"
         aria-label="Toggle theme"
-        className="cursor-pointer rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700"
+        className="cursor-pointer rounded-lg p-2 hover:bg-secondary"
       >
         <div className="h-5 w-5" />
       </button>
@@ -82,7 +82,7 @@ export function ThemeSwitcher() {
       aria-label="Toggle theme"
       title={getLabel()}
       onClick={cycleTheme}
-      className="cursor-pointer rounded-lg p-2 hover:bg-stone-200 dark:hover:bg-stone-700"
+      className="cursor-pointer rounded-lg p-2 hover:bg-secondary"
     >
       {getIcon()}
     </button>

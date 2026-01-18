@@ -67,7 +67,7 @@ export function AdminSidebar() {
         <button
           type="button"
           onClick={toggleSidebar}
-          className={`rounded-lg p-2 text-muted-foreground hover:bg-muted hover:text-foreground ${
+          className={`rounded-lg p-2 text-muted-foreground hover:bg-secondary hover:text-foreground ${
             isCollapsed ? 'mx-auto' : ''
           }`}
           title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
@@ -164,7 +164,7 @@ function NavItem({ href, icon, label, isCollapsed }: NavItemProps) {
     <li>
       <Link
         href={href}
-        className={`flex items-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground ${
+        className={`flex items-center rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground ${
           isCollapsed ? 'justify-center p-3' : 'gap-3 px-4 py-2'
         }`}
         title={isCollapsed ? label : undefined}
