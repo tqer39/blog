@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { LogoutButton } from './LogoutButton';
 
 const SIDEBAR_COLLAPSED_KEY = 'admin-sidebar-collapsed';
 const MOBILE_BREAKPOINT = 1024; // lg breakpoint
@@ -54,7 +53,7 @@ export function AdminSidebar() {
 
   return (
     <aside
-      className={`sticky top-0 flex h-full flex-col border-r bg-background transition-all duration-300 ${
+      className={`sticky top-0 flex h-screen flex-col border-r bg-background transition-all duration-300 ${
         isCollapsed ? 'w-16' : 'w-64'
       }`}
     >
@@ -150,40 +149,6 @@ export function AdminSidebar() {
         </ul>
       </nav>
 
-      {/* Footer */}
-      <nav className="shrink-0 border-t p-2">
-        <ul className="space-y-1">
-          <li>
-            <LogoutButton compact={isCollapsed} />
-          </li>
-          <li>
-            <Link
-              href="/"
-              className={`flex items-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground ${
-                isCollapsed ? 'justify-center p-3' : 'gap-3 px-4 py-2'
-              }`}
-              title={isCollapsed ? 'Back to Blog' : undefined}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m12 19-7-7 7-7" />
-                <path d="M19 12H5" />
-              </svg>
-              {!isCollapsed && <span>Back to Blog</span>}
-            </Link>
-          </li>
-        </ul>
-      </nav>
     </aside>
   );
 }

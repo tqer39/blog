@@ -1,6 +1,6 @@
 'use client';
 
-import { BookOpen, Search, X } from 'lucide-react';
+import { BookOpen, LayoutDashboard, LogIn, LogOut, Search, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -9,9 +9,10 @@ import { ThemeSwitcher } from './ThemeSwitcher';
 
 interface HeaderClientProps {
   siteName: string;
+  isLoggedIn?: boolean;
 }
 
-export function HeaderClient({ siteName }: HeaderClientProps) {
+export function HeaderClient({ siteName, isLoggedIn = false }: HeaderClientProps) {
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -47,6 +48,15 @@ export function HeaderClient({ siteName }: HeaderClientProps) {
   const handleClose = () => {
     setIsSearchOpen(false);
     setSearchQuery('');
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.refresh();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   return (
@@ -107,6 +117,36 @@ export function HeaderClient({ siteName }: HeaderClientProps) {
           >
             <BookOpen className="h-5 w-5" />
           </Link>
+          {isLoggedIn ? (
+            <>
+              <Link
+                href="/admin"
+                className="hidden rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:block"
+                aria-label="Admin"
+                title="管理画面"
+              >
+                <LayoutDashboard className="h-5 w-5" />
+              </Link>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="hidden cursor-pointer rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:block"
+                aria-label="Logout"
+                title="ログアウト"
+              >
+                <LogOut className="h-5 w-5" />
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/admin/login"
+              className="hidden rounded-md p-1.5 text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100 md:block"
+              aria-label="Login"
+              title="ログイン"
+            >
+              <LogIn className="h-5 w-5" />
+            </Link>
+          )}
           {/* Mobile menu */}
           <MobileMenu
             isOpen={isMobileMenuOpen}
