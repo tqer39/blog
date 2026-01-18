@@ -103,7 +103,7 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
 
   return (
     <div className={cn('image-carousel', className)}>
-      <div className="relative">
+      <div className="relative overflow-visible">
         {/* Carousel viewport */}
         <div ref={emblaRef} className="overflow-hidden rounded-lg">
           <div className="flex" style={{ backfaceVisibility: 'hidden' }}>
@@ -134,22 +134,22 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
           </div>
         </div>
 
-        {/* Navigation buttons */}
+        {/* Navigation buttons - positioned outside viewport to avoid clipping */}
         <button
           type="button"
           onClick={scrollPrev}
-          className="image-carousel__button absolute left-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
+          className="absolute left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-all hover:bg-black/70"
           aria-label="Previous image"
         >
-          <ChevronLeft className="h-7 w-7" />
+          <ChevronLeft className="h-6 w-6" />
         </button>
         <button
           type="button"
           onClick={scrollNext}
-          className="image-carousel__button absolute right-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
+          className="absolute right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-all hover:bg-black/70"
           aria-label="Next image"
         >
-          <ChevronRight className="h-7 w-7" />
+          <ChevronRight className="h-6 w-6" />
         </button>
       </div>
 
