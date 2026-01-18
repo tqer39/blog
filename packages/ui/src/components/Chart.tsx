@@ -233,17 +233,17 @@ data:
   return (
     <div
       className={cn(
-        "group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900",
+        "chart-container group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900",
         className,
       )}
     >
       {title && (
-        <div className="flex items-center gap-2 rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+        <div className="chart-header flex items-center gap-2 rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
           <BarChart3 className="h-4 w-4" />
           <span>{title}</span>
         </div>
       )}
-      <div className="bg-white p-3 dark:bg-stone-800">
+      <div className="chart-body bg-white p-3 dark:bg-stone-800">
         <ResponsiveContainer width="100%" height={300}>
           {renderChart()}
         </ResponsiveContainer>

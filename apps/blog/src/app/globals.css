@@ -413,6 +413,23 @@ body {
   margin-bottom: 0.75em;
 }
 
+/* Slide mode: Remove chart wrapper gray background and border */
+body[data-slide-mode="true"] .chart-container {
+  --tw-ring-opacity: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+body[data-slide-mode="true"] .chart-header {
+  display: none !important;
+}
+
+body[data-slide-mode="true"] .chart-body {
+  background-color: transparent !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
 /* Hide ImageCarousel navigation buttons in slide mode (including background page) */
 body[data-slide-mode="true"] .image-carousel__button {
   opacity: 0 !important;
@@ -602,7 +619,7 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
 }
 
 .nord-light .mermaid-content {
-  background-color: #e5e9f0; /* nord5 */
+  background-color: #ffffff;
 }
 
 /* Nord Light: Links and interactive elements */
@@ -878,4 +895,42 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
 
 .autumn .text-stone-400 {
   color: #a8a29e !important; /* stone-400 */
+}
+
+/* Slide Mode Chart Overrides */
+body[data-slide-mode="true"] .chart-container {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  --tw-ring-width: 0px !important;
+  --tw-ring-color: transparent !important;
+}
+
+body[data-slide-mode="true"] .chart-header {
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  color: inherit !important;
+  padding: 0 !important;
+  margin-bottom: 1rem !important;
+}
+
+body[data-slide-mode="true"] .chart-header svg {
+  display: none !important;
+}
+
+body[data-slide-mode="true"] .chart-header span {
+  font-size: 2rem !important;
+  font-weight: bold !important;
+}
+
+body[data-slide-mode="true"] .chart-body {
+  padding: 0 !important;
+  background-color: transparent !important;
+}
+
+body[data-slide-mode="true"] .recharts-responsive-container {
+  height: 500px !important;
+  max-height: 60vh !important;
 }

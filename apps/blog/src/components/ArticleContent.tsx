@@ -164,8 +164,14 @@ export function ArticleContent({
               const childClassName = children.props?.className;
               if (
                 typeof childClassName === "string" &&
-                childClassName.includes("language-carousel")
+                (childClassName.includes("language-carousel") ||
+                  childClassName.includes("language-chart"))
               ) {
+                // Determine if we should use 'not-prose' based on the language
+                // Charts in slide mode need to be not-prose to avoid margins,
+                // but usually we might want them restricted.
+                // However, the issue is <pre> wrapping.
+                // Using <div> removes <pre> styles.
                 return <div className="not-prose">{children}</div>;
               }
             }
