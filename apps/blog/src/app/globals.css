@@ -750,6 +750,25 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
   color: #a8a29e !important; /* stone-400 */
 }
 
+
+/* Model Viewer Theme Backgrounds */
+.model-viewer-bg {
+  background-color: #ffffff;
+  background-image: none;
+}
+
+.dark .model-viewer-bg {
+  background-color: #292524;
+  background-image: linear-gradient(to bottom, #292524, #1c1917); /* stone-800 to stone-900 */
+}
+
+/* Nord Light overrides */
+.nord-light .model-viewer-bg,
+html.nord-light .model-viewer-bg {
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
 /* ===== Autumn Theme Specific Styles ===== */
 
 .autumn .shiki-wrapper .line:hover {
@@ -798,6 +817,13 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
 .autumn [class*="rounded"][class*="border"][class*="text-sm"] {
   border-color: #d84315 !important; /* burnt orange */
   color: #e65100 !important; /* orange */
+}
+
+/* Autumn overrides */
+.autumn .model-viewer-bg,
+html.autumn .model-viewer-bg {
+  background-color: #ffffff !important;
+  background-image: none !important;
 }
 
 .autumn .tag-badge:hover,

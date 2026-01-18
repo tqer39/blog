@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { cn } from '@blog/utils';
-import { Center, OrbitControls, Stage, useGLTF } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
-import { Suspense, useMemo, useState } from 'react';
-import YAML from 'yaml';
+import { cn } from "@blog/utils";
+import { Center, OrbitControls, Stage, useGLTF } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { Suspense, useMemo, useState } from "react";
+import YAML from "yaml";
 
 interface ModelViewerProps {
   content: string;
@@ -35,13 +35,7 @@ function parseModelConfig(content: string): ModelConfig | null {
   }
 }
 
-function Model({
-  url,
-  scale = 1,
-}: {
-  url: string;
-  scale?: number;
-}) {
+function Model({ url, scale = 1 }: { url: string; scale?: number }) {
   const { scene } = useGLTF(url);
 
   return (
@@ -86,8 +80,8 @@ scale: 1`}
     return (
       <div
         className={cn(
-          'my-4 h-[400px] rounded-lg bg-stone-100 dark:bg-stone-800',
-          className
+          "my-4 h-[400px] rounded-lg bg-stone-100 dark:bg-stone-800",
+          className,
         )}
       >
         <ErrorMessage message={error} />
@@ -96,22 +90,15 @@ scale: 1`}
   }
 
   return (
-    <div className={cn('my-4', className)}>
-      <div className="relative h-[400px] overflow-hidden rounded-lg bg-gradient-to-b from-stone-100 to-stone-200 dark:from-stone-800 dark:to-stone-900">
+    <div className={cn("my-4", className)}>
+      <div className="model-viewer-bg relative h-[400px] overflow-hidden rounded-lg">
         <Canvas
           camera={{ position: [0, 0, 5], fov: 50 }}
-          onError={() => setError('Canvas initialization failed')}
+          onError={() => setError("Canvas initialization failed")}
         >
           <Suspense fallback={null}>
-            <Stage
-              environment="city"
-              intensity={0.5}
-              adjustCamera={false}
-            >
-              <Model
-                url={src}
-                scale={scale}
-              />
+            <Stage environment="city" intensity={0.5} adjustCamera={false}>
+              <Model url={src} scale={scale} />
             </Stage>
             <OrbitControls
               autoRotate={autoRotate}
@@ -123,7 +110,6 @@ scale: 1`}
             />
           </Suspense>
         </Canvas>
-
       </div>
 
       {/* Controls hint */}
