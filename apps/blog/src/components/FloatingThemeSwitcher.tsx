@@ -67,7 +67,7 @@ export function FloatingThemeSwitcher() {
     <div className="fixed right-4 top-4 z-50">
       <button
         type="button"
-        aria-label={getLabel()}
+        aria-label="Toggle theme"
         title={getLabel()}
         onClick={cycleTheme}
         className="rounded-full bg-white p-3 shadow-lg transition-transform hover:scale-110 dark:bg-stone-800"
