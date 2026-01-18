@@ -151,32 +151,55 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
         >
           <ChevronRight className="h-7 w-7" />
         </button>
-
       </div>
 
       {/* Caption bar below image */}
       <div className="mt-3 flex items-center justify-between gap-4 px-1 text-sm text-stone-600 dark:text-stone-400">
         <span className="truncate">{currentImage?.alt || ""}</span>
-        <div className="flex shrink-0 items-center gap-4">
-          {/* Dot pagination */}
-          <div className="flex items-center gap-2">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => emblaApi?.scrollTo(index)}
-                className={cn(
-                  "image-carousel__dot h-3 w-3 rounded-full border-2 transition-all",
-                  index === currentIndex
-                    ? "border-stone-700 bg-stone-700 dark:border-stone-300 dark:bg-stone-300"
-                    : "border-stone-400 bg-transparent hover:border-stone-500 dark:border-stone-500 dark:hover:border-stone-400",
-                )}
-                aria-label={`Go to image ${index + 1}`}
-              />
-            ))}
+        <div className="flex shrink-0 items-center gap-3">
+          {/* Dot pagination - timeline style like TOC */}
+          <div className="flex items-center">
+            {images.map((_, index) => {
+              const isActive = index === currentIndex;
+              const isPast = index < currentIndex;
+              const isLast = index === images.length - 1;
+              return (
+                <div key={index} className="flex items-center">
+                  <button
+                    type="button"
+                    onClick={() => emblaApi?.scrollTo(index)}
+                    style={{
+                      width: "10px",
+                      height: "10px",
+                      borderRadius: "50%",
+                      border: "2px solid",
+                      borderColor: isActive
+                        ? "#3b82f6"
+                        : "#d1d5db",
+                      backgroundColor: isActive
+                        ? "#3b82f6"
+                        : isPast
+                          ? "#9ca3af"
+                          : "white",
+                      transition: "all 0.2s",
+                    }}
+                    aria-label={`Go to image ${index + 1}`}
+                  />
+                  {!isLast && (
+                    <div
+                      style={{
+                        height: "2px",
+                        width: "16px",
+                        backgroundColor: "#d1d5db",
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
           {/* Counter */}
-          <span className="text-sm font-medium text-stone-500 dark:text-stone-400">
+          <span className="text-sm text-stone-500 dark:text-stone-400">
             {currentIndex + 1}/{images.length}
           </span>
         </div>
