@@ -580,6 +580,11 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
   color: #a9b1d6;
 }
 
+/* Tokyo Night: Code block border - use selection color */
+.tokyonight .group.relative.my-4 {
+  --tw-ring-color: #3b4261 !important; /* Selection border */
+}
+
 /* ===== Nord Light Theme Specific Styles ===== */
 
 .nord-light .shiki-wrapper .line:hover {
