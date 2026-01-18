@@ -623,3 +623,9 @@ $RECYCLE.BIN/
 # Playwright
 playwright-report/
 test-results/
+
+# Lighthouse reports
+lighthouse-report.html
+lighthouse-report.json
+lighthouse-report.report.html
+lighthouse-report.report.json
