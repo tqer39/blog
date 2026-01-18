@@ -4,7 +4,11 @@ import { Button } from '@blog/ui';
 import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-export function LogoutButton() {
+interface LogoutButtonProps {
+  compact?: boolean;
+}
+
+export function LogoutButton({ compact = false }: LogoutButtonProps) {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -16,6 +20,20 @@ export function LogoutButton() {
       console.error('Logout failed:', error);
     }
   };
+
+  if (compact) {
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleLogout}
+        className="mx-auto flex text-muted-foreground hover:text-foreground"
+        title="Logout"
+      >
+        <LogOut className="h-4 w-4" />
+      </Button>
+    );
+  }
 
   return (
     <Button

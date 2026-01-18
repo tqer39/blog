@@ -4,7 +4,6 @@ import type { SiteSettings } from '@blog/cms-types';
 import { Alert, AlertDescription, Button } from '@blog/ui';
 import {
   ArrowUpRight,
-  Briefcase,
   Github,
   LayoutGrid,
   Linkedin,
@@ -325,607 +324,87 @@ export default function SettingsPage() {
 
         {/* Social Links */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-          <h2 className="mb-6 text-xl font-semibold">Social Links</h2>
-          <div className="space-y-4">
-            {/* GitHub */}
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <label
-                  htmlFor="social_github"
-                  className="mb-2 flex items-center gap-2 text-sm font-medium"
-                >
-                  <Github className="h-4 w-4" />
-                  GitHub
-                </label>
-                <div className="flex">
-                  <span className="inline-flex items-center rounded-l-lg border border-r-0 border-border bg-muted px-3 text-sm text-muted-foreground">
-                    {SOCIAL_PREFIXES.github}
-                  </span>
-                  <input
-                    id="social_github"
-                    type="text"
-                    value={extractSocialId(
-                      settings?.social_github || '',
-                      'github'
-                    )}
-                    onChange={(e) =>
-                      handleSocialIdChange(
-                        'github',
-                        'social_github',
-                        e.target.value
-                      )
-                    }
-                    onPaste={(e) =>
-                      handleSocialPaste(e, 'github', 'social_github')
-                    }
-                    className="w-full rounded-none border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                    placeholder="username"
-                  />
-                  <a
-                    href={settings?.social_github || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors ${
-                      settings?.social_github
-                        ? 'cursor-pointer hover:bg-muted/80 hover:text-foreground'
-                        : 'pointer-events-none opacity-50'
-                    }`}
-                    aria-label="Open GitHub profile"
-                  >
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                </div>
-              </div>
-              <div className="flex flex-col items-center pt-6">
-                <span className="mb-1 text-xs text-muted-foreground">
-                  Display
-                </span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={settings?.show_github_link !== 'false'}
-                  onClick={() => handleToggle('show_github_link')}
-                  className={`relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                    settings?.show_github_link !== 'false'
-                      ? 'bg-primary'
-                      : 'bg-muted'
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings?.show_github_link !== 'false'
-                        ? 'translate-x-6'
-                        : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
+          <h2 className="mb-4 text-xl font-semibold">Social Links</h2>
+          <div className="space-y-2">
+            {[
+              { key: 'github', label: 'GitHub', icon: <Github className="h-4 w-4" />, placeholder: 'username' },
+              { key: 'twitter', label: 'X', icon: <XIcon className="h-4 w-4" />, placeholder: 'username' },
+              { key: 'bluesky', label: 'BlueSky', icon: <BlueSkyIcon className="h-4 w-4" />, placeholder: 'user.bsky.social' },
+              { key: 'threads', label: 'Threads', icon: <ThreadsIcon className="h-4 w-4" />, placeholder: 'username' },
+              { key: 'linkedin', label: 'LinkedIn', icon: <Linkedin className="h-4 w-4" />, placeholder: 'username' },
+              { key: 'wantedly', label: 'Wantedly', icon: <WantedlyIcon className="h-4 w-4" />, placeholder: 'username' },
+              { key: 'lapras', label: 'Lapras', icon: <LaprasIcon className="h-4 w-4" />, placeholder: 'username' },
+              { key: 'bento', label: 'Bento', icon: <LayoutGrid className="h-4 w-4" />, placeholder: 'username' },
+            ].map(({ key, label, icon, placeholder }) => {
+              const settingKey = `social_${key}` as keyof SiteSettings;
+              const showKey = `show_${key}_link` as keyof SiteSettings;
+              const value = settings?.[settingKey] || '';
+              const isVisible = settings?.[showKey] !== 'false';
 
-            {/* X (Twitter) */}
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <label
-                  htmlFor="social_twitter"
-                  className="mb-2 flex items-center gap-2 text-sm font-medium"
-                >
-                  <XIcon className="h-4 w-4" />
-                  X (Twitter)
-                </label>
-                <div className="flex">
-                  <span className="inline-flex items-center rounded-l-lg border border-r-0 border-border bg-muted px-3 text-sm text-muted-foreground">
-                    {SOCIAL_PREFIXES.twitter}
-                  </span>
-                  <input
-                    id="social_twitter"
-                    type="text"
-                    value={extractSocialId(
-                      settings?.social_twitter || '',
-                      'twitter'
-                    )}
-                    onChange={(e) =>
-                      handleSocialIdChange(
-                        'twitter',
-                        'social_twitter',
-                        e.target.value
-                      )
-                    }
-                    onPaste={(e) =>
-                      handleSocialPaste(e, 'twitter', 'social_twitter')
-                    }
-                    className="w-full rounded-none border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                    placeholder="username"
-                  />
-                  <a
-                    href={settings?.social_twitter || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors ${
-                      settings?.social_twitter
-                        ? 'cursor-pointer hover:bg-muted/80 hover:text-foreground'
-                        : 'pointer-events-none opacity-50'
+              return (
+                <div key={key} className="flex items-center gap-2">
+                  {/* Toggle */}
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={isVisible}
+                    onClick={() => handleToggle(showKey)}
+                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                      isVisible ? 'bg-primary' : 'bg-muted'
                     }`}
-                    aria-label="Open X profile"
                   >
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                </div>
-              </div>
-              <div className="flex flex-col items-center pt-6">
-                <span className="mb-1 text-xs text-muted-foreground">
-                  Display
-                </span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={settings?.show_twitter_link !== 'false'}
-                  onClick={() => handleToggle('show_twitter_link')}
-                  className={`relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                    settings?.show_twitter_link !== 'false'
-                      ? 'bg-primary'
-                      : 'bg-muted'
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings?.show_twitter_link !== 'false'
-                        ? 'translate-x-6'
-                        : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
+                    <span
+                      className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                        isVisible ? 'translate-x-5' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
 
-            {/* Bento */}
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <label
-                  htmlFor="social_bento"
-                  className="mb-2 flex items-center gap-2 text-sm font-medium"
-                >
-                  <LayoutGrid className="h-4 w-4" />
-                  Bento
-                </label>
-                <div className="flex">
-                  <span className="inline-flex items-center rounded-l-lg border border-r-0 border-border bg-muted px-3 text-sm text-muted-foreground">
-                    {SOCIAL_PREFIXES.bento}
-                  </span>
-                  <input
-                    id="social_bento"
-                    type="text"
-                    value={extractSocialId(
-                      settings?.social_bento || '',
-                      'bento'
-                    )}
-                    onChange={(e) =>
-                      handleSocialIdChange(
-                        'bento',
-                        'social_bento',
-                        e.target.value
-                      )
-                    }
-                    onPaste={(e) =>
-                      handleSocialPaste(e, 'bento', 'social_bento')
-                    }
-                    className="w-full rounded-none border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                    placeholder="username"
-                  />
-                  <a
-                    href={settings?.social_bento || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors ${
-                      settings?.social_bento
-                        ? 'cursor-pointer hover:bg-muted/80 hover:text-foreground'
-                        : 'pointer-events-none opacity-50'
-                    }`}
-                    aria-label="Open Bento profile"
+                  {/* Icon + Label */}
+                  <label
+                    htmlFor={settingKey}
+                    className="flex w-24 shrink-0 items-center gap-2 text-sm font-medium"
                   >
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                </div>
-              </div>
-              <div className="flex flex-col items-center pt-6">
-                <span className="mb-1 text-xs text-muted-foreground">
-                  Display
-                </span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={settings?.show_bento_link !== 'false'}
-                  onClick={() => handleToggle('show_bento_link')}
-                  className={`relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                    settings?.show_bento_link !== 'false'
-                      ? 'bg-primary'
-                      : 'bg-muted'
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings?.show_bento_link !== 'false'
-                        ? 'translate-x-6'
-                        : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
+                    {icon}
+                    {label}
+                  </label>
 
-            {/* BlueSky */}
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <label
-                  htmlFor="social_bluesky"
-                  className="mb-2 flex items-center gap-2 text-sm font-medium"
-                >
-                  <BlueSkyIcon className="h-4 w-4" />
-                  BlueSky
-                </label>
-                <div className="flex">
-                  <span className="inline-flex items-center rounded-l-lg border border-r-0 border-border bg-muted px-3 text-sm text-muted-foreground">
-                    {SOCIAL_PREFIXES.bluesky}
-                  </span>
-                  <input
-                    id="social_bluesky"
-                    type="text"
-                    value={extractSocialId(
-                      settings?.social_bluesky || '',
-                      'bluesky'
-                    )}
-                    onChange={(e) =>
-                      handleSocialIdChange(
-                        'bluesky',
-                        'social_bluesky',
-                        e.target.value
-                      )
-                    }
-                    onPaste={(e) =>
-                      handleSocialPaste(e, 'bluesky', 'social_bluesky')
-                    }
-                    className="w-full rounded-none border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                    placeholder="username.bsky.social"
-                  />
-                  <a
-                    href={settings?.social_bluesky || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors ${
-                      settings?.social_bluesky
-                        ? 'cursor-pointer hover:bg-muted/80 hover:text-foreground'
-                        : 'pointer-events-none opacity-50'
-                    }`}
-                    aria-label="Open BlueSky profile"
-                  >
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
+                  {/* Input */}
+                  <div className="flex flex-1">
+                    <input
+                      id={settingKey}
+                      type="text"
+                      value={extractSocialId(value, key as keyof typeof SOCIAL_PREFIXES)}
+                      onChange={(e) =>
+                        handleSocialIdChange(
+                          key as keyof typeof SOCIAL_PREFIXES,
+                          settingKey,
+                          e.target.value
+                        )
+                      }
+                      onPaste={(e) =>
+                        handleSocialPaste(e, key as keyof typeof SOCIAL_PREFIXES, settingKey)
+                      }
+                      className="w-full rounded-l-lg border border-border bg-background px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                      placeholder={placeholder}
+                    />
+                    <a
+                      href={value || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-2 text-muted-foreground transition-colors ${
+                        value
+                          ? 'cursor-pointer hover:bg-muted/80 hover:text-foreground'
+                          : 'pointer-events-none opacity-50'
+                      }`}
+                      aria-label={`Open ${label} profile`}
+                    >
+                      <ArrowUpRight className="h-4 w-4" />
+                    </a>
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-col items-center pt-6">
-                <span className="mb-1 text-xs text-muted-foreground">
-                  Display
-                </span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={settings?.show_bluesky_link !== 'false'}
-                  onClick={() => handleToggle('show_bluesky_link')}
-                  className={`relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                    settings?.show_bluesky_link !== 'false'
-                      ? 'bg-primary'
-                      : 'bg-muted'
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings?.show_bluesky_link !== 'false'
-                        ? 'translate-x-6'
-                        : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
-
-            {/* Threads */}
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <label
-                  htmlFor="social_threads"
-                  className="mb-2 flex items-center gap-2 text-sm font-medium"
-                >
-                  <ThreadsIcon className="h-4 w-4" />
-                  Threads
-                </label>
-                <div className="flex">
-                  <span className="inline-flex items-center rounded-l-lg border border-r-0 border-border bg-muted px-3 text-sm text-muted-foreground">
-                    {SOCIAL_PREFIXES.threads}
-                  </span>
-                  <input
-                    id="social_threads"
-                    type="text"
-                    value={extractSocialId(
-                      settings?.social_threads || '',
-                      'threads'
-                    )}
-                    onChange={(e) =>
-                      handleSocialIdChange(
-                        'threads',
-                        'social_threads',
-                        e.target.value
-                      )
-                    }
-                    onPaste={(e) =>
-                      handleSocialPaste(e, 'threads', 'social_threads')
-                    }
-                    className="w-full rounded-none border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                    placeholder="username"
-                  />
-                  <a
-                    href={settings?.social_threads || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors ${
-                      settings?.social_threads
-                        ? 'cursor-pointer hover:bg-muted/80 hover:text-foreground'
-                        : 'pointer-events-none opacity-50'
-                    }`}
-                    aria-label="Open Threads profile"
-                  >
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                </div>
-              </div>
-              <div className="flex flex-col items-center pt-6">
-                <span className="mb-1 text-xs text-muted-foreground">
-                  Display
-                </span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={settings?.show_threads_link !== 'false'}
-                  onClick={() => handleToggle('show_threads_link')}
-                  className={`relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                    settings?.show_threads_link !== 'false'
-                      ? 'bg-primary'
-                      : 'bg-muted'
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings?.show_threads_link !== 'false'
-                        ? 'translate-x-6'
-                        : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
-
-            {/* LinkedIn */}
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <label
-                  htmlFor="social_linkedin"
-                  className="mb-2 flex items-center gap-2 text-sm font-medium"
-                >
-                  <Linkedin className="h-4 w-4" />
-                  LinkedIn
-                </label>
-                <div className="flex">
-                  <span className="inline-flex items-center rounded-l-lg border border-r-0 border-border bg-muted px-3 text-sm text-muted-foreground">
-                    {SOCIAL_PREFIXES.linkedin}
-                  </span>
-                  <input
-                    id="social_linkedin"
-                    type="text"
-                    value={extractSocialId(
-                      settings?.social_linkedin || '',
-                      'linkedin'
-                    )}
-                    onChange={(e) =>
-                      handleSocialIdChange(
-                        'linkedin',
-                        'social_linkedin',
-                        e.target.value
-                      )
-                    }
-                    onPaste={(e) =>
-                      handleSocialPaste(e, 'linkedin', 'social_linkedin')
-                    }
-                    className="w-full rounded-none border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                    placeholder="username"
-                  />
-                  <a
-                    href={settings?.social_linkedin || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors ${
-                      settings?.social_linkedin
-                        ? 'cursor-pointer hover:bg-muted/80 hover:text-foreground'
-                        : 'pointer-events-none opacity-50'
-                    }`}
-                    aria-label="Open LinkedIn profile"
-                  >
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                </div>
-              </div>
-              <div className="flex flex-col items-center pt-6">
-                <span className="mb-1 text-xs text-muted-foreground">
-                  Display
-                </span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={settings?.show_linkedin_link !== 'false'}
-                  onClick={() => handleToggle('show_linkedin_link')}
-                  className={`relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                    settings?.show_linkedin_link !== 'false'
-                      ? 'bg-primary'
-                      : 'bg-muted'
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings?.show_linkedin_link !== 'false'
-                        ? 'translate-x-6'
-                        : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
-
-            {/* Wantedly */}
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <label
-                  htmlFor="social_wantedly"
-                  className="mb-2 flex items-center gap-2 text-sm font-medium"
-                >
-                  <WantedlyIcon className="h-4 w-4" />
-                  Wantedly
-                </label>
-                <div className="flex">
-                  <span className="inline-flex items-center rounded-l-lg border border-r-0 border-border bg-muted px-3 text-sm text-muted-foreground">
-                    {SOCIAL_PREFIXES.wantedly}
-                  </span>
-                  <input
-                    id="social_wantedly"
-                    type="text"
-                    value={extractSocialId(
-                      settings?.social_wantedly || '',
-                      'wantedly'
-                    )}
-                    onChange={(e) =>
-                      handleSocialIdChange(
-                        'wantedly',
-                        'social_wantedly',
-                        e.target.value
-                      )
-                    }
-                    onPaste={(e) =>
-                      handleSocialPaste(e, 'wantedly', 'social_wantedly')
-                    }
-                    className="w-full rounded-none border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                    placeholder="username"
-                  />
-                  <a
-                    href={settings?.social_wantedly || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors ${
-                      settings?.social_wantedly
-                        ? 'cursor-pointer hover:bg-muted/80 hover:text-foreground'
-                        : 'pointer-events-none opacity-50'
-                    }`}
-                    aria-label="Open Wantedly profile"
-                  >
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                </div>
-              </div>
-              <div className="flex flex-col items-center pt-6">
-                <span className="mb-1 text-xs text-muted-foreground">
-                  Display
-                </span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={settings?.show_wantedly_link !== 'false'}
-                  onClick={() => handleToggle('show_wantedly_link')}
-                  className={`relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                    settings?.show_wantedly_link !== 'false'
-                      ? 'bg-primary'
-                      : 'bg-muted'
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings?.show_wantedly_link !== 'false'
-                        ? 'translate-x-6'
-                        : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
-
-            {/* Lapras */}
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <label
-                  htmlFor="social_lapras"
-                  className="mb-2 flex items-center gap-2 text-sm font-medium"
-                >
-                  <LaprasIcon className="h-4 w-4" />
-                  Lapras
-                </label>
-                <div className="flex">
-                  <span className="inline-flex items-center rounded-l-lg border border-r-0 border-border bg-muted px-3 text-sm text-muted-foreground">
-                    {SOCIAL_PREFIXES.lapras}
-                  </span>
-                  <input
-                    id="social_lapras"
-                    type="text"
-                    value={extractSocialId(
-                      settings?.social_lapras || '',
-                      'lapras'
-                    )}
-                    onChange={(e) =>
-                      handleSocialIdChange(
-                        'lapras',
-                        'social_lapras',
-                        e.target.value
-                      )
-                    }
-                    onPaste={(e) =>
-                      handleSocialPaste(e, 'lapras', 'social_lapras')
-                    }
-                    className="w-full rounded-none border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                    placeholder="username"
-                  />
-                  <a
-                    href={settings?.social_lapras || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors ${
-                      settings?.social_lapras
-                        ? 'cursor-pointer hover:bg-muted/80 hover:text-foreground'
-                        : 'pointer-events-none opacity-50'
-                    }`}
-                    aria-label="Open Lapras profile"
-                  >
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                </div>
-              </div>
-              <div className="flex flex-col items-center pt-6">
-                <span className="mb-1 text-xs text-muted-foreground">
-                  Display
-                </span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={settings?.show_lapras_link !== 'false'}
-                  onClick={() => handleToggle('show_lapras_link')}
-                  className={`relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                    settings?.show_lapras_link !== 'false'
-                      ? 'bg-primary'
-                      : 'bg-muted'
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                      settings?.show_lapras_link !== 'false'
-                        ? 'translate-x-6'
-                        : 'translate-x-1'
-                    }`}
-                  />
-                </button>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
 
