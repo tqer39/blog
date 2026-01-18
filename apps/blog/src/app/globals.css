@@ -715,6 +715,19 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
   --tw-ring-color: #d8dee9 !important; /* nord4 */
 }
 
+/* Nord Light: Terminal/CodeBlock header text - keep light text on dark bg */
+.nord-light .bg-stone-700 {
+  background-color: #44403c !important; /* stone-700 */
+}
+
+.nord-light .text-stone-300 {
+  color: #d6d3d1 !important; /* stone-300 */
+}
+
+.nord-light .text-stone-400 {
+  color: #a8a29e !important; /* stone-400 */
+}
+
 /* ===== Autumn Theme Specific Styles ===== */
 
 .autumn .shiki-wrapper .line:hover {
@@ -847,4 +860,17 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
 /* Autumn: Code block border */
 .autumn .group.relative.my-4 {
   --tw-ring-color: #d7ccc8 !important; /* light brown */
+}
+
+/* Autumn: Terminal/CodeBlock header text - keep light text on dark bg */
+.autumn .bg-stone-700 {
+  background-color: #44403c !important; /* stone-700 */
+}
+
+.autumn .text-stone-300 {
+  color: #d6d3d1 !important; /* stone-300 */
+}
+
+.autumn .text-stone-400 {
+  color: #a8a29e !important; /* stone-400 */
 }

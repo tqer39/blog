@@ -248,9 +248,9 @@ export function Terminal({ content, className }: TerminalProps) {
       )}
     >
       {/* Terminal header */}
-      <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2">
+      <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 text-sm text-stone-300">
+          <div className="flex items-center gap-2">
             <TerminalIcon className="h-4 w-4" />
             <span>Terminal</span>
           </div>
