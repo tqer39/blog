@@ -1,8 +1,15 @@
-'use client';
+"use client";
 
-import { cn } from '@blog/utils';
-import { Check, ChevronDown, ChevronRight, Copy, File, Folder } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { cn } from "@blog/utils";
+import {
+  Check,
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  File,
+  Folder,
+} from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
 
 interface FileTreeProps {
   content: string;
@@ -17,7 +24,7 @@ interface TreeNode {
 }
 
 function parseTree(content: string): TreeNode[] {
-  const lines = content.split('\n').filter((line) => line.trim() !== '');
+  const lines = content.split("\n").filter((line) => line.trim() !== "");
   const root: TreeNode[] = [];
   const stack: { node: TreeNode; depth: number }[] = [];
 
@@ -26,7 +33,7 @@ function parseTree(content: string): TreeNode[] {
     const leadingSpaces = line.match(/^(\s*)/)?.[1].length || 0;
     const depth = Math.floor(leadingSpaces / 2);
     const name = line.trim();
-    const isDirectory = name.endsWith('/');
+    const isDirectory = name.endsWith("/");
     const displayName = isDirectory ? name.slice(0, -1) : name;
 
     const node: TreeNode = {
@@ -56,34 +63,34 @@ function parseTree(content: string): TreeNode[] {
 }
 
 function getFileIcon(name: string): string {
-  const ext = name.split('.').pop()?.toLowerCase();
+  const ext = name.split(".").pop()?.toLowerCase();
   switch (ext) {
-    case 'ts':
-    case 'tsx':
-      return 'text-blue-500';
-    case 'js':
-    case 'jsx':
-      return 'text-yellow-500';
-    case 'json':
-      return 'text-yellow-600';
-    case 'md':
-      return 'text-stone-500';
-    case 'css':
-    case 'scss':
-      return 'text-pink-500';
-    case 'html':
-      return 'text-orange-500';
-    case 'py':
-      return 'text-green-500';
-    case 'go':
-      return 'text-cyan-500';
-    case 'rs':
-      return 'text-orange-600';
-    case 'yaml':
-    case 'yml':
-      return 'text-red-400';
+    case "ts":
+    case "tsx":
+      return "text-blue-500";
+    case "js":
+    case "jsx":
+      return "text-yellow-500";
+    case "json":
+      return "text-yellow-600";
+    case "md":
+      return "text-stone-500";
+    case "css":
+    case "scss":
+      return "text-pink-500";
+    case "html":
+      return "text-orange-500";
+    case "py":
+      return "text-green-500";
+    case "go":
+      return "text-cyan-500";
+    case "rs":
+      return "text-orange-600";
+    case "yaml":
+    case "yml":
+      return "text-red-400";
     default:
-      return 'text-stone-400';
+      return "text-stone-400";
   }
 }
 
@@ -108,9 +115,9 @@ function TreeNodeComponent({
         type="button"
         onClick={toggleExpand}
         className={cn(
-          'flex w-full items-center gap-1 rounded px-1 py-0.5 text-left hover:bg-stone-200 dark:hover:bg-stone-700',
-          node.isDirectory && 'cursor-pointer',
-          !node.isDirectory && 'cursor-default'
+          "flex w-full items-center gap-1 rounded px-1 py-0.5 text-left hover:bg-stone-200 dark:hover:bg-stone-700",
+          node.isDirectory && "cursor-pointer",
+          !node.isDirectory && "cursor-default",
         )}
       >
         {node.isDirectory ? (
@@ -125,7 +132,7 @@ function TreeNodeComponent({
         ) : (
           <>
             <span className="w-4" />
-            <File className={cn('h-4 w-4 shrink-0', getFileIcon(node.name))} />
+            <File className={cn("h-4 w-4 shrink-0", getFileIcon(node.name))} />
           </>
         )}
         <span className="text-stone-700 dark:text-stone-300">{node.name}</span>
@@ -153,14 +160,14 @@ export function FileTree({ content, className }: FileTreeProps) {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
-      console.error('Failed to copy:', error);
+      console.error("Failed to copy:", error);
     }
   }, [content]);
 
   return (
-    <div className={cn('my-4', className)}>
+    <div className={cn("my-4", className)}>
       {/* Header */}
-      <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+      <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
         <div className="flex items-center gap-2">
           <Folder className="h-4 w-4" />
           <span>File Tree</span>

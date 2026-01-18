@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { cn } from '@blog/utils';
-import { Calendar } from 'lucide-react';
-import { useMemo } from 'react';
-import YAML from 'yaml';
+import { cn } from "@blog/utils";
+import { Calendar } from "lucide-react";
+import { useMemo } from "react";
+import YAML from "yaml";
 
 interface TimelineProps {
   content: string;
@@ -22,10 +22,10 @@ function parseTimeline(content: string): TimelineEvent[] {
     if (Array.isArray(parsed)) {
       return parsed.filter(
         (item): item is TimelineEvent =>
-          typeof item === 'object' &&
+          typeof item === "object" &&
           item !== null &&
-          typeof item.date === 'string' &&
-          typeof item.title === 'string'
+          typeof item.date === "string" &&
+          typeof item.title === "string",
       );
     }
     return [];
@@ -51,9 +51,9 @@ export function Timeline({ content, className }: TimelineProps) {
   }
 
   return (
-    <div className={cn('my-4', className)}>
+    <div className={cn("my-4", className)}>
       {/* Header */}
-      <div className="flex items-center gap-2 rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+      <div className="component-header flex items-center gap-2 rounded-t-lg px-4 py-2 text-sm">
         <Calendar className="h-4 w-4" />
         <span>Timeline</span>
       </div>
@@ -71,19 +71,19 @@ export function Timeline({ content, className }: TimelineProps) {
                   {/* Dot */}
                   <div
                     className="z-10 h-3 w-3 shrink-0 rounded-full border-2 border-blue-500 bg-white dark:bg-stone-800"
-                    style={{ marginTop: '6px' }}
+                    style={{ marginTop: "6px" }}
                   />
                   {/* Line */}
                   {!isLast && (
                     <div
                       className="w-0.5 flex-1 bg-stone-300 dark:bg-stone-600"
-                      style={{ minHeight: '24px' }}
+                      style={{ minHeight: "24px" }}
                     />
                   )}
                 </div>
 
                 {/* Content */}
-                <div className={cn('pb-6', isLast && 'pb-0')}>
+                <div className={cn("pb-6", isLast && "pb-0")}>
                   {/* Date */}
                   <div className="mb-1 text-sm font-medium text-blue-600 dark:text-blue-400">
                     {event.date}

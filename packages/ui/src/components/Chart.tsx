@@ -238,7 +238,7 @@ data:
       )}
     >
       {title && (
-        <div className="chart-header flex items-center gap-2 rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+        <div className="component-header flex items-center gap-2 rounded-t-lg px-4 py-2 text-sm">
           <BarChart3 className="h-4 w-4" />
           <span>{title}</span>
         </div>

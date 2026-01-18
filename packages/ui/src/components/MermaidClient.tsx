@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Check, Copy, Download, Image, Maximize2 } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { SiMermaid } from 'react-icons/si';
-import { FullscreenModal } from './FullscreenModal';
-import { Skeleton } from './ui/skeleton';
+import { Check, Copy, Download, Image, Maximize2 } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { SiMermaid } from "react-icons/si";
+import { FullscreenModal } from "./FullscreenModal";
+import { Skeleton } from "./ui/skeleton";
 
 interface MermaidClientProps {
   chart: string;
@@ -17,7 +17,7 @@ declare global {
       initialize: (config: { startOnLoad: boolean; theme: string }) => void;
       render: (
         id: string,
-        code: string
+        code: string,
       ) => Promise<{ svg: string; bindFunctions?: (element: Element) => void }>;
     };
   }
@@ -36,12 +36,12 @@ function loadMermaid(): Promise<void> {
   }
 
   mermaidLoadPromise = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.src =
-      'https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js';
+      "https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js";
     script.integrity =
-      'sha384-R63zfMfSwJF4xCR11wXii+QUsbiBIdiDzDbtxia72oGWfkT7WHJfmD/I/eeHPJyT';
-    script.crossOrigin = 'anonymous';
+      "sha384-R63zfMfSwJF4xCR11wXii+QUsbiBIdiDzDbtxia72oGWfkT7WHJfmD/I/eeHPJyT";
+    script.crossOrigin = "anonymous";
     script.async = true;
     script.onload = () => {
       mermaidLoaded = true;
@@ -57,7 +57,7 @@ function loadMermaid(): Promise<void> {
 export function MermaidClient({ chart }: MermaidClientProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [svg, setSvg] = useState<string>('');
+  const [svg, setSvg] = useState<string>("");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [copied, setCopied] = useState(false);
   const instanceId = useRef(Math.random().toString(36).substring(2, 9));
@@ -75,21 +75,21 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   }, [chart]);
 
   const handleDownloadSvg = useCallback(() => {
-    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const blob = new Blob([svg], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'diagram.svg';
+    a.download = "diagram.svg";
     a.click();
     URL.revokeObjectURL(url);
   }, [svg]);
 
   const handleDownloadPng = useCallback(async () => {
-    const svgElement = containerRef.current?.querySelector('svg');
+    const svgElement = containerRef.current?.querySelector("svg");
     if (!svgElement) return;
 
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     // Get actual SVG dimensions from bounding box
@@ -99,8 +99,8 @@ export function MermaidClient({ chart }: MermaidClientProps) {
 
     // Clone SVG and set explicit dimensions
     const clonedSvg = svgElement.cloneNode(true) as SVGSVGElement;
-    clonedSvg.setAttribute('width', String(svgWidth));
-    clonedSvg.setAttribute('height', String(svgHeight));
+    clonedSvg.setAttribute("width", String(svgWidth));
+    clonedSvg.setAttribute("height", String(svgHeight));
 
     const svgData = new XMLSerializer().serializeToString(clonedSvg);
 
@@ -115,21 +115,21 @@ export function MermaidClient({ chart }: MermaidClientProps) {
       canvas.height = svgHeight * scale;
       ctx.scale(scale, scale);
       ctx.fillStyle =
-        resolvedTheme === 'dark' || resolvedTheme === 'tokyonight'
-          ? '#24292e'
-          : '#ffffff';
+        resolvedTheme === "dark" || resolvedTheme === "tokyonight"
+          ? "#24292e"
+          : "#ffffff";
       ctx.fillRect(0, 0, svgWidth, svgHeight);
       ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
 
       canvas.toBlob((blob) => {
         if (!blob) return;
         const pngUrl = URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.href = pngUrl;
-        a.download = 'diagram.png';
+        a.download = "diagram.png";
         a.click();
         URL.revokeObjectURL(pngUrl);
-      }, 'image/png');
+      }, "image/png");
     };
     img.src = dataUrl;
   }, [resolvedTheme]);
@@ -145,10 +145,10 @@ export function MermaidClient({ chart }: MermaidClientProps) {
         if (cancelled || !window.mermaid) return;
 
         const isDarkTheme =
-          resolvedTheme === 'dark' || resolvedTheme === 'tokyonight';
+          resolvedTheme === "dark" || resolvedTheme === "tokyonight";
         window.mermaid.initialize({
           startOnLoad: false,
-          theme: isDarkTheme ? 'dark' : 'default',
+          theme: isDarkTheme ? "dark" : "default",
         });
 
         renderCountRef.current += 1;
@@ -158,7 +158,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
           setSvg(svg);
         }
       } catch (error) {
-        console.error('Mermaid rendering failed:', error);
+        console.error("Mermaid rendering failed:", error);
       }
     };
 
@@ -174,7 +174,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
     const lineWidths = [85, 70, 90, 60, 75];
     return (
       <div className="group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900">
-        <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+        <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
           <div className="flex items-center gap-2">
             <SiMermaid className="h-4 w-4" />
             <span>Mermaid</span>
@@ -207,30 +207,30 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   // Modify SVG to remove fixed dimensions and add viewBox for scaling
   const getScalableSvg = () => {
     const parser = new DOMParser();
-    const doc = parser.parseFromString(svg, 'image/svg+xml');
-    const svgEl = doc.querySelector('svg');
+    const doc = parser.parseFromString(svg, "image/svg+xml");
+    const svgEl = doc.querySelector("svg");
     if (!svgEl) return svg;
 
     // Get current dimensions
-    const width = svgEl.getAttribute('width') || svgEl.style.width;
-    const height = svgEl.getAttribute('height') || svgEl.style.height;
+    const width = svgEl.getAttribute("width") || svgEl.style.width;
+    const height = svgEl.getAttribute("height") || svgEl.style.height;
 
     // Set viewBox if not present
-    if (!svgEl.getAttribute('viewBox') && width && height) {
+    if (!svgEl.getAttribute("viewBox") && width && height) {
       const w = Number.parseFloat(width);
       const h = Number.parseFloat(height);
       if (!Number.isNaN(w) && !Number.isNaN(h)) {
-        svgEl.setAttribute('viewBox', `0 0 ${w} ${h}`);
+        svgEl.setAttribute("viewBox", `0 0 ${w} ${h}`);
       }
     }
 
     // Remove fixed dimensions to allow scaling
-    svgEl.removeAttribute('width');
-    svgEl.removeAttribute('height');
-    svgEl.style.width = '100%';
-    svgEl.style.height = '100%';
-    svgEl.style.maxWidth = '100%';
-    svgEl.style.maxHeight = '100%';
+    svgEl.removeAttribute("width");
+    svgEl.removeAttribute("height");
+    svgEl.style.width = "100%";
+    svgEl.style.height = "100%";
+    svgEl.style.maxWidth = "100%";
+    svgEl.style.maxHeight = "100%";
 
     return new XMLSerializer().serializeToString(doc);
   };
@@ -245,7 +245,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   return (
     <>
       <div className="group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900">
-        <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+        <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
           <div className="flex items-center gap-2">
             <SiMermaid className="h-4 w-4" />
             <span>Mermaid</span>

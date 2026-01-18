@@ -924,7 +924,7 @@ html.autumn .model-viewer-bg {
 }
 
 /* General Chart Overrides */
-.chart-header {
+.component-header {
   background-color: #44403c !important; /* stone-700 */
   color: #d6d3d1 !important; /* stone-300 */
 }
@@ -952,7 +952,7 @@ body[data-slide-mode="true"] .chart-container {
   --tw-ring-color: transparent !important;
 }
 
-body[data-slide-mode="true"] .chart-header {
+body[data-slide-mode="true"] .component-header {
   border-radius: 0 !important;
   background-color: transparent !important;
   color: inherit !important;
@@ -960,11 +960,11 @@ body[data-slide-mode="true"] .chart-header {
   margin-bottom: 1rem !important;
 }
 
-body[data-slide-mode="true"] .chart-header svg {
+body[data-slide-mode="true"] .component-header svg {
   display: none !important;
 }
 
-body[data-slide-mode="true"] .chart-header span {
+body[data-slide-mode="true"] .component-header span {
   font-size: 1.5rem !important;
   font-weight: bold !important;
 }
