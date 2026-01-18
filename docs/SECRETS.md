@@ -139,11 +139,13 @@ Note: Basic Auth is used for both CMS API (Wrangler) and Blog Frontend
 
 ### Discord (op://shared-secrets/discord)
 
-| Field Name             | Maps To              | Target |
-| ---------------------- | -------------------- | ------ |
-| `blog-bot-token`       | DISCORD_BOT_TOKEN    | GitHub |
-| `blog-webhook-url-dev` | DISCORD_WEBHOOK_DEV  | GitHub |
-| `blog-webhook-url-prod`| DISCORD_WEBHOOK_PROD | GitHub |
+| Field Name       | Maps To           | Target |
+| ---------------- | ----------------- | ------ |
+| `blog-bot-token` | DISCORD_BOT_TOKEN | GitHub |
+
+Note: `DISCORD_WEBHOOK_DEV` and `DISCORD_WEBHOOK_PROD` are managed by Terraform
+(`infra/terraform/envs/shared/discord`), not 1Password. The webhook URLs are
+synced to GitHub Secrets automatically when `terraform-shared.yml` runs.
 
 ### Codecov (op://shared-secrets/codecov)
 

@@ -137,11 +137,13 @@ Vercel プロジェクトの環境変数は 1Password sync ではなく Terrafor
 
 ### Discord (op://shared-secrets/discord)
 
-| フィールド名           | 環境変数             | 同期先 |
-| ---------------------- | -------------------- | ------ |
-| `blog-bot-token`       | DISCORD_BOT_TOKEN    | GitHub |
-| `blog-webhook-url-dev` | DISCORD_WEBHOOK_DEV  | GitHub |
-| `blog-webhook-url-prod`| DISCORD_WEBHOOK_PROD | GitHub |
+| フィールド名     | 環境変数          | 同期先 |
+| ---------------- | ----------------- | ------ |
+| `blog-bot-token` | DISCORD_BOT_TOKEN | GitHub |
+
+備考: `DISCORD_WEBHOOK_DEV` と `DISCORD_WEBHOOK_PROD` は 1Password ではなく
+Terraform (`infra/terraform/envs/shared/discord`) で管理されています。Webhook URL
+は `terraform-shared.yml` の実行時に自動的に GitHub Secrets に同期されます。
 
 ### Codecov (op://shared-secrets/codecov)
 
