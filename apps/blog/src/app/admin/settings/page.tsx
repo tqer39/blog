@@ -3,8 +3,46 @@
 import type { SiteSettings } from '@blog/cms-types';
 import { Alert, AlertDescription, Button } from '@blog/ui';
 import { Loader2, Save } from 'lucide-react';
+import type { ClipboardEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { getSiteSettings, updateSiteSettings } from '@/lib/api/client';
+
+// Social link prefixes for each service
+const SOCIAL_PREFIXES = {
+  github: 'https://github.com/',
+  twitter: 'https://x.com/',
+  bento: 'https://bento.me/',
+} as const;
+
+// Extract ID from full URL
+function extractSocialId(
+  url: string,
+  service: keyof typeof SOCIAL_PREFIXES
+): string {
+  if (!url) return '';
+  const prefix = SOCIAL_PREFIXES[service];
+  if (url.startsWith(prefix)) {
+    return url.slice(prefix.length).replace(/\/$/, '');
+  }
+  // Handle legacy twitter.com URLs
+  if (service === 'twitter' && url.startsWith('https://twitter.com/')) {
+    return url.slice('https://twitter.com/'.length).replace(/\/$/, '');
+  }
+  // If it's not a full URL, treat it as an ID
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return url;
+  }
+  return '';
+}
+
+// Build full URL from ID
+function buildSocialUrl(
+  id: string,
+  service: keyof typeof SOCIAL_PREFIXES
+): string {
+  if (!id) return '';
+  return `${SOCIAL_PREFIXES[service]}${id}`;
+}
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
@@ -62,6 +100,31 @@ export default function SettingsPage() {
     const currentValue = settings[key] === 'true';
     setSettings({ ...settings, [key]: currentValue ? 'false' : 'true' });
     setMessage(null);
+  }
+
+  function handleSocialIdChange(
+    service: keyof typeof SOCIAL_PREFIXES,
+    settingKey: keyof SiteSettings,
+    id: string
+  ) {
+    if (!settings) return;
+    const url = buildSocialUrl(id, service);
+    setSettings({ ...settings, [settingKey]: url });
+    setMessage(null);
+  }
+
+  function handleSocialPaste(
+    e: ClipboardEvent<HTMLInputElement>,
+    service: keyof typeof SOCIAL_PREFIXES,
+    settingKey: keyof SiteSettings
+  ) {
+    const pastedText = e.clipboardData.getData('text').trim();
+    // Handle full URLs (including legacy twitter.com)
+    if (pastedText.startsWith('http://') || pastedText.startsWith('https://')) {
+      e.preventDefault();
+      const id = extractSocialId(pastedText, service);
+      handleSocialIdChange(service, settingKey, id);
+    }
   }
 
   if (loading) {
@@ -181,53 +244,187 @@ export default function SettingsPage() {
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
           <h2 className="mb-6 text-xl font-semibold">Social Links</h2>
           <div className="space-y-4">
-            <div>
-              <label
-                htmlFor="social_github"
-                className="mb-2 block text-sm font-medium"
-              >
-                GitHub URL
-              </label>
-              <input
-                id="social_github"
-                type="url"
-                value={settings?.social_github || ''}
-                onChange={(e) => handleChange('social_github', e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="https://github.com/username"
-              />
+            {/* GitHub */}
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
+                <label
+                  htmlFor="social_github"
+                  className="mb-2 block text-sm font-medium"
+                >
+                  GitHub
+                </label>
+                <div className="flex">
+                  <span className="inline-flex items-center rounded-l-lg border border-r-0 border-border bg-muted px-3 text-sm text-muted-foreground">
+                    {SOCIAL_PREFIXES.github}
+                  </span>
+                  <input
+                    id="social_github"
+                    type="text"
+                    value={extractSocialId(
+                      settings?.social_github || '',
+                      'github'
+                    )}
+                    onChange={(e) =>
+                      handleSocialIdChange(
+                        'github',
+                        'social_github',
+                        e.target.value
+                      )
+                    }
+                    onPaste={(e) =>
+                      handleSocialPaste(e, 'github', 'social_github')
+                    }
+                    className="w-full rounded-l-none rounded-r-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    placeholder="username"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col items-center pt-6">
+                <span className="mb-1 text-xs text-muted-foreground">
+                  Display
+                </span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={settings?.show_github_link !== 'false'}
+                  onClick={() => handleToggle('show_github_link')}
+                  className={`relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                    settings?.show_github_link !== 'false'
+                      ? 'bg-primary'
+                      : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      settings?.show_github_link !== 'false'
+                        ? 'translate-x-6'
+                        : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
-            <div>
-              <label
-                htmlFor="social_twitter"
-                className="mb-2 block text-sm font-medium"
-              >
-                Twitter URL
-              </label>
-              <input
-                id="social_twitter"
-                type="url"
-                value={settings?.social_twitter || ''}
-                onChange={(e) => handleChange('social_twitter', e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="https://twitter.com/username"
-              />
+
+            {/* X (Twitter) */}
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
+                <label
+                  htmlFor="social_twitter"
+                  className="mb-2 block text-sm font-medium"
+                >
+                  X (Twitter)
+                </label>
+                <div className="flex">
+                  <span className="inline-flex items-center rounded-l-lg border border-r-0 border-border bg-muted px-3 text-sm text-muted-foreground">
+                    {SOCIAL_PREFIXES.twitter}
+                  </span>
+                  <input
+                    id="social_twitter"
+                    type="text"
+                    value={extractSocialId(
+                      settings?.social_twitter || '',
+                      'twitter'
+                    )}
+                    onChange={(e) =>
+                      handleSocialIdChange(
+                        'twitter',
+                        'social_twitter',
+                        e.target.value
+                      )
+                    }
+                    onPaste={(e) =>
+                      handleSocialPaste(e, 'twitter', 'social_twitter')
+                    }
+                    className="w-full rounded-l-none rounded-r-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    placeholder="username"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col items-center pt-6">
+                <span className="mb-1 text-xs text-muted-foreground">
+                  Display
+                </span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={settings?.show_twitter_link !== 'false'}
+                  onClick={() => handleToggle('show_twitter_link')}
+                  className={`relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                    settings?.show_twitter_link !== 'false'
+                      ? 'bg-primary'
+                      : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      settings?.show_twitter_link !== 'false'
+                        ? 'translate-x-6'
+                        : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
-            <div>
-              <label
-                htmlFor="social_bento"
-                className="mb-2 block text-sm font-medium"
-              >
-                Bento URL
-              </label>
-              <input
-                id="social_bento"
-                type="url"
-                value={settings?.social_bento || ''}
-                onChange={(e) => handleChange('social_bento', e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="https://bento.me/username"
-              />
+
+            {/* Bento */}
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
+                <label
+                  htmlFor="social_bento"
+                  className="mb-2 block text-sm font-medium"
+                >
+                  Bento
+                </label>
+                <div className="flex">
+                  <span className="inline-flex items-center rounded-l-lg border border-r-0 border-border bg-muted px-3 text-sm text-muted-foreground">
+                    {SOCIAL_PREFIXES.bento}
+                  </span>
+                  <input
+                    id="social_bento"
+                    type="text"
+                    value={extractSocialId(
+                      settings?.social_bento || '',
+                      'bento'
+                    )}
+                    onChange={(e) =>
+                      handleSocialIdChange(
+                        'bento',
+                        'social_bento',
+                        e.target.value
+                      )
+                    }
+                    onPaste={(e) =>
+                      handleSocialPaste(e, 'bento', 'social_bento')
+                    }
+                    className="w-full rounded-l-none rounded-r-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    placeholder="username"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col items-center pt-6">
+                <span className="mb-1 text-xs text-muted-foreground">
+                  Display
+                </span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={settings?.show_bento_link !== 'false'}
+                  onClick={() => handleToggle('show_bento_link')}
+                  className={`relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+                    settings?.show_bento_link !== 'false'
+                      ? 'bg-primary'
+                      : 'bg-muted'
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      settings?.show_bento_link !== 'false'
+                        ? 'translate-x-6'
+                        : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
           </div>
         </div>

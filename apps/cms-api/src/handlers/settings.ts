@@ -15,6 +15,9 @@ const ALLOWED_KEYS = [
   'social_twitter',
   'social_bento',
   'show_rss_link',
+  'show_github_link',
+  'show_twitter_link',
+  'show_bento_link',
 ] as const;
 
 // URL keys that require scheme validation

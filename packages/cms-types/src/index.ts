@@ -289,6 +289,9 @@ export interface SiteSettings {
   social_twitter: string;
   social_bento: string;
   show_rss_link: string; // "true" or "false" (stored as text in DB)
+  show_github_link: string; // "true" or "false" (stored as text in DB)
+  show_twitter_link: string; // "true" or "false" (stored as text in DB)
+  show_bento_link: string; // "true" or "false" (stored as text in DB)
 }
 
 export interface SiteSettingsResponse {

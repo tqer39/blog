@@ -10,9 +10,12 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   author_name: 'tqer39',
   footer_text: '',
   social_github: 'https://github.com/tqer39',
-  social_twitter: 'https://twitter.com/tqer39',
+  social_twitter: 'https://x.com/tqer39',
   social_bento: 'https://bento.me/tqer39',
   show_rss_link: 'true',
+  show_github_link: 'true',
+  show_twitter_link: 'true',
+  show_bento_link: 'true',
 };
 
 /**

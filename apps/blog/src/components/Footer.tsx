@@ -9,29 +9,31 @@ export async function Footer() {
       <div className="mx-auto max-w-4xl px-4 py-8">
         <div className="flex flex-col items-center gap-4">
           <div className="flex gap-4">
-            {settings.social_github && (
-              <a
-                href={settings.social_github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
-                aria-label="GitHub"
-              >
-                <Github className="h-6 w-6" />
-              </a>
-            )}
-            {settings.social_twitter && (
-              <a
-                href={settings.social_twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-6 w-6" />
-              </a>
-            )}
-            {settings.social_bento && (
+            {settings.social_github &&
+              settings.show_github_link !== 'false' && (
+                <a
+                  href={settings.social_github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                  aria-label="GitHub"
+                >
+                  <Github className="h-6 w-6" />
+                </a>
+              )}
+            {settings.social_twitter &&
+              settings.show_twitter_link !== 'false' && (
+                <a
+                  href={settings.social_twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                  aria-label="X (Twitter)"
+                >
+                  <Twitter className="h-6 w-6" />
+                </a>
+              )}
+            {settings.social_bento && settings.show_bento_link !== 'false' && (
               <a
                 href={settings.social_bento}
                 target="_blank"
