@@ -277,7 +277,13 @@ export default function CategoryListPage() {
         )
       : categories;
 
-    if (sortKey === 'displayOrder' && !hasOrderChanges) {
+    // When there are unsaved order changes and we're sorting by displayOrder (asc),
+    // preserve the current drag order instead of sorting by the (outdated) displayOrder property
+    if (sortKey === 'displayOrder' && sortDirection === 'asc' && hasOrderChanges) {
+      return [...filtered];
+    }
+
+    if (sortKey === 'displayOrder') {
       return [...filtered].sort((a, b) => {
         const modifier = sortDirection === 'asc' ? 1 : -1;
         return (a.displayOrder - b.displayOrder) * modifier;
