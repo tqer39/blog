@@ -45,8 +45,11 @@ const cspDirectives = {
     DOMAINS.CDN,
     'https://www.google-analytics.com',
     'https://analytics.google.com',
+    'https://raw.githubusercontent.com',
+    'https://raw.githack.com',
     ...(isDev ? ['http://localhost:*'] : []),
   ],
+  'worker-src': ["'self'", 'blob:'],
   'frame-ancestors': ["'none'"],
 };
 

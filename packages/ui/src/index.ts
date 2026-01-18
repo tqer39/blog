@@ -1,10 +1,14 @@
 // shadcn/ui components
 
 // Generic components
+export { Chart } from './components/Chart';
 export { CodeBlock } from './components/CodeBlock';
 export { FullscreenModal } from './components/FullscreenModal';
 export { ImageCarousel } from './components/ImageCarousel';
+export { ImageCompare } from './components/ImageCompare';
+export { Terminal } from './components/Terminal';
 export { Mermaid } from './components/Mermaid';
+export { ModelViewer } from './components/ModelViewer';
 export { MermaidClient } from './components/MermaidClient';
 export * from './components/ui/alert';
 export * from './components/ui/badge';

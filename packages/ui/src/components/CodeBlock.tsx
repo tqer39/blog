@@ -24,9 +24,13 @@ import {
   type Highlighter,
 } from 'shiki';
 
+import { Chart } from './Chart';
 import { FullscreenModal } from './FullscreenModal';
 import { ImageCarousel } from './ImageCarousel';
+import { ImageCompare } from './ImageCompare';
 import { Mermaid } from './Mermaid';
+import { ModelViewer } from './ModelViewer';
+import { Terminal } from './Terminal';
 import { Skeleton } from './ui/skeleton';
 
 interface CodeBlockProps {
@@ -192,6 +196,26 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   // Image carousel
   if (lang === 'carousel') {
     return <ImageCarousel content={code} />;
+  }
+
+  // Image comparison (Before/After)
+  if (lang === 'compare') {
+    return <ImageCompare content={code} />;
+  }
+
+  // Interactive chart
+  if (lang === 'chart') {
+    return <Chart content={code} />;
+  }
+
+  // Terminal with typing animation
+  if (lang === 'terminal') {
+    return <Terminal content={code} />;
+  }
+
+  // 3D Model viewer
+  if (lang === 'model') {
+    return <ModelViewer content={code} />;
   }
 
   // Loading state - skeleton with line-like patterns

@@ -825,6 +825,311 @@ const num = identity<number>(42);
     status: 'published',
     slideMode: true,
   },
+  {
+    title: 'Before/After比較コンポーネントのデモ',
+    description:
+      '画像の比較表示機能を使って、ビフォー・アフターを直感的に確認できます。',
+    content: `# Before/After比較コンポーネント
+
+スライダーをドラッグして、2枚の画像を比較できます。
+
+---
+
+## 風景写真の加工前後
+
+写真の加工前後を比較してみましょう：
+
+\`\`\`compare
+![加工前](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=400&fit=crop)
+![加工後](https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&h=400&fit=crop)
+\`\`\`
+
+---
+
+## 都市の昼と夜
+
+同じ場所の昼と夜の違いを比較：
+
+\`\`\`compare
+![昼間](https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=400&fit=crop)
+![夜景](https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&h=400&fit=crop)
+\`\`\`
+
+---
+
+## 使い方
+
+\`\`\`markdown
+\\\`\\\`\\\`compare
+![Before](画像URL1)
+![After](画像URL2)
+\\\`\\\`\\\`
+\`\`\`
+
+### 操作方法
+
+- **マウス**: ドラッグまたはクリックでスライダー移動
+- **タッチ**: スワイプでスライダー移動
+- **キーボード**: 左右矢印キーで微調整
+
+---
+
+## まとめ
+
+Before/After比較は以下の用途に便利です：
+
+- 写真の加工前後
+- デザインの変更比較
+- 時間経過による変化
+- A/Bテストの結果表示`,
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
+    slideMode: true,
+  },
+  {
+    title: 'インタラクティブチャート機能のデモ',
+    description:
+      'YAML形式でデータを定義するだけで、折れ線・棒・円・エリアチャートを表示できます。',
+    content: `# インタラクティブチャート機能
+
+YAML形式でデータを定義するだけで、美しいチャートを表示できます。
+
+---
+
+## 折れ線グラフ
+
+月別のアクセス数推移：
+
+\`\`\`chart
+type: line
+title: 月別アクセス数
+data:
+  - month: 1月
+    visitors: 1200
+    pageviews: 3500
+  - month: 2月
+    visitors: 1500
+    pageviews: 4200
+  - month: 3月
+    visitors: 1800
+    pageviews: 5100
+  - month: 4月
+    visitors: 2200
+    pageviews: 6300
+  - month: 5月
+    visitors: 2800
+    pageviews: 7800
+\`\`\`
+
+---
+
+## 棒グラフ
+
+プログラミング言語の人気度：
+
+\`\`\`chart
+type: bar
+title: 言語別使用率
+data:
+  - lang: TypeScript
+    usage: 85
+  - lang: Python
+    usage: 72
+  - lang: Go
+    usage: 45
+  - lang: Rust
+    usage: 28
+\`\`\`
+
+---
+
+## 円グラフ
+
+トラフィックソースの内訳：
+
+\`\`\`chart
+type: pie
+title: トラフィックソース
+data:
+  - source: 検索
+    value: 45
+  - source: SNS
+    value: 25
+  - source: 直接
+    value: 20
+  - source: リファラル
+    value: 10
+\`\`\`
+
+---
+
+## エリアチャート
+
+売上推移：
+
+\`\`\`chart
+type: area
+title: 月別売上
+data:
+  - month: 1月
+    sales: 100
+  - month: 2月
+    sales: 150
+  - month: 3月
+    sales: 180
+  - month: 4月
+    sales: 220
+  - month: 5月
+    sales: 300
+\`\`\`
+
+---
+
+## 使い方
+
+YAML形式で設定：
+
+\`\`\`yaml
+type: line | bar | pie | area
+title: グラフタイトル
+data:
+  - name: ラベル
+    value: 数値
+\`\`\``,
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
+    slideMode: true,
+  },
+  {
+    title: 'ターミナル再生コンポーネントのデモ',
+    description:
+      'コマンドラインの操作をタイピングアニメーション付きで表示できます。',
+    content: `# ターミナル再生コンポーネント
+
+コマンドラインの操作を、タイピングアニメーション付きで表示できます。
+
+---
+
+## 基本的な使い方
+
+プロジェクトのセットアップ手順：
+
+\`\`\`terminal
+$ mkdir my-project
+$ cd my-project
+$ npm init -y
+Wrote to /my-project/package.json
+$ npm install typescript
+added 1 package in 2s
+\`\`\`
+
+---
+
+## Next.js プロジェクト作成
+
+Next.js の新規プロジェクト作成：
+
+\`\`\`terminal
+$ npx create-next-app@latest my-app
+✔ Would you like to use TypeScript? Yes
+✔ Would you like to use ESLint? Yes
+✔ Would you like to use Tailwind CSS? Yes
+Creating a new Next.js app in /my-app
+Installing dependencies...
+Success! Created my-app
+$ cd my-app
+$ npm run dev
+> Ready on http://localhost:3000
+\`\`\`
+
+---
+
+## Git 操作
+
+変更をコミットしてプッシュ：
+
+\`\`\`terminal
+$ git status
+On branch main
+Changes not staged for commit:
+  modified: src/app/page.tsx
+$ git add .
+$ git commit -m "feat: add new feature"
+[main abc1234] feat: add new feature
+ 1 file changed, 10 insertions(+)
+$ git push origin main
+Enumerating objects: 5, done.
+Writing objects: 100% (3/3), done.
+\`\`\`
+
+---
+
+## 操作方法
+
+- **再生/一時停止**: ヘッダーのボタンで制御
+- **コピー**: コマンド部分のみコピー可能
+- **リプレイ**: 完了後にリプレイ可能`,
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
+    slideMode: true,
+  },
+  {
+    title: '3Dモデルビューア機能のデモ',
+    description:
+      '.glb/.gltfファイルを読み込んで、3Dモデルをインタラクティブに表示できます。',
+    content: `# 3Dモデルビューア
+
+.glb/.gltf 形式の3Dモデルをインタラクティブに表示できます。
+
+---
+
+## サンプルモデル
+
+以下は公開されているサンプルモデルです：
+
+\`\`\`model
+src: https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/Box/glTF-Binary/Box.glb
+autoRotate: true
+scale: 1
+\`\`\`
+
+---
+
+## 操作方法
+
+- **回転**: マウスドラッグ
+- **ズーム**: マウスホイール
+- **自動回転**: 設定で有効/無効
+
+---
+
+## 使い方
+
+YAML形式で設定：
+
+\`\`\`yaml
+src: モデルのURL (.glb または .gltf)
+autoRotate: true/false
+scale: 倍率 (デフォルト: 1)
+\`\`\`
+
+### 対応フォーマット
+
+- **.glb**: バイナリ形式（推奨）
+- **.gltf**: JSON形式
+
+---
+
+## 活用例
+
+- 製品の3Dプレビュー
+- 建築モデルの展示
+- キャラクターモデルの紹介
+- インタラクティブな説明図`,
+    tags: ['Tutorial', 'UI', 'Three.js'],
+    status: 'published',
+    slideMode: true,
+  },
 ];
 
 async function createArticle(article: ArticleInput): Promise<boolean> {
