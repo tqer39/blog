@@ -59,68 +59,65 @@ function StepItem({
   const isLast = index === total - 1;
 
   return (
-    <div className="relative flex gap-4">
+    <div className="relative flex gap-3">
       {/* Step number and line */}
       <div className="flex flex-col items-center">
         {/* Number circle */}
-        <div className="z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500 text-sm font-bold text-white">
+        <div className="z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white dark:bg-blue-500">
           {index + 1}
         </div>
         {/* Line */}
         {!isLast && (
-          <div
-            className="w-0.5 flex-1 bg-stone-300 dark:bg-stone-600"
-            style={{ minHeight: '24px' }}
-          />
+          <div className="w-0.5 flex-1 bg-blue-200 dark:bg-blue-900" />
         )}
       </div>
 
       {/* Content */}
-      <div className={cn('flex-1 pb-6', isLast && 'pb-0')}>
+      <div className={cn('flex-1 pb-4', isLast && 'pb-0')}>
         {/* Title */}
-        <div className="mb-1 font-semibold text-stone-800 dark:text-stone-200">
+        <div className="font-semibold leading-7 text-stone-900 dark:text-stone-100">
           {step.title}
         </div>
 
         {/* Description */}
         {step.description && (
-          <div className="mb-2 text-sm text-stone-600 dark:text-stone-400">
+          <div className="mt-0.5 text-sm text-stone-600 dark:text-stone-400">
             {step.description}
           </div>
         )}
 
         {/* Code block */}
         {step.code && (
-          <div className="mt-2 overflow-hidden rounded-lg border border-stone-200 dark:border-stone-700">
+          <div className="mt-2 overflow-hidden rounded-md border border-stone-300 dark:border-stone-600">
             {/* Code header */}
-            <div className="flex items-center justify-between bg-stone-200 px-3 py-1.5 dark:bg-stone-700">
+            <div className="flex items-center justify-between bg-stone-200 px-3 py-1 dark:bg-stone-700">
               <button
                 type="button"
                 onClick={() => setIsCodeExpanded((prev) => !prev)}
-                className="flex cursor-pointer items-center gap-1 text-sm text-stone-600 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-200"
+                className="flex cursor-pointer items-center gap-1 text-xs text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200"
               >
                 {isCodeExpanded ? (
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-3.5 w-3.5" />
                 ) : (
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="h-3.5 w-3.5" />
                 )}
                 <span>コード</span>
               </button>
               <button
                 type="button"
                 onClick={handleCopy}
-                className="flex cursor-pointer items-center gap-1 rounded px-2 py-0.5 text-sm text-stone-600 transition-colors hover:bg-stone-300 hover:text-stone-800 dark:text-stone-400 dark:hover:bg-stone-600 dark:hover:text-stone-200"
+                className="flex cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 text-xs text-stone-600 transition-colors hover:bg-stone-300 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-600 dark:hover:text-stone-200"
                 aria-label="Copy code"
               >
                 {isCopied ? (
                   <>
                     <Check className="h-3 w-3" />
-                    <span className="text-xs">Copied!</span>
+                    <span>Copied!</span>
                   </>
                 ) : (
                   <>
                     <Copy className="h-3 w-3" />
-                    <span className="text-xs">Copy</span>
+                    <span>Copy</span>
                   </>
                 )}
               </button>
@@ -128,10 +125,8 @@ function StepItem({
 
             {/* Code content */}
             {isCodeExpanded && (
-              <pre className="overflow-x-auto bg-stone-100 p-3 font-mono text-sm dark:bg-stone-800">
-                <code className="text-stone-700 dark:text-stone-300">
-                  {step.code.trim()}
-                </code>
+              <pre className="overflow-x-auto bg-stone-900 p-3 font-mono text-sm dark:bg-stone-950">
+                <code className="text-stone-100">{step.code.trim()}</code>
               </pre>
             )}
           </div>
@@ -166,12 +161,11 @@ export function Steps({ content, className }: StepsProps) {
           <ListOrdered className="h-4 w-4" />
           <span>Steps</span>
         </div>
-        {/* Progress indicator */}
-        <span className="text-stone-400">{steps.length} steps</span>
+        <span className="text-xs text-stone-400">{steps.length} steps</span>
       </div>
 
       {/* Steps content */}
-      <div className="rounded-b-lg bg-stone-100 p-4 dark:bg-stone-800">
+      <div className="rounded-b-lg border border-t-0 border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
         {steps.map((step, index) => (
           <StepItem
             key={index}

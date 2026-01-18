@@ -200,7 +200,7 @@ data:
               nameKey={xKey}
               cx="50%"
               cy="50%"
-              outerRadius={120}
+              outerRadius="70%"
               label={({ name, percent }) =>
                 `${name} ${(percent * 100).toFixed(0)}%`
               }
@@ -244,9 +244,15 @@ data:
         </div>
       )}
       <div className="chart-body bg-white p-3 dark:bg-stone-800">
-        <ResponsiveContainer width="100%" height={300}>
-          {renderChart()}
-        </ResponsiveContainer>
+        <div className="chart-wrapper w-full" style={{ height: 300 }}>
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            className="chart-responsive-container"
+          >
+            {renderChart()}
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

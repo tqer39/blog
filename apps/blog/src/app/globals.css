@@ -923,6 +923,23 @@ html.autumn .model-viewer-bg {
   color: #a8a29e !important; /* stone-400 */
 }
 
+/* General Chart Overrides */
+.chart-header {
+  background-color: #44403c !important; /* stone-700 */
+  color: #d6d3d1 !important; /* stone-300 */
+}
+
+.recharts-legend-item {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.recharts-legend-item-text {
+  display: flex !important;
+  align-items: center !important;
+  line-height: 1 !important;
+}
+
 /* Slide Mode Chart Overrides */
 body[data-slide-mode="true"] .chart-container {
   margin: 0 !important;
@@ -930,6 +947,7 @@ body[data-slide-mode="true"] .chart-container {
   border: none !important;
   box-shadow: none !important;
   background-color: transparent !important;
+  overflow: visible !important;
   --tw-ring-width: 0px !important;
   --tw-ring-color: transparent !important;
 }
@@ -954,19 +972,49 @@ body[data-slide-mode="true"] .chart-header span {
 body[data-slide-mode="true"] .chart-body {
   padding: 0 !important;
   background-color: transparent !important;
+  overflow: visible !important;
 }
 
-body[data-slide-mode="true"] .recharts-responsive-container {
-  height: 500px !important;
-  max-height: 50vh !important;
+body[data-slide-mode="true"] .chart-wrapper {
+  height: 45vh !important;
+  min-height: 350px !important;
+  max-height: 60vh !important;
+  width: 100% !important;
+  margin-bottom: 1rem !important;
+}
+
+/* Cleanup/Backup for direct recharts container if needed */
+body[data-slide-mode="true"] .recharts-responsive-container,
+body[data-slide-mode="true"] .chart-responsive-container {
+  height: 100% !important;
+  width: 100% !important;
+  max-height: none !important;
+  min-height: 0 !important;
 }
 
 body[data-slide-mode="true"] .recharts-text {
   font-size: 14px !important;
 }
 
+body[data-slide-mode="true"] .recharts-legend-wrapper {
+  bottom: 0px !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  padding-top: 10px !important;
+}
+
+body[data-slide-mode="true"] .recharts-legend-item {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
 body[data-slide-mode="true"] .recharts-legend-item-text {
   font-size: 14px !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 body[data-slide-mode="true"] .recharts-default-tooltip,
