@@ -1,10 +1,17 @@
 'use client';
 
-import { Monitor, Moon, MoonStar, Snowflake, Sun } from 'lucide-react';
+import { Leaf, Monitor, Moon, MoonStar, Snowflake, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
-const themes = ['light', 'dark', 'tokyonight', 'nord-light', 'system'] as const;
+const themes = [
+  'light',
+  'dark',
+  'tokyonight',
+  'nord-light',
+  'autumn',
+  'system',
+] as const;
 type Theme = (typeof themes)[number];
 
 export function ThemeSwitcher() {
@@ -31,6 +38,8 @@ export function ThemeSwitcher() {
         return <MoonStar className="h-5 w-5 text-indigo-400" />;
       case 'nord-light':
         return <Snowflake className="h-5 w-5 text-cyan-500" />;
+      case 'autumn':
+        return <Leaf className="h-5 w-5 text-orange-500" />;
       default:
         return (
           <Monitor className="h-5 w-5 text-stone-500 dark:text-stone-400" />
@@ -48,6 +57,8 @@ export function ThemeSwitcher() {
         return 'Tokyo Night';
       case 'nord-light':
         return 'Nord Light';
+      case 'autumn':
+        return 'Autumn';
       default:
         return 'システム設定';
     }

@@ -339,32 +339,6 @@ export default function CategoryListPage() {
         />
       )}
 
-      {hasOrderChanges && (
-        <Alert className="mb-6 border-amber-500 bg-amber-50 dark:bg-amber-950/20">
-          <AlertDescription className="flex items-center justify-between">
-            <span>You have unsaved order changes.</span>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleCancelOrderChange}
-              >
-                Cancel
-              </Button>
-              <Button
-                size="sm"
-                onClick={handleSaveOrder}
-                disabled={isSavingOrder}
-                className="gap-1"
-              >
-                <Save className="h-4 w-4" />
-                {isSavingOrder ? 'Saving...' : 'Save Order'}
-              </Button>
-            </div>
-          </AlertDescription>
-        </Alert>
-      )}
-
       {/* Search input */}
       <div className="relative mb-6">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -389,8 +363,14 @@ export default function CategoryListPage() {
       </div>
 
       {isDragEnabled && (
-        <p className="mb-4 text-sm text-muted-foreground">
-          Drag and drop rows to reorder categories.
+        <p className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
+          <span>Drag and drop rows to reorder categories.</span>
+          {isSavingOrder && (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Saving...</span>
+            </>
+          )}
         </p>
       )}
 

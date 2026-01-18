@@ -13,7 +13,7 @@ export function Providers({ children }: ProvidersProps) {
       attribute="class"
       defaultTheme="system"
       enableSystem
-      themes={['light', 'dark', 'tokyonight', 'nord-light', 'system']}
+      themes={['light', 'dark', 'tokyonight', 'nord-light', 'autumn', 'system']}
     >
       {children}
     </ThemeProvider>

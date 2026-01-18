@@ -91,7 +91,7 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
           onError={() => handleImageError(0)}
         />
         {images[0].alt && (
-          <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+          <figcaption className="mt-2 text-center text-sm text-stone-600 dark:text-stone-400">
             {images[0].alt}
           </figcaption>
         )}
@@ -99,9 +99,11 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
     );
   }
 
+  const currentImage = images[currentIndex];
+
   return (
-    <div className={cn('my-6', className)}>
-      <div className="relative mx-auto max-w-3xl">
+    <div className={cn(className)}>
+      <div className="relative">
         {/* Carousel viewport */}
         <div ref={emblaRef} className="overflow-hidden">
           <div className="flex" style={{ backfaceVisibility: 'hidden' }}>
@@ -111,29 +113,22 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
                 className="relative"
                 style={{ flex: '0 0 100%', minWidth: 0 }}
               >
-                <figure className="flex flex-col items-center">
-                  <div className="flex h-[400px] w-full items-center justify-center">
-                    {imageErrors[index] ? (
-                      <div className="text-center text-muted-foreground">
-                        <p>Failed to load image</p>
-                        <p className="text-sm">{image.alt || image.src}</p>
-                      </div>
-                    ) : (
-                      // biome-ignore lint/performance/noImgElement: External URLs from user content require native img element
-                      <img
-                        src={image.src}
-                        alt={image.alt}
-                        className="max-h-full max-w-full rounded-lg object-contain"
-                        onError={() => handleImageError(index)}
-                      />
-                    )}
+                {imageErrors[index] ? (
+                  <div className="flex h-[200px] w-full items-center justify-center text-center text-muted-foreground">
+                    <div>
+                      <p>Failed to load image</p>
+                      <p className="text-sm">{image.alt || image.src}</p>
+                    </div>
                   </div>
-                  {image.alt && (
-                    <figcaption className="mt-2 text-center text-sm text-muted-foreground">
-                      {image.alt}
-                    </figcaption>
-                  )}
-                </figure>
+                ) : (
+                  // biome-ignore lint/performance/noImgElement: External URLs from user content require native img element
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    className="max-h-[500px] w-full rounded-lg object-contain"
+                    onError={() => handleImageError(index)}
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -143,42 +138,43 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
         <button
           type="button"
           onClick={scrollPrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white shadow-md transition-colors hover:bg-black/70"
+          className="absolute left-4 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
           aria-label="Previous image"
         >
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronLeft className="h-5 w-5" />
         </button>
         <button
           type="button"
           onClick={scrollNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white shadow-md transition-colors hover:bg-black/70"
+          className="absolute right-4 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
           aria-label="Next image"
         >
-          <ChevronRight className="h-6 w-6" />
+          <ChevronRight className="h-5 w-5" />
         </button>
       </div>
 
-      {/* Pagination dots */}
-      <div className="mt-4 flex items-center justify-center gap-2">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            type="button"
-            onClick={() => emblaApi?.scrollTo(index)}
-            className={cn(
-              'h-2 w-2 rounded-full transition-colors',
-              index === currentIndex
-                ? 'bg-primary'
-                : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
-            )}
-            aria-label={`Go to image ${index + 1}`}
-          />
-        ))}
-      </div>
-
-      {/* Counter */}
-      <div className="mt-2 text-center text-sm text-muted-foreground">
-        {currentIndex + 1} / {images.length}
+      {/* Caption and pagination */}
+      <div className="flex items-center justify-between text-xs text-stone-600 dark:text-stone-400">
+        <span className="truncate">{currentImage?.alt || ''}</span>
+        <div className="flex shrink-0 items-center gap-1">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => emblaApi?.scrollTo(index)}
+              className={cn(
+                'h-1.5 w-1.5 rounded-full transition-colors',
+                index === currentIndex
+                  ? 'bg-primary'
+                  : 'bg-stone-300 hover:bg-stone-400 dark:bg-stone-600 dark:hover:bg-stone-500'
+              )}
+              aria-label={`Go to image ${index + 1}`}
+            />
+          ))}
+          <span className="ml-1 text-stone-500">
+            {currentIndex + 1}/{images.length}
+          </span>
+        </div>
       </div>
     </div>
   );

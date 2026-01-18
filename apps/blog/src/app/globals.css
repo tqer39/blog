@@ -4,6 +4,7 @@
 /* Use class-based dark mode for next-themes compatibility */
 @custom-variant dark (&:where(.dark, .dark *, .tokyonight, .tokyonight *));
 @custom-variant nord-light (&:where(.nord-light, .nord-light *));
+@custom-variant autumn (&:where(.autumn, .autumn *));
 
 /* Theme configuration for v4 */
 @theme inline {
@@ -154,6 +155,34 @@
   --chart-3: 92 28% 65%; /* #A3BE8C nord14 Green */
   --chart-4: 311 20% 63%; /* #B48EAD nord15 Purple */
   --chart-5: 40 71% 73%; /* #EBCB8B nord13 Yellow */
+}
+
+.autumn {
+  /* Autumn Theme - Warm cream background with burnt orange accents */
+  --background: 30 42% 96%; /* #FAF6F1 warm cream */
+  --foreground: 9 29% 19%; /* #3E2723 dark brown */
+  --card: 30 42% 96%; /* #FAF6F1 warm cream */
+  --card-foreground: 9 29% 19%; /* #3E2723 dark brown */
+  --popover: 20 25% 93%; /* #EFEBE9 light tan */
+  --popover-foreground: 9 29% 19%; /* #3E2723 dark brown */
+  --primary: 14 80% 47%; /* #D84315 burnt orange */
+  --primary-foreground: 30 42% 96%; /* #FAF6F1 warm cream */
+  --secondary: 20 25% 93%; /* #EFEBE9 light tan */
+  --secondary-foreground: 9 29% 19%; /* #3E2723 dark brown */
+  --muted: 20 25% 93%; /* #EFEBE9 light tan */
+  --muted-foreground: 16 25% 38%; /* #795548 brown */
+  --accent: 45 96% 56%; /* #F9A825 amber/golden yellow */
+  --accent-foreground: 9 29% 19%; /* #3E2723 dark brown */
+  --destructive: 0 66% 47%; /* #C62828 deep red */
+  --destructive-foreground: 30 42% 96%; /* #FAF6F1 warm cream */
+  --border: 16 25% 81%; /* #D7CCC8 light brown */
+  --input: 16 25% 81%; /* #D7CCC8 light brown */
+  --ring: 14 80% 47%; /* #D84315 burnt orange */
+  --chart-1: 14 80% 47%; /* #D84315 burnt orange */
+  --chart-2: 45 96% 56%; /* #F9A825 amber */
+  --chart-3: 16 25% 38%; /* #795548 brown */
+  --chart-4: 14 93% 40%; /* #BF360C deep orange */
+  --chart-5: 34 100% 50%; /* #FF8F00 amber */
 }
 
 /* Base styles */
@@ -669,4 +698,138 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
 /* Nord Light: Code block darker border */
 .nord-light .group.relative.my-4 {
   --tw-ring-color: #d8dee9 !important; /* nord4 */
+}
+
+/* ===== Autumn Theme Specific Styles ===== */
+
+.autumn .shiki-wrapper .line:hover {
+  background-color: #efebe9; /* light tan */
+}
+
+.autumn .category-badge {
+  color: #3e2723 !important; /* dark brown */
+  background-color: transparent !important;
+  border-color: currentColor !important;
+}
+
+.autumn .prose pre {
+  background-color: #efebe9; /* light tan */
+}
+
+.autumn .mermaid-content {
+  background-color: #efebe9; /* light tan */
+}
+
+/* Autumn: Links and interactive elements */
+.autumn a {
+  color: #e65100; /* orange */
+}
+
+.autumn a:hover {
+  color: #ff8f00; /* amber */
+}
+
+/* Autumn: Headings */
+.autumn h1,
+.autumn h2 {
+  color: #bf360c; /* deep orange */
+}
+
+.autumn h3,
+.autumn h4,
+.autumn h5,
+.autumn h6 {
+  color: #6d4c41; /* brown */
+}
+
+/* Autumn: Tag badges with colorful borders */
+.autumn .tag-badge,
+.autumn [class*="rounded"][class*="border"][class*="text-xs"],
+.autumn [class*="rounded"][class*="border"][class*="text-sm"] {
+  border-color: #d84315 !important; /* burnt orange */
+  color: #e65100 !important; /* orange */
+}
+
+.autumn .tag-badge:hover,
+.autumn [class*="rounded"][class*="border"][class*="text-xs"]:hover,
+.autumn [class*="rounded"][class*="border"][class*="text-sm"]:hover {
+  background-color: #efebe9 !important; /* light tan */
+  border-color: #ff8f00 !important; /* amber */
+}
+
+/* Autumn: Search result box */
+.autumn [class*="bg-stone-100"],
+.autumn [class*="bg-muted"] {
+  background-color: #efebe9 !important; /* light tan */
+}
+
+/* Autumn: Card hover effects */
+.autumn [class*="hover:bg-stone"] {
+  transition: background-color 0.2s ease;
+}
+
+.autumn [class*="hover:bg-stone"]:hover {
+  background-color: #efebe9 !important; /* light tan */
+}
+
+/* Autumn: Border colors */
+.autumn [class*="border-stone"],
+.autumn [class*="divide-stone"] > * {
+  border-color: #d7ccc8 !important; /* light brown */
+}
+
+/* Autumn: Muted text */
+.autumn [class*="text-stone-500"],
+.autumn [class*="text-stone-600"],
+.autumn [class*="text-muted"] {
+  color: #795548 !important; /* brown */
+}
+
+/* Autumn: Footer */
+.autumn footer {
+  color: #795548; /* brown */
+}
+
+.autumn footer a {
+  color: #e65100; /* orange */
+}
+
+/* Autumn: Button styles */
+.autumn .bg-primary {
+  background-color: #d84315 !important; /* burnt orange */
+  color: #faf6f1 !important; /* warm cream */
+}
+
+.autumn .bg-primary:hover {
+  background-color: #bf360c !important; /* deep orange */
+  color: #faf6f1 !important;
+}
+
+/* Autumn: Ghost/transparent button hover */
+.autumn button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
+  background-color: #efebe9; /* light tan */
+}
+
+/* Autumn: Input field styling */
+.autumn input,
+.autumn textarea,
+.autumn select {
+  background-color: #faf6f1 !important; /* warm cream */
+  border-color: #d7ccc8 !important; /* light brown */
+  color: #3e2723 !important; /* dark brown */
+}
+
+.autumn input::placeholder,
+.autumn textarea::placeholder {
+  color: #795548 !important; /* brown */
+}
+
+/* Autumn: Labels and form text */
+.autumn label {
+  color: #5d4037; /* medium brown */
+}
+
+/* Autumn: Code block border */
+.autumn .group.relative.my-4 {
+  --tw-ring-color: #d7ccc8 !important; /* light brown */
 }
