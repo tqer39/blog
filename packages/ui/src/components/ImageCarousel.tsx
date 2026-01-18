@@ -156,22 +156,22 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
           </div>
         </div>
 
-        {/* Navigation buttons - positioned outside viewport to avoid clipping */}
+        {/* Navigation buttons */}
         <button
           type="button"
           onClick={scrollPrev}
-          className="absolute left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-all hover:bg-black/70"
+          className="absolute left-3 top-1/2 z-20 flex aspect-square h-9 shrink-0 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-all hover:bg-black/70"
           aria-label="Previous image"
         >
-          <ChevronLeft className="h-6 w-6" />
+          <ChevronLeft className="h-5 w-5" />
         </button>
         <button
           type="button"
           onClick={scrollNext}
-          className="absolute right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-all hover:bg-black/70"
+          className="absolute right-3 top-1/2 z-20 flex aspect-square h-9 shrink-0 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-all hover:bg-black/70"
           aria-label="Next image"
         >
-          <ChevronRight className="h-6 w-6" />
+          <ChevronRight className="h-5 w-5" />
         </button>
       </div>
 
