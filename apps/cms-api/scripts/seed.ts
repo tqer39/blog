@@ -1130,6 +1130,274 @@ scale: 倍率 (デフォルト: 1)
     status: 'published',
     slideMode: true,
   },
+  {
+    title: 'Code Diff機能のデモ',
+    description: 'コードの変更差分をgit diff風に表示できます。',
+    content: `# Code Diff
+
+コードの変更差分を視覚的に表示できます。
+
+---
+
+## 標準diff形式
+
+\`+\` と \`-\` プレフィックスで追加・削除行を表示：
+
+\`\`\`diff
+- const message = "Hello";
++ const message = "Hello, World!";
+  console.log(message);
+- // old comment
++ // new improved comment
+\`\`\`
+
+---
+
+## YAML形式（before/after比較）
+
+2つのコードブロックを比較：
+
+\`\`\`diff
+language: typescript
+before: |
+  function greet(name) {
+    console.log("Hello " + name);
+  }
+after: |
+  function greet(name: string): void {
+    console.log(\`Hello \${name}\`);
+  }
+\`\`\`
+
+---
+
+## 使い方
+
+### 標準diff形式
+\`\`\`
+\\\`\\\`\\\`diff
+- 削除行
++ 追加行
+  変更なし行
+\\\`\\\`\\\`
+\`\`\`
+
+### YAML形式
+\`\`\`yaml
+language: typescript
+before: |
+  変更前のコード
+after: |
+  変更後のコード
+\`\`\`
+
+---
+
+## 活用例
+
+- コードレビューの説明
+- リファクタリングのビフォーアフター
+- バグ修正の解説`,
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
+    slideMode: true,
+  },
+  {
+    title: 'File Tree機能のデモ',
+    description: 'ディレクトリ構造をインタラクティブに表示できます。',
+    content: `# File Tree
+
+プロジェクトのディレクトリ構造を視覚的に表示できます。
+
+---
+
+## サンプル
+
+\`\`\`tree
+src/
+  components/
+    Button.tsx
+    Card.tsx
+    Modal.tsx
+  hooks/
+    useAuth.ts
+    useForm.ts
+  pages/
+    index.tsx
+    about.tsx
+    blog/
+      [slug].tsx
+  utils/
+    helpers.ts
+    constants.ts
+  styles/
+    globals.css
+package.json
+tsconfig.json
+README.md
+\`\`\`
+
+---
+
+## 操作方法
+
+- **展開/折りたたみ**: フォルダをクリック
+- **コピー**: ヘッダーのコピーボタン
+
+---
+
+## 記法
+
+インデント（2スペース）で階層を表現：
+- 末尾 \`/\` → フォルダ
+- それ以外 → ファイル
+
+\`\`\`
+\\\`\\\`\\\`tree
+プロジェクト/
+  フォルダ/
+    ファイル.ts
+\\\`\\\`\\\`
+\`\`\`
+
+---
+
+## 活用例
+
+- プロジェクト構成の説明
+- 新規ファイル追加の案内
+- ディレクトリ設計のドキュメント`,
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
+    slideMode: true,
+  },
+  {
+    title: 'Timeline機能のデモ',
+    description: '時系列のイベントを視覚的に表示できます。',
+    content: `# Timeline
+
+プロジェクトの歴史や計画を時系列で表示できます。
+
+---
+
+## サンプル
+
+\`\`\`timeline
+- date: 2024-01
+  title: プロジェクト開始
+  description: 初期設計とチーム編成を実施
+
+- date: 2024-03
+  title: MVP完成
+  description: 最小限の機能でプロトタイプをリリース
+
+- date: 2024-06
+  title: ベータ版公開
+  description: 限定ユーザーへのテスト配布開始
+
+- date: 2024-09
+  title: 正式リリース
+  description: 全機能を実装して一般公開
+
+- date: 2024-12
+  title: v2.0リリース
+  description: ユーザーフィードバックを反映した大型アップデート
+\`\`\`
+
+---
+
+## 記法
+
+YAML形式でイベントを定義：
+
+\`\`\`yaml
+- date: 日付（必須）
+  title: タイトル（必須）
+  description: 説明（オプション）
+\`\`\`
+
+---
+
+## 活用例
+
+- プロジェクトのロードマップ
+- 会社/製品の歴史
+- 学習の進捗記録
+- イベントのスケジュール`,
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
+    slideMode: true,
+  },
+  {
+    title: 'Steps機能のデモ',
+    description: 'ステップバイステップの手順を分かりやすく表示できます。',
+    content: `# Steps
+
+手順をステップバイステップで分かりやすく表示できます。
+
+---
+
+## サンプル
+
+\`\`\`steps
+- title: Node.jsのインストール
+  description: Homebrewを使ってNode.jsをインストールします
+  code: |
+    brew install node
+    node --version
+    npm --version
+
+- title: プロジェクトの作成
+  description: Next.jsの新規プロジェクトを作成します
+  code: |
+    npx create-next-app@latest my-app
+    cd my-app
+
+- title: 依存関係のインストール
+  description: 必要なパッケージを追加します
+  code: |
+    npm install @tanstack/react-query
+    npm install -D tailwindcss postcss autoprefixer
+
+- title: 開発サーバーの起動
+  description: ローカル環境で動作確認します
+  code: |
+    npm run dev
+\`\`\`
+
+---
+
+## 記法
+
+YAML形式でステップを定義：
+
+\`\`\`yaml
+- title: ステップ名（必須）
+  description: 説明（オプション）
+  code: |
+    コマンド（オプション）
+\`\`\`
+
+---
+
+## 機能
+
+- **番号表示**: 自動でステップ番号を付与
+- **コード表示**: 折りたたみ可能
+- **コピー**: 各ステップのコードをコピー
+
+---
+
+## 活用例
+
+- インストール手順
+- 環境構築ガイド
+- チュートリアル
+- トラブルシューティング`,
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
+    slideMode: true,
+  },
 ];
 
 async function createArticle(article: ArticleInput): Promise<boolean> {

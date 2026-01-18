@@ -3,13 +3,17 @@
 // Generic components
 export { Chart } from './components/Chart';
 export { CodeBlock } from './components/CodeBlock';
+export { CodeDiff } from './components/CodeDiff';
+export { FileTree } from './components/FileTree';
 export { FullscreenModal } from './components/FullscreenModal';
 export { ImageCarousel } from './components/ImageCarousel';
 export { ImageCompare } from './components/ImageCompare';
-export { Terminal } from './components/Terminal';
 export { Mermaid } from './components/Mermaid';
-export { ModelViewer } from './components/ModelViewer';
 export { MermaidClient } from './components/MermaidClient';
+export { ModelViewer } from './components/ModelViewer';
+export { Steps } from './components/Steps';
+export { Terminal } from './components/Terminal';
+export { Timeline } from './components/Timeline';
 export * from './components/ui/alert';
 export * from './components/ui/badge';
 export * from './components/ui/button';

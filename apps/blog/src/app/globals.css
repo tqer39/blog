@@ -947,7 +947,7 @@ body[data-slide-mode="true"] .chart-header svg {
 }
 
 body[data-slide-mode="true"] .chart-header span {
-  font-size: 2rem !important;
+  font-size: 1.5rem !important;
   font-weight: bold !important;
 }
 
@@ -958,5 +958,21 @@ body[data-slide-mode="true"] .chart-body {
 
 body[data-slide-mode="true"] .recharts-responsive-container {
   height: 500px !important;
-  max-height: 60vh !important;
+  max-height: 50vh !important;
+}
+
+body[data-slide-mode="true"] .recharts-text {
+  font-size: 14px !important;
+}
+
+body[data-slide-mode="true"] .recharts-legend-item-text {
+  font-size: 14px !important;
+}
+
+body[data-slide-mode="true"] .recharts-default-tooltip,
+body[data-slide-mode="true"] .recharts-tooltip-item,
+body[data-slide-mode="true"] .recharts-tooltip-label,
+body[data-slide-mode="true"] .recharts-tooltip-wrapper li,
+body[data-slide-mode="true"] .recharts-tooltip-wrapper p {
+  font-size: 14px !important;
 }

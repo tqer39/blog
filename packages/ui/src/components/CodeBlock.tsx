@@ -25,12 +25,16 @@ import {
 } from 'shiki';
 
 import { Chart } from './Chart';
+import { CodeDiff } from './CodeDiff';
+import { FileTree } from './FileTree';
 import { FullscreenModal } from './FullscreenModal';
 import { ImageCarousel } from './ImageCarousel';
 import { ImageCompare } from './ImageCompare';
 import { Mermaid } from './Mermaid';
 import { ModelViewer } from './ModelViewer';
+import { Steps } from './Steps';
 import { Terminal } from './Terminal';
+import { Timeline } from './Timeline';
 import { Skeleton } from './ui/skeleton';
 
 interface CodeBlockProps {
@@ -216,6 +220,26 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   // 3D Model viewer
   if (lang === 'model') {
     return <ModelViewer content={code} />;
+  }
+
+  // Code diff
+  if (lang === 'diff') {
+    return <CodeDiff content={code} />;
+  }
+
+  // File tree
+  if (lang === 'tree') {
+    return <FileTree content={code} />;
+  }
+
+  // Timeline
+  if (lang === 'timeline') {
+    return <Timeline content={code} />;
+  }
+
+  // Steps/Wizard
+  if (lang === 'steps') {
+    return <Steps content={code} />;
   }
 
   // Loading state - skeleton with line-like patterns
