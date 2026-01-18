@@ -348,6 +348,7 @@ export default function SettingsPage() {
                     type="button"
                     role="switch"
                     aria-checked={isVisible}
+                    aria-label={`${isVisible ? 'Hide' : 'Show'} ${label} link`}
                     onClick={() => handleToggle(showKey)}
                     className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
                       isVisible ? 'bg-primary' : 'bg-muted'
