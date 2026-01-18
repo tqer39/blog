@@ -160,18 +160,18 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
         <button
           type="button"
           onClick={scrollPrev}
-          className="absolute left-3 top-1/2 z-20 flex aspect-square h-9 shrink-0 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-all hover:bg-black/70"
+          className="absolute left-3 top-1/2 z-20 flex h-10 w-10 min-h-10 min-w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-all hover:bg-black/70"
           aria-label="Previous image"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-6 w-6" />
         </button>
         <button
           type="button"
           onClick={scrollNext}
-          className="absolute right-3 top-1/2 z-20 flex aspect-square h-9 shrink-0 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-all hover:bg-black/70"
+          className="absolute right-3 top-1/2 z-20 flex h-10 w-10 min-h-10 min-w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm transition-all hover:bg-black/70"
           aria-label="Next image"
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-6 w-6" />
         </button>
       </div>
 
