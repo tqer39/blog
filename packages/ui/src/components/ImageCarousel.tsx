@@ -56,6 +56,19 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
     setCurrentIndex(emblaApi.selectedScrollSnap());
   }, [emblaApi]);
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        scrollPrev();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        scrollNext();
+      }
+    },
+    [scrollPrev, scrollNext]
+  );
+
   useEffect(() => {
     if (!emblaApi) return;
     onSelect();
@@ -102,7 +115,16 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
   const currentImage = images[currentIndex];
 
   return (
-    <div className={cn('image-carousel', className)}>
+    <section
+      className={cn(
+        'image-carousel rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
+        className
+      )}
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: Carousel needs keyboard navigation for accessibility
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      aria-label="Image carousel"
+    >
       <div className="relative overflow-visible">
         {/* Carousel viewport */}
         <div ref={emblaRef} className="overflow-hidden rounded-lg">
@@ -202,6 +224,6 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
           </span>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
