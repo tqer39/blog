@@ -4,12 +4,15 @@ import { cn } from "@blog/utils";
 import {
   Check,
   Copy,
+  Maximize2,
   Pause,
   Play,
   RotateCcw,
   Terminal as TerminalIcon,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+import { FullscreenModal } from "./FullscreenModal";
 
 interface TerminalProps {
   content: string;
@@ -140,6 +143,7 @@ export function Terminal({ content, className }: TerminalProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isComplete, setIsComplete] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const terminalRef = useRef<HTMLDivElement>(null);
 
   // Typing speed (ms per character)
@@ -284,6 +288,14 @@ export function Terminal({ content, className }: TerminalProps) {
               </>
             )}
           </button>
+          <button
+            type="button"
+            onClick={() => setIsFullscreen(true)}
+            className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+            aria-label="Fullscreen"
+          >
+            <Maximize2 className="h-4 w-4" />
+          </button>
         </div>
       </div>
 
@@ -312,6 +324,23 @@ export function Terminal({ content, className }: TerminalProps) {
           <span className="inline-block h-4 w-2 animate-pulse bg-green-400" />
         )}
       </div>
+      <FullscreenModal
+        isOpen={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+        title="Terminal"
+      >
+        <div className="h-full overflow-auto rounded-lg bg-stone-900 p-4 font-mono text-sm">
+          {lines.map((line, index) => (
+            <div key={index} className="leading-relaxed">
+              {line.isCommand ? (
+                <HighlightedLine line={line.text} />
+              ) : (
+                <span className="text-stone-300">{line.text}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </FullscreenModal>
     </div>
   );
 }
