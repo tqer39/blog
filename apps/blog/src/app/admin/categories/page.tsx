@@ -25,8 +25,8 @@ import {
   ArrowUp,
   Edit,
   GripVertical,
+  Loader2,
   Plus,
-  Save,
   Search,
   Trash2,
   X,
@@ -155,9 +155,6 @@ function SortableCategoryRow({
 
 export default function CategoryListPage() {
   const [categories, setCategories] = useState<CategoryWithCount[]>([]);
-  const [originalCategories, setOriginalCategories] = useState<
-    CategoryWithCount[]
-  >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editingCategory, setEditingCategory] =
@@ -166,7 +163,6 @@ export default function CategoryListPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortKey, setSortKey] = useState<CategorySortKey>('displayOrder');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const [hasOrderChanges, setHasOrderChanges] = useState(false);
   const [isSavingOrder, setIsSavingOrder] = useState(false);
 
   const sensors = useSensors(
@@ -184,8 +180,6 @@ export default function CategoryListPage() {
         (a, b) => a.displayOrder - b.displayOrder
       );
       setCategories(sorted);
-      setOriginalCategories(sorted);
-      setHasOrderChanges(false);
       setError(null);
     } catch (err) {
       setError(
@@ -231,36 +225,29 @@ export default function CategoryListPage() {
     }
   }
 
-  function handleDragEnd(event: DragEndEvent) {
+  async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (over && active.id !== over.id) {
       const oldIndex = categories.findIndex((c) => c.id === active.id);
       const newIndex = categories.findIndex((c) => c.id === over.id);
       const newOrder = arrayMove(categories, oldIndex, newIndex);
       setCategories(newOrder);
-      setHasOrderChanges(true);
-    }
-  }
 
-  async function handleSaveOrder() {
-    setIsSavingOrder(true);
-    try {
-      const orderedIds = categories.map((c) => c.id);
-      await updateCategoriesOrder(orderedIds);
-      setOriginalCategories([...categories]);
-      setHasOrderChanges(false);
-    } catch (err) {
-      alert(
-        err instanceof Error ? err.message : 'Failed to save category order'
-      );
-    } finally {
-      setIsSavingOrder(false);
+      // Auto-save the new order
+      setIsSavingOrder(true);
+      try {
+        const orderedIds = newOrder.map((c) => c.id);
+        await updateCategoriesOrder(orderedIds);
+      } catch (err) {
+        // Revert on error
+        setCategories(categories);
+        alert(
+          err instanceof Error ? err.message : 'Failed to save category order'
+        );
+      } finally {
+        setIsSavingOrder(false);
+      }
     }
-  }
-
-  function handleCancelOrderChange() {
-    setCategories([...originalCategories]);
-    setHasOrderChanges(false);
   }
 
   const isDragEnabled =
@@ -277,9 +264,9 @@ export default function CategoryListPage() {
         )
       : categories;
 
-    // When there are unsaved order changes and we're sorting by displayOrder (asc),
-    // preserve the current drag order instead of sorting by the (outdated) displayOrder property
-    if (sortKey === 'displayOrder' && sortDirection === 'asc' && hasOrderChanges) {
+    // When sorting by displayOrder (asc), preserve the current array order
+    // since auto-save updates immediately after drag
+    if (sortKey === 'displayOrder' && sortDirection === 'asc') {
       return [...filtered];
     }
 
@@ -300,7 +287,7 @@ export default function CategoryListPage() {
       }
       return ((aVal as number) - (bVal as number)) * modifier;
     });
-  }, [categories, searchQuery, sortKey, sortDirection, hasOrderChanges]);
+  }, [categories, searchQuery, sortKey, sortDirection]);
 
   const SortButton = ({
     columnKey,

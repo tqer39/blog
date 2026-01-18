@@ -3,6 +3,7 @@
 
 /* Use class-based dark mode for next-themes compatibility */
 @custom-variant dark (&:where(.dark, .dark *, .tokyonight, .tokyonight *));
+@custom-variant nord-light (&:where(.nord-light, .nord-light *));
 
 /* Theme configuration for v4 */
 @theme inline {
@@ -101,30 +102,58 @@
 }
 
 .tokyonight {
-  --background: 235 18.8% 12.5%;        /* #1a1b26 */
-  --foreground: 228.7 72.6% 85.7%;      /* #c0caf5 */
+  --background: 235 18.8% 12.5%; /* #1a1b26 */
+  --foreground: 228.7 72.6% 85.7%; /* #c0caf5 */
   --card: 235 18.8% 12.5%;
   --card-foreground: 228.7 72.6% 85.7%;
   --popover: 235 18.8% 12.5%;
   --popover-foreground: 228.7 72.6% 85.7%;
-  --primary: 220.8 88.7% 72.4%;         /* #7aa2f7 Blue */
+  --primary: 220.8 88.7% 72.4%; /* #7aa2f7 Blue */
   --primary-foreground: 235 18.8% 12.5%;
-  --secondary: 224.7 37% 24.9%;         /* #283457 Selection */
+  --secondary: 224.7 37% 24.9%; /* #283457 Selection */
   --secondary-foreground: 228.7 72.6% 85.7%;
   --muted: 224.7 37% 24.9%;
-  --muted-foreground: 228.6 30% 60%;     /* #7982a9 Brighter comment */
-  --accent: 261.3 85.3% 78.6%;          /* #bb9af7 Magenta */
+  --muted-foreground: 228.6 30% 60%; /* #7982a9 Brighter comment */
+  --accent: 261.3 85.3% 78.6%; /* #bb9af7 Magenta */
   --accent-foreground: 235 18.8% 12.5%;
-  --destructive: 348.8 89% 71.6%;       /* #f7768e Red */
+  --destructive: 348.8 89% 71.6%; /* #f7768e Red */
   --destructive-foreground: 235 18.8% 12.5%;
   --border: 224.7 37% 24.9%;
   --input: 224.7 37% 24.9%;
   --ring: 220.8 88.7% 72.4%;
-  --chart-1: 220.8 88.7% 72.4%;         /* Blue */
-  --chart-2: 202.2 100% 74.5%;          /* #7dcfff Cyan */
-  --chart-3: 88.8 50.5% 61.2%;          /* #9ece6a Green */
-  --chart-4: 261.5 54.1% 66.7%;         /* #9d7cd8 Purple */
-  --chart-5: 35.5 65.9% 64.3%;          /* #e0af68 Yellow */
+  --chart-1: 220.8 88.7% 72.4%; /* Blue */
+  --chart-2: 202.2 100% 74.5%; /* #7dcfff Cyan */
+  --chart-3: 88.8 50.5% 61.2%; /* #9ece6a Green */
+  --chart-4: 261.5 54.1% 66.7%; /* #9d7cd8 Purple */
+  --chart-5: 35.5 65.9% 64.3%; /* #e0af68 Yellow */
+}
+
+.nord-light {
+  /* Nord Light Theme - Snow Storm background with Polar Night text */
+  --background: 218 27% 94%; /* #ECEFF4 nord6 */
+  --foreground: 220 16% 22%; /* #2E3440 nord0 */
+  --card: 218 27% 94%; /* #ECEFF4 nord6 */
+  --card-foreground: 220 16% 22%; /* #2E3440 nord0 */
+  --popover: 219 28% 88%; /* #D8DEE9 nord4 */
+  --popover-foreground: 220 16% 22%; /* #2E3440 nord0 */
+  --primary: 213 32% 52%; /* #5E81AC nord10 Blue */
+  --primary-foreground: 218 27% 94%; /* #ECEFF4 nord6 */
+  --secondary: 218 27% 92%; /* #E5E9F0 nord5 */
+  --secondary-foreground: 220 16% 22%; /* #2E3440 nord0 */
+  --muted: 218 27% 92%; /* #E5E9F0 nord5 */
+  --muted-foreground: 220 17% 36%; /* #4C566A nord3 */
+  --accent: 193 43% 67%; /* #88C0D0 nord8 Cyan */
+  --accent-foreground: 220 16% 22%; /* #2E3440 nord0 */
+  --destructive: 354 42% 56%; /* #BF616A nord11 Red */
+  --destructive-foreground: 218 27% 94%; /* #ECEFF4 nord6 */
+  --border: 219 28% 88%; /* #D8DEE9 nord4 */
+  --input: 219 28% 88%; /* #D8DEE9 nord4 */
+  --ring: 213 32% 52%; /* #5E81AC nord10 */
+  --chart-1: 213 32% 52%; /* #5E81AC nord10 Blue */
+  --chart-2: 193 43% 67%; /* #88C0D0 nord8 Cyan */
+  --chart-3: 92 28% 65%; /* #A3BE8C nord14 Green */
+  --chart-4: 311 20% 63%; /* #B48EAD nord15 Purple */
+  --chart-5: 40 71% 73%; /* #EBCB8B nord13 Yellow */
 }
 
 /* Base styles */
@@ -483,7 +512,8 @@ body {
 }
 
 /* Tokyo Night: Ghost/transparent button hover */
-.tokyonight button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
+.tokyonight
+button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
   background-color: #24283b;
 }
 
@@ -504,4 +534,139 @@ body {
 /* Tokyo Night: Labels and form text */
 .tokyonight label {
   color: #a9b1d6;
+}
+
+/* ===== Nord Light Theme Specific Styles ===== */
+
+.nord-light .shiki-wrapper .line:hover {
+  background-color: #d8dee9; /* nord4 */
+}
+
+.nord-light .category-badge {
+  color: #2e3440 !important; /* nord0 */
+  background-color: transparent !important;
+  border-color: currentColor !important;
+}
+
+.nord-light .prose pre {
+  background-color: #e5e9f0; /* nord5 */
+}
+
+.nord-light .mermaid-content {
+  background-color: #e5e9f0; /* nord5 */
+}
+
+/* Nord Light: Links and interactive elements */
+.nord-light a {
+  color: #5e81ac; /* nord10 Blue */
+}
+
+.nord-light a:hover {
+  color: #81a1c1; /* nord9 */
+}
+
+/* Nord Light: Headings */
+.nord-light h1,
+.nord-light h2 {
+  color: #5e81ac; /* nord10 Blue */
+}
+
+.nord-light h3,
+.nord-light h4,
+.nord-light h5,
+.nord-light h6 {
+  color: #8fbcbb; /* nord7 Frost */
+}
+
+/* Nord Light: Tag badges with colorful borders */
+.nord-light .tag-badge,
+.nord-light [class*="rounded"][class*="border"][class*="text-xs"],
+.nord-light [class*="rounded"][class*="border"][class*="text-sm"] {
+  border-color: #5e81ac !important; /* nord10 */
+  color: #5e81ac !important;
+}
+
+.nord-light .tag-badge:hover,
+.nord-light [class*="rounded"][class*="border"][class*="text-xs"]:hover,
+.nord-light [class*="rounded"][class*="border"][class*="text-sm"]:hover {
+  background-color: #d8dee9 !important; /* nord4 */
+  border-color: #81a1c1 !important; /* nord9 */
+}
+
+/* Nord Light: Search result box */
+.nord-light [class*="bg-stone-100"],
+.nord-light [class*="bg-muted"] {
+  background-color: #e5e9f0 !important; /* nord5 */
+}
+
+/* Nord Light: Card hover effects */
+.nord-light [class*="hover:bg-stone"] {
+  transition: background-color 0.2s ease;
+}
+
+.nord-light [class*="hover:bg-stone"]:hover {
+  background-color: #d8dee9 !important; /* nord4 */
+}
+
+/* Nord Light: Border colors */
+.nord-light [class*="border-stone"],
+.nord-light [class*="divide-stone"] > * {
+  border-color: #d8dee9 !important; /* nord4 */
+}
+
+/* Nord Light: Muted text */
+.nord-light [class*="text-stone-500"],
+.nord-light [class*="text-stone-600"],
+.nord-light [class*="text-muted"] {
+  color: #4c566a !important; /* nord3 */
+}
+
+/* Nord Light: Footer */
+.nord-light footer {
+  color: #4c566a; /* nord3 */
+}
+
+.nord-light footer a {
+  color: #5e81ac; /* nord10 */
+}
+
+/* Nord Light: Button styles */
+.nord-light .bg-primary {
+  background-color: #5e81ac !important; /* nord10 */
+  color: #eceff4 !important; /* nord6 */
+}
+
+.nord-light .bg-primary:hover {
+  background-color: #81a1c1 !important; /* nord9 */
+  color: #eceff4 !important;
+}
+
+/* Nord Light: Ghost/transparent button hover */
+.nord-light
+button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
+  background-color: #d8dee9; /* nord4 */
+}
+
+/* Nord Light: Input field styling */
+.nord-light input,
+.nord-light textarea,
+.nord-light select {
+  background-color: #eceff4 !important; /* nord6 */
+  border-color: #d8dee9 !important; /* nord4 */
+  color: #2e3440 !important; /* nord0 */
+}
+
+.nord-light input::placeholder,
+.nord-light textarea::placeholder {
+  color: #4c566a !important; /* nord3 */
+}
+
+/* Nord Light: Labels and form text */
+.nord-light label {
+  color: #3b4252; /* nord1 */
+}
+
+/* Nord Light: Code block darker border */
+.nord-light .group.relative.my-4 {
+  --tw-ring-color: #d8dee9 !important; /* nord4 */
 }

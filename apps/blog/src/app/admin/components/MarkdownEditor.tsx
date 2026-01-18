@@ -77,7 +77,6 @@ export function MarkdownEditor({
   const [selectedLength, setSelectedLength] =
     useState<ContinuationLength>('medium');
 
-
   const insertTextAtCursor = useCallback(
     (text: string) => {
       const textarea = textareaRef.current;
@@ -525,7 +524,6 @@ export function MarkdownEditor({
                 </div>
               </PopoverContent>
             </Popover>
-
           </div>
 
           <div className="flex items-center gap-2">

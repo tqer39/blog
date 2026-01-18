@@ -148,7 +148,6 @@ export function AdminSidebar() {
           />
         </ul>
       </nav>
-
     </aside>
   );
 }

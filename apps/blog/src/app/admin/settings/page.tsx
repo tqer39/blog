@@ -327,14 +327,54 @@ export default function SettingsPage() {
           <h2 className="mb-4 text-xl font-semibold">Social Links</h2>
           <div className="space-y-2">
             {[
-              { key: 'github', label: 'GitHub', icon: <Github className="h-4 w-4" />, placeholder: 'username' },
-              { key: 'twitter', label: 'X', icon: <XIcon className="h-4 w-4" />, placeholder: 'username' },
-              { key: 'bluesky', label: 'BlueSky', icon: <BlueSkyIcon className="h-4 w-4" />, placeholder: 'user.bsky.social' },
-              { key: 'threads', label: 'Threads', icon: <ThreadsIcon className="h-4 w-4" />, placeholder: 'username' },
-              { key: 'linkedin', label: 'LinkedIn', icon: <Linkedin className="h-4 w-4" />, placeholder: 'username' },
-              { key: 'wantedly', label: 'Wantedly', icon: <WantedlyIcon className="h-4 w-4" />, placeholder: 'username' },
-              { key: 'lapras', label: 'Lapras', icon: <LaprasIcon className="h-4 w-4" />, placeholder: 'username' },
-              { key: 'bento', label: 'Bento', icon: <LayoutGrid className="h-4 w-4" />, placeholder: 'username' },
+              {
+                key: 'github',
+                label: 'GitHub',
+                icon: <Github className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'twitter',
+                label: 'X',
+                icon: <XIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'bluesky',
+                label: 'BlueSky',
+                icon: <BlueSkyIcon className="h-4 w-4" />,
+                placeholder: 'user.bsky.social',
+              },
+              {
+                key: 'threads',
+                label: 'Threads',
+                icon: <ThreadsIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'linkedin',
+                label: 'LinkedIn',
+                icon: <Linkedin className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'wantedly',
+                label: 'Wantedly',
+                icon: <WantedlyIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'lapras',
+                label: 'Lapras',
+                icon: <LaprasIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'bento',
+                label: 'Bento',
+                icon: <LayoutGrid className="h-4 w-4" />,
+                placeholder: 'username',
+              },
             ].map(({ key, label, icon, placeholder }) => {
               const settingKey = `social_${key}` as keyof SiteSettings;
               const showKey = `show_${key}_link` as keyof SiteSettings;
@@ -375,7 +415,10 @@ export default function SettingsPage() {
                     <input
                       id={settingKey}
                       type="text"
-                      value={extractSocialId(value, key as keyof typeof SOCIAL_PREFIXES)}
+                      value={extractSocialId(
+                        value,
+                        key as keyof typeof SOCIAL_PREFIXES
+                      )}
                       onChange={(e) =>
                         handleSocialIdChange(
                           key as keyof typeof SOCIAL_PREFIXES,
@@ -384,7 +427,11 @@ export default function SettingsPage() {
                         )
                       }
                       onPaste={(e) =>
-                        handleSocialPaste(e, key as keyof typeof SOCIAL_PREFIXES, settingKey)
+                        handleSocialPaste(
+                          e,
+                          key as keyof typeof SOCIAL_PREFIXES,
+                          settingKey
+                        )
                       }
                       className="w-full rounded-l-lg border border-border bg-background px-3 py-1.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                       placeholder={placeholder}

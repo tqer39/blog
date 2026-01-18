@@ -1,6 +1,13 @@
 'use client';
 
-import { BookOpen, LayoutDashboard, LogIn, LogOut, Search, X } from 'lucide-react';
+import {
+  BookOpen,
+  LayoutDashboard,
+  LogIn,
+  LogOut,
+  Search,
+  X,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -12,7 +19,10 @@ interface HeaderClientProps {
   isLoggedIn?: boolean;
 }
 
-export function HeaderClient({ siteName, isLoggedIn = false }: HeaderClientProps) {
+export function HeaderClient({
+  siteName,
+  isLoggedIn = false,
+}: HeaderClientProps) {
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
