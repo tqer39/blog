@@ -25,6 +25,7 @@ import {
 } from 'shiki';
 
 import { FullscreenModal } from './FullscreenModal';
+import { ImageCarousel } from './ImageCarousel';
 import { Mermaid } from './Mermaid';
 import { Skeleton } from './ui/skeleton';
 
@@ -186,6 +187,11 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   // Mermaid diagrams
   if (lang === 'mermaid') {
     return <Mermaid chart={code} />;
+  }
+
+  // Image carousel
+  if (lang === 'carousel') {
+    return <ImageCarousel content={code} />;
   }
 
   // Loading state - skeleton with line-like patterns

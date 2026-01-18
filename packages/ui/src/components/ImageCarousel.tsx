@@ -1,0 +1,185 @@
+'use client';
+
+import { cn } from '@blog/utils';
+import useEmblaCarousel from 'embla-carousel-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+
+interface ImageData {
+  alt: string;
+  src: string;
+}
+
+interface ImageCarouselProps {
+  content: string;
+  className?: string;
+}
+
+/**
+ * Parses markdown-style image syntax from the content.
+ * Supports: ![alt text](url)
+ */
+function parseImages(content: string): ImageData[] {
+  const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+  const images: ImageData[] = [];
+  let match: RegExpExecArray | null;
+
+  match = imageRegex.exec(content);
+  while (match !== null) {
+    images.push({
+      alt: match[1] || '',
+      src: match[2],
+    });
+    match = imageRegex.exec(content);
+  }
+
+  return images;
+}
+
+export function ImageCarousel({ content, className }: ImageCarouselProps) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+
+  const images = parseImages(content);
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setCurrentIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+    return () => {
+      emblaApi.off('select', onSelect);
+      emblaApi.off('reInit', onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
+  const handleImageError = (index: number) => {
+    setImageErrors((prev) => ({ ...prev, [index]: true }));
+  };
+
+  if (images.length === 0) {
+    return (
+      <div className="my-4 rounded-lg border border-dashed border-muted-foreground/50 p-4 text-center text-muted-foreground">
+        No images found. Use markdown image syntax: ![alt](url)
+      </div>
+    );
+  }
+
+  // Single image - no carousel needed
+  if (images.length === 1) {
+    return (
+      <figure className={cn('my-4', className)}>
+        {/* biome-ignore lint/performance/noImgElement: External URLs from user content require native img element */}
+        <img
+          src={images[0].src}
+          alt={images[0].alt}
+          className="mx-auto max-h-[500px] w-auto rounded-lg object-contain"
+          onError={() => handleImageError(0)}
+        />
+        {images[0].alt && (
+          <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+            {images[0].alt}
+          </figcaption>
+        )}
+      </figure>
+    );
+  }
+
+  return (
+    <div className={cn('my-6', className)}>
+      <div className="relative mx-auto max-w-3xl">
+        {/* Carousel viewport */}
+        <div ref={emblaRef} className="overflow-hidden">
+          <div className="flex" style={{ backfaceVisibility: 'hidden' }}>
+            {images.map((image, index) => (
+              <div
+                key={index}
+                className="relative"
+                style={{ flex: '0 0 100%', minWidth: 0 }}
+              >
+                <figure className="flex flex-col items-center">
+                  <div className="flex h-[400px] w-full items-center justify-center">
+                    {imageErrors[index] ? (
+                      <div className="text-center text-muted-foreground">
+                        <p>Failed to load image</p>
+                        <p className="text-sm">{image.alt || image.src}</p>
+                      </div>
+                    ) : (
+                      // biome-ignore lint/performance/noImgElement: External URLs from user content require native img element
+                      <img
+                        src={image.src}
+                        alt={image.alt}
+                        className="max-h-full max-w-full rounded-lg object-contain"
+                        onError={() => handleImageError(index)}
+                      />
+                    )}
+                  </div>
+                  {image.alt && (
+                    <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+                      {image.alt}
+                    </figcaption>
+                  )}
+                </figure>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Navigation buttons */}
+        <button
+          type="button"
+          onClick={scrollPrev}
+          className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white shadow-md transition-colors hover:bg-black/70"
+          aria-label="Previous image"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+        <button
+          type="button"
+          onClick={scrollNext}
+          className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white shadow-md transition-colors hover:bg-black/70"
+          aria-label="Next image"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
+      </div>
+
+      {/* Pagination dots */}
+      <div className="mt-4 flex items-center justify-center gap-2">
+        {images.map((_, index) => (
+          <button
+            key={index}
+            type="button"
+            onClick={() => emblaApi?.scrollTo(index)}
+            className={cn(
+              'h-2 w-2 rounded-full transition-colors',
+              index === currentIndex
+                ? 'bg-primary'
+                : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+            )}
+            aria-label={`Go to image ${index + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Counter */}
+      <div className="mt-2 text-center text-sm text-muted-foreground">
+        {currentIndex + 1} / {images.length}
+      </div>
+    </div>
+  );
+}

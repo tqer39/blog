@@ -3,9 +3,11 @@
 // Generic components
 export { CodeBlock } from './components/CodeBlock';
 export { FullscreenModal } from './components/FullscreenModal';
+export { ImageCarousel } from './components/ImageCarousel';
 export { Mermaid } from './components/Mermaid';
 export { MermaidClient } from './components/MermaidClient';
 export * from './components/ui/alert';
+export * from './components/ui/carousel';
 export * from './components/ui/badge';
 export * from './components/ui/button';
 export * from './components/ui/card';

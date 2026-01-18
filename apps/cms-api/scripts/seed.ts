@@ -615,6 +615,64 @@ const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
     status: 'published',
   },
   {
+    title: '画像カルーセル機能のデモ',
+    description:
+      'Markdownでカルーセルを使う方法を紹介します。複数の画像をスライド形式で表示できます。',
+    content: `# 画像カルーセル機能のデモ
+
+このブログでは、Markdown記法を拡張して画像カルーセルを簡単に作成できます。
+
+## 基本的な使い方
+
+\`\`\`carousel\` の中に画像をMarkdown形式で記述するだけで、自動的にカルーセル表示されます。
+
+## 風景写真のカルーセル
+
+以下は風景写真のカルーセル例です：
+
+\`\`\`carousel
+![山の風景](https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=400&fit=crop)
+![海の夕日](https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=400&fit=crop)
+![森の小道](https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=400&fit=crop)
+![湖畔の朝](https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=400&fit=crop)
+\`\`\`
+
+## 都市の写真
+
+都市をテーマにしたカルーセルも作成できます：
+
+\`\`\`carousel
+![高層ビル](https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=400&fit=crop)
+![夜景](https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=800&h=400&fit=crop)
+![街並み](https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&h=400&fit=crop)
+\`\`\`
+
+## 記法について
+
+カルーセルを作成するには、以下のようなMarkdown記法を使用します：
+
+\`\`\`markdown
+\\\`\\\`\\\`carousel
+![画像1の説明](画像1のURL)
+![画像2の説明](画像2のURL)
+![画像3の説明](画像3のURL)
+\\\`\\\`\\\`
+\`\`\`
+
+### ポイント
+
+- 各画像は \`![alt](url)\` 形式で記述
+- alt テキストはキャプションとして表示されます
+- 画像は1枚でも複数枚でもOK（1枚の場合はカルーセルではなく通常表示）
+- 左右の矢印ボタンまたはキーボードの矢印キーで操作
+
+## まとめ
+
+カルーセル機能を使うことで、複数の関連画像をコンパクトに表示できます。旅行記や製品紹介、ギャラリーなどに活用してください。`,
+    tags: ['Tutorial', 'Markdown'],
+    status: 'published',
+  },
+  {
     title: 'TypeScript 入門スライド',
     description:
       'TypeScriptの基礎をスライド形式で学べるプレゼンテーション。スライドモードで閲覧できます。',

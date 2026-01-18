@@ -35,6 +35,8 @@ const cspDirectives = {
     'blob:',
     DOMAINS.CDN,
     'https://picsum.photos',
+    'https://*.picsum.photos',
+    'https://images.unsplash.com',
     ...(isDev ? [DOMAINS.CMS_API_LOCAL] : []),
   ],
   'font-src': ["'self'"],
