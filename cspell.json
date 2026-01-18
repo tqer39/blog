@@ -29,6 +29,7 @@
     "awscli",
     "Bento",
     "bobheadxi",
+    "bsky",
     "charliermarsh",
     "chdir",
     "checkwinsize",
@@ -93,6 +94,8 @@
     "justfile",
     "Kaku",
     "karabiner",
+    "Lapras",
+    "lapras",
     "Karabiner",
     "kentaro",
     "keymaps",
@@ -213,6 +216,8 @@
     "ulidx",
     "unstub",
     "virality",
+    "Wantedly",
+    "wantedly",
     "zakki",
     "zenn"
   ]

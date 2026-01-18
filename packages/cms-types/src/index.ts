@@ -288,10 +288,20 @@ export interface SiteSettings {
   social_github: string;
   social_twitter: string;
   social_bento: string;
+  social_bluesky: string;
+  social_threads: string;
+  social_linkedin: string;
+  social_wantedly: string;
+  social_lapras: string;
   show_rss_link: string; // "true" or "false" (stored as text in DB)
   show_github_link: string; // "true" or "false" (stored as text in DB)
   show_twitter_link: string; // "true" or "false" (stored as text in DB)
   show_bento_link: string; // "true" or "false" (stored as text in DB)
+  show_bluesky_link: string; // "true" or "false" (stored as text in DB)
+  show_threads_link: string; // "true" or "false" (stored as text in DB)
+  show_linkedin_link: string; // "true" or "false" (stored as text in DB)
+  show_wantedly_link: string; // "true" or "false" (stored as text in DB)
+  show_lapras_link: string; // "true" or "false" (stored as text in DB)
 }
 
 export interface SiteSettingsResponse {
