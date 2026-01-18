@@ -2,7 +2,7 @@
 
 import { CodeBlock } from '@blog/ui';
 import { h } from 'hastscript';
-import { useEffect } from 'react';
+import { isValidElement, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
@@ -160,6 +160,15 @@ export function ArticleContent({
           pre({ children, className }) {
             // Let CodeBlock handle mermaid via the code component
             // This ensures consistent DOM structure: <pre><CodeBlock/></pre> or <pre><Mermaid/></pre>
+            if (isValidElement(children)) {
+              const childClassName = children.props?.className;
+              if (
+                typeof childClassName === 'string' &&
+                childClassName.includes('language-carousel')
+              ) {
+                return <div className="not-prose">{children}</div>;
+              }
+            }
             return <pre className={className}>{children}</pre>;
           },
         }}
