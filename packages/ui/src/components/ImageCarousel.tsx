@@ -138,40 +138,45 @@ export function ImageCarousel({ content, className }: ImageCarouselProps) {
         <button
           type="button"
           onClick={scrollPrev}
-          className="image-carousel__button absolute left-4 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
+          className="image-carousel__button absolute left-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
           aria-label="Previous image"
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-7 w-7" />
         </button>
         <button
           type="button"
           onClick={scrollNext}
-          className="image-carousel__button absolute right-4 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
+          className="image-carousel__button absolute right-2 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white shadow-lg transition-colors hover:bg-black/80"
           aria-label="Next image"
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-7 w-7" />
         </button>
+
       </div>
 
-      {/* Caption and pagination */}
-      <div className="flex items-center justify-between text-xs text-stone-600 dark:text-stone-400">
+      {/* Caption bar below image */}
+      <div className="mt-3 flex items-center justify-between gap-4 px-1 text-sm text-stone-600 dark:text-stone-400">
         <span className="truncate">{currentImage?.alt || ""}</span>
-        <div className="flex shrink-0 items-center gap-1">
-          {images.map((_, index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => emblaApi?.scrollTo(index)}
-              className={cn(
-                "image-carousel__dot h-1.5 w-1.5 rounded-full transition-colors",
-                index === currentIndex
-                  ? "bg-primary"
-                  : "bg-stone-300 hover:bg-stone-400 dark:bg-stone-600 dark:hover:bg-stone-500",
-              )}
-              aria-label={`Go to image ${index + 1}`}
-            />
-          ))}
-          <span className="ml-1 text-stone-500">
+        <div className="flex shrink-0 items-center gap-4">
+          {/* Dot pagination */}
+          <div className="flex items-center gap-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => emblaApi?.scrollTo(index)}
+                className={cn(
+                  "image-carousel__dot h-3 w-3 rounded-full border-2 transition-all",
+                  index === currentIndex
+                    ? "border-stone-700 bg-stone-700 dark:border-stone-300 dark:bg-stone-300"
+                    : "border-stone-400 bg-transparent hover:border-stone-500 dark:border-stone-500 dark:hover:border-stone-400",
+                )}
+                aria-label={`Go to image ${index + 1}`}
+              />
+            ))}
+          </div>
+          {/* Counter */}
+          <span className="text-sm font-medium text-stone-500 dark:text-stone-400">
             {currentIndex + 1}/{images.length}
           </span>
         </div>

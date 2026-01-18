@@ -32,36 +32,29 @@ function splitIntoSlides(content: string): string[] {
 
   for (const line of lines) {
     // Check for code fence start/end (``` or ~~~)
-    // Opening fence: ^(`{3,}|~{3,}) followed by optional language/info
-    // Closing fence: ^(`{3,}|~{3,})\s*$ (same or more backticks/tildes, nothing else)
-    const openFenceMatch = line.match(/^(`{3,}|~{3,})/);
+    // Must be at the start of a line with only fence chars (for closing) or fence + info (for opening)
+    const fenceMatch = line.match(/^(`{3,}|~{3,})(\S*)(\s*)$/);
 
-    if (openFenceMatch) {
-      const fenceStr = openFenceMatch[1];
+    if (fenceMatch) {
+      const fenceStr = fenceMatch[1];
       const fenceChar = fenceStr[0];
       const fenceLength = fenceStr.length;
+      const hasInfo = fenceMatch[2].length > 0; // e.g., "carousel", "typescript"
 
       if (!inCodeBlock) {
-        // Opening a code block
+        // Opening a code block (may have language info like ```carousel)
         inCodeBlock = true;
         codeBlockChar = fenceChar;
         codeBlockFenceLength = fenceLength;
       } else if (
         fenceChar === codeBlockChar &&
-        fenceLength >= codeBlockFenceLength
+        fenceLength >= codeBlockFenceLength &&
+        !hasInfo // Closing fence must not have info string
       ) {
-        // Closing fence must:
-        // 1. Use the same character (` or ~)
-        // 2. Have at least as many characters as the opening fence
-        // 3. Have nothing else on the line (except whitespace)
-        const isClosingFence = new RegExp(
-          `^${fenceChar}{${codeBlockFenceLength},}\\s*$`,
-        ).test(line);
-        if (isClosingFence) {
-          inCodeBlock = false;
-          codeBlockChar = "";
-          codeBlockFenceLength = 0;
-        }
+        // Valid closing fence
+        inCodeBlock = false;
+        codeBlockChar = "";
+        codeBlockFenceLength = 0;
       }
     }
 
