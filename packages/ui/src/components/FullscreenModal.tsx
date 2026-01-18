@@ -50,7 +50,7 @@ export function FullscreenModal({
         <button
           type="button"
           onClick={onClose}
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-stone-600 transition-colors hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800"
+          className="cursor-pointer flex items-center gap-2 rounded-lg px-3 py-2 text-stone-600 transition-colors hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800"
           aria-label="Close fullscreen"
         >
           <span className="text-sm">Close</span>

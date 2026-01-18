@@ -254,7 +254,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
             <button
               type="button"
               onClick={handleDownloadSvg}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              className="cursor-pointer flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
               aria-label="Download SVG"
               title="Download SVG"
             >
@@ -264,7 +264,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
             <button
               type="button"
               onClick={handleDownloadPng}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              className="cursor-pointer flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
               aria-label="Download PNG"
               title="Download PNG"
             >
@@ -274,7 +274,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
             <button
               type="button"
               onClick={handleCopyCode}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              className="cursor-pointer flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
               aria-label="Copy code"
             >
               {copied ? (
@@ -292,7 +292,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
             <button
               type="button"
               onClick={() => setIsFullscreen(true)}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              className="cursor-pointer flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
               aria-label="Fullscreen"
             >
               <Maximize2 className="h-4 w-4" />

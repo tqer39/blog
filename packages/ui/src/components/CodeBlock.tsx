@@ -266,7 +266,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
             <button
               type="button"
               onClick={handleCopy}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              className="cursor-pointer flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
               aria-label="Copy code"
             >
               {isCopied ? (
@@ -284,7 +284,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
             <button
               type="button"
               onClick={() => setIsFullscreen(true)}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              className="cursor-pointer flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
               aria-label="Fullscreen"
             >
               <Maximize2 className="h-4 w-4" />
