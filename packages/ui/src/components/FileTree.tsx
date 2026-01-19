@@ -33,10 +33,15 @@ function parseTree(content: string): TreeNode[] {
   const stack: { node: TreeNode; depth: number }[] = [];
 
   for (const line of lines) {
-    // Calculate depth based on leading spaces (2 spaces = 1 level)
-    const leadingSpaces = line.match(/^(\s*)/)?.[1].length || 0;
+    // Calculate depth based on leading spaces/tree glyphs (2 spaces = 1 level)
+    const prefix = line.match(/^[\s│├└─┬┼]+/)?.[0] ?? "";
+    // Replace tabs with 2 spaces, then replace tree chars with spaces
+    const normalizedPrefix = prefix
+      .replace(/\t/g, "  ")
+      .replace(/[│├└─┬┼]/g, " ");
+    const leadingSpaces = normalizedPrefix.length;
     const depth = Math.floor(leadingSpaces / 2);
-    const name = line.trim();
+    const name = line.replace(/^[\s│├└─┬┼]+/, "").trim();
     const isDirectory = name.endsWith("/");
     const displayName = isDirectory ? name.slice(0, -1) : name;
 
@@ -143,7 +148,7 @@ function TreeNodeComponent({
       </button>
 
       {node.isDirectory && isExpanded && node.children.length > 0 && (
-        <div className="ml-4 border-l border-stone-200 pl-2 dark:border-stone-700">
+        <div className="ml-4 border-l border-stone-200 pl-4 dark:border-stone-700">
           {node.children.map((child, index) => (
             <TreeNodeComponent key={`${child.name}-${index}`} node={child} />
           ))}
