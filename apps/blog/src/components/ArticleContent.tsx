@@ -161,7 +161,8 @@ export function ArticleContent({
             // Let CodeBlock handle mermaid via the code component
             // This ensures consistent DOM structure: <pre><CodeBlock/></pre> or <pre><Mermaid/></pre>
             if (isValidElement(children)) {
-              const childClassName = children.props?.className;
+              const childProps = children.props as { className?: string };
+              const childClassName = childProps?.className;
               if (
                 typeof childClassName === "string" &&
                 (childClassName.includes("language-carousel") ||

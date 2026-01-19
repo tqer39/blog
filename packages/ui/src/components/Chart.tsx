@@ -2,6 +2,7 @@
 
 import { cn } from "@blog/utils";
 import { BarChart3, Maximize2 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { useMemo, useState } from "react";
 import {
   Area,
@@ -211,7 +212,7 @@ data:
               cy="50%"
               outerRadius="70%"
               label={({ name, percent }) =>
-                `${name} ${(percent * 100).toFixed(0)}%`
+                `${name} ${((percent ?? 0) * 100).toFixed(0)}%`
               }
               labelLine={false}
             >

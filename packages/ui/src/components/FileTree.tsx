@@ -8,12 +8,16 @@ import {
   Copy,
   File,
   Folder,
+  Maximize2,
 } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
+
+import { FullscreenModal } from "./FullscreenModal";
 
 interface FileTreeProps {
   content: string;
   className?: string;
+  isFullscreen?: boolean;
 }
 
 interface TreeNode {

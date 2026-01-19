@@ -350,7 +350,33 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
       <FullscreenModal
         isOpen={isFullscreen}
         onClose={() => setIsFullscreen(false)}
-        title={filename || lang}
+        title={
+          <div className="flex items-center gap-2">
+            {LangIcon && <LangIcon className="h-4 w-4" />}
+            <span>{headerLabel}</span>
+          </div>
+        }
+        headerActions={
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="cursor-pointer flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+            aria-label="Copy code"
+          >
+            {isCopied ? (
+              <>
+                <Check className="h-4 w-4" />
+                <span className="text-xs">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4" />
+                <span className="text-xs">Copy</span>
+              </>
+            )}
+          </button>
+        }
+        headerClassName="component-header rounded-none border-b-0"
       >
         <div className="h-full overflow-auto rounded-lg">{codeContent}</div>
       </FullscreenModal>

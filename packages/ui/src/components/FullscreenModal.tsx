@@ -1,14 +1,17 @@
-'use client';
+"use client";
 
-import { X } from 'lucide-react';
-import { useCallback, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import { cn } from "@blog/utils";
+import { X } from "lucide-react";
+import { useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface FullscreenModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  title?: string;
+  title?: React.ReactNode;
+  headerActions?: React.ReactNode;
+  headerClassName?: string;
 }
 
 export function FullscreenModal({
@@ -16,23 +19,25 @@ export function FullscreenModal({
   onClose,
   children,
   title,
+  headerActions,
+  headerClassName,
 }: FullscreenModalProps) {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         onClose();
       }
     },
-    [onClose]
+    [onClose],
   );
 
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener("keydown", handleKeyDown);
     }
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, handleKeyDown]);
 
@@ -40,25 +45,36 @@ export function FullscreenModal({
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex flex-col overflow-hidden bg-white dark:bg-stone-900">
-      <div className="flex items-center justify-between border-b border-stone-200 px-4 py-3 dark:border-stone-700">
-        {title && (
-          <span className="text-sm font-medium text-stone-600 dark:text-stone-400">
-            {title}
-          </span>
+      <div
+        className={cn(
+          "flex items-center justify-between border-b border-stone-200 px-4 py-3 dark:border-stone-700",
+          headerClassName,
         )}
-        {!title && <div />}
-        <button
-          type="button"
-          onClick={onClose}
-          className="cursor-pointer flex items-center gap-2 rounded-lg px-3 py-2 text-stone-600 transition-colors hover:bg-stone-100 dark:text-stone-400 dark:hover:bg-stone-800"
-          aria-label="Close fullscreen"
-        >
-          <span className="text-sm">Close</span>
-          <X className="h-5 w-5" />
-        </button>
+      >
+        <div className="flex items-center gap-2 overflow-hidden">
+          {typeof title === "string" ? (
+            <span className="text-sm font-medium text-stone-600 dark:text-stone-400">
+              {title}
+            </span>
+          ) : (
+            title
+          )}
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {headerActions}
+          <button
+            type="button"
+            onClick={onClose}
+            className="cursor-pointer flex items-center gap-1 rounded px-2 py-1 transition-colors hover:bg-black/10 dark:hover:bg-white/10 text-inherit"
+            aria-label="Close fullscreen"
+          >
+            <span className="text-xs">Close</span>
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       </div>
-      <div className="flex-1 overflow-hidden">{children}</div>
+      <div className="flex-1 overflow-hidden h-full">{children}</div>
     </div>,
-    document.body
+    document.body,
   );
 }

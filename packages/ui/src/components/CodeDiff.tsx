@@ -1,13 +1,16 @@
 "use client";
 
 import { cn } from "@blog/utils";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Maximize2 } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import YAML from "yaml";
+
+import { FullscreenModal } from "./FullscreenModal";
 
 interface CodeDiffProps {
   content: string;
   className?: string;
+  isFullscreen?: boolean;
 }
 
 interface DiffLine {

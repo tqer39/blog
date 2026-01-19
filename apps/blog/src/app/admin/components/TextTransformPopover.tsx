@@ -13,6 +13,7 @@ import {
   FileText,
   Languages,
   Loader2,
+  type LucideIcon,
   MessageSquare,
   RefreshCw,
 } from 'lucide-react';
@@ -29,7 +30,7 @@ interface TextTransformPopoverProps {
 interface TransformOption {
   action: TransformAction;
   label: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   description: string;
 }
 
