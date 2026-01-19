@@ -181,12 +181,12 @@ export function FileTree({
   return (
     <div
       className={cn(
-        "group relative my-4 rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
+        "group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
         className,
       )}
     >
       {/* Header */}
-      <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
+      <div className="component-header flex items-center justify-between px-4 py-2 text-sm">
         <div className="flex items-center gap-2">
           <Folder className="h-4 w-4" />
           <span>File Tree</span>
@@ -226,7 +226,7 @@ export function FileTree({
       {/* Tree content */}
       <div
         className={cn(
-          "overflow-x-auto rounded-b-lg bg-white p-4 font-mono text-sm dark:bg-[#0d1117]",
+          "overflow-x-auto bg-white p-4 font-mono text-sm dark:bg-[#0d1117]",
           isFullscreen && "h-full",
         )}
       >
