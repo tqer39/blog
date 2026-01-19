@@ -336,17 +336,28 @@ pre.shiki {
 
 .shiki-wrapper .line-number {
   display: inline-block;
-  width: 2rem;
-  min-width: 2rem;
+  width: 3rem;
+  min-width: 3rem;
   flex-shrink: 0;
   text-align: right;
   -webkit-user-select: none;
   user-select: none;
   color: #78716c; /* stone-500 */
+  padding-right: 0.75rem;
+  margin-right: 0.75rem;
+  border-right: 1px solid #e7e5e4; /* stone-200 */
+}
+
+.dark .shiki-wrapper .line-number {
+  border-color: #30363d;
+}
+
+.tokyonight .shiki-wrapper .line-number {
+  border-color: #3b4261;
 }
 
 .shiki-wrapper .line-content {
-  padding-left: 1.5rem;
+  padding-left: 0;
 }
 
 /* Mermaid content background to match CodeBlock */
