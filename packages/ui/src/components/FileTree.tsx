@@ -149,8 +149,13 @@ function TreeNodeComponent({
   );
 }
 
-export function FileTree({ content, className }: FileTreeProps) {
+export function FileTree({
+  content,
+  className,
+  isFullscreen = false,
+}: FileTreeProps) {
   const [isCopied, setIsCopied] = useState(false);
+  const [showFullscreen, setShowFullscreen] = useState(false);
 
   const tree = useMemo(() => parseTree(content), [content]);
 
@@ -172,32 +177,60 @@ export function FileTree({ content, className }: FileTreeProps) {
           <Folder className="h-4 w-4" />
           <span>File Tree</span>
         </div>
-        <button
-          type="button"
-          onClick={handleCopy}
-          className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
-          aria-label="Copy tree"
-        >
-          {isCopied ? (
-            <>
-              <Check className="h-4 w-4" />
-              <span className="text-xs">Copied!</span>
-            </>
-          ) : (
-            <>
-              <Copy className="h-4 w-4" />
-              <span className="text-xs">Copy</span>
-            </>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+            aria-label="Copy tree"
+          >
+            {isCopied ? (
+              <>
+                <Check className="h-4 w-4" />
+                <span className="text-xs">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4" />
+                <span className="text-xs">Copy</span>
+              </>
+            )}
+          </button>
+          {!isFullscreen && (
+            <button
+              type="button"
+              onClick={() => setShowFullscreen(true)}
+              className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              aria-label="Fullscreen"
+            >
+              <Maximize2 className="h-4 w-4" />
+            </button>
           )}
-        </button>
+        </div>
       </div>
 
       {/* Tree content */}
-      <div className="overflow-x-auto rounded-b-lg bg-stone-100 p-4 font-mono text-sm dark:bg-stone-800">
+      <div
+        className={cn(
+          "overflow-x-auto rounded-b-lg bg-stone-100 p-4 font-mono text-sm dark:bg-stone-800",
+          isFullscreen && "h-full",
+        )}
+      >
         {tree.map((node, index) => (
           <TreeNodeComponent key={`${node.name}-${index}`} node={node} />
         ))}
       </div>
+      <FullscreenModal
+        isOpen={showFullscreen}
+        onClose={() => setShowFullscreen(false)}
+        title="File Tree"
+      >
+        <FileTree
+          content={content}
+          isFullscreen={true}
+          className="h-full border-none"
+        />
+      </FullscreenModal>
     </div>
   );
 }

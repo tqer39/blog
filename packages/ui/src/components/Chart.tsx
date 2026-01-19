@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@blog/utils";
-import { BarChart3 } from "lucide-react";
-import { useMemo } from "react";
+import { BarChart3, Maximize2 } from "lucide-react";
+import { useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -22,9 +22,12 @@ import {
 } from "recharts";
 import YAML from "yaml";
 
+import { FullscreenModal } from "./FullscreenModal";
+
 interface ChartProps {
   content: string;
   className?: string;
+  isFullscreen?: boolean;
 }
 
 interface ChartConfig {
@@ -84,7 +87,13 @@ function getXKey(data: Record<string, unknown>[]): string {
   return stringKey || Object.keys(firstItem)[0] || "name";
 }
 
-export function Chart({ content, className }: ChartProps) {
+export function Chart({
+  content,
+  className,
+  isFullscreen = false,
+}: ChartProps) {
+  const { resolvedTheme } = useTheme();
+  const [showFullscreen, setShowFullscreen] = useState(false);
   const config = useMemo(() => parseChartConfig(content), [content]);
 
   if (!config) {
@@ -238,13 +247,33 @@ data:
       )}
     >
       {title && (
-        <div className="component-header flex items-center gap-2 rounded-t-lg px-4 py-2 text-sm">
-          <BarChart3 className="h-4 w-4" />
-          <span>{title}</span>
+        <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            <span>{title}</span>
+          </div>
+          {!isFullscreen && (
+            <button
+              type="button"
+              onClick={() => setShowFullscreen(true)}
+              className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              aria-label="Fullscreen"
+            >
+              <Maximize2 className="h-4 w-4" />
+            </button>
+          )}
         </div>
       )}
-      <div className="chart-body bg-white p-3 dark:bg-stone-800">
-        <div className="chart-wrapper w-full" style={{ height: 300 }}>
+      <div
+        className={cn(
+          "chart-body bg-white p-3 dark:bg-stone-800",
+          isFullscreen && "h-full",
+        )}
+      >
+        <div
+          className={cn("chart-wrapper w-full", isFullscreen ? "h-full" : "")}
+          style={{ height: isFullscreen ? "100%" : 300 }}
+        >
           <ResponsiveContainer
             width="100%"
             height="100%"
@@ -254,6 +283,17 @@ data:
           </ResponsiveContainer>
         </div>
       </div>
+      <FullscreenModal
+        isOpen={showFullscreen}
+        onClose={() => setShowFullscreen(false)}
+        title={title || "Chart"}
+      >
+        <Chart
+          content={content}
+          isFullscreen={true}
+          className="h-full border-none"
+        />
+      </FullscreenModal>
     </div>
   );
 }

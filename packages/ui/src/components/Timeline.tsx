@@ -1,13 +1,16 @@
 "use client";
 
 import { cn } from "@blog/utils";
-import { Calendar } from "lucide-react";
-import { useMemo } from "react";
+import { Calendar, Maximize2 } from "lucide-react";
+import { useMemo, useState } from "react";
 import YAML from "yaml";
+
+import { FullscreenModal } from "./FullscreenModal";
 
 interface TimelineProps {
   content: string;
   className?: string;
+  isFullscreen?: boolean;
 }
 
 interface TimelineEvent {
@@ -34,7 +37,12 @@ function parseTimeline(content: string): TimelineEvent[] {
   }
 }
 
-export function Timeline({ content, className }: TimelineProps) {
+export function Timeline({
+  content,
+  className,
+  isFullscreen = false,
+}: TimelineProps) {
+  const [showFullscreen, setShowFullscreen] = useState(false);
   const events = useMemo(() => parseTimeline(content), [content]);
 
   if (events.length === 0) {
@@ -53,13 +61,30 @@ export function Timeline({ content, className }: TimelineProps) {
   return (
     <div className={cn("my-4", className)}>
       {/* Header */}
-      <div className="component-header flex items-center gap-2 rounded-t-lg px-4 py-2 text-sm">
-        <Calendar className="h-4 w-4" />
-        <span>Timeline</span>
+      <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
+        <div className="flex items-center gap-2">
+          <Calendar className="h-4 w-4" />
+          <span>Timeline</span>
+        </div>
+        {!isFullscreen && (
+          <button
+            type="button"
+            onClick={() => setShowFullscreen(true)}
+            className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+            aria-label="Fullscreen"
+          >
+            <Maximize2 className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {/* Timeline content */}
-      <div className="rounded-b-lg bg-stone-100 p-4 dark:bg-stone-800">
+      <div
+        className={cn(
+          "rounded-b-lg bg-stone-100 p-4 dark:bg-stone-800",
+          isFullscreen && "h-full overflow-y-auto",
+        )}
+      >
         <div className="relative">
           {events.map((event, index) => {
             const isLast = index === events.length - 1;
@@ -104,6 +129,17 @@ export function Timeline({ content, className }: TimelineProps) {
           })}
         </div>
       </div>
+      <FullscreenModal
+        isOpen={showFullscreen}
+        onClose={() => setShowFullscreen(false)}
+        title="Timeline"
+      >
+        <Timeline
+          content={content}
+          isFullscreen={true}
+          className="h-full border-none"
+        />
+      </FullscreenModal>
     </div>
   );
 }

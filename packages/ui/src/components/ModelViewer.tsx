@@ -3,12 +3,16 @@
 import { cn } from "@blog/utils";
 import { Center, OrbitControls, Stage, useGLTF } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
+import { Box, Maximize2 } from "lucide-react";
 import { Suspense, useMemo, useState } from "react";
 import YAML from "yaml";
+
+import { FullscreenModal } from "./FullscreenModal";
 
 interface ModelViewerProps {
   content: string;
   className?: string;
+  isFullscreen?: boolean;
 }
 
 interface ModelConfig {
@@ -56,8 +60,13 @@ function ErrorMessage({ message }: { message: string }) {
   );
 }
 
-export function ModelViewer({ content, className }: ModelViewerProps) {
+export function ModelViewer({
+  content,
+  className,
+  isFullscreen = false,
+}: ModelViewerProps) {
   const [error, setError] = useState<string | null>(null);
+  const [showFullscreen, setShowFullscreen] = useState(false);
 
   const config = useMemo(() => parseModelConfig(content), [content]);
 
@@ -91,7 +100,28 @@ scale: 1`}
 
   return (
     <div className={cn("my-4", className)}>
-      <div className="model-viewer-bg relative h-[400px] overflow-hidden rounded-lg">
+      <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
+        <div className="flex items-center gap-2">
+          <Box className="h-4 w-4" />
+          <span>3D Model</span>
+        </div>
+        {!isFullscreen && (
+          <button
+            type="button"
+            onClick={() => setShowFullscreen(true)}
+            className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+            aria-label="Fullscreen"
+          >
+            <Maximize2 className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+      <div
+        className={cn(
+          "model-viewer-bg relative overflow-hidden rounded-b-lg",
+          isFullscreen ? "h-full" : "h-[400px]",
+        )}
+      >
         <Canvas
           camera={{ position: [0, 0, 5], fov: 50 }}
           onError={() => setError("Canvas initialization failed")}
@@ -113,9 +143,22 @@ scale: 1`}
       </div>
 
       {/* Controls hint */}
-      <p className="mt-2 text-center text-xs text-stone-500 dark:text-stone-400">
-        ドラッグで回転 • スクロールでズーム
-      </p>
+      {!isFullscreen && (
+        <p className="mt-2 text-center text-xs text-stone-500 dark:text-stone-400">
+          ドラッグで回転 • スクロールでズーム
+        </p>
+      )}
+      <FullscreenModal
+        isOpen={showFullscreen}
+        onClose={() => setShowFullscreen(false)}
+        title="3D Model"
+      >
+        <ModelViewer
+          content={content}
+          isFullscreen={true}
+          className="h-full border-none"
+        />
+      </FullscreenModal>
     </div>
   );
 }

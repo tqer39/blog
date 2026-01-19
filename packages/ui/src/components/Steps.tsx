@@ -7,13 +7,17 @@ import {
   ChevronRight,
   Copy,
   ListOrdered,
+  Maximize2,
 } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import YAML from "yaml";
 
+import { FullscreenModal } from "./FullscreenModal";
+
 interface StepsProps {
   content: string;
   className?: string;
+  isFullscreen?: boolean;
 }
 
 interface Step {
@@ -142,7 +146,12 @@ function StepItem({
   );
 }
 
-export function Steps({ content, className }: StepsProps) {
+export function Steps({
+  content,
+  className,
+  isFullscreen = false,
+}: StepsProps) {
+  const [showFullscreen, setShowFullscreen] = useState(false);
   const steps = useMemo(() => parseSteps(content), [content]);
 
   if (steps.length === 0) {
@@ -167,11 +176,28 @@ export function Steps({ content, className }: StepsProps) {
           <ListOrdered className="h-4 w-4" />
           <span>Steps</span>
         </div>
-        <span className="text-xs text-stone-400">{steps.length} steps</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-stone-400">{steps.length} steps</span>
+          {!isFullscreen && (
+            <button
+              type="button"
+              onClick={() => setShowFullscreen(true)}
+              className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              aria-label="Fullscreen"
+            >
+              <Maximize2 className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Steps content */}
-      <div className="rounded-b-lg border border-t-0 border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800">
+      <div
+        className={cn(
+          "rounded-b-lg border border-t-0 border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800",
+          isFullscreen && "h-full overflow-y-auto",
+        )}
+      >
         {steps.map((step, index) => (
           <StepItem
             key={index}
@@ -181,6 +207,17 @@ export function Steps({ content, className }: StepsProps) {
           />
         ))}
       </div>
+      <FullscreenModal
+        isOpen={showFullscreen}
+        onClose={() => setShowFullscreen(false)}
+        title="Steps"
+      >
+        <Steps
+          content={content}
+          isFullscreen={true}
+          className="h-full border-none"
+        />
+      </FullscreenModal>
     </div>
   );
 }

@@ -137,8 +137,13 @@ function parseStandardDiff(content: string): DiffLine[] {
   return result;
 }
 
-export function CodeDiff({ content, className }: CodeDiffProps) {
+export function CodeDiff({
+  content,
+  className,
+  isFullscreen = false,
+}: CodeDiffProps) {
   const [isCopied, setIsCopied] = useState(false);
+  const [showFullscreen, setShowFullscreen] = useState(false);
 
   const { diffLines, language } = useMemo(() => {
     // Try YAML format first
@@ -177,28 +182,45 @@ export function CodeDiff({ content, className }: CodeDiffProps) {
             <span className="text-stone-400">({language})</span>
           )}
         </div>
-        <button
-          type="button"
-          onClick={handleCopy}
-          className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
-          aria-label="Copy diff"
-        >
-          {isCopied ? (
-            <>
-              <Check className="h-4 w-4" />
-              <span className="text-xs">Copied!</span>
-            </>
-          ) : (
-            <>
-              <Copy className="h-4 w-4" />
-              <span className="text-xs">Copy</span>
-            </>
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+            aria-label="Copy diff"
+          >
+            {isCopied ? (
+              <>
+                <Check className="h-4 w-4" />
+                <span className="text-xs">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4" />
+                <span className="text-xs">Copy</span>
+              </>
+            )}
+          </button>
+          {!isFullscreen && (
+            <button
+              type="button"
+              onClick={() => setShowFullscreen(true)}
+              className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              aria-label="Fullscreen"
+            >
+              <Maximize2 className="h-4 w-4" />
+            </button>
           )}
-        </button>
+        </div>
       </div>
 
       {/* Diff content */}
-      <div className="overflow-x-auto rounded-b-lg bg-stone-100 font-mono text-sm dark:bg-stone-800">
+      <div
+        className={cn(
+          "overflow-x-auto rounded-b-lg bg-stone-100 font-mono text-sm dark:bg-stone-800",
+          isFullscreen && "h-full",
+        )}
+      >
         <table className="w-full border-collapse">
           <tbody>
             {diffLines.map((line, index) => (
@@ -252,6 +274,17 @@ export function CodeDiff({ content, className }: CodeDiffProps) {
           </tbody>
         </table>
       </div>
+      <FullscreenModal
+        isOpen={showFullscreen}
+        onClose={() => setShowFullscreen(false)}
+        title="Code Diff"
+      >
+        <CodeDiff
+          content={content}
+          isFullscreen={true}
+          className="h-full border-none"
+        />
+      </FullscreenModal>
     </div>
   );
 }
