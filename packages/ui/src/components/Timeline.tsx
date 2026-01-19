@@ -1,13 +1,11 @@
-'use client';
+"use client";
 
-import { cn } from '@blog/utils';
-import { Calendar, Maximize2 } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { useMemo, useState } from 'react';
-import { Chrono } from 'react-chrono';
-import YAML from 'yaml';
+import { cn } from "@blog/utils";
+import { Calendar, Maximize2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import YAML from "yaml";
 
-import { FullscreenModal } from './FullscreenModal';
+import { FullscreenModal } from "./FullscreenModal";
 
 interface TimelineProps {
   content: string;
@@ -27,10 +25,10 @@ function parseTimeline(content: string): TimelineEvent[] {
     if (Array.isArray(parsed)) {
       return parsed.filter(
         (item): item is TimelineEvent =>
-          typeof item === 'object' &&
+          typeof item === "object" &&
           item !== null &&
-          typeof item.date === 'string' &&
-          typeof item.title === 'string'
+          typeof item.date === "string" &&
+          typeof item.title === "string",
       );
     }
     return [];
@@ -44,22 +42,8 @@ export function Timeline({
   className,
   isFullscreen = false,
 }: TimelineProps) {
-  const { resolvedTheme } = useTheme();
   const [showFullscreen, setShowFullscreen] = useState(false);
   const events = useMemo(() => parseTimeline(content), [content]);
-
-  const isDark = resolvedTheme === 'dark';
-
-  // Convert to react-chrono item format
-  const items = useMemo(
-    () =>
-      events.map((event) => ({
-        title: event.date,
-        cardTitle: event.title,
-        cardDetailedText: event.description,
-      })),
-    [events]
-  );
 
   if (events.length === 0) {
     return (
@@ -77,8 +61,8 @@ export function Timeline({
   return (
     <div
       className={cn(
-        'my-5 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]',
-        className
+        "my-5 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
+        className,
       )}
     >
       {/* Header */}
@@ -102,35 +86,34 @@ export function Timeline({
       {/* Timeline content */}
       <div
         className={cn(
-          'bg-white p-4 dark:bg-stone-800',
-          isFullscreen && 'h-full overflow-y-auto'
+          "bg-white px-6 py-6 dark:bg-stone-800",
+          isFullscreen && "h-full overflow-y-auto",
         )}
       >
-        <Chrono
-          items={items}
-          mode="VERTICAL"
-          disableToolbar
-          scrollable={false}
-          cardHeight={80}
-          darkMode={isDark}
-          theme={{
-            primary: isDark ? '#60a5fa' : '#2563eb',
-            secondary: isDark ? '#a8a29e' : '#78716c',
-            cardBgColor: isDark ? '#292524' : '#fafaf9',
-            cardTitleColor: isDark ? '#e7e5e4' : '#1c1917',
-            cardSubtitleColor: isDark ? '#a8a29e' : '#57534e',
-            cardDetailsColor: isDark ? '#a8a29e' : '#57534e',
-            titleColor: isDark ? '#60a5fa' : '#2563eb',
-            titleColorActive: isDark ? '#93c5fd' : '#1d4ed8',
-          }}
-          fontSizes={{
-            title: '0.875rem',
-            cardTitle: '1rem',
-            cardSubtitle: '0.875rem',
-            cardText: '0.875rem',
-          }}
-        />
+        <ol className="relative border-l-2 border-blue-500 dark:border-blue-400 ml-3">
+          {events.map((event, index) => (
+            <li key={index} className="mb-8 last:mb-0 ml-6">
+              {/* Dot (●ポチ) */}
+              <span className="absolute -left-[9px] flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 ring-4 ring-white dark:bg-blue-400 dark:ring-stone-800" />
+              {/* Date */}
+              <time className="mb-1 block text-sm font-semibold text-blue-600 dark:text-blue-400">
+                {event.date}
+              </time>
+              {/* Title */}
+              <h3 className="text-base font-semibold text-stone-900 dark:text-stone-100">
+                {event.title}
+              </h3>
+              {/* Description */}
+              {event.description && (
+                <p className="mt-1 text-sm leading-relaxed text-stone-600 dark:text-stone-400">
+                  {event.description}
+                </p>
+              )}
+            </li>
+          ))}
+        </ol>
       </div>
+
       <FullscreenModal
         isOpen={showFullscreen}
         onClose={() => setShowFullscreen(false)}
@@ -139,7 +122,7 @@ export function Timeline({
         <Timeline
           content={content}
           isFullscreen={true}
-          className="h-full border-none"
+          className="h-full ring-0"
         />
       </FullscreenModal>
     </div>

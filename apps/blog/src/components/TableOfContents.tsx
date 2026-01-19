@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Clock } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Clock } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface TocItem {
   id: string;
@@ -15,24 +15,24 @@ interface TableOfContentsProps {
 
 export function TableOfContents({ readingTime }: TableOfContentsProps) {
   const [headings, setHeadings] = useState<TocItem[]>([]);
-  const [activeId, setActiveId] = useState<string>('');
+  const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
     // Wait for ArticleContent to render and hydrate
     const timer = setTimeout(() => {
-      const articleContent = document.querySelector('.prose');
+      const articleContent = document.querySelector(".prose");
       if (!articleContent) return;
 
-      const elements = articleContent.querySelectorAll('h2, h3');
+      const elements = articleContent.querySelectorAll("h2, h3");
       const items: TocItem[] = Array.from(elements).map((el) => {
         // Get text content excluding the anchor link (#)
         const clone = el.cloneNode(true) as HTMLElement;
-        const anchor = clone.querySelector('.anchor-link');
+        const anchor = clone.querySelector(".anchor-link");
         if (anchor) anchor.remove();
         return {
           id: el.id,
-          text: clone.textContent?.trim() || '',
-          level: el.tagName === 'H2' ? 2 : 3,
+          text: clone.textContent?.trim() || "",
+          level: el.tagName === "H2" ? 2 : 3,
         };
       });
       setHeadings(items);
@@ -57,9 +57,9 @@ export function TableOfContents({ readingTime }: TableOfContentsProps) {
         }
       },
       {
-        rootMargin: '-80px 0px -80% 0px',
+        rootMargin: "-80px 0px -80% 0px",
         threshold: 0,
-      }
+      },
     );
 
     for (const { id } of headings) {
@@ -78,7 +78,7 @@ export function TableOfContents({ readingTime }: TableOfContentsProps) {
     if (el) {
       const offset = 80;
       const top = el.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top, behavior: 'smooth' });
+      window.scrollTo({ top, behavior: "smooth" });
       setActiveId(id);
     }
   };
@@ -86,7 +86,7 @@ export function TableOfContents({ readingTime }: TableOfContentsProps) {
   return (
     <nav
       className="hidden xl:block fixed top-24 w-64 max-h-[calc(100vh-8rem)] overflow-y-auto p-5"
-      style={{ left: 'calc(50% + 28rem)' }}
+      style={{ left: "calc(50% + 28rem)" }}
       aria-label="目次"
     >
       <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
@@ -150,11 +150,11 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
 
     // Calculate after render
     const timer = setTimeout(calculateLines, 50);
-    window.addEventListener('resize', calculateLines);
+    window.addEventListener("resize", calculateLines);
 
     return () => {
       clearTimeout(timer);
-      window.removeEventListener('resize', calculateLines);
+      window.removeEventListener("resize", calculateLines);
     };
   }, [headings.length]);
 
@@ -187,8 +187,8 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
 
           return (
             <li
-              key={heading.id}
-              className={`group relative flex items-center ${isH3 ? 'ml-6' : ''}`}
+              key={`toc-${index}-${heading.id}`}
+              className={`group relative flex items-center ${isH3 ? "ml-6" : ""}`}
             >
               {/* Timeline dot */}
               <div
@@ -196,13 +196,13 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
                   dotRefs.current[index] = el;
                 }}
                 className={`relative z-10 shrink-0 rounded-full border-2 transition-all duration-300 ${
-                  isH3 ? 'h-3 w-3' : 'h-4 w-4'
+                  isH3 ? "h-3 w-3" : "h-4 w-4"
                 } ${
                   isActive
-                    ? 'scale-110 border-blue-500 bg-blue-500'
+                    ? "scale-110 border-blue-500 bg-blue-500"
                     : isPast
-                      ? 'border-stone-400 bg-stone-400 dark:border-stone-400 dark:bg-stone-400'
-                      : 'border-stone-300 bg-white group-hover:border-blue-400 group-hover:bg-blue-100 dark:border-stone-400 dark:bg-stone-700 dark:group-hover:border-blue-400 dark:group-hover:bg-blue-900'
+                      ? "border-stone-400 bg-stone-400 dark:border-stone-400 dark:bg-stone-400"
+                      : "border-stone-300 bg-white group-hover:border-blue-400 group-hover:bg-blue-100 dark:border-stone-400 dark:bg-stone-700 dark:group-hover:border-blue-400 dark:group-hover:bg-blue-900"
                 }`}
               />
 
@@ -210,11 +210,11 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
                 href={`#${heading.id}`}
                 onClick={(e) => onItemClick(e, heading.id)}
                 className={`block py-1.5 leading-relaxed transition-colors ${
-                  isH3 ? 'pl-3 text-sm' : 'pl-4 text-base'
+                  isH3 ? "pl-3 text-sm" : "pl-4 text-base"
                 } ${
                   isActive
-                    ? 'font-medium text-blue-600 dark:text-blue-400'
-                    : 'text-stone-600 hover:text-blue-600 dark:text-stone-400 dark:hover:text-blue-400'
+                    ? "font-medium text-blue-600 dark:text-blue-400"
+                    : "text-stone-600 hover:text-blue-600 dark:text-stone-400 dark:hover:text-blue-400"
                 }`}
               >
                 {heading.text}
