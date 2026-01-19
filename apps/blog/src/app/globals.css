@@ -1068,15 +1068,17 @@ body[data-slide-mode="true"] .shiki-wrapper .line {
   line-height: 1.5 !important;
 }
 
-body[data-slide-mode="true"] .group.relative.my-5 {
+body[data-slide-mode="true"] .group.relative.my-5,
+body[data-slide-mode="true"] .group.relative.my-4 {
   margin: 0 !important;
   border-radius: 0.5rem !important;
   border: 1px solid #333 !important;
   overflow: hidden !important;
 }
 
-/* Slide mode: Code block header - show icon, hide copy button */
-body[data-slide-mode="true"] .group.relative.my-5 .component-header {
+/* Slide mode: Code block/FileTree header - show icon, hide copy button */
+body[data-slide-mode="true"] .group.relative.my-5 .component-header,
+body[data-slide-mode="true"] .group.relative.my-4 .component-header {
   background-color: #57534e !important;
   color: #e7e5e4 !important;
   padding: 0.25rem 1rem !important;
@@ -1084,18 +1086,27 @@ body[data-slide-mode="true"] .group.relative.my-5 .component-header {
   border-radius: 0 !important;
 }
 
-body[data-slide-mode="true"] .group.relative.my-5 .component-header svg {
+body[data-slide-mode="true"] .group.relative.my-5 .component-header svg,
+body[data-slide-mode="true"] .group.relative.my-4 .component-header svg {
   display: inline-block !important;
   width: 1rem !important;
   height: 1rem !important;
 }
 
-body[data-slide-mode="true"] .group.relative.my-5 .component-header span {
+body[data-slide-mode="true"] .group.relative.my-5 .component-header span,
+body[data-slide-mode="true"] .group.relative.my-4 .component-header span {
   font-size: 1rem !important;
   font-weight: normal !important;
 }
 
-/* Hide copy and fullscreen buttons in slide mode code blocks */
-body[data-slide-mode="true"] .group.relative.my-5 .component-header button {
+/* Hide copy and fullscreen buttons in slide mode code blocks/FileTree */
+body[data-slide-mode="true"] .group.relative.my-5 .component-header button,
+body[data-slide-mode="true"] .group.relative.my-4 .component-header button {
   display: none !important;
+}
+
+/* Slide Mode FileTree Content */
+body[data-slide-mode="true"] .group.relative.my-4 .font-mono {
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
 }
