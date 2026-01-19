@@ -1051,3 +1051,52 @@ body[data-slide-mode="true"] .recharts-tooltip-wrapper li,
 body[data-slide-mode="true"] .recharts-tooltip-wrapper p {
   font-size: 14px !important;
 }
+
+/* Slide Mode Code Block Overrides */
+body[data-slide-mode="true"] .shiki-wrapper {
+  margin: 0 !important;
+}
+
+body[data-slide-mode="true"] .shiki-wrapper code {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  font-size: 1rem !important;
+}
+
+body[data-slide-mode="true"] .shiki-wrapper .line {
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+body[data-slide-mode="true"] .group.relative.my-5 {
+  margin: 0 !important;
+  border-radius: 0.5rem !important;
+  --tw-ring-opacity: 1 !important;
+  --tw-ring-color: #333 !important;
+  overflow: hidden !important;
+}
+
+/* Slide mode: Code block header - show icon, hide copy button */
+body[data-slide-mode="true"] .group.relative.my-5 .component-header {
+  background-color: #57534e !important;
+  color: #e7e5e4 !important;
+  padding: 0.25rem 1rem !important;
+  margin-bottom: 0 !important;
+  border-radius: 0 !important;
+}
+
+body[data-slide-mode="true"] .group.relative.my-5 .component-header svg {
+  display: inline-block !important;
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+body[data-slide-mode="true"] .group.relative.my-5 .component-header span {
+  font-size: 1rem !important;
+  font-weight: normal !important;
+}
+
+/* Hide copy and fullscreen buttons in slide mode code blocks */
+body[data-slide-mode="true"] .group.relative.my-5 .component-header button {
+  display: none !important;
+}
