@@ -631,7 +631,26 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
   --tw-ring-color: #3b4261 !important; /* Selection border */
 }
 
-/* Tokyo Night: FileTree background matches CodeBlock */
+/* Dark Mode (Standard) & Tokyo Night: FileTree Styling */
+/* Ensure FileTree matches CodeBlock (Shiki) appearance */
+.dark .file-tree-content {
+  background-color: #0d1117; /* GitHub Dark background */
+  color: #e6edf3; /* GitHub Dark text (cool white) */
+}
+
+.dark .file-tree-text {
+  color: #e6edf3;
+}
+
+.dark .file-tree-indent {
+  border-color: #30363d; /* GitHub Dark border (cool gray) */
+}
+
+.dark .file-tree-node:hover {
+  background-color: #44403c; /* stone-700, matches CodeBlock hover */
+}
+
+/* Tokyo Night Specific Overrides (overrides standard dark) */
 .tokyonight .file-tree-content {
   background-color: #1a1b26;
   color: #c0caf5;
