@@ -378,7 +378,12 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
         }
         headerClassName="component-header rounded-none border-b-0"
       >
-        <div className="h-full overflow-auto rounded-lg">{codeContent}</div>
+        <div className="h-full overflow-auto p-4">
+          <div
+            className="shiki-wrapper not-prose rounded-lg [&_pre]:m-0! [&_pre]:py-4! [&_pre]:px-0! [&_pre]:overflow-x-auto [&_pre]:rounded-lg"
+            dangerouslySetInnerHTML={{ __html: htmlWithLineNumbers }}
+          />
+        </div>
       </FullscreenModal>
     </>
   );
