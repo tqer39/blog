@@ -668,6 +668,33 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
   background-color: #283457; /* Matches shiki line hover */
 }
 
+/* Dark Mode (Standard) & Tokyo Night: CodeDiff Styling */
+.dark .code-diff-content {
+  background-color: #0d1117;
+  color: #e6edf3;
+}
+
+.dark .code-diff-text {
+  color: #e6edf3;
+}
+
+.dark .code-diff-border {
+  border-color: #30363d;
+}
+
+.tokyonight .code-diff-content {
+  background-color: #1a1b26;
+  color: #c0caf5;
+}
+
+.tokyonight .code-diff-text {
+  color: #c0caf5;
+}
+
+.tokyonight .code-diff-border {
+  border-color: #3b4261;
+}
+
 /* ===== Nord Light Theme Specific Styles ===== */
 
 .nord-light .shiki-wrapper .line:hover {
