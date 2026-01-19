@@ -695,6 +695,43 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
   border-color: #3b4261;
 }
 
+/* CodeDiff Row Hover - Matches CodeBlock/FileTree */
+.code-diff-row:hover {
+  background-color: #e7e5e4; /* stone-200 */
+}
+
+.dark .code-diff-row:hover {
+  background-color: #44403c; /* stone-700 */
+}
+
+.tokyonight .code-diff-row:hover {
+  background-color: #283457;
+}
+
+/* Ensure hover is visible on added/removed lines by blending or overriding */
+/* For simplicity and matching CodeBlock behavior, we let it override */
+.code-diff-row:hover.bg-green-100,
+.code-diff-row:hover.bg-red-100,
+.code-diff-row:hover.bg-blue-100 {
+  background-color: #e7e5e4;
+}
+
+.dark .code-diff-row:hover.bg-green-100,
+.dark .code-diff-row:hover.bg-red-100,
+.dark .code-diff-row:hover.bg-blue-100 {
+  background-color: #44403c; /* tailwind classes like dark:bg-green-900/30 are preserved via specificity if we are not careful */
+}
+
+.dark .code-diff-row.bg-green-900\/30:hover,
+.dark .code-diff-row.bg-red-900\/30:hover,
+.dark .code-diff-row.bg-blue-900\/30:hover {
+  background-color: #44403c;
+}
+
+.tokyonight .code-diff-row:hover {
+  background-color: #283457 !important;
+}
+
 /* ===== Nord Light Theme Specific Styles ===== */
 
 .nord-light .shiki-wrapper .line:hover {

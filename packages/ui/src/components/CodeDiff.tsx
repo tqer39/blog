@@ -279,6 +279,7 @@ export function CodeDiff({
               <tr
                 key={index}
                 className={cn(
+                  "code-diff-row transition-colors",
                   line.type === "added" && "bg-green-100 dark:bg-green-900/30",
                   line.type === "removed" && "bg-red-100 dark:bg-red-900/30",
                   line.type === "header" && "bg-blue-100 dark:bg-blue-900/30",
