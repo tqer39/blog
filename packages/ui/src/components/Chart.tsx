@@ -3,7 +3,7 @@
 import { cn } from "@blog/utils";
 import { BarChart3, Maximize2 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -95,7 +95,36 @@ export function Chart({
 }: ChartProps) {
   const { resolvedTheme } = useTheme();
   const [showFullscreen, setShowFullscreen] = useState(false);
+  const [containerSize, setContainerSize] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const config = useMemo(() => parseChartConfig(content), [content]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const updateSize = () => {
+      const { width, height } = container.getBoundingClientRect();
+      if (width > 0 && height > 0) {
+        setContainerSize({ width, height });
+      }
+    };
+
+    // Initial size check with delay
+    const timeoutId = setTimeout(updateSize, 100);
+
+    // ResizeObserver for dynamic updates
+    const resizeObserver = new ResizeObserver(updateSize);
+    resizeObserver.observe(container);
+
+    return () => {
+      clearTimeout(timeoutId);
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   if (!config) {
     return (
@@ -267,21 +296,32 @@ data:
       )}
       <div
         className={cn(
-          "chart-body bg-white p-4 mt-4 dark:bg-stone-800",
+          "chart-body bg-white p-4 pt-6 dark:bg-stone-800",
           isFullscreen && "h-full",
         )}
       >
         <div
+          ref={containerRef}
           className={cn("chart-wrapper w-full", isFullscreen ? "h-full" : "")}
-          style={{ height: isFullscreen ? "100%" : 300 }}
+          style={{
+            height: isFullscreen ? "100%" : 300,
+            minHeight: 200,
+            minWidth: 200,
+          }}
         >
-          <ResponsiveContainer
-            width="100%"
-            height="100%"
-            className="chart-responsive-container"
-          >
-            {renderChart()}
-          </ResponsiveContainer>
+          {containerSize ? (
+            <ResponsiveContainer
+              width={containerSize.width}
+              height={containerSize.height}
+              className="chart-responsive-container"
+            >
+              {renderChart()}
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <span className="text-muted-foreground">Loading chart...</span>
+            </div>
+          )}
         </div>
       </div>
       <FullscreenModal
