@@ -90,11 +90,11 @@ export function Timeline({
           isFullscreen && "h-full overflow-y-auto",
         )}
       >
-        <ol className="relative border-l-2 border-blue-500 dark:border-blue-400 ml-3">
+        <ol className="relative ml-2 border-l-2 border-red-500 dark:border-red-400">
           {events.map((event, index) => (
-            <li key={index} className="mb-8 last:mb-0 ml-6">
-              {/* Dot (●ポチ) */}
-              <span className="absolute -left-[9px] flex h-4 w-4 items-center justify-center rounded-full bg-blue-500 ring-4 ring-white dark:bg-blue-400 dark:ring-stone-800" />
+            <li key={index} className="relative pb-8 pl-6 last:pb-0">
+              {/* ●ポチ */}
+              <span className="absolute left-[-9px] top-1 h-4 w-4 rounded-full bg-blue-500 ring-4 ring-white dark:bg-blue-400 dark:ring-stone-800" />
               {/* Date */}
               <time className="mb-1 block text-sm font-semibold text-blue-600 dark:text-blue-400">
                 {event.date}

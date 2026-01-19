@@ -34,7 +34,6 @@ import { Mermaid } from "./Mermaid";
 import { ModelViewer } from "./ModelViewer";
 import { Steps } from "./Steps";
 import { Terminal } from "./Terminal";
-import { Timeline } from "./Timeline";
 import { Skeleton } from "./ui/skeleton";
 
 interface CodeBlockProps {
@@ -230,11 +229,6 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   // File tree
   if (lang === "tree") {
     return <FileTree content={code} />;
-  }
-
-  // Timeline
-  if (lang === "timeline") {
-    return <Timeline content={code} />;
   }
 
   // Steps/Wizard

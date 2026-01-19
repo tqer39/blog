@@ -168,7 +168,7 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
       >
         {lines.map((line, index) => (
           <line
-            key={index}
+            key={`line-${index}`}
             x1={line.x1}
             y1={line.y1}
             x2={line.x2}
