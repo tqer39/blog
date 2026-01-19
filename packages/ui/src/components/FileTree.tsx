@@ -179,7 +179,12 @@ export function FileTree({
   }, [content]);
 
   return (
-    <div className={cn("my-4", className)}>
+    <div
+      className={cn(
+        "group relative my-4 rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
+        className,
+      )}
+    >
       {/* Header */}
       <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
         <div className="flex items-center gap-2">
@@ -221,7 +226,7 @@ export function FileTree({
       {/* Tree content */}
       <div
         className={cn(
-          "overflow-x-auto rounded-b-lg bg-stone-100 p-4 font-mono text-sm dark:bg-stone-800",
+          "overflow-x-auto rounded-b-lg bg-white p-4 font-mono text-sm dark:bg-[#0d1117]",
           isFullscreen && "h-full",
         )}
       >
