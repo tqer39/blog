@@ -243,7 +243,7 @@ data:
   return (
     <div
       className={cn(
-        "chart-container group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900",
+        "chart-container group relative my-5 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900",
         className,
       )}
     >
@@ -267,7 +267,7 @@ data:
       )}
       <div
         className={cn(
-          "chart-body bg-white p-3 dark:bg-stone-800",
+          "chart-body bg-white p-4 dark:bg-stone-800",
           isFullscreen && "h-full",
         )}
       >
