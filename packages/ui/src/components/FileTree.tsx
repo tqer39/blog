@@ -181,7 +181,7 @@ export function FileTree({
   return (
     <div
       className={cn(
-        "group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
+        "group relative my-2 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
         isFullscreen && "my-0 rounded-none ring-0",
         className,
       )}
