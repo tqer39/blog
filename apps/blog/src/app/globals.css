@@ -313,6 +313,8 @@ pre.shiki {
 .shiki-wrapper code {
   display: grid;
   font-size: 0.875rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .shiki-wrapper .line {

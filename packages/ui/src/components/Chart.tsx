@@ -267,7 +267,7 @@ data:
       )}
       <div
         className={cn(
-          "chart-body bg-white p-4 dark:bg-stone-800",
+          "chart-body bg-white p-4 mt-4 dark:bg-stone-800",
           isFullscreen && "h-full",
         )}
       >
