@@ -1,11 +1,13 @@
-"use client";
+'use client';
 
-import { cn } from "@blog/utils";
-import { Calendar, Maximize2 } from "lucide-react";
-import { useMemo, useState } from "react";
-import YAML from "yaml";
+import { cn } from '@blog/utils';
+import { Calendar, Maximize2 } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { useMemo, useState } from 'react';
+import { Chrono } from 'react-chrono';
+import YAML from 'yaml';
 
-import { FullscreenModal } from "./FullscreenModal";
+import { FullscreenModal } from './FullscreenModal';
 
 interface TimelineProps {
   content: string;
@@ -25,10 +27,10 @@ function parseTimeline(content: string): TimelineEvent[] {
     if (Array.isArray(parsed)) {
       return parsed.filter(
         (item): item is TimelineEvent =>
-          typeof item === "object" &&
+          typeof item === 'object' &&
           item !== null &&
-          typeof item.date === "string" &&
-          typeof item.title === "string",
+          typeof item.date === 'string' &&
+          typeof item.title === 'string'
       );
     }
     return [];
@@ -42,8 +44,22 @@ export function Timeline({
   className,
   isFullscreen = false,
 }: TimelineProps) {
+  const { resolvedTheme } = useTheme();
   const [showFullscreen, setShowFullscreen] = useState(false);
   const events = useMemo(() => parseTimeline(content), [content]);
+
+  const isDark = resolvedTheme === 'dark';
+
+  // Convert to react-chrono item format
+  const items = useMemo(
+    () =>
+      events.map((event) => ({
+        title: event.date,
+        cardTitle: event.title,
+        cardDetailedText: event.description,
+      })),
+    [events]
+  );
 
   if (events.length === 0) {
     return (
@@ -61,8 +77,8 @@ export function Timeline({
   return (
     <div
       className={cn(
-        "my-5 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
-        className,
+        'my-5 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]',
+        className
       )}
     >
       {/* Header */}
@@ -86,46 +102,34 @@ export function Timeline({
       {/* Timeline content */}
       <div
         className={cn(
-          "bg-white p-4 dark:bg-stone-800",
-          isFullscreen && "h-full overflow-y-auto",
+          'bg-white p-4 dark:bg-stone-800',
+          isFullscreen && 'h-full overflow-y-auto'
         )}
       >
-        <div className="relative pl-4">
-          {/* Vertical timeline line */}
-          <div className="absolute top-0 bottom-0 left-[5.5px] w-0.5 bg-stone-300 dark:bg-stone-600" />
-
-          {events.map((event, index) => {
-            const isLast = index === events.length - 1;
-
-            return (
-              <div key={index} className="relative flex gap-4">
-                {/* Timeline dot */}
-                <div
-                  className="absolute left-[-10.5px] z-10 h-3 w-3 shrink-0 rounded-full border-2 border-blue-500 bg-white dark:bg-stone-800"
-                  style={{ marginTop: "6px" }}
-                />
-
-                {/* Content */}
-                <div className={cn("pb-6", isLast && "pb-0")}>
-                  {/* Date */}
-                  <div className="mb-1 text-sm font-medium text-blue-600 dark:text-blue-400">
-                    {event.date}
-                  </div>
-                  {/* Title */}
-                  <div className="font-semibold text-stone-800 dark:text-stone-200">
-                    {event.title}
-                  </div>
-                  {/* Description */}
-                  {event.description && (
-                    <div className="mt-1 text-sm text-stone-600 dark:text-stone-400">
-                      {event.description}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <Chrono
+          items={items}
+          mode="VERTICAL"
+          disableToolbar
+          scrollable={false}
+          cardHeight={80}
+          darkMode={isDark}
+          theme={{
+            primary: isDark ? '#60a5fa' : '#2563eb',
+            secondary: isDark ? '#a8a29e' : '#78716c',
+            cardBgColor: isDark ? '#292524' : '#fafaf9',
+            cardTitleColor: isDark ? '#e7e5e4' : '#1c1917',
+            cardSubtitleColor: isDark ? '#a8a29e' : '#57534e',
+            cardDetailsColor: isDark ? '#a8a29e' : '#57534e',
+            titleColor: isDark ? '#60a5fa' : '#2563eb',
+            titleColorActive: isDark ? '#93c5fd' : '#1d4ed8',
+          }}
+          fontSizes={{
+            title: '0.875rem',
+            cardTitle: '1rem',
+            cardSubtitle: '0.875rem',
+            cardText: '0.875rem',
+          }}
+        />
       </div>
       <FullscreenModal
         isOpen={showFullscreen}
