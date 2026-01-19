@@ -1,8 +1,23 @@
 "use client";
 
 import { cn } from "@blog/utils";
-import { Check, Copy, Maximize2 } from "lucide-react";
+import { Check, Copy, FileDiff, Maximize2 } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
+import {
+  SiCss3,
+  SiDocker,
+  SiGnubash,
+  SiGo,
+  SiHtml5,
+  SiJavascript,
+  SiJson,
+  SiMarkdown,
+  SiPython,
+  SiRust,
+  SiTerraform,
+  SiTypescript,
+  SiYaml,
+} from "react-icons/si";
 import YAML from "yaml";
 
 import { FullscreenModal } from "./FullscreenModal";
@@ -25,6 +40,30 @@ interface YamlDiffConfig {
   before: string;
   after: string;
 }
+
+const languageIcons: Record<
+  string,
+  React.ComponentType<{ className?: string }>
+> = {
+  typescript: SiTypescript,
+  tsx: SiTypescript,
+  javascript: SiJavascript,
+  jsx: SiJavascript,
+  python: SiPython,
+  go: SiGo,
+  rust: SiRust,
+  html: SiHtml5,
+  css: SiCss3,
+  json: SiJson,
+  yaml: SiYaml,
+  markdown: SiMarkdown,
+  bash: SiGnubash,
+  shellscript: SiGnubash,
+  terraform: SiTerraform,
+  hcl: SiTerraform,
+  dockerfile: SiDocker,
+  docker: SiDocker,
+};
 
 function isYamlDiffConfig(content: string): YamlDiffConfig | null {
   try {
@@ -165,6 +204,9 @@ export function CodeDiff({
     };
   }, [content]);
 
+  // Determine which icon to use
+  const LangIcon = languageIcons[language] || FileDiff;
+
   const handleCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(content);
@@ -187,6 +229,7 @@ export function CodeDiff({
       {!isFullscreen && (
         <div className="component-header flex items-center justify-between px-4 py-2 text-sm">
           <div className="flex items-center gap-2">
+            <LangIcon className="h-4 w-4" />
             <span>diff</span>
             {language !== "diff" && language !== "text" && (
               <span className="text-stone-400">({language})</span>
@@ -288,6 +331,7 @@ export function CodeDiff({
         onClose={() => setShowFullscreen(false)}
         title={
           <div className="flex items-center gap-2">
+            <LangIcon className="h-4 w-4" />
             <span>diff</span>
             {language !== "diff" && language !== "text" && (
               <span className="text-stone-400">({language})</span>
