@@ -269,7 +269,7 @@ export function CodeDiff({
       {/* Diff content */}
       <div
         className={cn(
-          "code-diff-content overflow-x-auto bg-white font-mono text-sm dark:bg-[#0d1117]",
+          "code-diff-content overflow-x-auto bg-white py-3 font-mono text-sm dark:bg-[#0d1117]",
           isFullscreen && "h-full",
         )}
       >
