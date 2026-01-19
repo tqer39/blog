@@ -203,9 +203,34 @@ body {
 
 /* Override prose styles for code blocks - must be outside @layer to override Tailwind prose */
 .prose .shiki-wrapper pre,
-.prose pre.shiki {
+.prose pre.shiki,
+pre.shiki {
   margin: 0 !important;
-  padding: 1rem !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* Override Tailwind Typography pre padding for shiki code blocks */
+.prose :where(pre):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  padding: 0 !important;
+}
+
+/* Ensure shiki wrapper cancels out global pre rounding on top when used with header */
+.shiki-wrapper pre {
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.shiki-wrapper pre:focus {
+  outline: none !important;
 }
 
 /* Remove prose margins from code block wrapper */
@@ -925,8 +950,8 @@ html.autumn .model-viewer-bg {
 
 /* General Chart Overrides */
 .component-header {
-  background-color: #44403c !important; /* stone-700 */
-  color: #d6d3d1 !important; /* stone-300 */
+  background-color: #57534e !important; /* stone-600 */
+  color: #e7e5e4 !important; /* stone-200 */
 }
 
 .recharts-legend-item {

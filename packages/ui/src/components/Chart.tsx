@@ -243,12 +243,12 @@ data:
   return (
     <div
       className={cn(
-        "chart-container group relative my-5 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900",
+        "chart-container group relative my-5 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-[#333]",
         className,
       )}
     >
       {title && (
-        <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
+        <div className="component-header flex items-center justify-between px-4 py-2 text-sm">
           <div className="flex items-center gap-2">
             <BarChart3 className="h-4 w-4" />
             <span>{title}</span>

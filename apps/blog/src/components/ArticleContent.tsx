@@ -175,6 +175,8 @@ export function ArticleContent({
                 // Using <div> removes <pre> styles.
                 return <div className="not-prose">{children}</div>;
               }
+              // For all code blocks, wrap in a div instead of pre to avoid prose styles
+              return <div className="not-prose">{children}</div>;
             }
             return <pre className={className}>{children}</pre>;
           },

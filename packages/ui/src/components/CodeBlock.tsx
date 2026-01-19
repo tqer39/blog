@@ -248,17 +248,13 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
     const lineWidths = [85, 70, 90, 60, 75, 80, 65, 95];
 
     return (
-      <div className="my-4">
+      <div className="my-5 overflow-hidden rounded-lg border-0 bg-transparent shadow-none ring-0">
         {filename && (
-          <div className="component-header rounded-t-lg px-4 py-2 text-sm">
+          <div className="component-header border-0 px-4 py-2 text-sm shadow-none ring-0">
             {filename}
           </div>
         )}
-        <div
-          className={`overflow-x-auto bg-stone-100 p-4 dark:bg-stone-800 ${
-            filename ? "rounded-b-lg" : "rounded-lg"
-          }`}
-        >
+        <div className="overflow-x-auto bg-stone-100 p-4 dark:bg-stone-800 border-0 shadow-none ring-0">
           <div className="space-y-2">
             {Array.from({ length: lineCount }).map((_, i) => (
               <div key={i} className="flex items-center gap-4">
@@ -303,15 +299,15 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
 
   const codeContent = (
     <div
-      className="shiki-wrapper not-prose rounded-b-lg [&_pre]:m-0! [&_pre]:py-4! [&_pre]:px-0! [&_pre]:overflow-x-auto [&_pre]:rounded-lg"
+      className="shiki-wrapper not-prose [&_pre]:m-0! [&_pre]:p-0! [&_pre]:overflow-x-auto [&_pre]:rounded-none!"
       dangerouslySetInnerHTML={{ __html: htmlWithLineNumbers }}
     />
   );
 
   return (
     <>
-      <div className="group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900">
-        <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
+      <div className="group relative my-5 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]">
+        <div className="component-header flex items-center justify-between px-4 py-2 text-sm">
           <div className="flex items-center gap-2">
             {LangIcon && <LangIcon className="h-4 w-4" />}
             <span>{headerLabel}</span>
