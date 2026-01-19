@@ -182,16 +182,69 @@ export function FileTree({
     <div
       className={cn(
         "group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
+        isFullscreen && "my-0 rounded-none ring-0",
         className,
       )}
     >
       {/* Header */}
-      <div className="component-header flex items-center justify-between px-4 py-2 text-sm">
-        <div className="flex items-center gap-2">
-          <Folder className="h-4 w-4" />
-          <span>File Tree</span>
+      {!isFullscreen && (
+        <div className="component-header flex items-center justify-between px-4 py-2 text-sm">
+          <div className="flex items-center gap-2">
+            <Folder className="h-4 w-4" />
+            <span>File Tree</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              aria-label="Copy tree"
+            >
+              {isCopied ? (
+                <>
+                  <Check className="h-4 w-4" />
+                  <span className="text-xs">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4" />
+                  <span className="text-xs">Copy</span>
+                </>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowFullscreen(true)}
+              className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              aria-label="Fullscreen"
+            >
+              <Maximize2 className="h-4 w-4" />
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-1">
+      )}
+
+      {/* Tree content */}
+      <div
+        className={cn(
+          "overflow-x-auto bg-white p-4 font-mono text-sm dark:bg-[#0d1117]",
+          isFullscreen && "h-full",
+        )}
+      >
+        {tree.map((node, index) => (
+          <TreeNodeComponent key={`${node.name}-${index}`} node={node} />
+        ))}
+      </div>
+      <FullscreenModal
+        isOpen={showFullscreen}
+        onClose={() => setShowFullscreen(false)}
+        title={
+          <div className="flex items-center gap-2">
+            <Folder className="h-4 w-4" />
+            <span>File Tree</span>
+          </div>
+        }
+        headerActions={
           <button
             type="button"
             onClick={handleCopy}
@@ -210,40 +263,10 @@ export function FileTree({
               </>
             )}
           </button>
-          {!isFullscreen && (
-            <button
-              type="button"
-              onClick={() => setShowFullscreen(true)}
-              className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
-              aria-label="Fullscreen"
-            >
-              <Maximize2 className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Tree content */}
-      <div
-        className={cn(
-          "overflow-x-auto bg-white p-4 font-mono text-sm dark:bg-[#0d1117]",
-          isFullscreen && "h-full",
-        )}
+        }
+        headerClassName="component-header rounded-none border-b-0"
       >
-        {tree.map((node, index) => (
-          <TreeNodeComponent key={`${node.name}-${index}`} node={node} />
-        ))}
-      </div>
-      <FullscreenModal
-        isOpen={showFullscreen}
-        onClose={() => setShowFullscreen(false)}
-        title="File Tree"
-      >
-        <FileTree
-          content={content}
-          isFullscreen={true}
-          className="h-full border-none"
-        />
+        <FileTree content={content} isFullscreen={true} className="h-full" />
       </FullscreenModal>
     </div>
   );
