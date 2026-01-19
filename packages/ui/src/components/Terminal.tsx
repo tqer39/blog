@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { cn } from "@blog/utils";
+import { cn } from '@blog/utils';
 import {
   Check,
   Copy,
@@ -9,10 +9,10 @@ import {
   Play,
   RotateCcw,
   Terminal as TerminalIcon,
-} from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+} from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { FullscreenModal } from "./FullscreenModal";
+import { FullscreenModal } from './FullscreenModal';
 
 interface TerminalProps {
   content: string;
@@ -26,35 +26,35 @@ interface TerminalLine {
 
 function parseLines(content: string): TerminalLine[] {
   return content
-    .split("\n")
-    .filter((line) => line.trim() !== "")
+    .split('\n')
+    .filter((line) => line.trim() !== '')
     .map((line) => ({
       text: line,
-      isCommand: line.trimStart().startsWith("$"),
+      isCommand: line.trimStart().startsWith('$'),
     }));
 }
 
 interface HighlightedPart {
   text: string;
-  type: "prompt" | "command" | "flag" | "string" | "path" | "number" | "text";
+  type: 'prompt' | 'command' | 'flag' | 'string' | 'path' | 'number' | 'text';
 }
 
 function highlightCommand(line: string): HighlightedPart[] {
   const parts: HighlightedPart[] = [];
   const trimmed = line.trimStart();
 
-  if (!trimmed.startsWith("$")) {
-    return [{ text: line, type: "text" }];
+  if (!trimmed.startsWith('$')) {
+    return [{ text: line, type: 'text' }];
   }
 
   // Find the leading whitespace
   const leadingSpace = line.slice(0, line.length - trimmed.length);
   if (leadingSpace) {
-    parts.push({ text: leadingSpace, type: "text" });
+    parts.push({ text: leadingSpace, type: 'text' });
   }
 
   // Add the $ prompt
-  parts.push({ text: "$", type: "prompt" });
+  parts.push({ text: '$', type: 'prompt' });
 
   // Get the rest after $
   const afterPrompt = trimmed.slice(1);
@@ -69,57 +69,57 @@ function highlightCommand(line: string): HighlightedPart[] {
   for (const token of tokens) {
     // Whitespace
     if (/^\s+$/.test(token)) {
-      parts.push({ text: token, type: "text" });
+      parts.push({ text: token, type: 'text' });
       continue;
     }
 
     // String (quoted)
     if (/^["'].*["']$/.test(token)) {
-      parts.push({ text: token, type: "string" });
+      parts.push({ text: token, type: 'string' });
       isFirstWord = false;
       continue;
     }
 
     // First word is the command
     if (isFirstWord) {
-      parts.push({ text: token, type: "command" });
+      parts.push({ text: token, type: 'command' });
       isFirstWord = false;
       continue;
     }
 
     // Flags (starting with -)
-    if (token.startsWith("-")) {
-      parts.push({ text: token, type: "flag" });
+    if (token.startsWith('-')) {
+      parts.push({ text: token, type: 'flag' });
       continue;
     }
 
     // Paths (containing /)
-    if (token.includes("/")) {
-      parts.push({ text: token, type: "path" });
+    if (token.includes('/')) {
+      parts.push({ text: token, type: 'path' });
       continue;
     }
 
     // Numbers
     if (/^\d+(\.\d+)?$/.test(token)) {
-      parts.push({ text: token, type: "number" });
+      parts.push({ text: token, type: 'number' });
       continue;
     }
 
     // Default text
-    parts.push({ text: token, type: "text" });
+    parts.push({ text: token, type: 'text' });
   }
 
   return parts;
 }
 
-const highlightColors: Record<HighlightedPart["type"], string> = {
-  prompt: "#22c55e", // green-500
-  command: "#38bdf8", // sky-400
-  flag: "#f472b6", // pink-400
-  string: "#fcd34d", // amber-300
-  path: "#a78bfa", // violet-400
-  number: "#fb923c", // orange-400
-  text: "#ffffff", // white
+const highlightColors: Record<HighlightedPart['type'], string> = {
+  prompt: '#22c55e', // green-500
+  command: '#38bdf8', // sky-400
+  flag: '#f472b6', // pink-400
+  string: '#fcd34d', // amber-300
+  path: '#a78bfa', // violet-400
+  number: '#fb923c', // orange-400
+  text: '#ffffff', // white
 };
 
 function HighlightedLine({ line }: { line: string }) {
@@ -173,15 +173,15 @@ export function Terminal({ content, className }: TerminalProps) {
     // Copy only command lines (without $)
     const commandsOnly = lines
       .filter((line) => line.isCommand)
-      .map((line) => line.text.replace(/^\s*\$\s*/, ""))
-      .join("\n");
+      .map((line) => line.text.replace(/^\s*\$\s*/, ''))
+      .join('\n');
 
     try {
       await navigator.clipboard.writeText(commandsOnly);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
-      console.error("Failed to copy:", error);
+      console.error('Failed to copy:', error);
     }
   }, [lines]);
 
@@ -206,7 +206,7 @@ export function Terminal({ content, className }: TerminalProps) {
             } else {
               newLines[currentLineIndex] = currentLine.text.slice(
                 0,
-                currentCharIndex + 1,
+                currentCharIndex + 1
               );
             }
             return newLines;
@@ -243,8 +243,8 @@ export function Terminal({ content, className }: TerminalProps) {
   return (
     <div
       className={cn(
-        "group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900",
-        className,
+        'group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900',
+        className
       )}
     >
       {/* Terminal header */}
@@ -260,7 +260,7 @@ export function Terminal({ content, className }: TerminalProps) {
             type="button"
             onClick={togglePlay}
             className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
-            aria-label={isComplete ? "Replay" : isPlaying ? "Pause" : "Play"}
+            aria-label={isComplete ? 'Replay' : isPlaying ? 'Pause' : 'Play'}
           >
             {isComplete ? (
               <RotateCcw className="h-4 w-4" />

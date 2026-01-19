@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { cn } from "@blog/utils";
-import { X } from "lucide-react";
-import { useCallback, useEffect } from "react";
-import { createPortal } from "react-dom";
+import { cn } from '@blog/utils';
+import { X } from 'lucide-react';
+import { useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface FullscreenModalProps {
   isOpen: boolean;
@@ -24,20 +24,20 @@ export function FullscreenModal({
 }: FullscreenModalProps) {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         onClose();
       }
     },
-    [onClose],
+    [onClose]
   );
 
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown);
+      document.addEventListener('keydown', handleKeyDown);
     }
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, handleKeyDown]);
 
@@ -47,12 +47,12 @@ export function FullscreenModal({
     <div className="fixed inset-0 z-[100] flex flex-col overflow-hidden bg-white dark:bg-stone-900">
       <div
         className={cn(
-          "flex items-center justify-between border-b border-stone-200 px-4 py-3 dark:border-stone-700",
-          headerClassName,
+          'flex items-center justify-between border-b border-stone-200 px-4 py-3 dark:border-stone-700',
+          headerClassName
         )}
       >
         <div className="flex items-center gap-2 overflow-hidden">
-          {typeof title === "string" ? (
+          {typeof title === 'string' ? (
             <span className="text-sm font-medium text-stone-600 dark:text-stone-400">
               {title}
             </span>
@@ -75,6 +75,6 @@ export function FullscreenModal({
       </div>
       <div className="flex-1 overflow-hidden h-full">{children}</div>
     </div>,
-    document.body,
+    document.body
   );
 }

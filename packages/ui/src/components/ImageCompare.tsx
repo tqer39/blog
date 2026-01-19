@@ -41,17 +41,14 @@ export function ImageCompare({ content, className }: ImageCompareProps) {
 
   const images = parseImages(content);
 
-  const handleMove = useCallback(
-    (clientX: number) => {
-      if (!containerRef.current) return;
+  const handleMove = useCallback((clientX: number) => {
+    if (!containerRef.current) return;
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const x = clientX - rect.left;
-      const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-      setPosition(percentage);
-    },
-    []
-  );
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setPosition(percentage);
+  }, []);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -75,12 +72,15 @@ export function ImageCompare({ content, className }: ImageCompareProps) {
     setIsDragging(false);
   }, []);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    setIsDragging(true);
-    if (e.touches[0]) {
-      handleMove(e.touches[0].clientX);
-    }
-  }, [handleMove]);
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      setIsDragging(true);
+      if (e.touches[0]) {
+        handleMove(e.touches[0].clientX);
+      }
+    },
+    [handleMove]
+  );
 
   const handleTouchMove = useCallback(
     (e: React.TouchEvent) => {

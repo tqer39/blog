@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { FullscreenModal } from "@blog/ui";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArticleContent } from "./ArticleContent";
-import { SlideTimer } from "./SlideTimer";
+import { FullscreenModal } from '@blog/ui';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ArticleContent } from './ArticleContent';
+import { SlideTimer } from './SlideTimer';
 
 /** Default timer duration in seconds (3 minutes) */
 const DEFAULT_DURATION = 180;
@@ -23,12 +23,12 @@ interface SlideViewerProps {
  * Handles code blocks correctly by not splitting inside them.
  */
 function splitIntoSlides(content: string): string[] {
-  const lines = content.split("\n");
+  const lines = content.split('\n');
   const slides: string[] = [];
   let currentSlide: string[] = [];
   let inCodeBlock = false;
   let codeBlockFenceLength = 0;
-  let codeBlockChar = "";
+  let codeBlockChar = '';
 
   for (const line of lines) {
     // Check for code fence start/end (``` or ~~~)
@@ -53,7 +53,7 @@ function splitIntoSlides(content: string): string[] {
       ) {
         // Valid closing fence
         inCodeBlock = false;
-        codeBlockChar = "";
+        codeBlockChar = '';
         codeBlockFenceLength = 0;
       }
     }
@@ -62,7 +62,7 @@ function splitIntoSlides(content: string): string[] {
     // Match `---` at the start of line (with optional trailing whitespace)
     if (!inCodeBlock && /^---+\s*$/.test(line)) {
       if (currentSlide.length > 0) {
-        slides.push(currentSlide.join("\n").trim());
+        slides.push(currentSlide.join('\n').trim());
         currentSlide = [];
       }
       continue;
@@ -73,7 +73,7 @@ function splitIntoSlides(content: string): string[] {
 
   // Don't forget the last slide
   if (currentSlide.length > 0) {
-    slides.push(currentSlide.join("\n").trim());
+    slides.push(currentSlide.join('\n').trim());
   }
 
   return slides.filter((slide) => slide.length > 0);
@@ -99,9 +99,9 @@ export function SlideViewer({
   }, [isOpen]);
 
   useEffect(() => {
-    if (typeof document === "undefined") return;
+    if (typeof document === 'undefined') return;
     if (isOpen) {
-      document.body.dataset.slideMode = "true";
+      document.body.dataset.slideMode = 'true';
     } else {
       delete document.body.dataset.slideMode;
     }
@@ -122,38 +122,38 @@ export function SlideViewer({
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       switch (event.key) {
-        case "ArrowRight":
-        case "ArrowDown":
-        case " ":
-        case "PageDown":
+        case 'ArrowRight':
+        case 'ArrowDown':
+        case ' ':
+        case 'PageDown':
           event.preventDefault();
           goNext();
           break;
-        case "ArrowLeft":
-        case "ArrowUp":
-        case "PageUp":
+        case 'ArrowLeft':
+        case 'ArrowUp':
+        case 'PageUp':
           event.preventDefault();
           goPrev();
           break;
-        case "Home":
+        case 'Home':
           event.preventDefault();
           setCurrentSlide(0);
           break;
-        case "End":
+        case 'End':
           event.preventDefault();
           setCurrentSlide(slides.length - 1);
           break;
       }
     },
-    [goNext, goPrev, slides.length],
+    [goNext, goPrev, slides.length]
   );
 
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown);
+      document.addEventListener('keydown', handleKeyDown);
     }
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, handleKeyDown]);
 
@@ -178,7 +178,7 @@ export function SlideViewer({
       }
       setTouchStart(null);
     },
-    [touchStart, goNext, goPrev],
+    [touchStart, goNext, goPrev]
   );
 
   if (!isOpen || slides.length === 0) return null;

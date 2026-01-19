@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { cn } from "@blog/utils";
-import { Center, OrbitControls, Stage, useGLTF } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
-import { Box, Maximize2 } from "lucide-react";
-import { Suspense, useMemo, useState } from "react";
-import YAML from "yaml";
+import { cn } from '@blog/utils';
+import { Center, OrbitControls, Stage, useGLTF } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
+import { Box, Maximize2 } from 'lucide-react';
+import { Suspense, useMemo, useState } from 'react';
+import YAML from 'yaml';
 
-import { FullscreenModal } from "./FullscreenModal";
+import { FullscreenModal } from './FullscreenModal';
 
 interface ModelViewerProps {
   content: string;
@@ -89,8 +89,8 @@ scale: 1`}
     return (
       <div
         className={cn(
-          "my-4 h-[400px] rounded-lg bg-stone-100 dark:bg-stone-800",
-          className,
+          'my-4 h-[400px] rounded-lg bg-stone-100 dark:bg-stone-800',
+          className
         )}
       >
         <ErrorMessage message={error} />
@@ -99,7 +99,7 @@ scale: 1`}
   }
 
   return (
-    <div className={cn("my-4", className)}>
+    <div className={cn('my-4', className)}>
       <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
         <div className="flex items-center gap-2">
           <Box className="h-4 w-4" />
@@ -118,13 +118,13 @@ scale: 1`}
       </div>
       <div
         className={cn(
-          "model-viewer-bg relative overflow-hidden rounded-b-lg",
-          isFullscreen ? "h-full" : "h-[400px]",
+          'model-viewer-bg relative overflow-hidden rounded-b-lg',
+          isFullscreen ? 'h-full' : 'h-[400px]'
         )}
       >
         <Canvas
           camera={{ position: [0, 0, 5], fov: 50 }}
-          onError={() => setError("Canvas initialization failed")}
+          onError={() => setError('Canvas initialization failed')}
         >
           <Suspense fallback={null}>
             <Stage environment="city" intensity={0.5} adjustCamera={false}>

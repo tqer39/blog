@@ -72,10 +72,7 @@ export function HeaderClient({
   return (
     <header className="border-b border-border">
       <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-        <Link
-          href="/"
-          className="text-2xl font-bold text-foreground"
-        >
+        <Link href="/" className="text-2xl font-bold text-foreground">
           {siteName}
         </Link>
         <nav className="flex items-center gap-4">

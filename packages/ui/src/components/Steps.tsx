@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { cn } from "@blog/utils";
+import { cn } from '@blog/utils';
 import {
   Check,
   ChevronDown,
@@ -8,11 +8,11 @@ import {
   Copy,
   ListOrdered,
   Maximize2,
-} from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
-import YAML from "yaml";
+} from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
+import YAML from 'yaml';
 
-import { FullscreenModal } from "./FullscreenModal";
+import { FullscreenModal } from './FullscreenModal';
 
 interface StepsProps {
   content: string;
@@ -32,9 +32,9 @@ function parseSteps(content: string): Step[] {
     if (Array.isArray(parsed)) {
       return parsed.filter(
         (item): item is Step =>
-          typeof item === "object" &&
+          typeof item === 'object' &&
           item !== null &&
-          typeof item.title === "string",
+          typeof item.title === 'string'
       );
     }
     return [];
@@ -62,7 +62,7 @@ function StepItem({
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
-      console.error("Failed to copy:", error);
+      console.error('Failed to copy:', error);
     }
   }, [step.code]);
 
@@ -83,7 +83,7 @@ function StepItem({
       </div>
 
       {/* Content */}
-      <div className={cn("flex-1 pb-4", isLast && "pb-0")}>
+      <div className={cn('flex-1 pb-4', isLast && 'pb-0')}>
         {/* Title */}
         <div className="font-semibold leading-7 text-stone-900 dark:text-stone-100">
           {step.title}
@@ -169,7 +169,7 @@ export function Steps({
   }
 
   return (
-    <div className={cn("my-4", className)}>
+    <div className={cn('my-4', className)}>
       {/* Header */}
       <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
         <div className="flex items-center gap-2">
@@ -194,8 +194,8 @@ export function Steps({
       {/* Steps content */}
       <div
         className={cn(
-          "rounded-b-lg border border-t-0 border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800",
-          isFullscreen && "h-full overflow-y-auto",
+          'rounded-b-lg border border-t-0 border-stone-200 bg-white p-4 dark:border-stone-700 dark:bg-stone-800',
+          isFullscreen && 'h-full overflow-y-auto'
         )}
       >
         {steps.map((step, index) => (

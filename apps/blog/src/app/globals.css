@@ -625,8 +625,28 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
 }
 
 /* Tokyo Night: Code block border - use selection color */
-.tokyonight .group.relative.my-4 {
+.tokyonight .group.relative.my-4,
+.tokyonight .group.relative.my-5,
+.tokyonight .group.relative.my-2 {
   --tw-ring-color: #3b4261 !important; /* Selection border */
+}
+
+/* Tokyo Night: FileTree background matches CodeBlock */
+.tokyonight .file-tree-content {
+  background-color: #1a1b26;
+  color: #c0caf5;
+}
+
+.tokyonight .file-tree-text {
+  color: #c0caf5;
+}
+
+.tokyonight .file-tree-indent {
+  border-color: #3b4261;
+}
+
+.tokyonight .file-tree-node:hover {
+  background-color: #283457; /* Matches shiki line hover */
 }
 
 /* ===== Nord Light Theme Specific Styles ===== */
@@ -777,7 +797,6 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
   color: #a8a29e !important; /* stone-400 */
 }
 
-
 /* Model Viewer Theme Backgrounds */
 .model-viewer-bg {
   background-color: #ffffff;
@@ -786,7 +805,11 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
 
 .dark .model-viewer-bg {
   background-color: #292524;
-  background-image: linear-gradient(to bottom, #292524, #1c1917); /* stone-800 to stone-900 */
+  background-image: linear-gradient(
+    to bottom,
+    #292524,
+    #1c1917
+  ); /* stone-800 to stone-900 */
 }
 
 /* Nord Light overrides */

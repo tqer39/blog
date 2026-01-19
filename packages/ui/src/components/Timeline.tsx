@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { cn } from "@blog/utils";
-import { Calendar, Maximize2 } from "lucide-react";
-import { useMemo, useState } from "react";
-import YAML from "yaml";
+import { cn } from '@blog/utils';
+import { Calendar, Maximize2 } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import YAML from 'yaml';
 
-import { FullscreenModal } from "./FullscreenModal";
+import { FullscreenModal } from './FullscreenModal';
 
 interface TimelineProps {
   content: string;
@@ -25,10 +25,10 @@ function parseTimeline(content: string): TimelineEvent[] {
     if (Array.isArray(parsed)) {
       return parsed.filter(
         (item): item is TimelineEvent =>
-          typeof item === "object" &&
+          typeof item === 'object' &&
           item !== null &&
-          typeof item.date === "string" &&
-          typeof item.title === "string",
+          typeof item.date === 'string' &&
+          typeof item.title === 'string'
       );
     }
     return [];
@@ -61,8 +61,8 @@ export function Timeline({
   return (
     <div
       className={cn(
-        "my-5 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
-        className,
+        'my-5 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]',
+        className
       )}
     >
       {/* Header */}
@@ -86,8 +86,8 @@ export function Timeline({
       {/* Timeline content */}
       <div
         className={cn(
-          "bg-white px-6 py-6 dark:bg-stone-800",
-          isFullscreen && "h-full overflow-y-auto",
+          'bg-white px-6 py-6 dark:bg-stone-800',
+          isFullscreen && 'h-full overflow-y-auto'
         )}
       >
         <ol className="relative ml-2 border-l-2 border-red-500 dark:border-red-400">

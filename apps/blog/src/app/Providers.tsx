@@ -8,7 +8,10 @@ interface ProvidersProps {
   defaultTheme?: string;
 }
 
-export function Providers({ children, defaultTheme = 'system' }: ProvidersProps) {
+export function Providers({
+  children,
+  defaultTheme = 'system',
+}: ProvidersProps) {
   return (
     <ThemeProvider
       attribute="class"

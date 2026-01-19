@@ -1,9 +1,8 @@
-"use client";
+'use client';
 
-import { cn } from "@blog/utils";
-import { BarChart3, Maximize2 } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { cn } from '@blog/utils';
+import { BarChart3, Maximize2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -20,10 +19,10 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts";
-import YAML from "yaml";
+} from 'recharts';
+import YAML from 'yaml';
 
-import { FullscreenModal } from "./FullscreenModal";
+import { FullscreenModal } from './FullscreenModal';
 
 interface ChartProps {
   content: string;
@@ -32,7 +31,7 @@ interface ChartProps {
 }
 
 interface ChartConfig {
-  type: "line" | "bar" | "pie" | "area";
+  type: 'line' | 'bar' | 'pie' | 'area';
   title?: string;
   xKey?: string;
   yKey?: string;
@@ -41,14 +40,14 @@ interface ChartConfig {
 
 // Color palette for charts
 const COLORS = [
-  "#3b82f6", // blue
-  "#10b981", // green
-  "#f59e0b", // yellow
-  "#ef4444", // red
-  "#8b5cf6", // purple
-  "#ec4899", // pink
-  "#06b6d4", // cyan
-  "#f97316", // orange
+  '#3b82f6', // blue
+  '#10b981', // green
+  '#f59e0b', // yellow
+  '#ef4444', // red
+  '#8b5cf6', // purple
+  '#ec4899', // pink
+  '#06b6d4', // cyan
+  '#f97316', // orange
 ];
 
 function parseChartConfig(content: string): ChartConfig | null {
@@ -60,8 +59,8 @@ function parseChartConfig(content: string): ChartConfig | null {
     }
 
     // Default to 'line' if type is invalid
-    if (!["line", "bar", "pie", "area"].includes(config.type)) {
-      config.type = "line";
+    if (!['line', 'bar', 'pie', 'area'].includes(config.type)) {
+      config.type = 'line';
     }
 
     return config;
@@ -74,18 +73,18 @@ function getDataKeys(data: Record<string, unknown>[]): string[] {
   if (!data.length) return [];
   const firstItem = data[0];
   return Object.keys(firstItem).filter(
-    (key) => typeof firstItem[key] === "number",
+    (key) => typeof firstItem[key] === 'number'
   );
 }
 
 function getXKey(data: Record<string, unknown>[]): string {
-  if (!data.length) return "name";
+  if (!data.length) return 'name';
   const firstItem = data[0];
   // Find first string key
   const stringKey = Object.keys(firstItem).find(
-    (key) => typeof firstItem[key] === "string",
+    (key) => typeof firstItem[key] === 'string'
   );
-  return stringKey || Object.keys(firstItem)[0] || "name";
+  return stringKey || Object.keys(firstItem)[0] || 'name';
 }
 
 export function Chart({
@@ -93,7 +92,6 @@ export function Chart({
   className,
   isFullscreen = false,
 }: ChartProps) {
-  const { resolvedTheme } = useTheme();
   const [showFullscreen, setShowFullscreen] = useState(false);
   const [containerSize, setContainerSize] = useState<{
     width: number;
@@ -149,17 +147,17 @@ data:
 
   const renderChart = () => {
     switch (type) {
-      case "line":
+      case 'line':
         return (
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey={xKey} tick={{ fill: "#6b7280", fontSize: 12 }} />
-            <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
+            <XAxis dataKey={xKey} tick={{ fill: '#6b7280', fontSize: 12 }} />
+            <YAxis tick={{ fill: '#6b7280', fontSize: 12 }} />
             <Tooltip
               contentStyle={{
-                backgroundColor: "#fff",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
+                backgroundColor: '#fff',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
               }}
             />
             <Legend />
@@ -177,17 +175,17 @@ data:
           </LineChart>
         );
 
-      case "bar":
+      case 'bar':
         return (
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey={xKey} tick={{ fill: "#6b7280", fontSize: 12 }} />
-            <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
+            <XAxis dataKey={xKey} tick={{ fill: '#6b7280', fontSize: 12 }} />
+            <YAxis tick={{ fill: '#6b7280', fontSize: 12 }} />
             <Tooltip
               contentStyle={{
-                backgroundColor: "#fff",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
+                backgroundColor: '#fff',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
               }}
             />
             <Legend />
@@ -202,17 +200,17 @@ data:
           </BarChart>
         );
 
-      case "area":
+      case 'area':
         return (
           <AreaChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey={xKey} tick={{ fill: "#6b7280", fontSize: 12 }} />
-            <YAxis tick={{ fill: "#6b7280", fontSize: 12 }} />
+            <XAxis dataKey={xKey} tick={{ fill: '#6b7280', fontSize: 12 }} />
+            <YAxis tick={{ fill: '#6b7280', fontSize: 12 }} />
             <Tooltip
               contentStyle={{
-                backgroundColor: "#fff",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
+                backgroundColor: '#fff',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
               }}
             />
             <Legend />
@@ -229,8 +227,8 @@ data:
           </AreaChart>
         );
 
-      case "pie": {
-        const pieKey = dataKeys[0] || "value";
+      case 'pie': {
+        const pieKey = dataKeys[0] || 'value';
         return (
           <PieChart>
             <Pie
@@ -254,9 +252,9 @@ data:
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: "#fff",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
+                backgroundColor: '#fff',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
               }}
             />
             <Legend />
@@ -272,8 +270,8 @@ data:
   return (
     <div
       className={cn(
-        "chart-container group relative my-5 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-[#333]",
-        className,
+        'chart-container group relative my-5 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-[#333]',
+        className
       )}
     >
       {title && (
@@ -296,15 +294,15 @@ data:
       )}
       <div
         className={cn(
-          "chart-body bg-white p-4 pt-6 dark:bg-stone-800",
-          isFullscreen && "h-full",
+          'chart-body bg-white p-4 pt-6 dark:bg-stone-800',
+          isFullscreen && 'h-full'
         )}
       >
         <div
           ref={containerRef}
-          className={cn("chart-wrapper w-full", isFullscreen ? "h-full" : "")}
+          className={cn('chart-wrapper w-full', isFullscreen ? 'h-full' : '')}
           style={{
-            height: isFullscreen ? "100%" : 300,
+            height: isFullscreen ? '100%' : 300,
             minHeight: 200,
             minWidth: 200,
           }}
@@ -327,7 +325,7 @@ data:
       <FullscreenModal
         isOpen={showFullscreen}
         onClose={() => setShowFullscreen(false)}
-        title={title || "Chart"}
+        title={title || 'Chart'}
       >
         <Chart
           content={content}

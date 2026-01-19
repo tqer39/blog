@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { cn } from "@blog/utils";
+import { cn } from '@blog/utils';
 import {
   Check,
   ChevronDown,
@@ -9,10 +9,10 @@ import {
   File,
   Folder,
   Maximize2,
-} from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+} from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
 
-import { FullscreenModal } from "./FullscreenModal";
+import { FullscreenModal } from './FullscreenModal';
 
 interface FileTreeProps {
   content: string;
@@ -28,21 +28,21 @@ interface TreeNode {
 }
 
 function parseTree(content: string): TreeNode[] {
-  const lines = content.split("\n").filter((line) => line.trim() !== "");
+  const lines = content.split('\n').filter((line) => line.trim() !== '');
   const root: TreeNode[] = [];
   const stack: { node: TreeNode; depth: number }[] = [];
 
   for (const line of lines) {
     // Calculate depth based on leading spaces/tree glyphs (2 spaces = 1 level)
-    const prefix = line.match(/^[\s│├└─┬┼]+/)?.[0] ?? "";
+    const prefix = line.match(/^[\s│├└─┬┼]+/)?.[0] ?? '';
     // Replace tabs with 2 spaces, then replace tree chars with spaces
     const normalizedPrefix = prefix
-      .replace(/\t/g, "  ")
-      .replace(/[│├└─┬┼]/g, " ");
+      .replace(/\t/g, '  ')
+      .replace(/[│├└─┬┼]/g, ' ');
     const leadingSpaces = normalizedPrefix.length;
     const depth = Math.floor(leadingSpaces / 2);
-    const name = line.replace(/^[\s│├└─┬┼]+/, "").trim();
-    const isDirectory = name.endsWith("/");
+    const name = line.replace(/^[\s│├└─┬┼]+/, '').trim();
+    const isDirectory = name.endsWith('/');
     const displayName = isDirectory ? name.slice(0, -1) : name;
 
     const node: TreeNode = {
@@ -72,34 +72,34 @@ function parseTree(content: string): TreeNode[] {
 }
 
 function getFileIcon(name: string): string {
-  const ext = name.split(".").pop()?.toLowerCase();
+  const ext = name.split('.').pop()?.toLowerCase();
   switch (ext) {
-    case "ts":
-    case "tsx":
-      return "text-blue-500";
-    case "js":
-    case "jsx":
-      return "text-yellow-500";
-    case "json":
-      return "text-yellow-600";
-    case "md":
-      return "text-stone-500";
-    case "css":
-    case "scss":
-      return "text-pink-500";
-    case "html":
-      return "text-orange-500";
-    case "py":
-      return "text-green-500";
-    case "go":
-      return "text-cyan-500";
-    case "rs":
-      return "text-orange-600";
-    case "yaml":
-    case "yml":
-      return "text-red-400";
+    case 'ts':
+    case 'tsx':
+      return 'text-blue-500';
+    case 'js':
+    case 'jsx':
+      return 'text-yellow-500';
+    case 'json':
+      return 'text-yellow-600';
+    case 'md':
+      return 'text-stone-500';
+    case 'css':
+    case 'scss':
+      return 'text-pink-500';
+    case 'html':
+      return 'text-orange-500';
+    case 'py':
+      return 'text-green-500';
+    case 'go':
+      return 'text-cyan-500';
+    case 'rs':
+      return 'text-orange-600';
+    case 'yaml':
+    case 'yml':
+      return 'text-red-400';
     default:
-      return "text-stone-400";
+      return 'text-stone-400';
   }
 }
 
@@ -124,9 +124,9 @@ function TreeNodeComponent({
         type="button"
         onClick={toggleExpand}
         className={cn(
-          "flex w-full items-center gap-1 rounded px-1 py-0.5 text-left hover:bg-stone-200 dark:hover:bg-stone-700",
-          node.isDirectory && "cursor-pointer",
-          !node.isDirectory && "cursor-default",
+          'file-tree-node flex w-full items-center gap-1 rounded px-1 py-0.5 text-left hover:bg-stone-200 dark:hover:bg-stone-700',
+          node.isDirectory && 'cursor-pointer',
+          !node.isDirectory && 'cursor-default'
         )}
       >
         {node.isDirectory ? (
@@ -141,14 +141,16 @@ function TreeNodeComponent({
         ) : (
           <>
             <span className="w-4" />
-            <File className={cn("h-4 w-4 shrink-0", getFileIcon(node.name))} />
+            <File className={cn('h-4 w-4 shrink-0', getFileIcon(node.name))} />
           </>
         )}
-        <span className="text-stone-700 dark:text-stone-300">{node.name}</span>
+        <span className="file-tree-text text-stone-700 dark:text-stone-300">
+          {node.name}
+        </span>
       </button>
 
       {node.isDirectory && isExpanded && node.children.length > 0 && (
-        <div className="ml-4 border-l border-stone-200 pl-4 dark:border-stone-700">
+        <div className="file-tree-indent ml-4 border-l border-stone-200 pl-4 dark:border-stone-700">
           {node.children.map((child, index) => (
             <TreeNodeComponent key={`${child.name}-${index}`} node={child} />
           ))}
@@ -174,16 +176,16 @@ export function FileTree({
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
-      console.error("Failed to copy:", error);
+      console.error('Failed to copy:', error);
     }
   }, [content]);
 
   return (
     <div
       className={cn(
-        "group relative my-2 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
-        isFullscreen && "my-0 rounded-none ring-0",
-        className,
+        'group relative my-2 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]',
+        isFullscreen && 'my-0 rounded-none ring-0',
+        className
       )}
     >
       {/* Header */}
@@ -227,8 +229,8 @@ export function FileTree({
       {/* Tree content */}
       <div
         className={cn(
-          "overflow-x-auto bg-white p-4 font-mono text-sm dark:bg-[#0d1117]",
-          isFullscreen && "h-full",
+          'file-tree-content overflow-x-auto bg-white p-4 font-mono text-sm dark:bg-[#0d1117]',
+          isFullscreen && 'h-full'
         )}
       >
         {tree.map((node, index) => (
