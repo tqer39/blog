@@ -1272,63 +1272,6 @@ README.md
     slideMode: true,
   },
   {
-    title: 'Timeline機能のデモ',
-    description: '時系列のイベントを視覚的に表示できます。',
-    content: `# Timeline
-
-プロジェクトの歴史や計画を時系列で表示できます。
-
----
-
-## サンプル
-
-\`\`\`timeline
-- date: 2024-01
-  title: プロジェクト開始
-  description: 初期設計とチーム編成を実施
-
-- date: 2024-03
-  title: MVP完成
-  description: 最小限の機能でプロトタイプをリリース
-
-- date: 2024-06
-  title: ベータ版公開
-  description: 限定ユーザーへのテスト配布開始
-
-- date: 2024-09
-  title: 正式リリース
-  description: 全機能を実装して一般公開
-
-- date: 2024-12
-  title: v2.0リリース
-  description: ユーザーフィードバックを反映した大型アップデート
-\`\`\`
-
----
-
-## 記法
-
-YAML形式でイベントを定義：
-
-\`\`\`yaml
-- date: 日付（必須）
-  title: タイトル（必須）
-  description: 説明（オプション）
-\`\`\`
-
----
-
-## 活用例
-
-- プロジェクトのロードマップ
-- 会社/製品の歴史
-- 学習の進捗記録
-- イベントのスケジュール`,
-    tags: ['Tutorial', 'UI'],
-    status: 'published',
-    slideMode: true,
-  },
-  {
     title: 'Steps機能のデモ',
     description: 'ステップバイステップの手順を分かりやすく表示できます。',
     content: `# Steps
