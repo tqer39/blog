@@ -59,9 +59,14 @@ export function Timeline({
   }
 
   return (
-    <div className={cn("my-4", className)}>
+    <div
+      className={cn(
+        "my-5 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
+        className,
+      )}
+    >
       {/* Header */}
-      <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
+      <div className="component-header flex items-center justify-between px-4 py-2 text-sm">
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4" />
           <span>Timeline</span>
@@ -81,31 +86,24 @@ export function Timeline({
       {/* Timeline content */}
       <div
         className={cn(
-          "rounded-b-lg bg-stone-100 p-4 dark:bg-stone-800",
+          "bg-white p-4 dark:bg-stone-800",
           isFullscreen && "h-full overflow-y-auto",
         )}
       >
-        <div className="relative">
+        <div className="relative pl-4">
+          {/* Vertical timeline line */}
+          <div className="absolute top-0 bottom-0 left-[5.5px] w-0.5 bg-stone-300 dark:bg-stone-600" />
+
           {events.map((event, index) => {
             const isLast = index === events.length - 1;
 
             return (
               <div key={index} className="relative flex gap-4">
-                {/* Timeline line and dot */}
-                <div className="flex flex-col items-center">
-                  {/* Dot */}
-                  <div
-                    className="z-10 h-3 w-3 shrink-0 rounded-full border-2 border-blue-500 bg-white dark:bg-stone-800"
-                    style={{ marginTop: "6px" }}
-                  />
-                  {/* Line */}
-                  {!isLast && (
-                    <div
-                      className="w-0.5 flex-1 bg-stone-300 dark:bg-stone-600"
-                      style={{ minHeight: "24px" }}
-                    />
-                  )}
-                </div>
+                {/* Timeline dot */}
+                <div
+                  className="absolute left-[-10.5px] z-10 h-3 w-3 shrink-0 rounded-full border-2 border-blue-500 bg-white dark:bg-stone-800"
+                  style={{ marginTop: "6px" }}
+                />
 
                 {/* Content */}
                 <div className={cn("pb-6", isLast && "pb-0")}>
