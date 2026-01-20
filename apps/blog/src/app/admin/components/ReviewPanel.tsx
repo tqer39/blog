@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { AlertBox } from './AlertBox';
 import { LoadingState } from './LoadingState';
 
 interface ReviewPanelProps {
@@ -179,16 +180,7 @@ export function ReviewPanel({
         <div className="flex-1 overflow-y-auto p-6">
           {isLoading && <LoadingState message="レビュー中..." size="lg" />}
 
-          {error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-red-500" />
-                <p className="text-sm text-red-700 dark:text-red-300">
-                  {error}
-                </p>
-              </div>
-            </div>
-          )}
+          {error && <AlertBox showIcon>{error}</AlertBox>}
 
           {review && !isLoading && !error && (
             <div className="space-y-6">
@@ -244,14 +236,9 @@ export function ReviewPanel({
                   ))}
                 </div>
               ) : (
-                <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-500" />
-                    <p className="text-sm text-green-700 dark:text-green-300">
-                      特に問題は見つかりませんでした
-                    </p>
-                  </div>
-                </div>
+                <AlertBox variant="success" showIcon>
+                  特に問題は見つかりませんでした
+                </AlertBox>
               )}
             </div>
           )}

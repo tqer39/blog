@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { transformText } from '@/lib/api/client';
+import { AlertBox } from './AlertBox';
 import { LoadingState } from './LoadingState';
 
 interface TextTransformPopoverProps {
@@ -286,9 +287,7 @@ export function TextTransformPopover({
 
         {error && (
           <div className="max-w-sm p-3">
-            <div className="rounded-md bg-red-50 p-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
-              {error}
-            </div>
+            <AlertBox>{error}</AlertBox>
             <div className="mt-2 flex justify-end gap-2">
               <Button
                 variant="ghost"

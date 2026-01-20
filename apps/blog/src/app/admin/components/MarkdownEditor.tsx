@@ -37,6 +37,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArticleContent } from '@/components/ArticleContent';
 import { suggestContinuation } from '@/lib/api/client';
+import { AlertBox } from './AlertBox';
 import { EmojiSuggester } from './EmojiSuggester';
 import { LoadingState } from './LoadingState';
 import { TextTransformPopover } from './TextTransformPopover';
@@ -494,11 +495,7 @@ export function MarkdownEditor({
                 </div>
                 <div className="max-h-80 overflow-y-auto p-2">
                   {isSuggesting && <LoadingState />}
-                  {suggestionError && (
-                    <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
-                      {suggestionError}
-                    </div>
-                  )}
+                  {suggestionError && <AlertBox>{suggestionError}</AlertBox>}
                   {!isSuggesting && suggestions.length > 0 && (
                     <div className="space-y-2">
                       {suggestions.map((suggestion, index) => (
