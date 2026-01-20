@@ -2,7 +2,8 @@
 
 import { Badge, Button, Input, Label } from '@blog/ui';
 import { X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useFetchData } from '@/hooks';
 import { createTag, getTags } from '@/lib/api/client';
 
 interface TagSelectorProps {
@@ -11,23 +12,17 @@ interface TagSelectorProps {
 }
 
 export function TagSelector({ value, onChange }: TagSelectorProps) {
-  const [availableTags, setAvailableTags] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [newlyCreatedTags, setNewlyCreatedTags] = useState<string[]>([]);
 
-  useEffect(() => {
-    async function loadTags() {
-      try {
-        const response = await getTags();
-        setAvailableTags(response.tags.map((t) => t.name));
-      } catch {
-        // Ignore error, just use empty list
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadTags();
-  }, []);
+  const fetchTags = useCallback(() => getTags(), []);
+  const { data: fetchedTags, isLoading } = useFetchData(fetchTags, {
+    transform: (res) => res.tags.map((t) => t.name),
+    initialValue: [],
+  });
+
+  // Merge fetched tags with locally created ones
+  const availableTags = [...new Set([...fetchedTags, ...newlyCreatedTags])];
 
   const handleAddTag = async (tagName: string) => {
     const trimmed = tagName.trim();
@@ -40,7 +35,7 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
     if (!availableTags.includes(trimmed)) {
       try {
         await createTag({ name: trimmed });
-        setAvailableTags([...availableTags, trimmed]);
+        setNewlyCreatedTags((prev) => [...prev, trimmed]);
       } catch {
         // Ignore error, tag might already exist
       }

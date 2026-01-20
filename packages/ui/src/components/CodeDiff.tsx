@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { cn } from "@blog/utils";
-import { Check, Copy, FileDiff, Maximize2 } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { cn } from '@blog/utils';
+import { Check, Copy, FileDiff, Maximize2 } from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   SiCss3,
   SiDocker,
@@ -17,10 +17,10 @@ import {
   SiTerraform,
   SiTypescript,
   SiYaml,
-} from "react-icons/si";
-import YAML from "yaml";
+} from 'react-icons/si';
+import YAML from 'yaml';
 
-import { FullscreenModal } from "./FullscreenModal";
+import { FullscreenModal } from './FullscreenModal';
 
 interface CodeDiffProps {
   content: string;
@@ -29,7 +29,7 @@ interface CodeDiffProps {
 }
 
 interface DiffLine {
-  type: "added" | "removed" | "unchanged" | "header";
+  type: 'added' | 'removed' | 'unchanged' | 'header';
   content: string;
   oldLineNum?: number;
   newLineNum?: number;
@@ -70,8 +70,8 @@ function isYamlDiffConfig(content: string): YamlDiffConfig | null {
     const parsed = YAML.parse(content) as YamlDiffConfig;
     if (
       parsed &&
-      typeof parsed.before === "string" &&
-      typeof parsed.after === "string"
+      typeof parsed.before === 'string' &&
+      typeof parsed.after === 'string'
     ) {
       return parsed;
     }
@@ -82,8 +82,8 @@ function isYamlDiffConfig(content: string): YamlDiffConfig | null {
 }
 
 function computeDiff(before: string, after: string): DiffLine[] {
-  const beforeLines = before.split("\n");
-  const afterLines = after.split("\n");
+  const beforeLines = before.split('\n');
+  const afterLines = after.split('\n');
   const result: DiffLine[] = [];
 
   // Simple line-by-line diff (not optimal LCS, but good enough for display)
@@ -96,7 +96,7 @@ function computeDiff(before: string, after: string): DiffLine[] {
     if (i >= beforeLines.length) {
       // Remaining lines in after are additions
       result.push({
-        type: "added",
+        type: 'added',
         content: afterLines[j],
         newLineNum: newLineNum++,
       });
@@ -104,7 +104,7 @@ function computeDiff(before: string, after: string): DiffLine[] {
     } else if (j >= afterLines.length) {
       // Remaining lines in before are removals
       result.push({
-        type: "removed",
+        type: 'removed',
         content: beforeLines[i],
         oldLineNum: oldLineNum++,
       });
@@ -112,7 +112,7 @@ function computeDiff(before: string, after: string): DiffLine[] {
     } else if (beforeLines[i] === afterLines[j]) {
       // Lines match
       result.push({
-        type: "unchanged",
+        type: 'unchanged',
         content: beforeLines[i],
         oldLineNum: oldLineNum++,
         newLineNum: newLineNum++,
@@ -122,12 +122,12 @@ function computeDiff(before: string, after: string): DiffLine[] {
     } else {
       // Lines differ - show removal then addition
       result.push({
-        type: "removed",
+        type: 'removed',
         content: beforeLines[i],
         oldLineNum: oldLineNum++,
       });
       result.push({
-        type: "added",
+        type: 'added',
         content: afterLines[j],
         newLineNum: newLineNum++,
       });
@@ -140,35 +140,35 @@ function computeDiff(before: string, after: string): DiffLine[] {
 }
 
 function parseStandardDiff(content: string): DiffLine[] {
-  const lines = content.split("\n");
+  const lines = content.split('\n');
   const result: DiffLine[] = [];
   let oldLineNum = 1;
   let newLineNum = 1;
 
   for (const line of lines) {
     if (
-      line.startsWith("+++") ||
-      line.startsWith("---") ||
-      line.startsWith("@@")
+      line.startsWith('+++') ||
+      line.startsWith('---') ||
+      line.startsWith('@@')
     ) {
-      result.push({ type: "header", content: line });
-    } else if (line.startsWith("+")) {
+      result.push({ type: 'header', content: line });
+    } else if (line.startsWith('+')) {
       result.push({
-        type: "added",
+        type: 'added',
         content: line.slice(1),
         newLineNum: newLineNum++,
       });
-    } else if (line.startsWith("-")) {
+    } else if (line.startsWith('-')) {
       result.push({
-        type: "removed",
+        type: 'removed',
         content: line.slice(1),
         oldLineNum: oldLineNum++,
       });
     } else {
       // Unchanged line (may have a space prefix or no prefix)
-      const contentWithoutPrefix = line.startsWith(" ") ? line.slice(1) : line;
+      const contentWithoutPrefix = line.startsWith(' ') ? line.slice(1) : line;
       result.push({
-        type: "unchanged",
+        type: 'unchanged',
         content: contentWithoutPrefix,
         oldLineNum: oldLineNum++,
         newLineNum: newLineNum++,
@@ -193,14 +193,14 @@ export function CodeDiff({
     if (yamlConfig) {
       return {
         diffLines: computeDiff(yamlConfig.before, yamlConfig.after),
-        language: yamlConfig.language || "text",
+        language: yamlConfig.language || 'text',
       };
     }
 
     // Fall back to standard diff format
     return {
       diffLines: parseStandardDiff(content),
-      language: "diff",
+      language: 'diff',
     };
   }, [content]);
 
@@ -213,16 +213,16 @@ export function CodeDiff({
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
-      console.error("Failed to copy:", error);
+      console.error('Failed to copy:', error);
     }
   }, [content]);
 
   return (
     <div
       className={cn(
-        "group relative my-2 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
-        isFullscreen && "my-0 rounded-none ring-0",
-        className,
+        'group relative my-2 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]',
+        isFullscreen && 'my-0 rounded-none ring-0',
+        className
       )}
     >
       {/* Header */}
@@ -231,7 +231,7 @@ export function CodeDiff({
           <div className="flex items-center gap-2">
             <LangIcon className="h-4 w-4" />
             <span>diff</span>
-            {language !== "diff" && language !== "text" && (
+            {language !== 'diff' && language !== 'text' && (
               <span className="text-stone-400">({language})</span>
             )}
           </div>
@@ -269,8 +269,8 @@ export function CodeDiff({
       {/* Diff content */}
       <div
         className={cn(
-          "code-diff-content overflow-x-auto bg-white py-3 font-mono text-sm dark:bg-[#0d1117]",
-          isFullscreen && "h-full",
+          'code-diff-content overflow-x-auto bg-white py-3 font-mono text-sm dark:bg-[#0d1117]',
+          isFullscreen && 'h-full'
         )}
       >
         <table className="w-full border-collapse">
@@ -279,44 +279,44 @@ export function CodeDiff({
               <tr
                 key={index}
                 className={cn(
-                  "code-diff-row transition-colors",
-                  line.type === "added" && "bg-green-100 dark:bg-green-900/30",
-                  line.type === "removed" && "bg-red-100 dark:bg-red-900/30",
-                  line.type === "header" && "bg-blue-100 dark:bg-blue-900/30",
+                  'code-diff-row transition-colors',
+                  line.type === 'added' && 'bg-green-100 dark:bg-green-900/30',
+                  line.type === 'removed' && 'bg-red-100 dark:bg-red-900/30',
+                  line.type === 'header' && 'bg-blue-100 dark:bg-blue-900/30'
                 )}
               >
                 {/* Old line number */}
                 <td className="code-diff-border w-12 select-none border-r border-stone-200 px-2 py-0.5 text-right text-stone-400">
-                  {line.oldLineNum || ""}
+                  {line.oldLineNum || ''}
                 </td>
                 {/* New line number */}
                 <td className="code-diff-border w-12 select-none border-r border-stone-200 px-2 py-0.5 text-right text-stone-400">
-                  {line.newLineNum || ""}
+                  {line.newLineNum || ''}
                 </td>
                 {/* Sign */}
                 <td
                   className={cn(
-                    "w-6 select-none px-1 py-0.5 text-center font-bold",
-                    line.type === "added" &&
-                      "text-green-600 dark:text-green-400",
-                    line.type === "removed" && "text-red-600 dark:text-red-400",
+                    'w-6 select-none px-1 py-0.5 text-center font-bold',
+                    line.type === 'added' &&
+                      'text-green-600 dark:text-green-400',
+                    line.type === 'removed' && 'text-red-600 dark:text-red-400'
                   )}
                 >
-                  {line.type === "added" && "+"}
-                  {line.type === "removed" && "-"}
+                  {line.type === 'added' && '+'}
+                  {line.type === 'removed' && '-'}
                 </td>
                 {/* Content */}
                 <td className="whitespace-pre px-2 py-0.5">
                   <span
                     className={cn(
-                      "code-diff-text",
-                      line.type === "added" &&
-                        "text-green-800 dark:text-green-200",
-                      line.type === "removed" &&
-                        "text-red-800 dark:text-red-200",
-                      line.type === "header" &&
-                        "text-blue-800 dark:text-blue-200",
-                      line.type === "unchanged" && "text-stone-700",
+                      'code-diff-text',
+                      line.type === 'added' &&
+                        'text-green-800 dark:text-green-200',
+                      line.type === 'removed' &&
+                        'text-red-800 dark:text-red-200',
+                      line.type === 'header' &&
+                        'text-blue-800 dark:text-blue-200',
+                      line.type === 'unchanged' && 'text-stone-700'
                     )}
                   >
                     {line.content}
@@ -334,7 +334,7 @@ export function CodeDiff({
           <div className="flex items-center gap-2">
             <LangIcon className="h-4 w-4" />
             <span>diff</span>
-            {language !== "diff" && language !== "text" && (
+            {language !== 'diff' && language !== 'text' && (
               <span className="text-stone-400">({language})</span>
             )}
           </div>

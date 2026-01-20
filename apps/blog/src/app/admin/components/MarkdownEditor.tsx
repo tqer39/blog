@@ -40,11 +40,22 @@ import { suggestContinuation } from '@/lib/api/client';
 import { EmojiSuggester } from './EmojiSuggester';
 import { TextTransformPopover } from './TextTransformPopover';
 
+/**
+ * マークダウンエディタのProps。
+ *
+ * 分割ビュー、ツールバー、画像ペースト/D&D、AI続き生成、
+ * テキスト変換、絵文字サジェスト、フルスクリーン対応。
+ */
 interface MarkdownEditorProps {
+  /** マークダウンコンテンツ (controlled) */
   value: string;
+  /** コンテンツ変更時のコールバック */
   onChange: (value: string) => void;
+  /** 画像アップロードハンドラ。URLを返す */
   onImageUpload: (file: File) => Promise<string>;
+  /** AI続き生成のコンテキスト用タイトル */
   title?: string;
+  /** AI機能のモデル設定 */
   aiSettings?: AIModelSettings;
 }
 

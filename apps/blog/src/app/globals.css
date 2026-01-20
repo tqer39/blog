@@ -612,7 +612,9 @@ body[data-slide-mode="true"] .image-carousel__dot {
 
 /* Tokyo Night: Ghost/transparent button hover */
 .tokyonight
-button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(.bg-accent):hover {
+button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(
+  .bg-accent
+):hover {
   background-color: #24283b;
 }
 
@@ -850,7 +852,9 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(.bg-accent):
 
 /* Nord Light: Ghost/transparent button hover */
 .nord-light
-button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(.bg-accent):hover {
+button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(
+  .bg-accent
+):hover {
   background-color: #d8dee9; /* nord4 */
 }
 
@@ -1029,7 +1033,10 @@ html.autumn .model-viewer-bg {
 }
 
 /* Autumn: Ghost/transparent button hover */
-.autumn button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(.bg-accent):hover {
+.autumn
+button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(
+  .bg-accent
+):hover {
   background-color: #efebe9; /* light tan */
 }
 

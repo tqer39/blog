@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { cn } from "@blog/utils";
+import { cn } from '@blog/utils';
 
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from './ui/skeleton';
 
 interface BlockSkeletonProps {
   className?: string;
@@ -20,8 +20,8 @@ export function BlockSkeleton({
   return (
     <div
       className={cn(
-        "group relative my-2 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
-        className,
+        'group relative my-2 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]',
+        className
       )}
     >
       {filename && (

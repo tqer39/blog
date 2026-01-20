@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
 
-import { BlockSkeleton } from "./BlockSkeleton";
+import { BlockSkeleton } from './BlockSkeleton';
 
 const MermaidClient = dynamic(
-  () => import("./MermaidClient").then((mod) => mod.MermaidClient),
+  () => import('./MermaidClient').then((mod) => mod.MermaidClient),
   {
     ssr: false,
     loading: () => <BlockSkeleton filename="Mermaid Diagram" />,
-  },
+  }
 );
 
 interface MermaidProps {

@@ -2,7 +2,8 @@
 
 import type { CategoryWithCount } from '@blog/cms-types';
 import { Label } from '@blog/ui';
-import { useEffect, useState } from 'react';
+import { useCallback } from 'react';
+import { useFetchData } from '@/hooks';
 import { getCategories } from '@/lib/api/client';
 
 interface CategorySelectorProps {
@@ -11,22 +12,11 @@ interface CategorySelectorProps {
 }
 
 export function CategorySelector({ value, onChange }: CategorySelectorProps) {
-  const [categories, setCategories] = useState<CategoryWithCount[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadCategories() {
-      try {
-        const response = await getCategories();
-        setCategories(response.categories);
-      } catch {
-        // Ignore error, just use empty list
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadCategories();
-  }, []);
+  const fetchCategories = useCallback(() => getCategories(), []);
+  const { data: categories, isLoading } = useFetchData(fetchCategories, {
+    transform: (res) => res.categories,
+    initialValue: [] as CategoryWithCount[],
+  });
 
   const selectedCategory = categories.find((c) => c.id === value);
 

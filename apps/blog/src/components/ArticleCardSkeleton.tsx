@@ -1,4 +1,4 @@
-import { Skeleton } from "@blog/ui";
+import { Skeleton } from '@blog/ui';
 
 export function ArticleCardSkeleton() {
   return (

@@ -1,5 +1,5 @@
-import { Skeleton } from "@blog/ui";
-import { ArticleCardSkeleton } from "@/components/ArticleCardSkeleton";
+import { Skeleton } from '@blog/ui';
+import { ArticleCardSkeleton } from '@/components/ArticleCardSkeleton';
 
 export default function Loading() {
   return (

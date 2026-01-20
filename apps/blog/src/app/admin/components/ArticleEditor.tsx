@@ -44,9 +44,18 @@ import { ReviewPanel } from './ReviewPanel';
 import { SplitButton } from './SplitButton';
 import { TagSelector } from './TagSelector';
 
+/**
+ * 記事作成・編集エディタのProps。
+ *
+ * AI支援機能（メタデータ生成、画像生成、レビュー）、
+ * 画像アップロード、マークダウン編集を統合した包括的なエディタ。
+ */
 interface ArticleEditorProps {
+  /** 編集モード用の既存記事データ。未指定時は新規作成モード */
   initialData?: Article;
+  /** 保存時のコールバック。エラー時はthrowで表示 */
   onSave: (input: ArticleInput) => Promise<void>;
+  /** キャンセルボタンのコールバック。指定時のみボタン表示 */
   onCancel?: () => void;
 }
 

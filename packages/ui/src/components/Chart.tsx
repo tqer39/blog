@@ -24,9 +24,17 @@ import YAML from 'yaml';
 
 import { FullscreenModal } from './FullscreenModal';
 
+/**
+ * チャートコンポーネントのProps。
+ *
+ * YAML設定からRecharts描画。line/bar/pie/area対応。
+ */
 interface ChartProps {
+  /** YAML設定文字列 (type, data, title等) */
   content: string;
+  /** 追加CSSクラス */
   className?: string;
+  /** @internal フルスクリーンモードフラグ */
   isFullscreen?: boolean;
 }
 
