@@ -139,9 +139,9 @@
   --popover-foreground: 220 16% 22%; /* #2E3440 nord0 */
   --primary: 213 32% 52%; /* #5E81AC nord10 Blue */
   --primary-foreground: 218 27% 94%; /* #ECEFF4 nord6 */
-  --secondary: 218 27% 92%; /* #E5E9F0 nord5 */
+  --secondary: 219 28% 80%; /* #D8DEE9 darkened */
   --secondary-foreground: 220 16% 22%; /* #2E3440 nord0 */
-  --muted: 218 27% 92%; /* #E5E9F0 nord5 */
+  --muted: 219 28% 80%; /* #D8DEE9 darkened */
   --muted-foreground: 220 17% 36%; /* #4C566A nord3 */
   --accent: 193 43% 67%; /* #88C0D0 nord8 Cyan */
   --accent-foreground: 220 16% 22%; /* #2E3440 nord0 */
@@ -167,9 +167,9 @@
   --popover-foreground: 9 29% 19%; /* #3E2723 dark brown */
   --primary: 14 80% 47%; /* #D84315 burnt orange */
   --primary-foreground: 30 42% 96%; /* #FAF6F1 warm cream */
-  --secondary: 20 25% 93%; /* #EFEBE9 light tan */
+  --secondary: 20 25% 85%; /* #EFEBE9 darkened for distinction */
   --secondary-foreground: 9 29% 19%; /* #3E2723 dark brown */
-  --muted: 20 25% 93%; /* #EFEBE9 light tan */
+  --muted: 20 25% 85%; /* #EFEBE9 darkened for distinction */
   --muted-foreground: 16 25% 38%; /* #795548 brown */
   --accent: 45 96% 56%; /* #F9A825 amber/golden yellow */
   --accent-foreground: 9 29% 19%; /* #3E2723 dark brown */
@@ -612,7 +612,7 @@ body[data-slide-mode="true"] .image-carousel__dot {
 
 /* Tokyo Night: Ghost/transparent button hover */
 .tokyonight
-button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
+button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(.bg-accent):hover {
   background-color: #24283b;
 }
 
@@ -850,7 +850,7 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
 
 /* Nord Light: Ghost/transparent button hover */
 .nord-light
-button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
+button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(.bg-accent):hover {
   background-color: #d8dee9; /* nord4 */
 }
 
@@ -1029,7 +1029,7 @@ html.autumn .model-viewer-bg {
 }
 
 /* Autumn: Ghost/transparent button hover */
-.autumn button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
+.autumn button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(.bg-accent):hover {
   background-color: #efebe9; /* light tan */
 }
 

@@ -116,8 +116,10 @@ export function ThemeSwitcher() {
                   setOpen(false);
                 }}
                 className={cn(
-                  "flex w-full cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
-                  isActive && "bg-accent text-accent-foreground",
+                  "flex w-full cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
+                  isActive
+                    ? "!bg-accent !text-accent-foreground"
+                    : "hover:!bg-accent/20 hover:text-foreground",
                 )}
               >
                 <div className="flex items-center gap-2">
