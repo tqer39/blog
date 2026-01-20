@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { Check, Copy, Maximize2 } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { useCallback, useEffect, useState } from 'react';
+import { Check, Copy, Maximize2 } from "lucide-react";
+import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
+import { useCallback, useEffect, useState } from "react";
 import {
   SiCss3,
   SiDocker,
@@ -17,24 +18,59 @@ import {
   SiTerraform,
   SiTypescript,
   SiYaml,
-} from 'react-icons/si';
+} from "react-icons/si";
 import {
   type BundledLanguage,
   createHighlighter,
   type Highlighter,
-} from 'shiki';
+} from "shiki";
 
-import { Chart } from './Chart';
-import { CodeDiff } from './CodeDiff';
-import { FileTree } from './FileTree';
-import { FullscreenModal } from './FullscreenModal';
-import { ImageCarousel } from './ImageCarousel';
-import { ImageCompare } from './ImageCompare';
-import { Mermaid } from './Mermaid';
-import { ModelViewer } from './ModelViewer';
-import { Steps } from './Steps';
-import { Terminal } from './Terminal';
-import { Skeleton } from './ui/skeleton';
+import { BlockSkeleton } from "./BlockSkeleton";
+import { FullscreenModal } from "./FullscreenModal";
+import { Mermaid } from "./Mermaid";
+
+const Chart = dynamic(() => import("./Chart").then((mod) => mod.Chart), {
+  loading: () => <BlockSkeleton filename="Chart" />,
+});
+const CodeDiff = dynamic(
+  () => import("./CodeDiff").then((mod) => mod.CodeDiff),
+  {
+    loading: () => <BlockSkeleton filename="Code Diff" />,
+  },
+);
+const FileTree = dynamic(
+  () => import("./FileTree").then((mod) => mod.FileTree),
+  {
+    loading: () => <BlockSkeleton filename="File Tree" />,
+  },
+);
+const ImageCarousel = dynamic(
+  () => import("./ImageCarousel").then((mod) => mod.ImageCarousel),
+  {
+    loading: () => <BlockSkeleton filename="Image Carousel" />,
+  },
+);
+const ImageCompare = dynamic(
+  () => import("./ImageCompare").then((mod) => mod.ImageCompare),
+  {
+    loading: () => <BlockSkeleton filename="Image Compare" />,
+  },
+);
+const ModelViewer = dynamic(
+  () => import("./ModelViewer").then((mod) => mod.ModelViewer),
+  {
+    loading: () => <BlockSkeleton filename="3D Model" />,
+  },
+);
+const Steps = dynamic(() => import("./Steps").then((mod) => mod.Steps), {
+  loading: () => <BlockSkeleton filename="Steps" />,
+});
+const Terminal = dynamic(
+  () => import("./Terminal").then((mod) => mod.Terminal),
+  {
+    loading: () => <BlockSkeleton filename="Terminal" />,
+  },
+);
 
 interface CodeBlockProps {
   children: string;
@@ -43,24 +79,24 @@ interface CodeBlockProps {
 }
 
 const SUPPORTED_LANGUAGES: BundledLanguage[] = [
-  'typescript',
-  'javascript',
-  'tsx',
-  'jsx',
-  'python',
-  'bash',
-  'shellscript',
-  'json',
-  'yaml',
-  'markdown',
-  'html',
-  'css',
-  'sql',
-  'go',
-  'rust',
-  'java',
-  'c',
-  'cpp',
+  "typescript",
+  "javascript",
+  "tsx",
+  "jsx",
+  "python",
+  "bash",
+  "shellscript",
+  "json",
+  "yaml",
+  "markdown",
+  "html",
+  "css",
+  "sql",
+  "go",
+  "rust",
+  "java",
+  "c",
+  "cpp",
 ];
 
 const languageIcons: Record<
@@ -92,7 +128,7 @@ let highlighterPromise: Promise<Highlighter> | null = null;
 function getHighlighter(): Promise<Highlighter> {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
-      themes: ['github-light', 'github-dark'],
+      themes: ["github-light", "github-dark"],
       langs: SUPPORTED_LANGUAGES,
     });
   }
@@ -102,7 +138,7 @@ function getHighlighter(): Promise<Highlighter> {
 export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [highlightedHtml, setHighlightedHtml] = useState<string>('');
+  const [highlightedHtml, setHighlightedHtml] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -111,11 +147,11 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
     setMounted(true);
   }, []);
 
-  const match = /language-(\w+)(:?.+)?/.exec(className || '');
-  const lang = match?.[1] || '';
-  const filename = match?.[2]?.slice(1) || '';
+  const match = /language-(\w+)(:?.+)?/.exec(className || "");
+  const lang = match?.[1] || "";
+  const filename = match?.[2]?.slice(1) || "";
 
-  const code = String(children).replace(/\n$/, '');
+  const code = String(children).replace(/\n$/, "");
 
   const handleCopy = useCallback(async () => {
     try {
@@ -123,7 +159,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
-      console.error('Failed to copy code:', error);
+      console.error("Failed to copy code:", error);
     }
   }, [code]);
 
@@ -144,18 +180,18 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
 
         const language = SUPPORTED_LANGUAGES.includes(lang as BundledLanguage)
           ? (lang as BundledLanguage)
-          : 'typescript'; // fallback to typescript for unknown languages
+          : "typescript"; // fallback to typescript for unknown languages
         const isDarkTheme =
-          resolvedTheme === 'dark' || resolvedTheme === 'tokyonight';
-        const theme = isDarkTheme ? 'github-dark' : 'github-light';
+          resolvedTheme === "dark" || resolvedTheme === "tokyonight";
+        const theme = isDarkTheme ? "github-dark" : "github-light";
 
         console.log(
-          '[CodeBlock] resolvedTheme:',
+          "[CodeBlock] resolvedTheme:",
           resolvedTheme,
-          'isDarkTheme:',
+          "isDarkTheme:",
           isDarkTheme,
-          'theme:',
-          theme
+          "theme:",
+          theme,
         );
 
         const html = highlighter.codeToHtml(code, {
@@ -168,7 +204,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
           setIsLoading(false);
         }
       } catch (error) {
-        console.error('Failed to highlight code:', error);
+        console.error("Failed to highlight code:", error);
         if (!cancelled) {
           setIsLoading(false);
         }
@@ -192,77 +228,54 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   }
 
   // Mermaid diagrams
-  if (lang === 'mermaid') {
+  if (lang === "mermaid") {
     return <Mermaid chart={code} />;
   }
 
   // Image carousel
-  if (lang === 'carousel') {
+  if (lang === "carousel") {
     return <ImageCarousel content={code} />;
   }
 
   // Image comparison (Before/After)
-  if (lang === 'compare') {
+  if (lang === "compare") {
     return <ImageCompare content={code} />;
   }
 
   // Interactive chart
-  if (lang === 'chart') {
+  if (lang === "chart") {
     return <Chart content={code} />;
   }
 
   // Terminal with typing animation
-  if (lang === 'terminal') {
+  if (lang === "terminal") {
     return <Terminal content={code} />;
   }
 
   // 3D Model viewer
-  if (lang === 'model') {
+  if (lang === "model") {
     return <ModelViewer content={code} />;
   }
 
   // Code diff
-  if (lang === 'diff') {
+  if (lang === "diff") {
     return <CodeDiff content={code} />;
   }
 
   // File tree
-  if (lang === 'tree') {
+  if (lang === "tree") {
     return <FileTree content={code} />;
   }
 
   // Steps/Wizard
-  if (lang === 'steps') {
+  if (lang === "steps") {
     return <Steps content={code} />;
   }
 
   // Loading state - skeleton with line-like patterns
   if (isLoading) {
-    const lineCount = Math.min(code.split('\n').length, 8);
-    const lineWidths = [85, 70, 90, 60, 75, 80, 65, 95];
-
-    return (
-      <div className="my-5 overflow-hidden rounded-lg border-0 bg-transparent shadow-none ring-0">
-        {filename && (
-          <div className="component-header border-0 px-4 py-2 text-sm shadow-none ring-0">
-            {filename}
-          </div>
-        )}
-        <div className="overflow-x-auto bg-stone-100 p-4 dark:bg-stone-800 border-0 shadow-none ring-0">
-          <div className="space-y-2">
-            {Array.from({ length: lineCount }).map((_, i) => (
-              <div key={i} className="flex items-center gap-4">
-                <Skeleton className="h-4 w-4 shrink-0" />
-                <Skeleton
-                  className="h-4"
-                  style={{ width: `${lineWidths[i % lineWidths.length]}%` }}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    const lineCount = Math.min(code.split("\n").length, 8);
+    return <BlockSkeleton filename={filename} lineCount={lineCount} />;
   }
 
   // Add line numbers by wrapping each line
@@ -271,18 +284,18 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
     return html.replace(
       /<code([^>]*)>([\s\S]*?)<\/code>/,
       (_, attrs, content) => {
-        const lines = content.split('\n');
+        const lines = content.split("\n");
         const wrappedLines = lines
           .map((line: string, i: number) => {
             // Don't add line number to empty last line
-            if (i === lines.length - 1 && line === '') return '';
+            if (i === lines.length - 1 && line === "") return "";
             const lineNum = i + 1;
             return `<span class="line"><span class="line-number">${lineNum}</span><span class="line-content">${line}</span></span>`;
           })
           .filter(Boolean)
-          .join('\n');
+          .join("\n");
         return `<code${attrs}>${wrappedLines}</code>`;
-      }
+      },
     );
   };
 
