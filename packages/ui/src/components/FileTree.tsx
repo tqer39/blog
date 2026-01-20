@@ -11,6 +11,7 @@ import {
   Maximize2,
 } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
+import { useCopyToClipboard } from '../hooks/use-copy-to-clipboard';
 
 import { FullscreenModal } from './FullscreenModal';
 
@@ -163,20 +164,10 @@ export function FileTree({
   className,
   isFullscreen = false,
 }: FileTreeProps) {
-  const [isCopied, setIsCopied] = useState(false);
+  const { isCopied, copy } = useCopyToClipboard();
   const [showFullscreen, setShowFullscreen] = useState(false);
 
   const tree = useMemo(() => parseTree(content), [content]);
-
-  const handleCopy = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(content);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (error) {
-      console.error('Failed to copy:', error);
-    }
-  }, [content]);
 
   return (
     <div
@@ -196,7 +187,7 @@ export function FileTree({
           <div className="flex items-center gap-1">
             <button
               type="button"
-              onClick={handleCopy}
+              onClick={() => copy(content)}
               className="flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Copy tree"
             >
@@ -247,7 +238,7 @@ export function FileTree({
         headerActions={
           <button
             type="button"
-            onClick={handleCopy}
+            onClick={() => copy(content)}
             className="flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
             aria-label="Copy tree"
           >

@@ -2,23 +2,10 @@
 
 import { cn } from '@blog/utils';
 import { Check, Copy, FileDiff, Maximize2 } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
-import {
-  SiCss3,
-  SiDocker,
-  SiGnubash,
-  SiGo,
-  SiHtml5,
-  SiJavascript,
-  SiJson,
-  SiMarkdown,
-  SiPython,
-  SiRust,
-  SiTerraform,
-  SiTypescript,
-  SiYaml,
-} from 'react-icons/si';
+import { useMemo, useState } from 'react';
 import YAML from 'yaml';
+import { useCopyToClipboard } from '../hooks/use-copy-to-clipboard';
+import { LANGUAGE_ICONS } from '../lib/language-icons';
 
 import { FullscreenModal } from './FullscreenModal';
 
@@ -40,30 +27,6 @@ interface YamlDiffConfig {
   before: string;
   after: string;
 }
-
-const languageIcons: Record<
-  string,
-  React.ComponentType<{ className?: string }>
-> = {
-  typescript: SiTypescript,
-  tsx: SiTypescript,
-  javascript: SiJavascript,
-  jsx: SiJavascript,
-  python: SiPython,
-  go: SiGo,
-  rust: SiRust,
-  html: SiHtml5,
-  css: SiCss3,
-  json: SiJson,
-  yaml: SiYaml,
-  markdown: SiMarkdown,
-  bash: SiGnubash,
-  shellscript: SiGnubash,
-  terraform: SiTerraform,
-  hcl: SiTerraform,
-  dockerfile: SiDocker,
-  docker: SiDocker,
-};
 
 function isYamlDiffConfig(content: string): YamlDiffConfig | null {
   try {
@@ -184,7 +147,7 @@ export function CodeDiff({
   className,
   isFullscreen = false,
 }: CodeDiffProps) {
-  const [isCopied, setIsCopied] = useState(false);
+  const { isCopied, copy } = useCopyToClipboard();
   const [showFullscreen, setShowFullscreen] = useState(false);
 
   const { diffLines, language } = useMemo(() => {
@@ -205,17 +168,7 @@ export function CodeDiff({
   }, [content]);
 
   // Determine which icon to use
-  const LangIcon = languageIcons[language] || FileDiff;
-
-  const handleCopy = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(content);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (error) {
-      console.error('Failed to copy:', error);
-    }
-  }, [content]);
+  const LangIcon = LANGUAGE_ICONS[language] || FileDiff;
 
   return (
     <div
@@ -238,7 +191,7 @@ export function CodeDiff({
           <div className="flex items-center gap-1">
             <button
               type="button"
-              onClick={handleCopy}
+              onClick={() => copy(content)}
               className="flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Copy diff"
             >
@@ -342,7 +295,7 @@ export function CodeDiff({
         headerActions={
           <button
             type="button"
-            onClick={handleCopy}
+            onClick={() => copy(content)}
             className="flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
             aria-label="Copy diff"
           >

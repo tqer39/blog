@@ -11,6 +11,7 @@ import {
   Terminal as TerminalIcon,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCopyToClipboard } from '../hooks/use-copy-to-clipboard';
 
 import { FullscreenModal } from './FullscreenModal';
 
@@ -142,7 +143,7 @@ export function Terminal({ content, className }: TerminalProps) {
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isComplete, setIsComplete] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
+  const { isCopied, copy } = useCopyToClipboard();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const terminalRef = useRef<HTMLDivElement>(null);
 
@@ -169,21 +170,14 @@ export function Terminal({ content, className }: TerminalProps) {
     }
   }, [isComplete, reset]);
 
-  const handleCopy = useCallback(async () => {
+  const handleCopy = useCallback(() => {
     // Copy only command lines (without $)
     const commandsOnly = lines
       .filter((line) => line.isCommand)
       .map((line) => line.text.replace(/^\s*\$\s*/, ''))
       .join('\n');
-
-    try {
-      await navigator.clipboard.writeText(commandsOnly);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (error) {
-      console.error('Failed to copy:', error);
-    }
-  }, [lines]);
+    copy(commandsOnly);
+  }, [lines, copy]);
 
   useEffect(() => {
     if (!isPlaying || isComplete) return;

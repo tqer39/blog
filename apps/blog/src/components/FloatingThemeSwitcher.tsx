@@ -1,19 +1,15 @@
 'use client';
 
+import { useMounted } from '@blog/ui';
 import { Monitor, Moon, MoonStar, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
 
 const themes = ['light', 'dark', 'tokyonight', 'system'] as const;
 type Theme = (typeof themes)[number];
 
 export function FloatingThemeSwitcher() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   const cycleTheme = () => {
     const currentIndex = themes.indexOf(theme as Theme);

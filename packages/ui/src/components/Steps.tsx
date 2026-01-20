@@ -9,8 +9,9 @@ import {
   ListOrdered,
   Maximize2,
 } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import YAML from 'yaml';
+import { useCopyToClipboard } from '../hooks/use-copy-to-clipboard';
 
 import { FullscreenModal } from './FullscreenModal';
 
@@ -53,18 +54,7 @@ function StepItem({
   total: number;
 }) {
   const [isCodeExpanded, setIsCodeExpanded] = useState(true);
-  const [isCopied, setIsCopied] = useState(false);
-
-  const handleCopy = useCallback(async () => {
-    if (!step.code) return;
-    try {
-      await navigator.clipboard.writeText(step.code.trim());
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (error) {
-      console.error('Failed to copy:', error);
-    }
-  }, [step.code]);
+  const { isCopied, copy } = useCopyToClipboard();
 
   const isLast = index === total - 1;
 
@@ -115,7 +105,7 @@ function StepItem({
               </button>
               <button
                 type="button"
-                onClick={handleCopy}
+                onClick={() => step.code && copy(step.code.trim())}
                 className="flex cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 text-xs text-stone-600 transition-colors hover:bg-stone-300 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-600 dark:hover:text-stone-200"
                 aria-label="Copy code"
               >

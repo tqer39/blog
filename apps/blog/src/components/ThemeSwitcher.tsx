@@ -1,6 +1,6 @@
 'use client';
 
-import { Popover, PopoverContent, PopoverTrigger } from '@blog/ui';
+import { Popover, PopoverContent, PopoverTrigger, useMounted } from '@blog/ui';
 import { cn } from '@blog/utils';
 import {
   Check,
@@ -12,7 +12,7 @@ import {
   Sun,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const themes = [
   'light',
@@ -66,12 +66,8 @@ const themeConfig: Record<
 
 export function ThemeSwitcher() {
   const { theme, setTheme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   if (!mounted) {
     return (

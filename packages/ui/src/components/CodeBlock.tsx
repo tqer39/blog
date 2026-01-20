@@ -3,27 +3,15 @@
 import { Check, Copy, Maximize2 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
-import { useCallback, useEffect, useState } from 'react';
-import {
-  SiCss3,
-  SiDocker,
-  SiGnubash,
-  SiGo,
-  SiHtml5,
-  SiJavascript,
-  SiJson,
-  SiMarkdown,
-  SiPython,
-  SiRust,
-  SiTerraform,
-  SiTypescript,
-  SiYaml,
-} from 'react-icons/si';
+import { useEffect, useState } from 'react';
 import {
   type BundledLanguage,
   createHighlighter,
   type Highlighter,
 } from 'shiki';
+import { useCopyToClipboard } from '../hooks/use-copy-to-clipboard';
+import { useMounted } from '../hooks/use-mounted';
+import { LANGUAGE_ICONS } from '../lib/language-icons';
 
 import { BlockSkeleton } from './BlockSkeleton';
 import { FullscreenModal } from './FullscreenModal';
@@ -109,30 +97,6 @@ const SUPPORTED_LANGUAGES: BundledLanguage[] = [
   'cpp',
 ];
 
-const languageIcons: Record<
-  string,
-  React.ComponentType<{ className?: string }>
-> = {
-  typescript: SiTypescript,
-  tsx: SiTypescript,
-  javascript: SiJavascript,
-  jsx: SiJavascript,
-  python: SiPython,
-  go: SiGo,
-  rust: SiRust,
-  html: SiHtml5,
-  css: SiCss3,
-  json: SiJson,
-  yaml: SiYaml,
-  markdown: SiMarkdown,
-  bash: SiGnubash,
-  shellscript: SiGnubash,
-  terraform: SiTerraform,
-  hcl: SiTerraform,
-  dockerfile: SiDocker,
-  docker: SiDocker,
-};
-
 let highlighterPromise: Promise<Highlighter> | null = null;
 
 function getHighlighter(): Promise<Highlighter> {
@@ -147,31 +111,17 @@ function getHighlighter(): Promise<Highlighter> {
 
 export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
+  const { isCopied, copy } = useCopyToClipboard();
   const [highlightedHtml, setHighlightedHtml] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
-  const [isCopied, setIsCopied] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const match = /language-(\w+)(:?.+)?/.exec(className || '');
   const lang = match?.[1] || '';
   const filename = match?.[2]?.slice(1) || '';
 
   const code = String(children).replace(/\n$/, '');
-
-  const handleCopy = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
-    } catch (error) {
-      console.error('Failed to copy code:', error);
-    }
-  }, [code]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -312,7 +262,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const htmlWithLineNumbers = addLineNumbers(highlightedHtml);
 
   const headerLabel = filename || lang;
-  const LangIcon = languageIcons[lang];
+  const LangIcon = LANGUAGE_ICONS[lang];
 
   const codeContent = (
     <div
@@ -332,7 +282,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
           <div className="flex items-center gap-1">
             <button
               type="button"
-              onClick={handleCopy}
+              onClick={() => copy(code)}
               className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Copy code"
             >
@@ -372,7 +322,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
         headerActions={
           <button
             type="button"
-            onClick={handleCopy}
+            onClick={() => copy(code)}
             className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
             aria-label="Copy code"
           >

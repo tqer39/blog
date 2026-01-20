@@ -4,6 +4,8 @@ import { Check, Copy, Download, Image, Maximize2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { SiMermaid } from 'react-icons/si';
+import { useCopyToClipboard } from '../hooks/use-copy-to-clipboard';
+import { useMounted } from '../hooks/use-mounted';
 import { FullscreenModal } from './FullscreenModal';
 import { Skeleton } from './ui/skeleton';
 
@@ -56,23 +58,13 @@ function loadMermaid(): Promise<void> {
 
 export function MermaidClient({ chart }: MermaidClientProps) {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
+  const { isCopied: copied, copy } = useCopyToClipboard();
   const [svg, setSvg] = useState<string>('');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [copied, setCopied] = useState(false);
   const instanceId = useRef(Math.random().toString(36).substring(2, 9));
   const renderCountRef = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const handleCopyCode = useCallback(async () => {
-    await navigator.clipboard.writeText(chart);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }, [chart]);
 
   const handleDownloadSvg = useCallback(() => {
     const blob = new Blob([svg], { type: 'image/svg+xml' });
@@ -275,7 +267,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
             </button>
             <button
               type="button"
-              onClick={handleCopyCode}
+              onClick={() => copy(chart)}
               className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Copy code"
             >
@@ -336,7 +328,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
             </button>
             <button
               type="button"
-              onClick={handleCopyCode}
+              onClick={() => copy(chart)}
               className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Copy code"
             >
