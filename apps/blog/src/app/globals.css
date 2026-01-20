@@ -273,6 +273,10 @@ pre.shiki {
   color: inherit;
   vertical-align: baseline;
   position: relative;
+}
+
+.prose .anchor-copy svg {
+  position: relative;
   top: 0.1em;
 }
 
@@ -291,6 +295,8 @@ pre.shiki {
   color: var(--color-primary);
   position: relative;
   top: -0.15em;
+  display: inline-block;
+  line-height: normal;
 }
 
 .prose :is(h1, h2, h3, h4, h5, h6):hover .anchor-link {
