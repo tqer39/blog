@@ -1076,6 +1076,13 @@ html.autumn .model-viewer-bg {
   color: #e7e5e4 !important; /* stone-200 */
 }
 
+/* Force header buttons to use a consistent hover color regardless of theme
+   This overrides the hover:bg-accent utility class used in the button components */
+.component-header button:hover {
+  background-color: #78716c !important; /* stone-500: slightly lighter than stone-600 header */
+  color: #fafaf9 !important; /* stone-50: almost white */
+}
+
 .recharts-legend-item {
   display: inline-flex !important;
   align-items: center !important;

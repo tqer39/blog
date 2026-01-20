@@ -197,7 +197,7 @@ export function FileTree({
             <button
               type="button"
               onClick={handleCopy}
-              className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              className="flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Copy tree"
             >
               {isCopied ? (
@@ -215,7 +215,7 @@ export function FileTree({
             <button
               type="button"
               onClick={() => setShowFullscreen(true)}
-              className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              className="flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Fullscreen"
             >
               <Maximize2 className="h-4 w-4" />
@@ -248,7 +248,7 @@ export function FileTree({
           <button
             type="button"
             onClick={handleCopy}
-            className="flex cursor-pointer items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+            className="flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
             aria-label="Copy tree"
           >
             {isCopied ? (
