@@ -1,12 +1,8 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { updateCategoriesOrder } from '@/lib/api/server';
-import { requireAuthWithCsrf } from '@/lib/auth';
+import { withCsrfAuthSimple } from '@/lib/api/with-auth';
 
-export async function PATCH(request: NextRequest) {
-  const csrfToken = request.headers.get('X-CSRF-Token');
-  const authError = await requireAuthWithCsrf(csrfToken);
-  if (authError) return authError;
-
+export const PATCH = withCsrfAuthSimple(async (request) => {
   try {
     const { orderedIds } = await request.json();
     await updateCategoriesOrder(orderedIds);
@@ -16,4 +12,4 @@ export async function PATCH(request: NextRequest) {
       error instanceof Error ? error.message : 'Failed to reorder categories';
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
+});

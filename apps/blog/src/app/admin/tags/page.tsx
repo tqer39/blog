@@ -12,39 +12,29 @@ import {
   Trash2,
   X,
 } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { deleteTag, getTags } from '@/lib/api/client';
+import { useListPage } from '../hooks/use-list-page';
+import { useSorting } from '../hooks/use-sorting';
 import { TagEditor } from './components/TagEditor';
 
 type TagSortKey = 'name' | 'articleCount' | 'createdAt';
-type SortDirection = 'asc' | 'desc';
 
 export default function TagListPage() {
-  const [tags, setTags] = useState<TagWithCount[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    items: tags,
+    loading,
+    error,
+    reload: loadTags,
+  } = useListPage(getTags, 'tags');
+  const { sortKey, sortDirection, handleSort } = useSorting<TagSortKey>(
+    'createdAt',
+    'desc'
+  );
+
   const [editingTag, setEditingTag] = useState<TagWithCount | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortKey, setSortKey] = useState<TagSortKey>('createdAt');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-
-  const loadTags = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await getTags();
-      setTags(response.tags);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load tags');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadTags();
-  }, [loadTags]);
 
   async function handleDelete(tag: TagWithCount) {
     const message =
@@ -66,15 +56,6 @@ export default function TagListPage() {
     setEditingTag(null);
     setIsCreating(false);
     loadTags();
-  }
-
-  function handleSort(key: TagSortKey) {
-    if (sortKey === key) {
-      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortKey(key);
-      setSortDirection('asc');
-    }
   }
 
   const sortedTags = useMemo(() => {

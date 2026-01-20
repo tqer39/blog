@@ -1,6 +1,14 @@
 'use client';
 
 import type { Article } from '@blog/cms-types';
+import {
+  Alert,
+  AlertDescription,
+  Button,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from '@blog/ui';
 import dayjs from 'dayjs';
 import {
   ArrowDown,
@@ -16,24 +24,15 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-
-type ArticleSortKey = 'title' | 'status' | 'date';
-type SortDirection = 'asc' | 'desc';
-
-import {
-  Alert,
-  AlertDescription,
-  Button,
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from '@blog/ui';
 import {
   deleteArticle,
   getArticles,
   publishArticle,
   unpublishArticle,
 } from '@/lib/api/client';
+import { useSorting } from '../hooks/use-sorting';
+
+type ArticleSortKey = 'title' | 'status' | 'date';
 
 export default function ArticleListPage() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -41,8 +40,10 @@ export default function ArticleListPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortKey, setSortKey] = useState<ArticleSortKey>('date');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const { sortKey, sortDirection, handleSort } = useSorting<ArticleSortKey>(
+    'date',
+    'desc'
+  );
 
   const loadArticles = useCallback(async () => {
     try {
@@ -83,15 +84,6 @@ export default function ArticleListPage() {
       await loadArticles();
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to delete article');
-    }
-  }
-
-  function handleSort(key: ArticleSortKey) {
-    if (sortKey === key) {
-      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortKey(key);
-      setSortDirection('asc');
     }
   }
 

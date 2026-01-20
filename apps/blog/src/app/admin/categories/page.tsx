@@ -37,10 +37,10 @@ import {
   getCategories,
   updateCategoriesOrder,
 } from '@/lib/api/client';
+import { useSorting } from '../hooks/use-sorting';
 import { CategoryEditor } from './components/CategoryEditor';
 
 type CategorySortKey = 'name' | 'articleCount' | 'displayOrder' | 'createdAt';
-type SortDirection = 'asc' | 'desc';
 
 interface SortableCategoryRowProps {
   category: CategoryWithCount;
@@ -161,8 +161,10 @@ export default function CategoryListPage() {
     useState<CategoryWithCount | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortKey, setSortKey] = useState<CategorySortKey>('displayOrder');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const { sortKey, sortDirection, handleSort } = useSorting<CategorySortKey>(
+    'displayOrder',
+    'asc'
+  );
   const [isSavingOrder, setIsSavingOrder] = useState(false);
 
   const sensors = useSensors(
@@ -214,15 +216,6 @@ export default function CategoryListPage() {
     setEditingCategory(null);
     setIsCreating(false);
     loadCategories();
-  }
-
-  function handleSort(key: CategorySortKey) {
-    if (sortKey === key) {
-      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortKey(key);
-      setSortDirection('asc');
-    }
   }
 
   async function handleDragEnd(event: DragEndEvent) {

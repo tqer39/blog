@@ -1,15 +1,8 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { deleteArticle, getArticle, updateArticle } from '@/lib/api/server';
-import { requireAuth, requireAuthWithCsrf } from '@/lib/auth';
+import { withAuth, withCsrfAuth } from '@/lib/api/with-auth';
 
-interface RouteContext {
-  params: Promise<{ hash: string }>;
-}
-
-export async function GET(_request: NextRequest, context: RouteContext) {
-  const authError = await requireAuth();
-  if (authError) return authError;
-
+export const GET = withAuth(async (_request, context) => {
   try {
     const { hash } = await context.params;
     const result = await getArticle(hash);
@@ -19,13 +12,9 @@ export async function GET(_request: NextRequest, context: RouteContext) {
       error instanceof Error ? error.message : 'Failed to fetch article';
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
+});
 
-export async function PUT(request: NextRequest, context: RouteContext) {
-  const csrfToken = request.headers.get('X-CSRF-Token');
-  const authError = await requireAuthWithCsrf(csrfToken);
-  if (authError) return authError;
-
+export const PUT = withCsrfAuth(async (request, context) => {
   try {
     const { hash } = await context.params;
     const input = await request.json();
@@ -36,13 +25,9 @@ export async function PUT(request: NextRequest, context: RouteContext) {
       error instanceof Error ? error.message : 'Failed to update article';
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
+});
 
-export async function DELETE(request: NextRequest, context: RouteContext) {
-  const csrfToken = request.headers.get('X-CSRF-Token');
-  const authError = await requireAuthWithCsrf(csrfToken);
-  if (authError) return authError;
-
+export const DELETE = withCsrfAuth(async (_request, context) => {
   try {
     const { hash } = await context.params;
     await deleteArticle(hash);
@@ -52,4 +37,4 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
       error instanceof Error ? error.message : 'Failed to delete article';
     return NextResponse.json({ error: message }, { status: 500 });
   }
-}
+});
