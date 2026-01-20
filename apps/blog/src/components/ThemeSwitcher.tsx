@@ -65,7 +65,7 @@ const themeConfig: Record<
 };
 
 export function ThemeSwitcher() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -88,6 +88,11 @@ export function ThemeSwitcher() {
   const currentTheme = (theme as Theme) || "system";
   const CurrentIcon = themeConfig[currentTheme]?.icon || Monitor;
   const currentColor = themeConfig[currentTheme]?.color || "";
+
+  // Custom themes use specific accent colors dependent on transparency for hover states
+  const isCustomTheme = ["tokyonight", "nord-light", "autumn"].includes(
+    resolvedTheme || "",
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -119,7 +124,9 @@ export function ThemeSwitcher() {
                   "flex w-full cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm transition-colors",
                   isActive
                     ? "!bg-accent !text-accent-foreground"
-                    : "hover:!bg-accent/20 hover:text-foreground",
+                    : isCustomTheme
+                      ? "hover:!bg-accent/20 hover:text-foreground"
+                      : "hover:bg-accent hover:text-accent-foreground",
                 )}
               >
                 <div className="flex items-center gap-2">
