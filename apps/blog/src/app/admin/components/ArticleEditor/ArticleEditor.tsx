@@ -6,7 +6,6 @@ import type {
   ArticleInput,
   ImageModel,
   OpenAIModel,
-  ReviewArticleResponse,
 } from '@blog/cms-types';
 import {
   Alert,
@@ -26,7 +25,7 @@ import {
   X,
 } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 import { useAIModelSettings } from '@/hooks/useAIModelSettings';
 import {
   generateImage,
@@ -36,13 +35,14 @@ import {
   reviewArticle,
   uploadImage,
 } from '@/lib/api/client';
-import { AISettingsPopover } from './AISettingsPopover';
-import { ArticlePreview } from './ArticlePreview';
-import { CategorySelector } from './CategorySelector';
-import { MarkdownEditor } from './MarkdownEditor';
-import { ReviewPanel } from './ReviewPanel';
-import { SplitButton } from './SplitButton';
-import { TagSelector } from './TagSelector';
+import { AISettingsPopover } from '../AISettingsPopover';
+import { ArticlePreview } from '../ArticlePreview';
+import { CategorySelector } from '../CategorySelector';
+import { MarkdownEditor } from '../MarkdownEditor';
+import { ReviewPanel } from '../ReviewPanel';
+import { SplitButton } from '../SplitButton';
+import { TagSelector } from '../TagSelector';
+import { articleEditorReducer, createInitialState } from './reducer';
 
 /**
  * 記事作成・編集エディタのProps。
@@ -64,66 +64,38 @@ export function ArticleEditor({
   onSave,
   onCancel,
 }: ArticleEditorProps) {
-  const [title, setTitle] = useState(initialData?.title ?? '');
-  const [description, setDescription] = useState(
-    initialData?.description ?? ''
+  const initialState = useMemo(
+    () => createInitialState(initialData),
+    [initialData]
   );
-  const [content, setContent] = useState(initialData?.content ?? '');
-  const [tags, setTags] = useState<string[]>(initialData?.tags ?? []);
-  const [categoryId, setCategoryId] = useState<string | null>(
-    initialData?.categoryId ?? null
-  );
-  const [status, setStatus] = useState<'draft' | 'published'>(
-    initialData?.status ?? 'draft'
-  );
-  const [headerImageId, setHeaderImageId] = useState<string | null>(
-    initialData?.headerImageId ?? null
-  );
-  const [headerImageUrl, setHeaderImageUrl] = useState<string | null>(
-    initialData?.headerImageUrl ?? null
-  );
-  const [slideMode, setSlideMode] = useState(initialData?.slideMode ?? false);
-  const [slideDuration, setSlideDuration] = useState<number | null>(
-    initialData?.slideDuration ?? null
-  );
-  const [isUploadingHeader, setIsUploadingHeader] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isGeneratingMetadata, setIsGeneratingMetadata] = useState(false);
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
-  const [imagePrompt, setImagePrompt] = useState('');
-  const [showImagePrompt, setShowImagePrompt] = useState(false);
+  const [state, dispatch] = useReducer(articleEditorReducer, initialState);
   const {
     settings: aiSettings,
     updateSettings: updateAISettings,
     resetSettings: resetAISettings,
   } = useAIModelSettings();
-  const [useArticleContent, setUseArticleContent] = useState(true);
-  const [promptMode, setPromptMode] = useState<'append' | 'override'>('append');
-  const [error, setError] = useState<string | null>(null);
-  const [isReviewing, setIsReviewing] = useState(false);
-  const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const [reviewResult, setReviewResult] =
-    useState<ReviewArticleResponse | null>(initialData?.reviewResult ?? null);
-  const [reviewError, setReviewError] = useState<string | null>(null);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [isGeneratingOutline, setIsGeneratingOutline] = useState(false);
   const headerImageInputRef = useRef<HTMLInputElement>(null);
+
+  // Destructure state for easier access
+  const { article, loading, ui, imageGen, review } = state;
 
   // Reset save success indicator after 2 seconds
   useEffect(() => {
-    if (saveSuccess) {
+    if (ui.saveSuccess) {
       const timer = setTimeout(() => {
-        setSaveSuccess(false);
+        dispatch({ type: 'SET_SAVE_SUCCESS', payload: false });
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [saveSuccess]);
+  }, [ui.saveSuccess]);
 
-  const handleImageUpload = async (file: File): Promise<string> => {
-    const result = await uploadImage(file, initialData?.id);
-    return result.url;
-  };
+  const handleImageUpload = useCallback(
+    async (file: File): Promise<string> => {
+      const result = await uploadImage(file, initialData?.id);
+      return result.url;
+    },
+    [initialData?.id]
+  );
 
   const handleHeaderImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -131,19 +103,23 @@ export function ArticleEditor({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setIsUploadingHeader(true);
-    setError(null);
+    dispatch({ type: 'SET_UPLOADING_HEADER', payload: true });
+    dispatch({ type: 'CLEAR_ERROR' });
 
     try {
       const result = await uploadImage(file, initialData?.id);
-      setHeaderImageId(result.id);
-      setHeaderImageUrl(result.url);
+      dispatch({
+        type: 'SET_HEADER_IMAGE',
+        payload: { id: result.id, url: result.url },
+      });
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to upload header image'
-      );
+      dispatch({
+        type: 'SET_ERROR',
+        payload:
+          err instanceof Error ? err.message : 'Failed to upload header image',
+      });
     } finally {
-      setIsUploadingHeader(false);
+      dispatch({ type: 'SET_UPLOADING_HEADER', payload: false });
       if (headerImageInputRef.current) {
         headerImageInputRef.current.value = '';
       }
@@ -151,186 +127,210 @@ export function ArticleEditor({
   };
 
   const handleRemoveHeaderImage = () => {
-    setHeaderImageId(null);
-    setHeaderImageUrl(null);
+    dispatch({ type: 'SET_HEADER_IMAGE', payload: { id: null, url: null } });
   };
 
   const handleGenerateMetadata = async () => {
-    if (!title.trim() || !content.trim()) {
-      setError('Title and content are required to generate metadata');
+    if (!article.title.trim() || !article.content.trim()) {
+      dispatch({
+        type: 'SET_ERROR',
+        payload: 'Title and content are required to generate metadata',
+      });
       return;
     }
 
-    setIsGeneratingMetadata(true);
-    setError(null);
+    dispatch({ type: 'SET_GENERATING_METADATA', payload: true });
+    dispatch({ type: 'CLEAR_ERROR' });
 
     try {
-      // Get existing tags for context
       const tagsResponse = await getTags();
       const existingTags = tagsResponse.tags.map((t) => t.name);
 
       const result = await generateMetadata({
-        title: title.trim(),
-        content,
+        title: article.title.trim(),
+        content: article.content,
         existingTags,
         model: aiSettings.metadata,
       });
 
-      setDescription(result.description);
-      setTags(result.tags);
+      dispatch({
+        type: 'SET_METADATA',
+        payload: { description: result.description, tags: result.tags },
+      });
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to generate metadata'
-      );
+      dispatch({
+        type: 'SET_ERROR',
+        payload:
+          err instanceof Error ? err.message : 'Failed to generate metadata',
+      });
     } finally {
-      setIsGeneratingMetadata(false);
+      dispatch({ type: 'SET_GENERATING_METADATA', payload: false });
     }
   };
 
   const handleGenerateImage = async () => {
-    // Build prompt based on settings
     let finalPrompt = '';
 
-    if (useArticleContent) {
-      // Build prompt from article content (title + description + content)
+    if (imageGen.useArticleContent) {
       const parts: string[] = [];
-      if (title.trim()) parts.push(title.trim());
-      if (description.trim()) parts.push(description.trim());
-      if (content.trim()) {
-        // Extract first 500 chars of content for image context
-        const contentSummary = content.trim().slice(0, 500);
+      if (article.title.trim()) parts.push(article.title.trim());
+      if (article.description.trim()) parts.push(article.description.trim());
+      if (article.content.trim()) {
+        const contentSummary = article.content.trim().slice(0, 500);
         parts.push(contentSummary);
       }
       const articlePrompt = parts.join('. ');
 
-      if (!articlePrompt && !imagePrompt.trim()) {
-        setError(
-          'タイトル、説明文、本文のいずれか、またはカスタムプロンプトを入力してください'
-        );
+      if (!articlePrompt && !imageGen.imagePrompt.trim()) {
+        dispatch({
+          type: 'SET_ERROR',
+          payload:
+            'タイトル、説明文、本文のいずれか、またはカスタムプロンプトを入力してください',
+        });
         return;
       }
 
-      if (promptMode === 'override' && imagePrompt.trim()) {
-        finalPrompt = imagePrompt.trim();
-      } else if (imagePrompt.trim()) {
-        finalPrompt = `${articlePrompt}. ${imagePrompt.trim()}`;
+      if (imageGen.promptMode === 'override' && imageGen.imagePrompt.trim()) {
+        finalPrompt = imageGen.imagePrompt.trim();
+      } else if (imageGen.imagePrompt.trim()) {
+        finalPrompt = `${articlePrompt}. ${imageGen.imagePrompt.trim()}`;
       } else {
         finalPrompt = articlePrompt;
       }
     } else {
-      if (!imagePrompt.trim()) {
-        setError('カスタムプロンプトを入力してください');
+      if (!imageGen.imagePrompt.trim()) {
+        dispatch({
+          type: 'SET_ERROR',
+          payload: 'カスタムプロンプトを入力してください',
+        });
         return;
       }
-      finalPrompt = imagePrompt.trim();
+      finalPrompt = imageGen.imagePrompt.trim();
     }
 
-    setIsGeneratingImage(true);
-    setError(null);
+    dispatch({ type: 'SET_GENERATING_IMAGE', payload: true });
+    dispatch({ type: 'CLEAR_ERROR' });
 
     try {
       const result = await generateImage({
         prompt: finalPrompt,
-        title: title.trim() || undefined,
+        title: article.title.trim() || undefined,
         model: aiSettings.image,
       });
 
-      setHeaderImageId(result.id);
-      setHeaderImageUrl(result.url);
-      setImagePrompt('');
+      dispatch({
+        type: 'SET_HEADER_IMAGE',
+        payload: { id: result.id, url: result.url },
+      });
+      dispatch({ type: 'RESET_IMAGE_GEN' });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate image');
+      dispatch({
+        type: 'SET_ERROR',
+        payload:
+          err instanceof Error ? err.message : 'Failed to generate image',
+      });
     } finally {
-      setIsGeneratingImage(false);
+      dispatch({ type: 'SET_GENERATING_IMAGE', payload: false });
     }
   };
 
   const handleReviewArticle = async () => {
-    if (!title.trim() || !content.trim()) {
-      setError('Title and content are required to review');
+    if (!article.title.trim() || !article.content.trim()) {
+      dispatch({
+        type: 'SET_ERROR',
+        payload: 'Title and content are required to review',
+      });
       return;
     }
 
-    setIsReviewing(true);
-    setReviewError(null);
-    setIsReviewOpen(true);
+    dispatch({ type: 'START_REVIEW' });
 
     try {
       const result = await reviewArticle({
-        title: title.trim(),
-        content,
+        title: article.title.trim(),
+        content: article.content,
         model: aiSettings.review,
         articleHash: initialData?.hash,
       });
-      setReviewResult(result);
+      dispatch({ type: 'COMPLETE_REVIEW', payload: result });
     } catch (err) {
-      setReviewError(
-        err instanceof Error ? err.message : 'Failed to review article'
-      );
-    } finally {
-      setIsReviewing(false);
+      dispatch({
+        type: 'FAIL_REVIEW',
+        payload:
+          err instanceof Error ? err.message : 'Failed to review article',
+      });
     }
   };
 
   const handleGenerateOutline = async () => {
-    if (!title.trim()) {
-      setError('Title is required to generate outline');
+    if (!article.title.trim()) {
+      dispatch({
+        type: 'SET_ERROR',
+        payload: 'Title is required to generate outline',
+      });
       return;
     }
 
-    setIsGeneratingOutline(true);
-    setError(null);
+    dispatch({ type: 'SET_GENERATING_OUTLINE', payload: true });
+    dispatch({ type: 'CLEAR_ERROR' });
 
     try {
       const result = await generateOutline({
-        title: title.trim(),
+        title: article.title.trim(),
         model: aiSettings.outline,
       });
-      // Append outline to existing content or set as new content
-      if (content.trim()) {
-        setContent(`${content}\n\n${result.outline}`);
+      if (article.content.trim()) {
+        dispatch({
+          type: 'SET_CONTENT',
+          payload: `${article.content}\n\n${result.outline}`,
+        });
       } else {
-        setContent(result.outline);
+        dispatch({ type: 'SET_CONTENT', payload: result.outline });
       }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to generate outline'
-      );
+      dispatch({
+        type: 'SET_ERROR',
+        payload:
+          err instanceof Error ? err.message : 'Failed to generate outline',
+      });
     } finally {
-      setIsGeneratingOutline(false);
+      dispatch({ type: 'SET_GENERATING_OUTLINE', payload: false });
     }
   };
 
   const handleSave = async () => {
-    if (!title.trim()) {
-      setError('Title is required');
+    if (!article.title.trim()) {
+      dispatch({ type: 'SET_ERROR', payload: 'Title is required' });
       return;
     }
-    if (!content.trim()) {
-      setError('Content is required');
+    if (!article.content.trim()) {
+      dispatch({ type: 'SET_ERROR', payload: 'Content is required' });
       return;
     }
 
-    setIsSaving(true);
-    setError(null);
+    dispatch({ type: 'SET_SAVING', payload: true });
+    dispatch({ type: 'CLEAR_ERROR' });
 
     try {
       await onSave({
-        title: title.trim(),
-        description: description.trim() || undefined,
-        content,
-        tags,
-        categoryId,
-        status,
-        headerImageId,
-        slideMode,
-        slideDuration,
+        title: article.title.trim(),
+        description: article.description.trim() || undefined,
+        content: article.content,
+        tags: article.tags,
+        categoryId: article.categoryId,
+        status: article.status,
+        headerImageId: article.headerImageId,
+        slideMode: article.slideMode,
+        slideDuration: article.slideDuration,
       });
-      setSaveSuccess(true);
+      dispatch({ type: 'SET_SAVE_SUCCESS', payload: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save article');
+      dispatch({
+        type: 'SET_ERROR',
+        payload: err instanceof Error ? err.message : 'Failed to save article',
+      });
     } finally {
-      setIsSaving(false);
+      dispatch({ type: 'SET_SAVING', payload: false });
     }
   };
 
@@ -348,15 +348,13 @@ export function ArticleEditor({
             <button
               type="button"
               className={`inline-flex cursor-pointer items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors ${
-                status === 'published'
+                article.status === 'published'
                   ? 'bg-emerald-500/20 text-emerald-700 ring-1 ring-inset ring-emerald-500/40 hover:bg-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-400/30'
                   : 'bg-amber-500/20 text-amber-700 ring-1 ring-inset ring-amber-500/40 hover:bg-amber-500/30 dark:bg-amber-500/20 dark:text-amber-300 dark:ring-amber-400/30'
               }`}
-              onClick={() =>
-                setStatus(status === 'draft' ? 'published' : 'draft')
-              }
+              onClick={() => dispatch({ type: 'TOGGLE_STATUS' })}
             >
-              {status === 'published' ? 'Published' : 'Draft'}
+              {article.status === 'published' ? 'Published' : 'Draft'}
             </button>
           </div>
 
@@ -371,7 +369,11 @@ export function ArticleEditor({
           <div className="flex items-center gap-2">
             <SplitButton
               onClick={handleReviewArticle}
-              disabled={isReviewing || !title.trim() || !content.trim()}
+              disabled={
+                loading.isReviewing ||
+                !article.title.trim() ||
+                !article.content.trim()
+              }
               modelType="anthropic"
               modelValue={aiSettings.review}
               onModelChange={(v) =>
@@ -379,14 +381,16 @@ export function ArticleEditor({
               }
             >
               <MessageSquare className="h-4 w-4" />
-              {isReviewing ? 'Reviewing...' : 'AI Review'}
+              {loading.isReviewing ? 'Reviewing...' : 'AI Review'}
             </SplitButton>
-            {reviewResult && !isReviewing && (
+            {review.reviewResult && !loading.isReviewing && (
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => setIsReviewOpen(true)}
+                onClick={() =>
+                  dispatch({ type: 'SET_REVIEW_OPEN', payload: true })
+                }
                 className="gap-1.5 text-muted-foreground"
               >
                 前回の結果
@@ -399,7 +403,9 @@ export function ArticleEditor({
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => setIsPreviewOpen(true)}
+            onClick={() =>
+              dispatch({ type: 'SET_PREVIEW_OPEN', payload: true })
+            }
             className="gap-1.5"
           >
             <Eye className="h-4 w-4" />
@@ -414,16 +420,16 @@ export function ArticleEditor({
           <Button
             type="button"
             onClick={handleSave}
-            disabled={isSaving}
+            disabled={loading.isSaving}
             className={
-              saveSuccess
+              ui.saveSuccess
                 ? 'bg-green-600 hover:bg-green-600 transition-colors shadow-md'
                 : 'shadow-md hover:shadow-lg transition-shadow'
             }
           >
-            {isSaving ? (
+            {loading.isSaving ? (
               'Saving...'
-            ) : saveSuccess ? (
+            ) : ui.saveSuccess ? (
               <span className="flex items-center gap-1">
                 <Check className="h-4 w-4" />
                 Saved
@@ -436,9 +442,9 @@ export function ArticleEditor({
       </div>
 
       {/* Error message */}
-      {error && (
+      {ui.error && (
         <Alert variant="destructive">
-          <AlertDescription>{error}</AlertDescription>
+          <AlertDescription>{ui.error}</AlertDescription>
         </Alert>
       )}
 
@@ -450,9 +456,9 @@ export function ArticleEditor({
           <Input
             id="title"
             type="text"
-            value={title}
+            value={article.title}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setTitle(e.target.value)
+              dispatch({ type: 'SET_TITLE', payload: e.target.value })
             }
             placeholder="Article title"
             className="text-xl font-semibold"
@@ -466,7 +472,9 @@ export function ArticleEditor({
             <SplitButton
               onClick={handleGenerateMetadata}
               disabled={
-                isGeneratingMetadata || !title.trim() || !content.trim()
+                loading.isGeneratingMetadata ||
+                !article.title.trim() ||
+                !article.content.trim()
               }
               modelType="openai"
               modelValue={aiSettings.metadata}
@@ -475,7 +483,7 @@ export function ArticleEditor({
               }
             >
               <Sparkles className="h-4 w-4" />
-              {isGeneratingMetadata ? 'Generating...' : 'AI Generate'}
+              {loading.isGeneratingMetadata ? 'Generating...' : 'AI Generate'}
             </SplitButton>
           </div>
           <div className="space-y-2">
@@ -487,28 +495,39 @@ export function ArticleEditor({
             </Label>
             <Textarea
               id="description"
-              value={description}
+              value={article.description}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                setDescription(e.target.value)
+                dispatch({ type: 'SET_DESCRIPTION', payload: e.target.value })
               }
               placeholder="Brief description for SEO (100-160 characters)"
               rows={2}
             />
             <p className="text-xs text-muted-foreground">
-              {description.length} / 160 文字
+              {article.description.length} / 160 文字
             </p>
           </div>
-          <TagSelector value={tags} onChange={setTags} />
-          <CategorySelector value={categoryId} onChange={setCategoryId} />
+          <TagSelector
+            value={article.tags}
+            onChange={(tags) => dispatch({ type: 'SET_TAGS', payload: tags })}
+          />
+          <CategorySelector
+            value={article.categoryId}
+            onChange={(id) =>
+              dispatch({ type: 'SET_CATEGORY_ID', payload: id })
+            }
+          />
 
           {/* Slide Mode Toggle */}
           <div className="flex items-center gap-3">
             <label className="flex cursor-pointer items-center gap-2 text-sm">
               <input
                 type="checkbox"
-                checked={slideMode}
+                checked={article.slideMode}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setSlideMode(e.target.checked)
+                  dispatch({
+                    type: 'SET_SLIDE_MODE',
+                    payload: e.target.checked,
+                  })
                 }
                 className="h-4 w-4 rounded border-gray-300"
               />
@@ -520,7 +539,7 @@ export function ArticleEditor({
           </div>
 
           {/* Slide Timer Duration - only shown when slideMode is enabled */}
-          {slideMode && (
+          {article.slideMode && (
             <div className="mt-3 flex items-center gap-3">
               <Label
                 htmlFor="slideDuration"
@@ -534,10 +553,13 @@ export function ArticleEditor({
                 min={30}
                 max={3600}
                 step={30}
-                value={slideDuration ?? ''}
+                value={article.slideDuration ?? ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const value = e.target.value;
-                  setSlideDuration(value === '' ? null : Number(value));
+                  dispatch({
+                    type: 'SET_SLIDE_DURATION',
+                    payload: value === '' ? null : Number(value),
+                  });
                 }}
                 placeholder="180"
                 className="w-24"
@@ -555,10 +577,10 @@ export function ArticleEditor({
 
           {/* Preview Area (always visible) */}
           <div className="relative">
-            {headerImageUrl ? (
+            {article.headerImageUrl ? (
               <div className="relative inline-block">
                 <Image
-                  src={headerImageUrl}
+                  src={article.headerImageUrl}
                   alt="Header preview"
                   width={400}
                   height={200}
@@ -591,16 +613,16 @@ export function ArticleEditor({
               variant="outline"
               size="sm"
               onClick={() => headerImageInputRef.current?.click()}
-              disabled={isUploadingHeader}
+              disabled={loading.isUploadingHeader}
             >
               <ImageIcon className="mr-1.5 h-4 w-4" />
-              {isUploadingHeader ? 'Uploading...' : 'Upload'}
+              {loading.isUploadingHeader ? 'Uploading...' : 'Upload'}
             </Button>
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => setShowImagePrompt(!showImagePrompt)}
+              onClick={() => dispatch({ type: 'TOGGLE_IMAGE_PROMPT' })}
               className="gap-1.5"
             >
               <Sparkles className="h-4 w-4" />
@@ -609,15 +631,18 @@ export function ArticleEditor({
           </div>
 
           {/* AI Generate Options (collapsible) */}
-          {showImagePrompt && (
+          {ui.showImagePrompt && (
             <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
               {/* Use article content checkbox */}
               <label className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"
-                  checked={useArticleContent}
+                  checked={imageGen.useArticleContent}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setUseArticleContent(e.target.checked)
+                    dispatch({
+                      type: 'SET_USE_ARTICLE_CONTENT',
+                      payload: e.target.checked,
+                    })
                   }
                   className="h-4 w-4 rounded border-gray-300"
                 />
@@ -628,16 +653,19 @@ export function ArticleEditor({
               <div className="space-y-2">
                 <Label htmlFor="imagePrompt" className="text-sm">
                   カスタムプロンプト{' '}
-                  {useArticleContent ? '(オプション)' : '(必須)'}
+                  {imageGen.useArticleContent ? '(オプション)' : '(必須)'}
                 </Label>
                 <Textarea
                   id="imagePrompt"
-                  value={imagePrompt}
+                  value={imageGen.imagePrompt}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setImagePrompt(e.target.value)
+                    dispatch({
+                      type: 'SET_IMAGE_PROMPT',
+                      payload: e.target.value,
+                    })
                   }
                   placeholder={
-                    useArticleContent
+                    imageGen.useArticleContent
                       ? '追加の指示があれば入力...'
                       : '生成したい画像を説明してください...'
                   }
@@ -646,7 +674,7 @@ export function ArticleEditor({
               </div>
 
               {/* Prompt mode (only shown when article content is used and custom prompt exists) */}
-              {useArticleContent && imagePrompt.trim() && (
+              {imageGen.useArticleContent && imageGen.imagePrompt.trim() && (
                 <div className="flex items-center gap-4 text-sm">
                   <span className="text-muted-foreground">モード:</span>
                   <label className="flex items-center gap-1.5">
@@ -654,8 +682,13 @@ export function ArticleEditor({
                       type="radio"
                       name="promptMode"
                       value="append"
-                      checked={promptMode === 'append'}
-                      onChange={() => setPromptMode('append')}
+                      checked={imageGen.promptMode === 'append'}
+                      onChange={() =>
+                        dispatch({
+                          type: 'SET_PROMPT_MODE',
+                          payload: 'append',
+                        })
+                      }
                       className="h-4 w-4"
                     />
                     追加
@@ -665,8 +698,13 @@ export function ArticleEditor({
                       type="radio"
                       name="promptMode"
                       value="override"
-                      checked={promptMode === 'override'}
-                      onChange={() => setPromptMode('override')}
+                      checked={imageGen.promptMode === 'override'}
+                      onChange={() =>
+                        dispatch({
+                          type: 'SET_PROMPT_MODE',
+                          payload: 'override',
+                        })
+                      }
                       className="h-4 w-4"
                     />
                     上書き
@@ -679,13 +717,14 @@ export function ArticleEditor({
                 <SplitButton
                   onClick={handleGenerateImage}
                   disabled={
-                    isGeneratingImage ||
-                    (!useArticleContent && !imagePrompt.trim()) ||
-                    (useArticleContent &&
-                      !title.trim() &&
-                      !description.trim() &&
-                      !content.trim() &&
-                      !imagePrompt.trim())
+                    loading.isGeneratingImage ||
+                    (!imageGen.useArticleContent &&
+                      !imageGen.imagePrompt.trim()) ||
+                    (imageGen.useArticleContent &&
+                      !article.title.trim() &&
+                      !article.description.trim() &&
+                      !article.content.trim() &&
+                      !imageGen.imagePrompt.trim())
                   }
                   modelType="image"
                   modelValue={aiSettings.image}
@@ -694,7 +733,7 @@ export function ArticleEditor({
                   }
                 >
                   <Sparkles className="h-4 w-4" />
-                  {isGeneratingImage ? 'Generating...' : 'Generate'}
+                  {loading.isGeneratingImage ? 'Generating...' : 'Generate'}
                 </SplitButton>
               </div>
             </div>
@@ -716,7 +755,7 @@ export function ArticleEditor({
             <Label>Content</Label>
             <SplitButton
               onClick={() => handleGenerateOutline()}
-              disabled={isGeneratingOutline || !title.trim()}
+              disabled={loading.isGeneratingOutline || !article.title.trim()}
               modelType="anthropic"
               modelValue={aiSettings.outline}
               onModelChange={(v) =>
@@ -724,14 +763,16 @@ export function ArticleEditor({
               }
             >
               <ListTree className="h-4 w-4" />
-              {isGeneratingOutline ? 'Generating...' : 'AI Outline'}
+              {loading.isGeneratingOutline ? 'Generating...' : 'AI Outline'}
             </SplitButton>
           </div>
           <MarkdownEditor
-            value={content}
-            onChange={setContent}
+            value={article.content}
+            onChange={(value) =>
+              dispatch({ type: 'SET_CONTENT', payload: value })
+            }
             onImageUpload={handleImageUpload}
-            title={title}
+            title={article.title}
             aiSettings={aiSettings}
           />
         </div>
@@ -739,22 +780,22 @@ export function ArticleEditor({
 
       {/* Review Panel */}
       <ReviewPanel
-        isOpen={isReviewOpen}
-        onClose={() => setIsReviewOpen(false)}
-        review={reviewResult}
-        isLoading={isReviewing}
-        error={reviewError}
+        isOpen={ui.isReviewOpen}
+        onClose={() => dispatch({ type: 'SET_REVIEW_OPEN', payload: false })}
+        review={review.reviewResult}
+        isLoading={loading.isReviewing}
+        error={review.reviewError}
       />
       <ArticlePreview
-        isOpen={isPreviewOpen}
-        onClose={() => setIsPreviewOpen(false)}
-        title={title}
-        content={content}
-        tags={tags}
-        headerImageUrl={headerImageUrl}
+        isOpen={ui.isPreviewOpen}
+        onClose={() => dispatch({ type: 'SET_PREVIEW_OPEN', payload: false })}
+        title={article.title}
+        content={article.content}
+        tags={article.tags}
+        headerImageUrl={article.headerImageUrl}
         publishedAt={initialData?.publishedAt}
-        slideMode={slideMode}
-        slideDuration={slideDuration}
+        slideMode={article.slideMode}
+        slideDuration={article.slideDuration}
       />
     </div>
   );
