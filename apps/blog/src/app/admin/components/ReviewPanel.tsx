@@ -7,11 +7,11 @@ import {
   AlertTriangle,
   CheckCircle2,
   Info,
-  Loader2,
   X,
 } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { LoadingState } from './LoadingState';
 
 interface ReviewPanelProps {
   isOpen: boolean;
@@ -177,12 +177,7 @@ export function ReviewPanel({
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
-          {isLoading && (
-            <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-              <p className="mt-4 text-muted-foreground">レビュー中...</p>
-            </div>
-          )}
+          {isLoading && <LoadingState message="レビュー中..." size="lg" />}
 
           {error && (
             <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950">

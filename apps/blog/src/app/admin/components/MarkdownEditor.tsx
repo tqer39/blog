@@ -38,6 +38,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArticleContent } from '@/components/ArticleContent';
 import { suggestContinuation } from '@/lib/api/client';
 import { EmojiSuggester } from './EmojiSuggester';
+import { LoadingState } from './LoadingState';
 import { TextTransformPopover } from './TextTransformPopover';
 
 /**
@@ -492,11 +493,7 @@ export function MarkdownEditor({
                   </div>
                 </div>
                 <div className="max-h-80 overflow-y-auto p-2">
-                  {isSuggesting && (
-                    <div className="flex items-center justify-center py-8">
-                      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                    </div>
-                  )}
+                  {isSuggesting && <LoadingState />}
                   {suggestionError && (
                     <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
                       {suggestionError}
