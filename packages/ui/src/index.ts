@@ -32,4 +32,5 @@ export * from "./components/ui/tooltip";
 
 // Hooks
 export { useCopyToClipboard } from "./hooks/use-copy-to-clipboard";
+export { useEscapeKey } from "./hooks/use-escape-key";
 export { useMounted } from "./hooks/use-mounted";

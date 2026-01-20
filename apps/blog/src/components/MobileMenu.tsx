@@ -1,5 +1,6 @@
 'use client';
 
+import { useEscapeKey } from '@blog/ui';
 import { BookOpen, Menu, Rss, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
@@ -11,15 +12,7 @@ interface MobileMenuProps {
 
 export function MobileMenu({ isOpen, onToggle }: MobileMenuProps) {
   // Close menu on escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        onToggle();
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onToggle]);
+  useEscapeKey(onToggle, isOpen);
 
   // Prevent body scroll when menu is open
   useEffect(() => {

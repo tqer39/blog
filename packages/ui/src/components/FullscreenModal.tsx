@@ -2,8 +2,8 @@
 
 import { cn } from '@blog/utils';
 import { X } from 'lucide-react';
-import { useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useEscapeKey } from '../hooks';
 
 interface FullscreenModalProps {
   isOpen: boolean;
@@ -22,24 +22,7 @@ export function FullscreenModal({
   headerActions,
   headerClassName,
 }: FullscreenModalProps) {
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    },
-    [onClose]
-  );
-
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('keydown', handleKeyDown);
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, handleKeyDown]);
+  useEscapeKey(onClose, isOpen);
 
   if (!isOpen) return null;
 

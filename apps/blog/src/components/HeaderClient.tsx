@@ -1,5 +1,6 @@
 'use client';
 
+import { useEscapeKey } from '@blog/ui';
 import {
   BookOpen,
   LayoutDashboard,
@@ -10,7 +11,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { MobileMenu } from './MobileMenu';
 import { ThemeSwitcher } from './ThemeSwitcher';
 
@@ -35,29 +36,19 @@ export function HeaderClient({
     }
   }, [isSearchOpen]);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isSearchOpen) {
-        setIsSearchOpen(false);
-        setSearchQuery('');
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isSearchOpen]);
+  const handleCloseSearch = useCallback(() => {
+    setIsSearchOpen(false);
+    setSearchQuery('');
+  }, []);
+
+  useEscapeKey(handleCloseSearch, isSearchOpen);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/articles?q=${encodeURIComponent(searchQuery.trim())}`);
-      setIsSearchOpen(false);
-      setSearchQuery('');
+      handleCloseSearch();
     }
-  };
-
-  const handleClose = () => {
-    setIsSearchOpen(false);
-    setSearchQuery('');
   };
 
   const handleLogout = async () => {
@@ -96,7 +87,7 @@ export function HeaderClient({
             {isSearchOpen ? (
               <button
                 type="button"
-                onClick={handleClose}
+                onClick={handleCloseSearch}
                 className="cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 aria-label="検索を閉じる"
                 title="検索を閉じる"
