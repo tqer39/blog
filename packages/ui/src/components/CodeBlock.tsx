@@ -1,63 +1,60 @@
-'use client';
+"use client";
 
-import { Check, Copy, Maximize2 } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { Check, Copy, Maximize2 } from "lucide-react";
+import dynamic from "next/dynamic";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import {
   type BundledLanguage,
   createHighlighter,
   type Highlighter,
-} from 'shiki';
-import { useCopyToClipboard } from '../hooks/use-copy-to-clipboard';
-import { useMounted } from '../hooks/use-mounted';
-import { LANGUAGE_ICONS } from '../lib/language-icons';
+} from "shiki";
+import { useCopyToClipboard } from "../hooks/use-copy-to-clipboard";
+import { useMounted } from "../hooks/use-mounted";
+import { LANGUAGE_ICONS } from "../lib/language-icons";
 
-import { BlockSkeleton } from './BlockSkeleton';
-import { FullscreenModal } from './FullscreenModal';
-import { Mermaid } from './Mermaid';
+import { BlockSkeleton } from "./BlockSkeleton";
+import { FullscreenModal } from "./FullscreenModal";
+import { Mermaid } from "./Mermaid";
 
-const Chart = dynamic(() => import('./Chart').then((mod) => mod.Chart), {
+const Chart = dynamic(() => import("./Chart").then((mod) => mod.Chart), {
   loading: () => <BlockSkeleton filename="Chart" />,
 });
 const CodeDiff = dynamic(
-  () => import('./CodeDiff').then((mod) => mod.CodeDiff),
+  () => import("./CodeDiff").then((mod) => mod.CodeDiff),
   {
     loading: () => <BlockSkeleton filename="Code Diff" />,
-  }
+  },
 );
 const FileTree = dynamic(
-  () => import('./FileTree').then((mod) => mod.FileTree),
+  () => import("./FileTree").then((mod) => mod.FileTree),
   {
     loading: () => <BlockSkeleton filename="File Tree" />,
-  }
+  },
 );
 const ImageCarousel = dynamic(
-  () => import('./ImageCarousel').then((mod) => mod.ImageCarousel),
+  () => import("./ImageCarousel").then((mod) => mod.ImageCarousel),
   {
     loading: () => <BlockSkeleton filename="Image Carousel" />,
-  }
+  },
 );
 const ImageCompare = dynamic(
-  () => import('./ImageCompare').then((mod) => mod.ImageCompare),
+  () => import("./ImageCompare").then((mod) => mod.ImageCompare),
   {
     loading: () => <BlockSkeleton filename="Image Compare" />,
-  }
+  },
 );
 const ModelViewer = dynamic(
-  () => import('./ModelViewer').then((mod) => mod.ModelViewer),
+  () => import("./ModelViewer").then((mod) => mod.ModelViewer),
   {
     loading: () => <BlockSkeleton filename="3D Model" />,
-  }
+  },
 );
-const Steps = dynamic(() => import('./Steps').then((mod) => mod.Steps), {
-  loading: () => <BlockSkeleton filename="Steps" />,
-});
 const Terminal = dynamic(
-  () => import('./Terminal').then((mod) => mod.Terminal),
+  () => import("./Terminal").then((mod) => mod.Terminal),
   {
     loading: () => <BlockSkeleton filename="Terminal" />,
-  }
+  },
 );
 
 /**
@@ -77,24 +74,24 @@ interface CodeBlockProps {
 }
 
 const SUPPORTED_LANGUAGES: BundledLanguage[] = [
-  'typescript',
-  'javascript',
-  'tsx',
-  'jsx',
-  'python',
-  'bash',
-  'shellscript',
-  'json',
-  'yaml',
-  'markdown',
-  'html',
-  'css',
-  'sql',
-  'go',
-  'rust',
-  'java',
-  'c',
-  'cpp',
+  "typescript",
+  "javascript",
+  "tsx",
+  "jsx",
+  "python",
+  "bash",
+  "shellscript",
+  "json",
+  "yaml",
+  "markdown",
+  "html",
+  "css",
+  "sql",
+  "go",
+  "rust",
+  "java",
+  "c",
+  "cpp",
 ];
 
 let highlighterPromise: Promise<Highlighter> | null = null;
@@ -102,7 +99,7 @@ let highlighterPromise: Promise<Highlighter> | null = null;
 function getHighlighter(): Promise<Highlighter> {
   if (!highlighterPromise) {
     highlighterPromise = createHighlighter({
-      themes: ['github-light', 'github-dark'],
+      themes: ["github-light", "github-dark"],
       langs: SUPPORTED_LANGUAGES,
     });
   }
@@ -113,15 +110,15 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   const { resolvedTheme } = useTheme();
   const mounted = useMounted();
   const { isCopied, copy } = useCopyToClipboard();
-  const [highlightedHtml, setHighlightedHtml] = useState<string>('');
+  const [highlightedHtml, setHighlightedHtml] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const match = /language-(\w+)(:?.+)?/.exec(className || '');
-  const lang = match?.[1] || '';
-  const filename = match?.[2]?.slice(1) || '';
+  const match = /language-(\w+)(:?.+)?/.exec(className || "");
+  const lang = match?.[1] || "";
+  const filename = match?.[2]?.slice(1) || "";
 
-  const code = String(children).replace(/\n$/, '');
+  const code = String(children).replace(/\n$/, "");
 
   useEffect(() => {
     if (!mounted) return;
@@ -140,18 +137,18 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
 
         const language = SUPPORTED_LANGUAGES.includes(lang as BundledLanguage)
           ? (lang as BundledLanguage)
-          : 'typescript'; // fallback to typescript for unknown languages
+          : "typescript"; // fallback to typescript for unknown languages
         const isDarkTheme =
-          resolvedTheme === 'dark' || resolvedTheme === 'tokyonight';
-        const theme = isDarkTheme ? 'github-dark' : 'github-light';
+          resolvedTheme === "dark" || resolvedTheme === "tokyonight";
+        const theme = isDarkTheme ? "github-dark" : "github-light";
 
         console.log(
-          '[CodeBlock] resolvedTheme:',
+          "[CodeBlock] resolvedTheme:",
           resolvedTheme,
-          'isDarkTheme:',
+          "isDarkTheme:",
           isDarkTheme,
-          'theme:',
-          theme
+          "theme:",
+          theme,
         );
 
         const html = highlighter.codeToHtml(code, {
@@ -164,7 +161,7 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
           setIsLoading(false);
         }
       } catch (error) {
-        console.error('Failed to highlight code:', error);
+        console.error("Failed to highlight code:", error);
         if (!cancelled) {
           setIsLoading(false);
         }
@@ -188,53 +185,48 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
   }
 
   // Mermaid diagrams
-  if (lang === 'mermaid') {
+  if (lang === "mermaid") {
     return <Mermaid chart={code} />;
   }
 
   // Image carousel
-  if (lang === 'carousel') {
+  if (lang === "carousel") {
     return <ImageCarousel content={code} />;
   }
 
   // Image comparison (Before/After)
-  if (lang === 'compare') {
+  if (lang === "compare") {
     return <ImageCompare content={code} />;
   }
 
   // Interactive chart
-  if (lang === 'chart') {
+  if (lang === "chart") {
     return <Chart content={code} />;
   }
 
   // Terminal with typing animation
-  if (lang === 'terminal') {
+  if (lang === "terminal") {
     return <Terminal content={code} />;
   }
 
   // 3D Model viewer
-  if (lang === 'model') {
+  if (lang === "model") {
     return <ModelViewer content={code} />;
   }
 
   // Code diff
-  if (lang === 'diff') {
+  if (lang === "diff") {
     return <CodeDiff content={code} />;
   }
 
   // File tree
-  if (lang === 'tree') {
+  if (lang === "tree") {
     return <FileTree content={code} />;
-  }
-
-  // Steps/Wizard
-  if (lang === 'steps') {
-    return <Steps content={code} />;
   }
 
   // Loading state - skeleton with line-like patterns
   if (isLoading) {
-    const lineCount = Math.min(code.split('\n').length, 8);
+    const lineCount = Math.min(code.split("\n").length, 8);
     return <BlockSkeleton filename={filename} lineCount={lineCount} />;
   }
 
@@ -244,18 +236,18 @@ export function CodeBlock({ children, className, inline }: CodeBlockProps) {
     return html.replace(
       /<code([^>]*)>([\s\S]*?)<\/code>/,
       (_, attrs, content) => {
-        const lines = content.split('\n');
+        const lines = content.split("\n");
         const wrappedLines = lines
           .map((line: string, i: number) => {
             // Don't add line number to empty last line
-            if (i === lines.length - 1 && line === '') return '';
+            if (i === lines.length - 1 && line === "") return "";
             const lineNum = i + 1;
             return `<span class="line"><span class="line-number">${lineNum}</span><span class="line-content">${line}</span></span>`;
           })
           .filter(Boolean)
-          .join('\n');
+          .join("\n");
         return `<code${attrs}>${wrappedLines}</code>`;
-      }
+      },
     );
   };
 
