@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { cn } from '@blog/utils';
-import { Center, OrbitControls, Stage, useGLTF } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
-import { Box, Maximize2 } from 'lucide-react';
-import { Suspense, useMemo, useState } from 'react';
-import YAML from 'yaml';
+import { cn } from "@blog/utils";
+import { Center, OrbitControls, Stage, useGLTF } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { Box, Maximize2 } from "lucide-react";
+import { Suspense, useMemo, useState } from "react";
+import YAML from "yaml";
 
-import { FullscreenModal } from './FullscreenModal';
+import { FullscreenModal } from "./FullscreenModal";
 
 interface ModelViewerProps {
   content: string;
@@ -89,8 +89,8 @@ scale: 1`}
     return (
       <div
         className={cn(
-          'my-4 h-[400px] rounded-lg bg-stone-100 dark:bg-stone-800',
-          className
+          "my-4 h-[400px] rounded-lg bg-stone-100 dark:bg-stone-800",
+          className,
         )}
       >
         <ErrorMessage message={error} />
@@ -99,13 +99,19 @@ scale: 1`}
   }
 
   return (
-    <div className={cn('my-4', className)}>
-      <div className="component-header flex items-center justify-between rounded-t-lg px-4 py-2 text-sm">
-        <div className="flex items-center gap-2">
-          <Box className="h-4 w-4" />
-          <span>3D Model</span>
-        </div>
-        {!isFullscreen && (
+    <div
+      className={cn(
+        "group relative my-2 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]",
+        isFullscreen && "my-0 h-full rounded-none ring-0",
+        className,
+      )}
+    >
+      {!isFullscreen && (
+        <div className="component-header flex items-center justify-between px-4 py-2 text-sm">
+          <div className="flex items-center gap-2">
+            <Box className="h-4 w-4" />
+            <span>3D Model</span>
+          </div>
           <button
             type="button"
             onClick={() => setShowFullscreen(true)}
@@ -114,17 +120,17 @@ scale: 1`}
           >
             <Maximize2 className="h-4 w-4" />
           </button>
-        )}
-      </div>
+        </div>
+      )}
       <div
         className={cn(
-          'model-viewer-bg relative overflow-hidden rounded-b-lg',
-          isFullscreen ? 'h-full' : 'h-[400px]'
+          "model-viewer-bg relative overflow-hidden",
+          isFullscreen ? "h-full" : "h-[400px]",
         )}
       >
         <Canvas
           camera={{ position: [0, 0, 5], fov: 50 }}
-          onError={() => setError('Canvas initialization failed')}
+          onError={() => setError("Canvas initialization failed")}
         >
           <Suspense fallback={null}>
             <Stage environment="city" intensity={0.5} adjustCamera={false}>
@@ -144,19 +150,27 @@ scale: 1`}
 
       {/* Controls hint */}
       {!isFullscreen && (
-        <p className="mt-2 text-center text-xs text-stone-500 dark:text-stone-400">
-          ドラッグで回転 • スクロールでズーム
-        </p>
+        <div className="absolute bottom-2 left-0 right-0 pointer-events-none text-center">
+          <span className="inline-block rounded-full bg-white/80 px-3 py-1 text-xs text-stone-500 backdrop-blur-sm dark:bg-black/50 dark:text-stone-300">
+            ドラッグで回転 • スクロールでズーム
+          </span>
+        </div>
       )}
       <FullscreenModal
         isOpen={showFullscreen}
         onClose={() => setShowFullscreen(false)}
-        title="3D Model"
+        title={
+          <div className="flex items-center gap-2">
+            <Box className="h-4 w-4" />
+            <span>3D Model</span>
+          </div>
+        }
+        headerClassName="component-header rounded-none border-b-0"
       >
         <ModelViewer
           content={content}
           isFullscreen={true}
-          className="h-full border-none"
+          className="h-full border-none ring-0"
         />
       </FullscreenModal>
     </div>

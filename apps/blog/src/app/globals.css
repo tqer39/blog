@@ -894,23 +894,26 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):hover {
 /* Model Viewer Theme Backgrounds */
 .model-viewer-bg {
   background-color: #ffffff;
-  background-image: none;
+  background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 .dark .model-viewer-bg {
-  background-color: #292524;
-  background-image: linear-gradient(
-    to bottom,
-    #292524,
-    #1c1917
-  ); /* stone-800 to stone-900 */
+  background-color: #0d1117; /* GitHub Dark background */
+  background-image: radial-gradient(#30363d 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.tokyonight .model-viewer-bg {
+  background-color: #1a1b26;
+  background-image: radial-gradient(#2f334d 1px, transparent 1px);
 }
 
 /* Nord Light overrides */
 .nord-light .model-viewer-bg,
 html.nord-light .model-viewer-bg {
-  background-color: #ffffff !important;
-  background-image: none !important;
+  background-color: #eceff4 !important;
+  background-image: radial-gradient(#d8dee9 1px, transparent 1px) !important;
 }
 
 /* ===== Autumn Theme Specific Styles ===== */
