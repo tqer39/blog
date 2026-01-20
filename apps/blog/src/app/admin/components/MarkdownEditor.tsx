@@ -32,21 +32,32 @@ import {
   Loader2,
   Maximize2,
   Pencil,
-  Sparkles,
   Wand2,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArticleContent } from '@/components/ArticleContent';
 import { suggestContinuation } from '@/lib/api/client';
+import { AlertBox } from './AlertBox';
 import { EmojiSuggester } from './EmojiSuggester';
-import { InlineCompletion } from './InlineCompletion';
+import { LoadingState } from './LoadingState';
 import { TextTransformPopover } from './TextTransformPopover';
 
+/**
+ * マークダウンエディタのProps。
+ *
+ * 分割ビュー、ツールバー、画像ペースト/D&D、AI続き生成、
+ * テキスト変換、絵文字サジェスト、フルスクリーン対応。
+ */
 interface MarkdownEditorProps {
+  /** マークダウンコンテンツ (controlled) */
   value: string;
+  /** コンテンツ変更時のコールバック */
   onChange: (value: string) => void;
+  /** 画像アップロードハンドラ。URLを返す */
   onImageUpload: (file: File) => Promise<string>;
+  /** AI続き生成のコンテキスト用タイトル */
   title?: string;
+  /** AI機能のモデル設定 */
   aiSettings?: AIModelSettings;
 }
 
@@ -78,9 +89,6 @@ export function MarkdownEditor({
   const [isSuggestionOpen, setIsSuggestionOpen] = useState(false);
   const [selectedLength, setSelectedLength] =
     useState<ContinuationLength>('medium');
-
-  // Inline completion state
-  const [inlineCompletionEnabled, setInlineCompletionEnabled] = useState(false);
 
   const insertTextAtCursor = useCallback(
     (text: string) => {
@@ -486,16 +494,8 @@ export function MarkdownEditor({
                   </div>
                 </div>
                 <div className="max-h-80 overflow-y-auto p-2">
-                  {isSuggesting && (
-                    <div className="flex items-center justify-center py-8">
-                      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                    </div>
-                  )}
-                  {suggestionError && (
-                    <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
-                      {suggestionError}
-                    </div>
-                  )}
+                  {isSuggesting && <LoadingState />}
+                  {suggestionError && <AlertBox>{suggestionError}</AlertBox>}
                   {!isSuggesting && suggestions.length > 0 && (
                     <div className="space-y-2">
                       {suggestions.map((suggestion, index) => (
@@ -529,32 +529,6 @@ export function MarkdownEditor({
                 </div>
               </PopoverContent>
             </Popover>
-
-            {/* Inline Completion Toggle */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant={inlineCompletionEnabled ? 'default' : 'ghost'}
-                  size="sm"
-                  className={`h-8 w-8 p-0 ${
-                    inlineCompletionEnabled
-                      ? 'bg-violet-600 hover:bg-violet-700 text-white'
-                      : ''
-                  }`}
-                  onClick={() =>
-                    setInlineCompletionEnabled(!inlineCompletionEnabled)
-                  }
-                  disabled={!title?.trim()}
-                >
-                  <Sparkles className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {inlineCompletionEnabled
-                  ? 'インライン補完 ON'
-                  : 'インライン補完 OFF'}
-              </TooltipContent>
-            </Tooltip>
           </div>
 
           <div className="flex items-center gap-2">
@@ -670,16 +644,6 @@ export function MarkdownEditor({
         value={value}
         onChange={onChange}
         model={aiSettings?.transform}
-      />
-
-      {/* Inline Completion */}
-      <InlineCompletion
-        textareaRef={textareaRef}
-        value={value}
-        onChange={onChange}
-        title={title}
-        enabled={inlineCompletionEnabled}
-        model={aiSettings?.continuation}
       />
 
       {/* Fullscreen Modal */}

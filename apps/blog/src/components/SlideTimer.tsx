@@ -192,7 +192,7 @@ export function SlideTimer({
         type="button"
         onClick={togglePause}
         disabled={isFinished}
-        className="p-1.5 rounded-md text-stone-500 hover:text-stone-700 hover:bg-stone-200 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="cursor-pointer p-1.5 rounded-md text-stone-500 hover:text-stone-700 hover:bg-stone-200 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         aria-label={isPaused ? 'Resume timer' : 'Pause timer'}
       >
         {isPaused ? (

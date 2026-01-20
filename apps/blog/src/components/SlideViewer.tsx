@@ -27,18 +27,34 @@ function splitIntoSlides(content: string): string[] {
   const slides: string[] = [];
   let currentSlide: string[] = [];
   let inCodeBlock = false;
-  let codeBlockDelimiter = '';
+  let codeBlockFenceLength = 0;
+  let codeBlockChar = '';
 
   for (const line of lines) {
     // Check for code fence start/end (``` or ~~~)
-    const fenceMatch = line.match(/^(`{3,}|~{3,})/);
+    // Must be at the start of a line with only fence chars (for closing) or fence + info (for opening)
+    const fenceMatch = line.match(/^(`{3,}|~{3,})(\S*)(\s*)$/);
+
     if (fenceMatch) {
+      const fenceStr = fenceMatch[1];
+      const fenceChar = fenceStr[0];
+      const fenceLength = fenceStr.length;
+      const hasInfo = fenceMatch[2].length > 0; // e.g., "carousel", "typescript"
+
       if (!inCodeBlock) {
+        // Opening a code block (may have language info like ```carousel)
         inCodeBlock = true;
-        codeBlockDelimiter = fenceMatch[1][0]; // ` or ~
-      } else if (line.startsWith(codeBlockDelimiter.repeat(3))) {
+        codeBlockChar = fenceChar;
+        codeBlockFenceLength = fenceLength;
+      } else if (
+        fenceChar === codeBlockChar &&
+        fenceLength >= codeBlockFenceLength &&
+        !hasInfo // Closing fence must not have info string
+      ) {
+        // Valid closing fence
         inCodeBlock = false;
-        codeBlockDelimiter = '';
+        codeBlockChar = '';
+        codeBlockFenceLength = 0;
       }
     }
 
@@ -80,6 +96,18 @@ export function SlideViewer({
     if (isOpen) {
       setCurrentSlide(0);
     }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (isOpen) {
+      document.body.dataset.slideMode = 'true';
+    } else {
+      delete document.body.dataset.slideMode;
+    }
+    return () => {
+      delete document.body.dataset.slideMode;
+    };
   }, [isOpen]);
 
   const goNext = useCallback(() => {
@@ -183,7 +211,7 @@ export function SlideViewer({
             type="button"
             onClick={goPrev}
             disabled={currentSlide === 0}
-            className="flex items-center gap-1 rounded-lg px-3 py-2 text-stone-600 transition-colors hover:bg-stone-100 disabled:opacity-30 disabled:hover:bg-transparent dark:text-stone-400 dark:hover:bg-stone-800"
+            className="cursor-pointer flex items-center gap-1 rounded-lg px-3 py-2 text-stone-600 transition-colors hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent dark:text-stone-400 dark:hover:bg-stone-800"
             aria-label="Previous slide"
           >
             <ChevronLeft className="h-5 w-5" />
@@ -194,7 +222,7 @@ export function SlideViewer({
             type="button"
             onClick={goNext}
             disabled={currentSlide === slides.length - 1}
-            className="flex items-center gap-1 rounded-lg px-3 py-2 text-stone-600 transition-colors hover:bg-stone-100 disabled:opacity-30 disabled:hover:bg-transparent dark:text-stone-400 dark:hover:bg-stone-800"
+            className="cursor-pointer flex items-center gap-1 rounded-lg px-3 py-2 text-stone-600 transition-colors hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent dark:text-stone-400 dark:hover:bg-stone-800"
             aria-label="Next slide"
           >
             <span className="hidden sm:inline">Next</span>

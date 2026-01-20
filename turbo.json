@@ -4,7 +4,12 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "out/**", "dist/**"],
-      "env": ["CMS_API_URL", "CMS_API_KEY", "NEXT_PUBLIC_SITE_URL", "NEXT_PUBLIC_GA_ID"]
+      "env": [
+        "CMS_API_URL",
+        "CMS_API_KEY",
+        "NEXT_PUBLIC_SITE_URL",
+        "NEXT_PUBLIC_GA_ID"
+      ]
     },
     "dev": {
       "cache": false,

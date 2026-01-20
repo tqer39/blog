@@ -14,10 +14,33 @@ const ALLOWED_KEYS = [
   'social_github',
   'social_twitter',
   'social_bento',
+  'social_bluesky',
+  'social_threads',
+  'social_linkedin',
+  'social_wantedly',
+  'social_lapras',
+  'show_rss_link',
+  'show_github_link',
+  'show_twitter_link',
+  'show_bento_link',
+  'show_bluesky_link',
+  'show_threads_link',
+  'show_linkedin_link',
+  'show_wantedly_link',
+  'show_lapras_link',
 ] as const;
 
 // URL keys that require scheme validation
-const URL_KEYS = ['social_github', 'social_twitter', 'social_bento'] as const;
+const URL_KEYS = [
+  'social_github',
+  'social_twitter',
+  'social_bento',
+  'social_bluesky',
+  'social_threads',
+  'social_linkedin',
+  'social_wantedly',
+  'social_lapras',
+] as const;
 const ALLOWED_SCHEMES = ['https:', 'http:'];
 
 /**

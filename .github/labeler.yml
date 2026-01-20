@@ -47,3 +47,72 @@ rules:
       - "CODEOWNERS"
     labels:
       - CODEOWNERS
+
+  # Apps
+  - matchers:
+      - "apps/blog/**"
+    labels:
+      - app:blog
+
+  - matchers:
+      - "apps/cms-api/**"
+    labels:
+      - app:cms-api
+
+  # Packages
+  - matchers:
+      - "packages/ui/**"
+    labels:
+      - pkg:ui
+
+  - matchers:
+      - "packages/utils/**"
+    labels:
+      - pkg:utils
+
+  - matchers:
+      - "packages/cms-types/**"
+    labels:
+      - pkg:cms-types
+
+  - matchers:
+      - "packages/test-utils/**"
+    labels:
+      - pkg:test-utils
+
+  - matchers:
+      - "packages/config/**"
+    labels:
+      - pkg:config
+
+  # Change types
+  - matchers:
+      - "**/package.json"
+      - "pnpm-lock.yaml"
+    labels:
+      - dependencies
+
+  - matchers:
+      - ".github/workflows/**"
+      - ".github/actions/**"
+    labels:
+      - ci
+
+  - matchers:
+      - "**/*.ts"
+      - "**/*.tsx"
+    labels:
+      - typescript
+
+  - matchers:
+      - "**/*.css"
+    labels:
+      - css
+
+  - matchers:
+      - "**/*.test.ts"
+      - "**/*.test.tsx"
+      - "**/*.spec.ts"
+      - "**/e2e/**"
+    labels:
+      - tests

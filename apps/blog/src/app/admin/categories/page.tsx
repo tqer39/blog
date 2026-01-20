@@ -25,8 +25,8 @@ import {
   ArrowUp,
   Edit,
   GripVertical,
+  Loader2,
   Plus,
-  Save,
   Search,
   Trash2,
   X,
@@ -37,10 +37,10 @@ import {
   getCategories,
   updateCategoriesOrder,
 } from '@/lib/api/client';
+import { useSorting } from '../hooks/use-sorting';
 import { CategoryEditor } from './components/CategoryEditor';
 
 type CategorySortKey = 'name' | 'articleCount' | 'displayOrder' | 'createdAt';
-type SortDirection = 'asc' | 'desc';
 
 interface SortableCategoryRowProps {
   category: CategoryWithCount;
@@ -155,18 +155,16 @@ function SortableCategoryRow({
 
 export default function CategoryListPage() {
   const [categories, setCategories] = useState<CategoryWithCount[]>([]);
-  const [originalCategories, setOriginalCategories] = useState<
-    CategoryWithCount[]
-  >([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editingCategory, setEditingCategory] =
     useState<CategoryWithCount | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortKey, setSortKey] = useState<CategorySortKey>('displayOrder');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const [hasOrderChanges, setHasOrderChanges] = useState(false);
+  const { sortKey, sortDirection, handleSort } = useSorting<CategorySortKey>(
+    'displayOrder',
+    'asc'
+  );
   const [isSavingOrder, setIsSavingOrder] = useState(false);
 
   const sensors = useSensors(
@@ -184,8 +182,6 @@ export default function CategoryListPage() {
         (a, b) => a.displayOrder - b.displayOrder
       );
       setCategories(sorted);
-      setOriginalCategories(sorted);
-      setHasOrderChanges(false);
       setError(null);
     } catch (err) {
       setError(
@@ -222,45 +218,29 @@ export default function CategoryListPage() {
     loadCategories();
   }
 
-  function handleSort(key: CategorySortKey) {
-    if (sortKey === key) {
-      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortKey(key);
-      setSortDirection('asc');
-    }
-  }
-
-  function handleDragEnd(event: DragEndEvent) {
+  async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (over && active.id !== over.id) {
       const oldIndex = categories.findIndex((c) => c.id === active.id);
       const newIndex = categories.findIndex((c) => c.id === over.id);
       const newOrder = arrayMove(categories, oldIndex, newIndex);
       setCategories(newOrder);
-      setHasOrderChanges(true);
-    }
-  }
 
-  async function handleSaveOrder() {
-    setIsSavingOrder(true);
-    try {
-      const orderedIds = categories.map((c) => c.id);
-      await updateCategoriesOrder(orderedIds);
-      setOriginalCategories([...categories]);
-      setHasOrderChanges(false);
-    } catch (err) {
-      alert(
-        err instanceof Error ? err.message : 'Failed to save category order'
-      );
-    } finally {
-      setIsSavingOrder(false);
+      // Auto-save the new order
+      setIsSavingOrder(true);
+      try {
+        const orderedIds = newOrder.map((c) => c.id);
+        await updateCategoriesOrder(orderedIds);
+      } catch (err) {
+        // Revert on error
+        setCategories(categories);
+        alert(
+          err instanceof Error ? err.message : 'Failed to save category order'
+        );
+      } finally {
+        setIsSavingOrder(false);
+      }
     }
-  }
-
-  function handleCancelOrderChange() {
-    setCategories([...originalCategories]);
-    setHasOrderChanges(false);
   }
 
   const isDragEnabled =
@@ -277,7 +257,13 @@ export default function CategoryListPage() {
         )
       : categories;
 
-    if (sortKey === 'displayOrder' && !hasOrderChanges) {
+    // When sorting by displayOrder (asc), preserve the current array order
+    // since auto-save updates immediately after drag
+    if (sortKey === 'displayOrder' && sortDirection === 'asc') {
+      return [...filtered];
+    }
+
+    if (sortKey === 'displayOrder') {
       return [...filtered].sort((a, b) => {
         const modifier = sortDirection === 'asc' ? 1 : -1;
         return (a.displayOrder - b.displayOrder) * modifier;
@@ -294,7 +280,7 @@ export default function CategoryListPage() {
       }
       return ((aVal as number) - (bVal as number)) * modifier;
     });
-  }, [categories, searchQuery, sortKey, sortDirection, hasOrderChanges]);
+  }, [categories, searchQuery, sortKey, sortDirection]);
 
   const SortButton = ({
     columnKey,
@@ -346,32 +332,6 @@ export default function CategoryListPage() {
         />
       )}
 
-      {hasOrderChanges && (
-        <Alert className="mb-6 border-amber-500 bg-amber-50 dark:bg-amber-950/20">
-          <AlertDescription className="flex items-center justify-between">
-            <span>You have unsaved order changes.</span>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleCancelOrderChange}
-              >
-                Cancel
-              </Button>
-              <Button
-                size="sm"
-                onClick={handleSaveOrder}
-                disabled={isSavingOrder}
-                className="gap-1"
-              >
-                <Save className="h-4 w-4" />
-                {isSavingOrder ? 'Saving...' : 'Save Order'}
-              </Button>
-            </div>
-          </AlertDescription>
-        </Alert>
-      )}
-
       {/* Search input */}
       <div className="relative mb-6">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -396,8 +356,14 @@ export default function CategoryListPage() {
       </div>
 
       {isDragEnabled && (
-        <p className="mb-4 text-sm text-muted-foreground">
-          Drag and drop rows to reorder categories.
+        <p className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
+          <span>Drag and drop rows to reorder categories.</span>
+          {isSavingOrder && (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Saving...</span>
+            </>
+          )}
         </p>
       )}
 

@@ -12,12 +12,14 @@ import {
   Expand,
   FileText,
   Languages,
-  Loader2,
+  type LucideIcon,
   MessageSquare,
   RefreshCw,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { transformText } from '@/lib/api/client';
+import { AlertBox } from './AlertBox';
+import { LoadingState } from './LoadingState';
 
 interface TextTransformPopoverProps {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
@@ -29,7 +31,7 @@ interface TextTransformPopoverProps {
 interface TransformOption {
   action: TransformAction;
   label: string;
-  icon: React.ElementType;
+  icon: LucideIcon;
   description: string;
 }
 
@@ -276,19 +278,16 @@ export function TextTransformPopover({
         )}
 
         {isTransforming && (
-          <div className="flex items-center justify-center p-4">
-            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-            <span className="ml-2 text-sm text-muted-foreground">
-              変換中...
-            </span>
-          </div>
+          <LoadingState
+            message="変換中..."
+            size="sm"
+            messagePosition="beside"
+          />
         )}
 
         {error && (
           <div className="max-w-sm p-3">
-            <div className="rounded-md bg-red-50 p-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
-              {error}
-            </div>
+            <AlertBox>{error}</AlertBox>
             <div className="mt-2 flex justify-end gap-2">
               <Button
                 variant="ghost"

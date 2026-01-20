@@ -2,7 +2,9 @@
 @plugin "@tailwindcss/typography";
 
 /* Use class-based dark mode for next-themes compatibility */
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where(.dark, .dark *, .tokyonight, .tokyonight *));
+@custom-variant nord-light (&:where(.nord-light, .nord-light *));
+@custom-variant autumn (&:where(.autumn, .autumn *));
 
 /* Theme configuration for v4 */
 @theme inline {
@@ -100,6 +102,89 @@
   --chart-5: 340 75% 55%;
 }
 
+.tokyonight {
+  --background: 235 18.8% 12.5%; /* #1a1b26 */
+  --foreground: 228.7 72.6% 85.7%; /* #c0caf5 */
+  --card: 235 18.8% 12.5%;
+  --card-foreground: 228.7 72.6% 85.7%;
+  --popover: 235 18.8% 12.5%;
+  --popover-foreground: 228.7 72.6% 85.7%;
+  --primary: 220.8 88.7% 72.4%; /* #7aa2f7 Blue */
+  --primary-foreground: 235 18.8% 12.5%;
+  --secondary: 224.7 37% 24.9%; /* #283457 Selection */
+  --secondary-foreground: 228.7 72.6% 85.7%;
+  --muted: 224.7 37% 24.9%;
+  --muted-foreground: 228.6 30% 60%; /* #7982a9 Brighter comment */
+  --accent: 261.3 85.3% 78.6%; /* #bb9af7 Magenta */
+  --accent-foreground: 235 18.8% 12.5%;
+  --destructive: 348.8 89% 71.6%; /* #f7768e Red */
+  --destructive-foreground: 235 18.8% 12.5%;
+  --border: 224.7 37% 24.9%;
+  --input: 224.7 37% 24.9%;
+  --ring: 220.8 88.7% 72.4%;
+  --chart-1: 220.8 88.7% 72.4%; /* Blue */
+  --chart-2: 202.2 100% 74.5%; /* #7dcfff Cyan */
+  --chart-3: 88.8 50.5% 61.2%; /* #9ece6a Green */
+  --chart-4: 261.5 54.1% 66.7%; /* #9d7cd8 Purple */
+  --chart-5: 35.5 65.9% 64.3%; /* #e0af68 Yellow */
+}
+
+.nord-light {
+  /* Nord Light Theme - Snow Storm background with Polar Night text */
+  --background: 218 27% 94%; /* #ECEFF4 nord6 */
+  --foreground: 220 16% 22%; /* #2E3440 nord0 */
+  --card: 218 27% 94%; /* #ECEFF4 nord6 */
+  --card-foreground: 220 16% 22%; /* #2E3440 nord0 */
+  --popover: 219 28% 88%; /* #D8DEE9 nord4 */
+  --popover-foreground: 220 16% 22%; /* #2E3440 nord0 */
+  --primary: 213 32% 52%; /* #5E81AC nord10 Blue */
+  --primary-foreground: 218 27% 94%; /* #ECEFF4 nord6 */
+  --secondary: 219 28% 80%; /* #D8DEE9 darkened */
+  --secondary-foreground: 220 16% 22%; /* #2E3440 nord0 */
+  --muted: 219 28% 80%; /* #D8DEE9 darkened */
+  --muted-foreground: 220 17% 36%; /* #4C566A nord3 */
+  --accent: 193 43% 67%; /* #88C0D0 nord8 Cyan */
+  --accent-foreground: 220 16% 22%; /* #2E3440 nord0 */
+  --destructive: 354 42% 56%; /* #BF616A nord11 Red */
+  --destructive-foreground: 218 27% 94%; /* #ECEFF4 nord6 */
+  --border: 219 28% 88%; /* #D8DEE9 nord4 */
+  --input: 219 28% 88%; /* #D8DEE9 nord4 */
+  --ring: 213 32% 52%; /* #5E81AC nord10 */
+  --chart-1: 213 32% 52%; /* #5E81AC nord10 Blue */
+  --chart-2: 193 43% 67%; /* #88C0D0 nord8 Cyan */
+  --chart-3: 92 28% 65%; /* #A3BE8C nord14 Green */
+  --chart-4: 311 20% 63%; /* #B48EAD nord15 Purple */
+  --chart-5: 40 71% 73%; /* #EBCB8B nord13 Yellow */
+}
+
+.autumn {
+  /* Autumn Theme - Warm cream background with burnt orange accents */
+  --background: 30 42% 96%; /* #FAF6F1 warm cream */
+  --foreground: 9 29% 19%; /* #3E2723 dark brown */
+  --card: 30 42% 96%; /* #FAF6F1 warm cream */
+  --card-foreground: 9 29% 19%; /* #3E2723 dark brown */
+  --popover: 20 25% 93%; /* #EFEBE9 light tan */
+  --popover-foreground: 9 29% 19%; /* #3E2723 dark brown */
+  --primary: 14 80% 47%; /* #D84315 burnt orange */
+  --primary-foreground: 30 42% 96%; /* #FAF6F1 warm cream */
+  --secondary: 20 25% 85%; /* #EFEBE9 darkened for distinction */
+  --secondary-foreground: 9 29% 19%; /* #3E2723 dark brown */
+  --muted: 20 25% 85%; /* #EFEBE9 darkened for distinction */
+  --muted-foreground: 16 25% 38%; /* #795548 brown */
+  --accent: 45 96% 56%; /* #F9A825 amber/golden yellow */
+  --accent-foreground: 9 29% 19%; /* #3E2723 dark brown */
+  --destructive: 0 66% 47%; /* #C62828 deep red */
+  --destructive-foreground: 30 42% 96%; /* #FAF6F1 warm cream */
+  --border: 16 25% 81%; /* #D7CCC8 light brown */
+  --input: 16 25% 81%; /* #D7CCC8 light brown */
+  --ring: 14 80% 47%; /* #D84315 burnt orange */
+  --chart-1: 14 80% 47%; /* #D84315 burnt orange */
+  --chart-2: 45 96% 56%; /* #F9A825 amber */
+  --chart-3: 16 25% 38%; /* #795548 brown */
+  --chart-4: 14 93% 40%; /* #BF360C deep orange */
+  --chart-5: 34 100% 50%; /* #FF8F00 amber */
+}
+
 /* Base styles */
 * {
   border-color: var(--color-border);
@@ -118,9 +203,34 @@ body {
 
 /* Override prose styles for code blocks - must be outside @layer to override Tailwind prose */
 .prose .shiki-wrapper pre,
-.prose pre.shiki {
+.prose pre.shiki,
+pre.shiki {
   margin: 0 !important;
-  padding: 1rem !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* Override Tailwind Typography pre padding for shiki code blocks */
+.prose :where(pre):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  padding: 0 !important;
+}
+
+/* Ensure shiki wrapper cancels out global pre rounding on top when used with header */
+.shiki-wrapper pre {
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  outline-offset: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.shiki-wrapper pre:focus {
+  outline: none !important;
 }
 
 /* Remove prose margins from code block wrapper */
@@ -163,6 +273,10 @@ body {
   color: inherit;
   vertical-align: baseline;
   position: relative;
+}
+
+.prose .anchor-copy svg {
+  position: relative;
   top: 0.1em;
 }
 
@@ -181,6 +295,8 @@ body {
   color: var(--color-primary);
   position: relative;
   top: -0.15em;
+  display: inline-block;
+  line-height: normal;
 }
 
 .prose :is(h1, h2, h3, h4, h5, h6):hover .anchor-link {
@@ -203,6 +319,8 @@ body {
 .shiki-wrapper code {
   display: grid;
   font-size: 0.875rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .shiki-wrapper .line {
@@ -224,17 +342,28 @@ body {
 
 .shiki-wrapper .line-number {
   display: inline-block;
-  width: 2rem;
-  min-width: 2rem;
+  width: 3rem;
+  min-width: 3rem;
   flex-shrink: 0;
   text-align: right;
   -webkit-user-select: none;
   user-select: none;
   color: #78716c; /* stone-500 */
+  padding-right: 0.75rem;
+  margin-right: 0.75rem;
+  border-right: 1px solid #e7e5e4; /* stone-200 */
+}
+
+.dark .shiki-wrapper .line-number {
+  border-color: #30363d;
+}
+
+.tokyonight .shiki-wrapper .line-number {
+  border-color: #3b4261;
 }
 
 .shiki-wrapper .line-content {
-  padding-left: 1.5rem;
+  padding-left: 0;
 }
 
 /* Mermaid content background to match CodeBlock */
@@ -328,6 +457,38 @@ body {
   margin-bottom: 0.75em;
 }
 
+/* Slide mode: Remove chart wrapper gray background and border */
+body[data-slide-mode="true"] .chart-container {
+  --tw-ring-opacity: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+body[data-slide-mode="true"] .chart-header {
+  display: none !important;
+}
+
+body[data-slide-mode="true"] .chart-body {
+  background-color: transparent !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+/* Hide ImageCarousel navigation buttons in slide mode (including background page) */
+body[data-slide-mode="true"] .image-carousel__button {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  box-shadow: none !important;
+}
+
+/* Also hide the pagination dots in slide mode */
+body[data-slide-mode="true"] .image-carousel__dot {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* Slow pulse animation for slide timer runner */
 @keyframes pulse-slow {
   0%,
@@ -341,4 +502,751 @@ body {
 
 .animate-pulse-slow {
   animation: pulse-slow 5s ease-in-out infinite;
+}
+
+/* Fix: Primary button text color for both light and dark modes */
+.bg-primary {
+  color: hsl(0 0% 98%); /* White text in light mode */
+}
+
+.dark .bg-primary {
+  color: hsl(0 0% 9%); /* Dark text in dark mode */
+}
+
+.tokyonight .shiki-wrapper .line:hover {
+  background-color: #283457;
+}
+
+.tokyonight .category-badge {
+  color: #c0caf5 !important;
+  background-color: transparent !important;
+  border-color: currentColor !important;
+}
+
+.tokyonight .prose pre {
+  background-color: #1a1b26;
+}
+
+.tokyonight .mermaid-content {
+  background-color: #1a1b26;
+}
+
+/* Tokyo Night: Links and interactive elements */
+.tokyonight a {
+  color: #7aa2f7;
+}
+
+.tokyonight a:hover {
+  color: #7dcfff;
+}
+
+/* Tokyo Night: Headings */
+.tokyonight h1,
+.tokyonight h2 {
+  color: #7aa2f7;
+}
+
+.tokyonight h3,
+.tokyonight h4,
+.tokyonight h5,
+.tokyonight h6 {
+  color: #bb9af7;
+}
+
+/* Tokyo Night: Tag badges with colorful borders */
+.tokyonight .tag-badge,
+.tokyonight [class*="rounded"][class*="border"][class*="text-xs"],
+.tokyonight [class*="rounded"][class*="border"][class*="text-sm"] {
+  border-color: #7aa2f7 !important;
+  color: #7dcfff !important;
+}
+
+.tokyonight .tag-badge:hover,
+.tokyonight [class*="rounded"][class*="border"][class*="text-xs"]:hover,
+.tokyonight [class*="rounded"][class*="border"][class*="text-sm"]:hover {
+  background-color: #283457 !important;
+  border-color: #7dcfff !important;
+}
+
+/* Tokyo Night: Search result box */
+.tokyonight [class*="bg-stone-100"],
+.tokyonight [class*="bg-muted"] {
+  background-color: #24283b !important;
+}
+
+/* Tokyo Night: Card hover effects */
+.tokyonight [class*="hover:bg-stone"] {
+  transition: background-color 0.2s ease;
+}
+
+.tokyonight [class*="hover:bg-stone"]:hover {
+  background-color: #24283b !important;
+}
+
+/* Tokyo Night: Border colors */
+.tokyonight [class*="border-stone"],
+.tokyonight [class*="divide-stone"] > * {
+  border-color: #283457 !important;
+}
+
+/* Tokyo Night: Muted text */
+.tokyonight [class*="text-stone-500"],
+.tokyonight [class*="text-stone-600"],
+.tokyonight [class*="text-muted"] {
+  color: #7982a9 !important;
+}
+
+/* Tokyo Night: Footer */
+.tokyonight footer {
+  color: #7982a9;
+}
+
+.tokyonight footer a {
+  color: #7aa2f7;
+}
+
+/* Tokyo Night: Button styles */
+.tokyonight .bg-primary {
+  background-color: #7aa2f7 !important;
+  color: #1a1b26 !important;
+}
+
+.tokyonight .bg-primary:hover {
+  background-color: #6690e6 !important;
+  color: #1a1b26 !important;
+}
+
+/* Tokyo Night: Ghost/transparent button hover */
+.tokyonight
+button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(
+  .bg-accent
+):hover {
+  background-color: #24283b;
+}
+
+/* Tokyo Night: Input field styling for better contrast */
+.tokyonight input,
+.tokyonight textarea,
+.tokyonight select {
+  background-color: #24283b !important;
+  border-color: #3b4261 !important;
+  color: #c0caf5 !important;
+}
+
+.tokyonight input::placeholder,
+.tokyonight textarea::placeholder {
+  color: #565f89 !important;
+}
+
+/* Tokyo Night: Labels and form text */
+.tokyonight label {
+  color: #a9b1d6;
+}
+
+/* Tokyo Night: Code block border - use selection color */
+.tokyonight .group.relative.my-4,
+.tokyonight .group.relative.my-5,
+.tokyonight .group.relative.my-2 {
+  --tw-ring-color: #3b4261 !important; /* Selection border */
+}
+
+/* Dark Mode (Standard) & Tokyo Night: FileTree Styling */
+/* Ensure FileTree matches CodeBlock (Shiki) appearance */
+.dark .file-tree-content {
+  background-color: #0d1117; /* GitHub Dark background */
+  color: #e6edf3; /* GitHub Dark text (cool white) */
+}
+
+.dark .file-tree-text {
+  color: #e6edf3;
+}
+
+.dark .file-tree-indent {
+  border-color: #30363d; /* GitHub Dark border (cool gray) */
+}
+
+.dark .file-tree-node:hover {
+  background-color: #44403c; /* stone-700, matches CodeBlock hover */
+}
+
+/* Tokyo Night Specific Overrides (overrides standard dark) */
+.tokyonight .file-tree-content {
+  background-color: #1a1b26;
+  color: #c0caf5;
+}
+
+.tokyonight .file-tree-text {
+  color: #c0caf5;
+}
+
+.tokyonight .file-tree-indent {
+  border-color: #3b4261;
+}
+
+.tokyonight .file-tree-node:hover {
+  background-color: #283457; /* Matches shiki line hover */
+}
+
+/* Dark Mode (Standard) & Tokyo Night: CodeDiff Styling */
+.dark .code-diff-content {
+  background-color: #0d1117;
+  color: #e6edf3;
+}
+
+.dark .code-diff-text {
+  color: #e6edf3;
+}
+
+.dark .code-diff-border {
+  border-color: #30363d;
+}
+
+.tokyonight .code-diff-content {
+  background-color: #1a1b26;
+  color: #c0caf5;
+}
+
+.tokyonight .code-diff-text {
+  color: #c0caf5;
+}
+
+.tokyonight .code-diff-border {
+  border-color: #3b4261;
+}
+
+/* CodeDiff Row Hover - Matches CodeBlock/FileTree */
+.code-diff-row:hover {
+  background-color: #e7e5e4; /* stone-200 */
+}
+
+.dark .code-diff-row:hover {
+  background-color: #44403c; /* stone-700 */
+}
+
+.tokyonight .code-diff-row:hover {
+  background-color: #283457;
+}
+
+/* Ensure hover is visible on added/removed lines by blending or overriding */
+/* For simplicity and matching CodeBlock behavior, we let it override */
+.code-diff-row:hover.bg-green-100,
+.code-diff-row:hover.bg-red-100,
+.code-diff-row:hover.bg-blue-100 {
+  background-color: #e7e5e4;
+}
+
+.dark .code-diff-row:hover.bg-green-100,
+.dark .code-diff-row:hover.bg-red-100,
+.dark .code-diff-row:hover.bg-blue-100 {
+  background-color: #44403c; /* tailwind classes like dark:bg-green-900/30 are preserved via specificity if we are not careful */
+}
+
+.dark .code-diff-row.bg-green-900\/30:hover,
+.dark .code-diff-row.bg-red-900\/30:hover,
+.dark .code-diff-row.bg-blue-900\/30:hover {
+  background-color: #44403c;
+}
+
+.tokyonight .code-diff-row:hover {
+  background-color: #283457 !important;
+}
+
+/* ===== Nord Light Theme Specific Styles ===== */
+
+.nord-light .shiki-wrapper .line:hover {
+  background-color: #d8dee9; /* nord4 */
+}
+
+.nord-light .category-badge {
+  color: #2e3440 !important; /* nord0 */
+  background-color: transparent !important;
+  border-color: currentColor !important;
+}
+
+.nord-light .prose pre {
+  background-color: #e5e9f0; /* nord5 */
+}
+
+.nord-light .mermaid-content {
+  background-color: #ffffff;
+}
+
+/* Nord Light: Links and interactive elements */
+.nord-light a {
+  color: #5e81ac; /* nord10 Blue */
+}
+
+.nord-light a:hover {
+  color: #81a1c1; /* nord9 */
+}
+
+/* Nord Light: Headings */
+.nord-light h1,
+.nord-light h2 {
+  color: #5e81ac; /* nord10 Blue */
+}
+
+.nord-light h3,
+.nord-light h4,
+.nord-light h5,
+.nord-light h6 {
+  color: #8fbcbb; /* nord7 Frost */
+}
+
+/* Nord Light: Tag badges with colorful borders */
+.nord-light .tag-badge,
+.nord-light [class*="rounded"][class*="border"][class*="text-xs"],
+.nord-light [class*="rounded"][class*="border"][class*="text-sm"] {
+  border-color: #5e81ac !important; /* nord10 */
+  color: #5e81ac !important;
+}
+
+.nord-light .tag-badge:hover,
+.nord-light [class*="rounded"][class*="border"][class*="text-xs"]:hover,
+.nord-light [class*="rounded"][class*="border"][class*="text-sm"]:hover {
+  background-color: #d8dee9 !important; /* nord4 */
+  border-color: #81a1c1 !important; /* nord9 */
+}
+
+/* Nord Light: Search result box */
+.nord-light [class*="bg-stone-100"],
+.nord-light [class*="bg-muted"] {
+  background-color: #e5e9f0 !important; /* nord5 */
+}
+
+/* Nord Light: Card hover effects */
+.nord-light [class*="hover:bg-stone"] {
+  transition: background-color 0.2s ease;
+}
+
+.nord-light [class*="hover:bg-stone"]:hover {
+  background-color: #d8dee9 !important; /* nord4 */
+}
+
+/* Nord Light: Border colors */
+.nord-light [class*="border-stone"],
+.nord-light [class*="divide-stone"] > * {
+  border-color: #d8dee9 !important; /* nord4 */
+}
+
+/* Nord Light: Muted text */
+.nord-light [class*="text-stone-500"],
+.nord-light [class*="text-stone-600"],
+.nord-light [class*="text-muted"] {
+  color: #4c566a !important; /* nord3 */
+}
+
+/* Nord Light: Footer */
+.nord-light footer {
+  color: #4c566a; /* nord3 */
+}
+
+.nord-light footer a {
+  color: #5e81ac; /* nord10 */
+}
+
+/* Nord Light: Button styles */
+.nord-light .bg-primary {
+  background-color: #5e81ac !important; /* nord10 */
+  color: #eceff4 !important; /* nord6 */
+}
+
+.nord-light .bg-primary:hover {
+  background-color: #81a1c1 !important; /* nord9 */
+  color: #eceff4 !important;
+}
+
+/* Nord Light: Ghost/transparent button hover */
+.nord-light
+button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(
+  .bg-accent
+):hover {
+  background-color: #d8dee9; /* nord4 */
+}
+
+/* Nord Light: Input field styling */
+.nord-light input,
+.nord-light textarea,
+.nord-light select {
+  background-color: #eceff4 !important; /* nord6 */
+  border-color: #d8dee9 !important; /* nord4 */
+  color: #2e3440 !important; /* nord0 */
+}
+
+.nord-light input::placeholder,
+.nord-light textarea::placeholder {
+  color: #4c566a !important; /* nord3 */
+}
+
+/* Nord Light: Labels and form text */
+.nord-light label {
+  color: #3b4252; /* nord1 */
+}
+
+/* Nord Light: Code block darker border */
+.nord-light .group.relative.my-4 {
+  --tw-ring-color: #d8dee9 !important; /* nord4 */
+}
+
+/* Nord Light: Terminal/CodeBlock header text - keep light text on dark bg */
+.nord-light .bg-stone-700 {
+  background-color: #44403c !important; /* stone-700 */
+}
+
+.nord-light .text-stone-300 {
+  color: #d6d3d1 !important; /* stone-300 */
+}
+
+.nord-light .text-stone-400 {
+  color: #a8a29e !important; /* stone-400 */
+}
+
+/* Model Viewer Theme Backgrounds */
+.model-viewer-bg {
+  background-color: #ffffff;
+  background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.dark .model-viewer-bg {
+  background-color: #0d1117; /* GitHub Dark background */
+  background-image: radial-gradient(#30363d 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.tokyonight .model-viewer-bg {
+  background-color: #1a1b26;
+  background-image: radial-gradient(#2f334d 1px, transparent 1px);
+}
+
+/* Nord Light overrides */
+.nord-light .model-viewer-bg,
+html.nord-light .model-viewer-bg {
+  background-color: #eceff4 !important;
+  background-image: radial-gradient(#d8dee9 1px, transparent 1px) !important;
+}
+
+/* ===== Autumn Theme Specific Styles ===== */
+
+.autumn .shiki-wrapper .line:hover {
+  background-color: #efebe9; /* light tan */
+}
+
+.autumn .category-badge {
+  color: #3e2723 !important; /* dark brown */
+  background-color: transparent !important;
+  border-color: currentColor !important;
+}
+
+.autumn .prose pre {
+  background-color: #efebe9; /* light tan */
+}
+
+.autumn .mermaid-content {
+  background-color: #ffffff;
+}
+
+/* Autumn: Links and interactive elements */
+.autumn a {
+  color: #e65100; /* orange */
+}
+
+.autumn a:hover {
+  color: #ff8f00; /* amber */
+}
+
+/* Autumn: Headings */
+.autumn h1,
+.autumn h2 {
+  color: #bf360c; /* deep orange */
+}
+
+.autumn h3,
+.autumn h4,
+.autumn h5,
+.autumn h6 {
+  color: #6d4c41; /* brown */
+}
+
+/* Autumn: Tag badges with colorful borders */
+.autumn .tag-badge,
+.autumn [class*="rounded"][class*="border"][class*="text-xs"],
+.autumn [class*="rounded"][class*="border"][class*="text-sm"] {
+  border-color: #d84315 !important; /* burnt orange */
+  color: #e65100 !important; /* orange */
+}
+
+/* Autumn overrides */
+.autumn .model-viewer-bg,
+html.autumn .model-viewer-bg {
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+.autumn .tag-badge:hover,
+.autumn [class*="rounded"][class*="border"][class*="text-xs"]:hover,
+.autumn [class*="rounded"][class*="border"][class*="text-sm"]:hover {
+  background-color: #efebe9 !important; /* light tan */
+  border-color: #ff8f00 !important; /* amber */
+}
+
+/* Autumn: Search result box */
+.autumn [class*="bg-stone-100"],
+.autumn [class*="bg-muted"] {
+  background-color: #efebe9 !important; /* light tan */
+}
+
+/* Autumn: Card hover effects */
+.autumn [class*="hover:bg-stone"] {
+  transition: background-color 0.2s ease;
+}
+
+.autumn [class*="hover:bg-stone"]:hover {
+  background-color: #efebe9 !important; /* light tan */
+}
+
+/* Autumn: Border colors */
+.autumn [class*="border-stone"],
+.autumn [class*="divide-stone"] > * {
+  border-color: #d7ccc8 !important; /* light brown */
+}
+
+/* Autumn: Muted text */
+.autumn [class*="text-stone-500"],
+.autumn [class*="text-stone-600"],
+.autumn [class*="text-muted"] {
+  color: #795548 !important; /* brown */
+}
+
+/* Autumn: Footer */
+.autumn footer {
+  color: #795548; /* brown */
+}
+
+.autumn footer a {
+  color: #e65100; /* orange */
+}
+
+/* Autumn: Button styles */
+.autumn .bg-primary {
+  background-color: #d84315 !important; /* burnt orange */
+  color: #faf6f1 !important; /* warm cream */
+}
+
+.autumn .bg-primary:hover {
+  background-color: #bf360c !important; /* deep orange */
+  color: #faf6f1 !important;
+}
+
+/* Autumn: Ghost/transparent button hover */
+.autumn
+button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(
+  .bg-accent
+):hover {
+  background-color: #efebe9; /* light tan */
+}
+
+/* Autumn: Input field styling */
+.autumn input,
+.autumn textarea,
+.autumn select {
+  background-color: #faf6f1 !important; /* warm cream */
+  border-color: #d7ccc8 !important; /* light brown */
+  color: #3e2723 !important; /* dark brown */
+}
+
+.autumn input::placeholder,
+.autumn textarea::placeholder {
+  color: #795548 !important; /* brown */
+}
+
+/* Autumn: Labels and form text */
+.autumn label {
+  color: #5d4037; /* medium brown */
+}
+
+/* Autumn: Code block border */
+.autumn .group.relative.my-4 {
+  --tw-ring-color: #d7ccc8 !important; /* light brown */
+}
+
+/* Autumn: Terminal/CodeBlock header text - keep light text on dark bg */
+.autumn .bg-stone-700 {
+  background-color: #44403c !important; /* stone-700 */
+}
+
+.autumn .text-stone-300 {
+  color: #d6d3d1 !important; /* stone-300 */
+}
+
+.autumn .text-stone-400 {
+  color: #a8a29e !important; /* stone-400 */
+}
+
+/* General Chart Overrides */
+.component-header {
+  background-color: #57534e !important; /* stone-600 */
+  color: #e7e5e4 !important; /* stone-200 */
+}
+
+/* Force header buttons to use a consistent hover color regardless of theme
+   This overrides the hover:bg-accent utility class used in the button components */
+.component-header button:hover {
+  background-color: #78716c !important; /* stone-500: slightly lighter than stone-600 header */
+  color: #fafaf9 !important; /* stone-50: almost white */
+}
+
+.recharts-legend-item {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.recharts-legend-item-text {
+  display: flex !important;
+  align-items: center !important;
+  line-height: 1 !important;
+}
+
+/* Slide Mode Chart Overrides */
+body[data-slide-mode="true"] .chart-container {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  overflow: visible !important;
+  --tw-ring-width: 0px !important;
+  --tw-ring-color: transparent !important;
+}
+
+body[data-slide-mode="true"] .component-header {
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  color: inherit !important;
+  padding: 0 !important;
+  margin-bottom: 1rem !important;
+}
+
+body[data-slide-mode="true"] .component-header svg {
+  display: none !important;
+}
+
+body[data-slide-mode="true"] .component-header span {
+  font-size: 1.5rem !important;
+  font-weight: bold !important;
+}
+
+body[data-slide-mode="true"] .chart-body {
+  padding: 0 !important;
+  background-color: transparent !important;
+  overflow: visible !important;
+}
+
+body[data-slide-mode="true"] .chart-wrapper {
+  height: 45vh !important;
+  min-height: 350px !important;
+  max-height: 60vh !important;
+  width: 100% !important;
+  margin-bottom: 1rem !important;
+}
+
+/* Cleanup/Backup for direct recharts container if needed */
+body[data-slide-mode="true"] .recharts-responsive-container,
+body[data-slide-mode="true"] .chart-responsive-container {
+  height: 100% !important;
+  width: 100% !important;
+  max-height: none !important;
+  min-height: 0 !important;
+}
+
+body[data-slide-mode="true"] .recharts-text {
+  font-size: 14px !important;
+}
+
+body[data-slide-mode="true"] .recharts-legend-wrapper {
+  bottom: 0px !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  padding-top: 10px !important;
+}
+
+body[data-slide-mode="true"] .recharts-legend-item {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+body[data-slide-mode="true"] .recharts-legend-item-text {
+  font-size: 14px !important;
+  line-height: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+body[data-slide-mode="true"] .recharts-default-tooltip,
+body[data-slide-mode="true"] .recharts-tooltip-item,
+body[data-slide-mode="true"] .recharts-tooltip-label,
+body[data-slide-mode="true"] .recharts-tooltip-wrapper li,
+body[data-slide-mode="true"] .recharts-tooltip-wrapper p {
+  font-size: 14px !important;
+}
+
+/* Slide Mode Code Block Overrides */
+body[data-slide-mode="true"] .shiki-wrapper {
+  margin: 0 !important;
+}
+
+body[data-slide-mode="true"] .shiki-wrapper code {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  font-size: 1rem !important;
+}
+
+body[data-slide-mode="true"] .shiki-wrapper .line {
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+body[data-slide-mode="true"] .group.relative.my-5,
+body[data-slide-mode="true"] .group.relative.my-2 {
+  margin: 0 !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid #333 !important;
+  overflow: hidden !important;
+}
+
+/* Slide mode: Code block/FileTree header - show icon, hide copy button */
+body[data-slide-mode="true"] .group.relative.my-5 .component-header,
+body[data-slide-mode="true"] .group.relative.my-2 .component-header {
+  background-color: #57534e !important;
+  color: #e7e5e4 !important;
+  padding: 0.25rem 1rem !important;
+  margin-bottom: 0 !important;
+  border-radius: 0 !important;
+}
+
+body[data-slide-mode="true"] .group.relative.my-5 .component-header svg,
+body[data-slide-mode="true"] .group.relative.my-2 .component-header svg {
+  display: inline-block !important;
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+body[data-slide-mode="true"] .group.relative.my-5 .component-header span,
+body[data-slide-mode="true"] .group.relative.my-2 .component-header span {
+  font-size: 1rem !important;
+  font-weight: normal !important;
+}
+
+/* Hide copy and fullscreen buttons in slide mode code blocks/FileTree */
+body[data-slide-mode="true"] .group.relative.my-5 .component-header button,
+body[data-slide-mode="true"] .group.relative.my-2 .component-header button {
+  display: none !important;
+}
+
+/* Slide Mode FileTree Content */
+body[data-slide-mode="true"] .group.relative.my-2 .font-mono {
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
 }

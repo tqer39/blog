@@ -19,7 +19,7 @@ export class HomePage {
       name: 'Articles',
       exact: true,
     });
-    this.logoLink = page.getByRole('link', { name: 'tB' });
+    this.logoLink = page.getByRole('link', { name: "tqer39's blog" });
     this.themeToggle = page.getByRole('button', { name: 'Toggle theme' });
     this.articleCards = page.locator('article');
     this.viewAllLink = page.getByRole('link', { name: 'View all articles' });

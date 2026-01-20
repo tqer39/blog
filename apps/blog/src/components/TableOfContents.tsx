@@ -168,7 +168,7 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
       >
         {lines.map((line, index) => (
           <line
-            key={index}
+            key={`line-${index}`}
             x1={line.x1}
             y1={line.y1}
             x2={line.x2}
@@ -187,7 +187,7 @@ function TocList({ headings, activeId, onItemClick }: TocListProps) {
 
           return (
             <li
-              key={heading.id}
+              key={`toc-${index}-${heading.id}`}
               className={`group relative flex items-center ${isH3 ? 'ml-6' : ''}`}
             >
               {/* Timeline dot */}

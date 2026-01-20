@@ -248,3 +248,58 @@ sync-secrets-wrangler:
 # Dry-run: show what secrets would be synced
 sync-secrets-dry-run:
     @./scripts/sync-secrets.sh --dry-run
+
+# Performance testing with Lighthouse
+lighthouse url="http://localhost:3100":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "→ Running Lighthouse audit on {{url}}..."
+    npx lighthouse {{url}} \
+        --output=html \
+        --output-path=./lighthouse-report.html \
+        --chrome-flags="--headless --no-sandbox"
+    echo "✅ Report saved: lighthouse-report.html"
+    open ./lighthouse-report.html 2>/dev/null || echo "Open lighthouse-report.html to view results"
+
+# Lighthouse with all categories and JSON output
+lighthouse-full url="http://localhost:3100":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "→ Running full Lighthouse audit on {{url}}..."
+    npx lighthouse {{url}} \
+        --output=html,json \
+        --output-path=./lighthouse-report \
+        --chrome-flags="--headless --no-sandbox" \
+        --only-categories=performance,accessibility,best-practices,seo
+    echo "✅ Reports saved: lighthouse-report.html, lighthouse-report.json"
+    open ./lighthouse-report.html 2>/dev/null || echo "Open lighthouse-report.html to view results"
+
+# Lighthouse for production
+lighthouse-prod:
+    @just lighthouse "https://blog.tqer39.dev"
+
+# Lighthouse for dev environment (with Basic Auth via 1Password)
+lighthouse-dev:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    echo "→ Checking 1Password session..."
+    if ! op account get &>/dev/null; then
+        echo "⚠️  Please sign in to 1Password first:"
+        echo "   op signin"
+        exit 1
+    fi
+
+    echo "→ Fetching Basic Auth credentials from 1Password..."
+    BASIC_USER=$(op read "op://blog-secrets/basic-auth/username")
+    BASIC_PASS=$(op read "op://blog-secrets/basic-auth/password")
+
+    echo "→ Running Lighthouse audit on https://blog-dev.tqer39.dev..."
+    npx lighthouse "https://blog-dev.tqer39.dev" \
+        --output=html \
+        --output-path=./lighthouse-report.html \
+        --chrome-flags="--headless --no-sandbox" \
+        --extra-headers="{\"Authorization\": \"Basic $(echo -n "${BASIC_USER}:${BASIC_PASS}" | base64)\"}"
+
+    echo "✅ Report saved: lighthouse-report.html"
+    open ./lighthouse-report.html 2>/dev/null || echo "Open lighthouse-report.html to view results"

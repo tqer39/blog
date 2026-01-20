@@ -4,6 +4,8 @@ import { Check, Copy, Download, Image, Maximize2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { SiMermaid } from 'react-icons/si';
+import { useCopyToClipboard } from '../hooks/use-copy-to-clipboard';
+import { useMounted } from '../hooks/use-mounted';
 import { FullscreenModal } from './FullscreenModal';
 import { Skeleton } from './ui/skeleton';
 
@@ -56,23 +58,13 @@ function loadMermaid(): Promise<void> {
 
 export function MermaidClient({ chart }: MermaidClientProps) {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
+  const { isCopied: copied, copy } = useCopyToClipboard();
   const [svg, setSvg] = useState<string>('');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [copied, setCopied] = useState(false);
   const instanceId = useRef(Math.random().toString(36).substring(2, 9));
   const renderCountRef = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const handleCopyCode = useCallback(async () => {
-    await navigator.clipboard.writeText(chart);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }, [chart]);
 
   const handleDownloadSvg = useCallback(() => {
     const blob = new Blob([svg], { type: 'image/svg+xml' });
@@ -114,7 +106,10 @@ export function MermaidClient({ chart }: MermaidClientProps) {
       canvas.width = svgWidth * scale;
       canvas.height = svgHeight * scale;
       ctx.scale(scale, scale);
-      ctx.fillStyle = resolvedTheme === 'dark' ? '#24292e' : '#ffffff';
+      ctx.fillStyle =
+        resolvedTheme === 'dark' || resolvedTheme === 'tokyonight'
+          ? '#24292e'
+          : '#ffffff';
       ctx.fillRect(0, 0, svgWidth, svgHeight);
       ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
 
@@ -141,7 +136,8 @@ export function MermaidClient({ chart }: MermaidClientProps) {
         await loadMermaid();
         if (cancelled || !window.mermaid) return;
 
-        const isDarkTheme = resolvedTheme === 'dark';
+        const isDarkTheme =
+          resolvedTheme === 'dark' || resolvedTheme === 'tokyonight';
         window.mermaid.initialize({
           startOnLoad: false,
           theme: isDarkTheme ? 'dark' : 'default',
@@ -169,8 +165,8 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   if (!svg) {
     const lineWidths = [85, 70, 90, 60, 75];
     return (
-      <div className="group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900">
-        <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+      <div className="group relative my-5 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]">
+        <div className="component-header flex items-center justify-between px-4 py-2 text-sm">
           <div className="flex items-center gap-2">
             <SiMermaid className="h-4 w-4" />
             <span>Mermaid</span>
@@ -194,7 +190,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   const mermaidContent = (
     <div
       ref={containerRef}
-      className="mermaid-content not-prose rounded-b-lg overflow-x-auto p-4 flex justify-center [&_svg]:max-w-full"
+      className="mermaid-content not-prose bg-white dark:bg-[#0d1117] overflow-x-auto p-4 flex justify-center [&_svg]:max-w-full"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
@@ -232,16 +228,18 @@ export function MermaidClient({ chart }: MermaidClientProps) {
   };
 
   const fullscreenContent = (
-    <div
-      className="mermaid-content not-prose h-full w-full flex items-center justify-center p-4"
-      dangerouslySetInnerHTML={{ __html: getScalableSvg() }}
-    />
+    <div className="h-full overflow-auto p-4">
+      <div
+        className="mermaid-content not-prose flex min-h-full items-center justify-center rounded-lg bg-white p-4 dark:bg-[#0d1117]"
+        dangerouslySetInnerHTML={{ __html: getScalableSvg() }}
+      />
+    </div>
   );
 
   return (
     <>
-      <div className="group relative my-4 overflow-hidden rounded-lg ring-1 ring-stone-200 dark:ring-stone-900">
-        <div className="flex items-center justify-between rounded-t-lg bg-stone-700 px-4 py-2 text-sm text-stone-300">
+      <div className="group relative my-5 overflow-hidden rounded-lg ring-1 ring-stone-300 dark:ring-[#333]">
+        <div className="component-header flex items-center justify-between px-4 py-2 text-sm">
           <div className="flex items-center gap-2">
             <SiMermaid className="h-4 w-4" />
             <span>Mermaid</span>
@@ -250,7 +248,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
             <button
               type="button"
               onClick={handleDownloadSvg}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Download SVG"
               title="Download SVG"
             >
@@ -260,7 +258,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
             <button
               type="button"
               onClick={handleDownloadPng}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Download PNG"
               title="Download PNG"
             >
@@ -269,8 +267,8 @@ export function MermaidClient({ chart }: MermaidClientProps) {
             </button>
             <button
               type="button"
-              onClick={handleCopyCode}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              onClick={() => copy(chart)}
+              className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Copy code"
             >
               {copied ? (
@@ -288,7 +286,7 @@ export function MermaidClient({ chart }: MermaidClientProps) {
             <button
               type="button"
               onClick={() => setIsFullscreen(true)}
-              className="flex items-center gap-1 rounded px-2 py-1 text-stone-300 transition-colors hover:bg-stone-600 hover:text-stone-100"
+              className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
               aria-label="Fullscreen"
             >
               <Maximize2 className="h-4 w-4" />
@@ -300,7 +298,55 @@ export function MermaidClient({ chart }: MermaidClientProps) {
       <FullscreenModal
         isOpen={isFullscreen}
         onClose={() => setIsFullscreen(false)}
-        title="Mermaid Diagram"
+        title={
+          <div className="flex items-center gap-2">
+            <SiMermaid className="h-4 w-4" />
+            <span>Mermaid Diagram</span>
+          </div>
+        }
+        headerActions={
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={handleDownloadSvg}
+              className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
+              aria-label="Download SVG"
+              title="Download SVG"
+            >
+              <Download className="h-4 w-4" />
+              <span className="text-xs">SVG</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadPng}
+              className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
+              aria-label="Download PNG"
+              title="Download PNG"
+            >
+              <Image className="h-4 w-4" />
+              <span className="text-xs">PNG</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => copy(chart)}
+              className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 text-stone-300 transition-colors hover:bg-accent hover:text-accent-foreground"
+              aria-label="Copy code"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-4 w-4" />
+                  <span className="text-xs">Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4" />
+                  <span className="text-xs">Copy</span>
+                </>
+              )}
+            </button>
+          </div>
+        }
+        headerClassName="component-header rounded-none border-b-0"
       >
         <div className="h-full w-full">{fullscreenContent}</div>
       </FullscreenModal>

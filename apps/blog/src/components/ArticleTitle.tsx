@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import { Copy, Pencil } from 'lucide-react';
-import Link from 'next/link';
+import { Copy, Pencil } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 interface ArticleTitleProps {
   title: string;
@@ -12,13 +13,23 @@ interface ArticleTitleProps {
 
 export function ArticleTitle({
   title,
-  id = 'title',
+  id = "title",
   hash,
   isLoggedIn,
 }: ArticleTitleProps) {
-  const handleCopyLink = () => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     const url = `${window.location.origin}${window.location.pathname}#${id}`;
-    navigator.clipboard.writeText(url);
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
   };
 
   return (
@@ -35,10 +46,14 @@ export function ArticleTitle({
         <button
           type="button"
           onClick={handleCopyLink}
-          className="ml-1 text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300"
+          className="cursor-pointer ml-1 text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 align-middle"
           aria-label="Copy link to clipboard"
         >
-          <Copy className="h-5 w-5" />
+          {copied ? (
+            <span className="text-primary text-xs font-bold">Copied!</span>
+          ) : (
+            <Copy className="h-5 w-5" />
+          )}
         </button>
         {isLoggedIn && hash && (
           <Link

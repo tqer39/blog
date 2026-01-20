@@ -28,6 +28,8 @@ const cspDirectives = {
     "'self'",
     // unsafe-inline only in development (needed for Mermaid SVG styles in production too)
     "'unsafe-inline'",
+    // Google Fonts for react-chrono
+    'https://fonts.googleapis.com',
   ],
   'img-src': [
     "'self'",
@@ -35,16 +37,21 @@ const cspDirectives = {
     'blob:',
     DOMAINS.CDN,
     'https://picsum.photos',
+    'https://*.picsum.photos',
+    'https://images.unsplash.com',
     ...(isDev ? [DOMAINS.CMS_API_LOCAL] : []),
   ],
-  'font-src': ["'self'"],
+  'font-src': ["'self'", 'https://fonts.gstatic.com'],
   'connect-src': [
     "'self'",
     DOMAINS.CDN,
     'https://www.google-analytics.com',
     'https://analytics.google.com',
+    'https://raw.githubusercontent.com',
+    'https://raw.githack.com',
     ...(isDev ? ['http://localhost:*'] : []),
   ],
+  'worker-src': ["'self'", 'blob:'],
   'frame-ancestors': ["'none'"],
 };
 

@@ -2,7 +2,7 @@
 
 import { CodeBlock } from '@blog/ui';
 import { h } from 'hastscript';
-import { useEffect } from 'react';
+import { isValidElement, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeRaw from 'rehype-raw';
@@ -160,6 +160,24 @@ export function ArticleContent({
           pre({ children, className }) {
             // Let CodeBlock handle mermaid via the code component
             // This ensures consistent DOM structure: <pre><CodeBlock/></pre> or <pre><Mermaid/></pre>
+            if (isValidElement(children)) {
+              const childProps = children.props as { className?: string };
+              const childClassName = childProps?.className;
+              if (
+                typeof childClassName === 'string' &&
+                (childClassName.includes('language-carousel') ||
+                  childClassName.includes('language-chart'))
+              ) {
+                // Determine if we should use 'not-prose' based on the language
+                // Charts in slide mode need to be not-prose to avoid margins,
+                // but usually we might want them restricted.
+                // However, the issue is <pre> wrapping.
+                // Using <div> removes <pre> styles.
+                return <div className="not-prose">{children}</div>;
+              }
+              // For all code blocks, wrap in a div instead of pre to avoid prose styles
+              return <div className="not-prose">{children}</div>;
+            }
             return <pre className={className}>{children}</pre>;
           },
         }}

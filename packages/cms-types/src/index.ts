@@ -131,14 +131,14 @@ export interface ArticleFilters extends PaginationParams {
 export type OpenAIModel =
   | 'gpt-4o-mini'
   | 'gpt-4o'
-  | 'gpt-4-turbo'
-  | 'gpt-3.5-turbo';
+  | 'gpt-4.1-2025-04-14'
+  | 'gpt-4.1-mini-2025-04-14';
 
 export type AnthropicModel =
   | 'claude-sonnet-4-20250514'
-  | 'claude-3-5-sonnet-20241022'
-  | 'claude-3-opus-20240229'
-  | 'claude-3-haiku-20240307';
+  | 'claude-sonnet-4-5-20250929'
+  | 'claude-opus-4-5-20251101'
+  | 'claude-haiku-4-5-20251001';
 
 export type GeminiImageModel =
   | 'gemini-2.5-flash-image'
@@ -162,10 +162,10 @@ export interface AIModelSettings {
 
 export const DEFAULT_AI_MODEL_SETTINGS: AIModelSettings = {
   metadata: 'gpt-4o-mini',
-  review: 'claude-sonnet-4-20250514',
-  outline: 'claude-sonnet-4-20250514',
-  transform: 'claude-sonnet-4-20250514',
-  continuation: 'claude-sonnet-4-20250514',
+  review: 'claude-sonnet-4-5-20250929',
+  outline: 'claude-sonnet-4-5-20250929',
+  transform: 'claude-sonnet-4-5-20250929',
+  continuation: 'claude-sonnet-4-5-20250929',
   image: 'gemini-2.5-flash-image',
 };
 
@@ -288,6 +288,21 @@ export interface SiteSettings {
   social_github: string;
   social_twitter: string;
   social_bento: string;
+  social_bluesky: string;
+  social_threads: string;
+  social_linkedin: string;
+  social_wantedly: string;
+  social_lapras: string;
+  show_rss_link: string; // "true" or "false" (stored as text in DB)
+  show_github_link: string; // "true" or "false" (stored as text in DB)
+  show_twitter_link: string; // "true" or "false" (stored as text in DB)
+  show_bento_link: string; // "true" or "false" (stored as text in DB)
+  show_bluesky_link: string; // "true" or "false" (stored as text in DB)
+  show_threads_link: string; // "true" or "false" (stored as text in DB)
+  show_linkedin_link: string; // "true" or "false" (stored as text in DB)
+  show_wantedly_link: string; // "true" or "false" (stored as text in DB)
+  show_lapras_link: string; // "true" or "false" (stored as text in DB)
+  default_theme: string; // "system" | "light" | "dark" | "tokyonight" | "nord-light" | "autumn"
 }
 
 export interface SiteSettingsResponse {

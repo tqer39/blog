@@ -1,0 +1,20 @@
+# Test files and directories
+e2e/
+playwright-report/
+test-results/
+coverage/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+
+# Test configuration
+playwright.config.ts
+vitest.config.ts
+
+# Development scripts
+scripts/
+
+# Documentation
+*.md
+!README.md

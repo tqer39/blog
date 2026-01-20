@@ -76,21 +76,16 @@ CREATE TABLE IF NOT EXISTS site_settings (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- Seed initial categories
-INSERT INTO categories (id, name, slug, color, display_order) VALUES
-  ('cat_tech', 'Tech', 'tech', '#3B82F6', 1),
-  ('cat_life', 'Life', 'life', '#10B981', 2),
-  ('cat_books', 'Books', 'books', '#F59E0B', 3);
-
 -- Insert default site settings
 INSERT INTO site_settings (key, value) VALUES
-  ('site_name', 'tB'),
+  ('site_name', 'tqer39''s blog'),
   ('site_description', '未来の自分に向けた技術ログ'),
   ('author_name', 'tqer39'),
   ('footer_text', ''),
   ('social_github', 'https://github.com/tqer39'),
   ('social_twitter', 'https://twitter.com/tqer39'),
-  ('social_bento', 'https://bento.me/tqer39')
+  ('social_bento', 'https://bento.me/tqer39'),
+  ('show_rss_link', 'true')
 ON CONFLICT (key) DO NOTHING;
 
 -- Trigger to update updated_at on articles

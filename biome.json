@@ -64,7 +64,8 @@
       "!**/*.min.js",
       "!**/.wrangler",
       "!**/coverage",
-      "!**/playwright-report"
+      "!**/playwright-report",
+      "!**/lighthouse-report*"
     ]
   }
 }

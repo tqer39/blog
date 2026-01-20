@@ -12,8 +12,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  shared-infra:
+    name: Shared Infrastructure
+    uses: ./.github/workflows/terraform-shared.yml
+    with:
+      RUN_APPLY: true
+    secrets: inherit
+
+  sync-secrets:
+    name: Sync Secrets
+    needs: shared-infra
+    uses: ./.github/workflows/sync-secrets.yml
+    with:
+      target: wrangler
+      environment: prod
+    secrets: inherit
+
   terraform:
     name: Terraform
+    needs: sync-secrets
     uses: ./.github/workflows/terraform-prod.yml
     with:
       RUN_APPLY: true

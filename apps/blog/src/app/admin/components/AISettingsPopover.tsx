@@ -10,18 +10,17 @@ import type {
 } from '@blog/cms-types';
 import {
   Button,
-  Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Separator,
 } from '@blog/ui';
 import { RotateCcw, Settings } from 'lucide-react';
+import {
+  type ModelOption,
+  type ModelOptionWithProvider,
+  ModelSelectField,
+} from './ModelSelectField';
 
 interface AISettingsPopoverProps {
   settings: AIModelSettings;
@@ -30,38 +29,32 @@ interface AISettingsPopoverProps {
 }
 
 // Model options with display labels (exported for reuse)
-export const OPENAI_MODELS: { value: OpenAIModel; label: string }[] = [
+export const OPENAI_MODELS: ModelOption<OpenAIModel>[] = [
   { value: 'gpt-4o-mini', label: 'GPT-4o Mini (Fast)' },
-  { value: 'gpt-4o', label: 'GPT-4o (Best)' },
-  { value: 'gpt-4-turbo', label: 'GPT-4 Turbo' },
-  { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo (Economy)' },
+  { value: 'gpt-4o', label: 'GPT-4o' },
+  { value: 'gpt-4.1-mini-2025-04-14', label: 'GPT-4.1 Mini' },
+  { value: 'gpt-4.1-2025-04-14', label: 'GPT-4.1 (Best)' },
 ];
 
-export const ANTHROPIC_MODELS: { value: AnthropicModel; label: string }[] = [
-  { value: 'claude-sonnet-4-20250514', label: 'Claude 4 Sonnet (Latest)' },
-  { value: 'claude-3-5-sonnet-20241022', label: 'Claude 3.5 Sonnet' },
-  { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus (Best)' },
-  { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku (Fast)' },
+export const ANTHROPIC_MODELS: ModelOption<AnthropicModel>[] = [
+  { value: 'claude-haiku-4-5-20251001', label: 'Claude Haiku 4.5 (Fast)' },
+  { value: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4' },
+  { value: 'claude-sonnet-4-5-20250929', label: 'Claude Sonnet 4.5 (Best)' },
+  { value: 'claude-opus-4-5-20251101', label: 'Claude Opus 4.5 (Premium)' },
 ];
 
-export const GEMINI_IMAGE_MODELS: { value: GeminiImageModel; label: string }[] =
-  [
-    { value: 'gemini-2.5-flash-image', label: 'Gemini 2.5 Flash (Fast)' },
-    { value: 'gemini-3-pro-image-preview', label: 'Gemini 3 Pro (Best)' },
-  ];
+export const GEMINI_IMAGE_MODELS: ModelOption<GeminiImageModel>[] = [
+  { value: 'gemini-2.5-flash-image', label: 'Gemini 2.5 Flash (Fast)' },
+  { value: 'gemini-3-pro-image-preview', label: 'Gemini 3 Pro (Best)' },
+];
 
-export const OPENAI_IMAGE_MODELS: { value: OpenAIImageModel; label: string }[] =
-  [
-    { value: 'dall-e-3', label: 'DALL-E 3 (Best)' },
-    { value: 'dall-e-2', label: 'DALL-E 2 (Fast)' },
-  ];
+export const OPENAI_IMAGE_MODELS: ModelOption<OpenAIImageModel>[] = [
+  { value: 'dall-e-3', label: 'DALL-E 3 (Best)' },
+  { value: 'dall-e-2', label: 'DALL-E 2 (Fast)' },
+];
 
 // Combined image models for all providers
-export const ALL_IMAGE_MODELS: {
-  value: ImageModel;
-  label: string;
-  provider: string;
-}[] = [
+export const ALL_IMAGE_MODELS: ModelOptionWithProvider<ImageModel>[] = [
   ...GEMINI_IMAGE_MODELS.map((m) => ({ ...m, provider: 'Gemini' })),
   ...OPENAI_IMAGE_MODELS.map((m) => ({ ...m, provider: 'OpenAI' })),
 ];
@@ -101,151 +94,64 @@ export function AISettingsPopover({
           <Separator />
 
           {/* Metadata Generation (OpenAI) */}
-          <div className="space-y-2">
-            <Label className="text-xs text-muted-foreground">
-              Metadata (OpenAI)
-            </Label>
-            <Select
-              value={settings.metadata}
-              onValueChange={(v: string) =>
-                onSettingsChange({ metadata: v as OpenAIModel })
-              }
-            >
-              <SelectTrigger className="h-8 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {OPENAI_MODELS.map((m) => (
-                  <SelectItem key={m.value} value={m.value}>
-                    {m.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <ModelSelectField
+            label="Metadata (OpenAI)"
+            value={settings.metadata}
+            onChange={(v) => onSettingsChange({ metadata: v })}
+            options={OPENAI_MODELS}
+          />
 
           {/* Image Generation (Gemini / OpenAI) */}
-          <div className="space-y-2">
-            <Label className="text-xs text-muted-foreground">
-              Image (Gemini / DALL-E)
-            </Label>
-            <Select
-              value={settings.image}
-              onValueChange={(v: string) =>
-                onSettingsChange({ image: v as ImageModel })
-              }
-            >
-              <SelectTrigger className="h-8 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ALL_IMAGE_MODELS.map((m) => (
-                  <SelectItem key={m.value} value={m.value}>
-                    <span className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground">
-                        [{m.provider}]
-                      </span>
-                      {m.label}
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <ModelSelectField
+            label="Image (Gemini / DALL-E)"
+            value={settings.image}
+            onChange={(v) => onSettingsChange({ image: v })}
+            options={ALL_IMAGE_MODELS}
+            renderItem={(opt) => (
+              <span className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">
+                  [{(opt as ModelOptionWithProvider).provider}]
+                </span>
+                {opt.label}
+              </span>
+            )}
+          />
 
           <Separator />
 
           <p className="text-xs text-muted-foreground">Claude (Anthropic)</p>
 
           {/* Article Review */}
-          <div className="space-y-2">
-            <Label className="text-xs text-muted-foreground">Review</Label>
-            <Select
-              value={settings.review}
-              onValueChange={(v: string) =>
-                onSettingsChange({ review: v as AnthropicModel })
-              }
-            >
-              <SelectTrigger className="h-8 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ANTHROPIC_MODELS.map((m) => (
-                  <SelectItem key={m.value} value={m.value}>
-                    {m.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <ModelSelectField
+            label="Review"
+            value={settings.review}
+            onChange={(v) => onSettingsChange({ review: v })}
+            options={ANTHROPIC_MODELS}
+          />
 
           {/* Outline Generation */}
-          <div className="space-y-2">
-            <Label className="text-xs text-muted-foreground">Outline</Label>
-            <Select
-              value={settings.outline}
-              onValueChange={(v: string) =>
-                onSettingsChange({ outline: v as AnthropicModel })
-              }
-            >
-              <SelectTrigger className="h-8 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ANTHROPIC_MODELS.map((m) => (
-                  <SelectItem key={m.value} value={m.value}>
-                    {m.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <ModelSelectField
+            label="Outline"
+            value={settings.outline}
+            onChange={(v) => onSettingsChange({ outline: v })}
+            options={ANTHROPIC_MODELS}
+          />
 
           {/* Text Transform */}
-          <div className="space-y-2">
-            <Label className="text-xs text-muted-foreground">Transform</Label>
-            <Select
-              value={settings.transform}
-              onValueChange={(v: string) =>
-                onSettingsChange({ transform: v as AnthropicModel })
-              }
-            >
-              <SelectTrigger className="h-8 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ANTHROPIC_MODELS.map((m) => (
-                  <SelectItem key={m.value} value={m.value}>
-                    {m.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <ModelSelectField
+            label="Transform"
+            value={settings.transform}
+            onChange={(v) => onSettingsChange({ transform: v })}
+            options={ANTHROPIC_MODELS}
+          />
 
           {/* Continuation Suggestion */}
-          <div className="space-y-2">
-            <Label className="text-xs text-muted-foreground">
-              Continuation
-            </Label>
-            <Select
-              value={settings.continuation}
-              onValueChange={(v: string) =>
-                onSettingsChange({ continuation: v as AnthropicModel })
-              }
-            >
-              <SelectTrigger className="h-8 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ANTHROPIC_MODELS.map((m) => (
-                  <SelectItem key={m.value} value={m.value}>
-                    {m.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <ModelSelectField
+            label="Continuation"
+            value={settings.continuation}
+            onChange={(v) => onSettingsChange({ continuation: v })}
+            options={ANTHROPIC_MODELS}
+          />
         </div>
       </PopoverContent>
     </Popover>

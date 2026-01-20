@@ -75,6 +75,45 @@ async function fetchApi<T>(path: string, options?: RequestInit): Promise<T> {
   return baseFetchApi(path, options);
 }
 
+// ==============================
+// JSON Request Helpers
+// ==============================
+
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
+
+/**
+ * POST request with JSON body
+ */
+function postJson<T>(path: string, data: unknown): Promise<T> {
+  return fetchApi(path, {
+    method: 'POST',
+    headers: JSON_HEADERS,
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * PUT request with JSON body
+ */
+function putJson<T>(path: string, data: unknown): Promise<T> {
+  return fetchApi(path, {
+    method: 'PUT',
+    headers: JSON_HEADERS,
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * PATCH request with JSON body
+ */
+function patchJson<T>(path: string, data: unknown): Promise<T> {
+  return fetchApi(path, {
+    method: 'PATCH',
+    headers: JSON_HEADERS,
+    body: JSON.stringify(data),
+  });
+}
+
 // Articles
 export async function getArticles(params?: {
   status?: string;
@@ -99,22 +138,14 @@ export async function getArticle(hash: string): Promise<Article> {
 }
 
 export async function createArticle(input: ArticleInput): Promise<Article> {
-  return fetchApi('/articles', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(input),
-  });
+  return postJson('/articles', input);
 }
 
 export async function updateArticle(
   hash: string,
   input: Partial<ArticleInput>
 ): Promise<Article> {
-  return fetchApi(`/articles/${hash}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(input),
-  });
+  return putJson(`/articles/${hash}`, input);
 }
 
 export async function deleteArticle(hash: string): Promise<void> {
@@ -139,19 +170,11 @@ export async function getTag(id: string): Promise<Tag> {
 }
 
 export async function createTag(input: TagInput): Promise<Tag> {
-  return fetchApi('/tags', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(input),
-  });
+  return postJson('/tags', input);
 }
 
 export async function updateTag(id: string, input: TagInput): Promise<Tag> {
-  return fetchApi(`/tags/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(input),
-  });
+  return putJson(`/tags/${id}`, input);
 }
 
 export async function deleteTag(id: string): Promise<void> {
@@ -168,22 +191,14 @@ export async function getCategory(id: string): Promise<Category> {
 }
 
 export async function createCategory(input: CategoryInput): Promise<Category> {
-  return fetchApi('/categories', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(input),
-  });
+  return postJson('/categories', input);
 }
 
 export async function updateCategory(
   id: string,
   input: CategoryInput
 ): Promise<Category> {
-  return fetchApi(`/categories/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(input),
-  });
+  return putJson(`/categories/${id}`, input);
 }
 
 export async function deleteCategory(id: string): Promise<void> {
@@ -193,11 +208,7 @@ export async function deleteCategory(id: string): Promise<void> {
 export async function updateCategoriesOrder(
   orderedIds: string[]
 ): Promise<void> {
-  await fetchApi('/categories/reorder', {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ orderedIds }),
-  });
+  await patchJson('/categories/reorder', { orderedIds });
 }
 
 // Images
@@ -225,61 +236,37 @@ export async function deleteImage(id: string): Promise<void> {
 export async function generateMetadata(
   request: GenerateMetadataRequest
 ): Promise<GenerateMetadataResponse> {
-  return fetchApi('/ai/generate-metadata', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(request),
-  });
+  return postJson('/ai/generate-metadata', request);
 }
 
 export async function generateImage(
   request: GenerateImageRequest
 ): Promise<GenerateImageResponse> {
-  return fetchApi('/ai/generate-image', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(request),
-  });
+  return postJson('/ai/generate-image', request);
 }
 
 export async function reviewArticle(
   request: ReviewArticleRequest
 ): Promise<ReviewArticleResponse> {
-  return fetchApi('/ai/review-article', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(request),
-  });
+  return postJson('/ai/review-article', request);
 }
 
 export async function suggestContinuation(
   request: SuggestContinuationRequest
 ): Promise<SuggestContinuationResponse> {
-  return fetchApi('/ai/suggest-continuation', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(request),
-  });
+  return postJson('/ai/suggest-continuation', request);
 }
 
 export async function generateOutline(
   request: GenerateOutlineRequest
 ): Promise<GenerateOutlineResponse> {
-  return fetchApi('/ai/generate-outline', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(request),
-  });
+  return postJson('/ai/generate-outline', request);
 }
 
 export async function transformText(
   request: TransformTextRequest
 ): Promise<TransformTextResponse> {
-  return fetchApi('/ai/transform-text', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(request),
-  });
+  return postJson('/ai/transform-text', request);
 }
 
 // Settings
@@ -290,9 +277,5 @@ export async function getSiteSettings(): Promise<SiteSettingsResponse> {
 export async function updateSiteSettings(
   input: SiteSettingsInput
 ): Promise<SiteSettingsResponse> {
-  return fetchApi('/settings', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(input),
-  });
+  return putJson('/settings', input);
 }

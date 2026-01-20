@@ -23,6 +23,13 @@ on:
         required: true
         type: boolean
         default: false
+  workflow_call:
+    inputs:
+      RUN_APPLY:
+        description: "Apply実行フラグ（falseの場合はplanのみ）"
+        required: false
+        type: boolean
+        default: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -114,11 +121,38 @@ jobs:
       - name: Terraform Apply
         if: |
           steps.plan-status.outputs.status == 'has-diff' &&
-          (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true'))
+          (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true') || (github.event_name == 'workflow_call' && inputs.RUN_APPLY))
         working-directory: ${{ env.WORKING_DIRECTORY }}
         env:
           TF_VAR_discord_bot_token: ${{ secrets.DISCORD_BOT_TOKEN }}
         run: terraform apply -auto-approve
+
+      - name: Generate GitHub App Token
+        if: |
+          (github.event_name == 'workflow_call' && inputs.RUN_APPLY) ||
+          (steps.plan-status.outputs.status == 'has-diff' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true')))
+        id: app_token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.GHA_APP_ID }}
+          private-key: ${{ secrets.GHA_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Sync Webhook URLs to GitHub Secrets
+        if: |
+          (github.event_name == 'workflow_call' && inputs.RUN_APPLY) ||
+          (steps.plan-status.outputs.status == 'has-diff' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true')))
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          GH_TOKEN: ${{ steps.app_token.outputs.token }}
+        run: |
+          echo "::group::Syncing Discord Webhook URLs to GitHub Secrets"
+          WEBHOOK_DEV=$(terraform output -raw webhook_dev_url)
+          WEBHOOK_PROD=$(terraform output -raw webhook_prod_url)
+          gh secret set DISCORD_WEBHOOK_DEV --body "$WEBHOOK_DEV"
+          gh secret set DISCORD_WEBHOOK_PROD --body "$WEBHOOK_PROD"
+          echo "::endgroup::"
+          echo "Discord Webhook URLs synced to GitHub Secrets"
 
       - name: Finish Deployment
         if: steps.plan-status.outputs.status == 'has-diff' && always() && github.ref == 'refs/heads/main'
