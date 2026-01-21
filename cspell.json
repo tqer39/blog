@@ -92,6 +92,7 @@
     "healthcheck",
     "hono",
     "histappend",
+    "HSTS",
     "icns",
     "idempotently",
     "ignoredups",
