@@ -69,13 +69,6 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: blog-build
-          path: apps/blog/out/
-          retention-days: 1
-
   e2e-test:
     name: E2E Test
     runs-on: ubuntu-latest
