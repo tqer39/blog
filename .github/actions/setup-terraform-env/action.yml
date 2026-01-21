@@ -41,6 +41,18 @@ runs:
       with:
         terraform_version: ${{ steps.tf-version.outputs.version }}
 
+    - name: Cache Terraform Providers
+      uses: actions/cache@v5
+      with:
+        path: ~/.terraform.d/plugin-cache
+        key: terraform-providers-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}
+        restore-keys: |
+          terraform-providers-${{ runner.os }}-
+
+    - name: Setup Terraform Plugin Cache Directory
+      shell: bash
+      run: mkdir -p ~/.terraform.d/plugin-cache
+
     - name: Terraform Format Check
       shell: bash
       working-directory: ${{ inputs.working-directory }}
@@ -49,6 +61,8 @@ runs:
     - name: Terraform Init
       shell: bash
       working-directory: ${{ inputs.working-directory }}
+      env:
+        TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
       run: terraform init -upgrade
 
     - name: Terraform Validate
