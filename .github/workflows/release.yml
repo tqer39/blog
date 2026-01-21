@@ -20,6 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      version: ${{ inputs.version }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -93,3 +95,9 @@ jobs:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
           title: "Release Creation Failed"
           message: "Failed to create release ${{ inputs.version }}"
+
+  deploy:
+    name: Deploy to Production
+    needs: release
+    uses: ./.github/workflows/deploy-prod.yml
+    secrets: inherit
