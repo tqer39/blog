@@ -1,11 +1,25 @@
 ---
-name: CI
+name: Test and Build
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "*.md"
+      - "docs/**"
+      - "LICENSE"
+      - ".editorconfig"
+      - ".gitattributes"
+      - ".claude/**"
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "*.md"
+      - "docs/**"
+      - "LICENSE"
+      - ".editorconfig"
+      - ".gitattributes"
+      - ".claude/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
