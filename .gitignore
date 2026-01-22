@@ -629,3 +629,6 @@ lighthouse-report.html
 lighthouse-report.json
 lighthouse-report.report.html
 lighthouse-report.report.json
+
+# tmp
+tmp/
