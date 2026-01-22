@@ -62,8 +62,6 @@ Secrets are stored in two vaults:
 | `blog-r2-token`             | R2_TOKEN              | Wrangler      |
 | `blog-r2-access-key-id`     | R2_ACCESS_KEY_ID      | Wrangler      |
 | `blog-r2-secret-access-key` | R2_SECRET_ACCESS_KEY  | Wrangler      |
-| `blog-r2-public-url-dev`    | R2_PUBLIC_URL         | Wrangler dev  |
-| `blog-r2-public-url-prod`   | R2_PUBLIC_URL         | Wrangler prod |
 
 ### Vercel (op://shared-secrets/vercel)
 
@@ -395,7 +393,6 @@ pnpm wrangler secret put AUTH_SECRET --env dev
 pnpm wrangler secret put ADMIN_PASSWORD_HASH --env dev
 pnpm wrangler secret put R2_ACCESS_KEY_ID --env dev
 pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env dev
-pnpm wrangler secret put R2_PUBLIC_URL --env dev
 pnpm wrangler secret put BASIC_AUTH_USER --env dev
 pnpm wrangler secret put BASIC_AUTH_PASS --env dev
 
@@ -407,7 +404,6 @@ pnpm wrangler secret put AUTH_SECRET --env prod
 pnpm wrangler secret put ADMIN_PASSWORD_HASH --env prod
 pnpm wrangler secret put R2_ACCESS_KEY_ID --env prod
 pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env prod
-pnpm wrangler secret put R2_PUBLIC_URL --env prod
 ```
 
 Or via Cloudflare Dashboard:
