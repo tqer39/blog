@@ -1,0 +1,85 @@
+---
+name: Cleanup CloudFlare DNS Records
+description: Delete conflicting DNS records before Terraform creates new ones
+
+inputs:
+  zone-id:
+    description: CloudFlare Zone ID
+    required: true
+  api-token:
+    description: CloudFlare API Token
+    required: true
+  subdomain:
+    description: Subdomain to clean up (e.g., "blog" for blog.example.com)
+    required: true
+  domain:
+    description: Base domain (e.g., "tqer39.dev")
+    required: true
+  keep-type:
+    description: Record type to keep (e.g., "CNAME"). Others will be deleted.
+    required: false
+    default: "CNAME"
+
+runs:
+  using: composite
+  steps:
+    - name: Cleanup conflicting DNS records
+      shell: bash
+      env:
+        CLOUDFLARE_ZONE_ID: ${{ inputs.zone-id }}
+        CLOUDFLARE_API_TOKEN: ${{ inputs.api-token }}
+        SUBDOMAIN: ${{ inputs.subdomain }}
+        DOMAIN: ${{ inputs.domain }}
+        KEEP_TYPE: ${{ inputs.keep-type }}
+      run: |
+        FULL_NAME="${SUBDOMAIN}.${DOMAIN}"
+        echo "Checking for DNS records: ${FULL_NAME}"
+
+        # Get all DNS records for this name
+        RESPONSE=$(curl -s -X GET \
+          "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/dns_records?name=${FULL_NAME}" \
+          -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+          -H "Content-Type: application/json")
+
+        # Check if request was successful
+        SUCCESS=$(echo "$RESPONSE" | jq -r '.success')
+        if [ "$SUCCESS" != "true" ]; then
+          echo "::warning::Failed to query CloudFlare API"
+          echo "$RESPONSE" | jq -r '.errors'
+          exit 0  # Don't fail the workflow, let Terraform handle it
+        fi
+
+        # Get record count
+        RECORD_COUNT=$(echo "$RESPONSE" | jq -r '.result | length')
+        echo "Found ${RECORD_COUNT} DNS record(s) for ${FULL_NAME}"
+
+        if [ "$RECORD_COUNT" -eq 0 ]; then
+          echo "No existing records found. Terraform can create new record."
+          exit 0
+        fi
+
+        # Check each record
+        echo "$RESPONSE" | jq -r '.result[] | "\(.id) \(.type) \(.content)"' | while read -r RECORD_ID RECORD_TYPE RECORD_CONTENT; do
+          echo "  - ${RECORD_TYPE} record (ID: ${RECORD_ID}): ${RECORD_CONTENT}"
+
+          if [ "$RECORD_TYPE" = "$KEEP_TYPE" ]; then
+            echo "    → Keeping (matches desired type: ${KEEP_TYPE})"
+          else
+            echo "    → Deleting (type ${RECORD_TYPE} conflicts with desired ${KEEP_TYPE})"
+
+            DELETE_RESPONSE=$(curl -s -X DELETE \
+              "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/dns_records/${RECORD_ID}" \
+              -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              -H "Content-Type: application/json")
+
+            DELETE_SUCCESS=$(echo "$DELETE_RESPONSE" | jq -r '.success')
+            if [ "$DELETE_SUCCESS" = "true" ]; then
+              echo "    ✓ Deleted successfully"
+            else
+              echo "::warning::Failed to delete record ${RECORD_ID}"
+              echo "$DELETE_RESPONSE" | jq -r '.errors'
+            fi
+          fi
+        done
+
+        echo "DNS cleanup complete"
