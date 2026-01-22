@@ -1,4 +1,6 @@
 export { useAIModelSettings } from './useAIModelSettings';
+export type { ArticleDraft } from './useArticleDraft';
+export { useArticleDraft } from './useArticleDraft';
 export type {
   UseFetchDataOptions,
   UseFetchDataResult,

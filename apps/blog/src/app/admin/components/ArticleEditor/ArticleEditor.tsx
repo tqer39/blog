@@ -25,8 +25,16 @@ import {
   X,
 } from 'lucide-react';
 import Image from 'next/image';
-import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import { useAIModelSettings } from '@/hooks/useAIModelSettings';
+import { useArticleDraft } from '@/hooks/useArticleDraft';
 import {
   generateImage,
   generateMetadata,
@@ -74,10 +82,89 @@ export function ArticleEditor({
     updateSettings: updateAISettings,
     resetSettings: resetAISettings,
   } = useAIModelSettings();
+  const { saveDraft, loadDraft, clearDraft } = useArticleDraft(initialData?.id);
   const headerImageInputRef = useRef<HTMLInputElement>(null);
+  const [showDraftDialog, setShowDraftDialog] = useState(false);
+  const [pendingDraft, setPendingDraft] = useState<ReturnType<
+    typeof loadDraft
+  > | null>(null);
+  const isInitialMount = useRef(true);
 
   // Destructure state for easier access
   const { article, loading, ui, imageGen, review } = state;
+
+  // Load draft on mount (only for new articles or if draft is newer than saved data)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentionally run only on mount
+  useEffect(() => {
+    const draft = loadDraft();
+    if (draft) {
+      // For new articles, always offer to restore
+      // For existing articles, only offer if draft is newer
+      const shouldOffer = !initialData || draft.savedAt > Date.now() - 60000;
+      if (shouldOffer && draft.content) {
+        setPendingDraft(draft);
+        setShowDraftDialog(true);
+      }
+    }
+  }, []);
+
+  // Auto-save draft when article changes (debounced in hook)
+  useEffect(() => {
+    // Skip initial mount to avoid saving initial state immediately
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    saveDraft({
+      title: article.title,
+      description: article.description,
+      content: article.content,
+      tags: article.tags,
+      categoryId: article.categoryId,
+      status: article.status,
+      headerImageId: article.headerImageId,
+      headerImageUrl: article.headerImageUrl,
+      slideMode: article.slideMode,
+      slideDuration: article.slideDuration,
+    });
+  }, [article, saveDraft]);
+
+  // Handle draft restoration
+  const handleRestoreDraft = useCallback(() => {
+    if (pendingDraft) {
+      dispatch({ type: 'SET_TITLE', payload: pendingDraft.title });
+      dispatch({ type: 'SET_DESCRIPTION', payload: pendingDraft.description });
+      dispatch({ type: 'SET_CONTENT', payload: pendingDraft.content });
+      dispatch({ type: 'SET_TAGS', payload: pendingDraft.tags });
+      dispatch({
+        type: 'SET_CATEGORY_ID',
+        payload: pendingDraft.categoryId,
+      });
+      dispatch({ type: 'SET_SLIDE_MODE', payload: pendingDraft.slideMode });
+      dispatch({
+        type: 'SET_SLIDE_DURATION',
+        payload: pendingDraft.slideDuration,
+      });
+      if (pendingDraft.headerImageId && pendingDraft.headerImageUrl) {
+        dispatch({
+          type: 'SET_HEADER_IMAGE',
+          payload: {
+            id: pendingDraft.headerImageId,
+            url: pendingDraft.headerImageUrl,
+          },
+        });
+      }
+    }
+    setShowDraftDialog(false);
+    setPendingDraft(null);
+  }, [pendingDraft]);
+
+  const handleDiscardDraft = useCallback(() => {
+    clearDraft();
+    setShowDraftDialog(false);
+    setPendingDraft(null);
+  }, [clearDraft]);
 
   // Reset save success indicator after 2 seconds
   useEffect(() => {
@@ -323,6 +410,7 @@ export function ArticleEditor({
         slideMode: article.slideMode,
         slideDuration: article.slideDuration,
       });
+      clearDraft();
       dispatch({ type: 'SET_SAVE_SUCCESS', payload: true });
     } catch (err) {
       dispatch({
@@ -336,6 +424,59 @@ export function ArticleEditor({
 
   return (
     <div className="space-y-6">
+      {/* Draft Recovery Banner */}
+      {showDraftDialog && pendingDraft && (
+        <div className="flex items-center justify-between rounded-lg border border-amber-500/50 bg-amber-500/10 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <div className="text-amber-600 dark:text-amber-400">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-label="Draft recovery notice"
+                role="img"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                未保存の下書きがあります
+              </p>
+              <p className="text-xs text-amber-700 dark:text-amber-300">
+                {new Date(pendingDraft.savedAt).toLocaleString('ja-JP')} に保存
+                {pendingDraft.title &&
+                  ` - "${pendingDraft.title.slice(0, 30)}${pendingDraft.title.length > 30 ? '...' : ''}"`}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleDiscardDraft}
+              className="border-amber-500/50 text-amber-700 hover:bg-amber-500/20 dark:text-amber-300"
+            >
+              破棄
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleRestoreDraft}
+              className="bg-amber-600 text-white hover:bg-amber-700"
+            >
+              復元
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">
