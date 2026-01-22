@@ -223,6 +223,18 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: development-vercel
 
+      - name: Cleanup CloudFlare DNS
+        if: |
+          steps.plan-status.outputs.status == 'has-diff' &&
+          env.RUN_APPLY == 'true'
+        uses: ./.github/actions/cleanup-cloudflare-dns
+        with:
+          zone-id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          subdomain: blog-dev
+          domain: tqer39.dev
+          keep-type: CNAME
+
       - name: Terraform Apply
         if: |
           steps.plan-status.outputs.status == 'has-diff' &&
