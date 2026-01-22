@@ -36,6 +36,8 @@ const cspDirectives = {
     'data:',
     'blob:',
     DOMAINS.CDN,
+    // R2 public storage (direct access when CDN is not configured)
+    'https://*.cloudflarestorage.com',
     'https://picsum.photos',
     'https://*.picsum.photos',
     'https://images.unsplash.com',
@@ -80,6 +82,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: `cdn.${BASE_DOMAIN}`,
+      },
+      {
+        protocol: 'https',
+        hostname: '*.cloudflarestorage.com',
       },
     ],
   },

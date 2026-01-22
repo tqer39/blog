@@ -3,8 +3,8 @@
  * Run with: pnpm seed (requires API server running)
  */
 
-const API_URL = process.env.CMS_API_URL || "http://localhost:3101/v1";
-const API_KEY = process.env.CMS_API_KEY || "dev-api-key";
+const API_URL = process.env.CMS_API_URL || 'http://localhost:3101/v1';
+const API_KEY = process.env.CMS_API_KEY || 'dev-api-key';
 
 interface CategoryInput {
   name: string;
@@ -18,23 +18,23 @@ interface ArticleInput {
   description: string;
   content: string;
   tags: string[];
-  status: "draft" | "published";
+  status: 'draft' | 'published';
   headerImageId?: string;
   slideMode?: boolean;
 }
 
 const categories: CategoryInput[] = [
-  { name: "Tech", slug: "tech", color: "#3B82F6", displayOrder: 1 },
-  { name: "Life", slug: "life", color: "#10B981", displayOrder: 2 },
-  { name: "Books", slug: "books", color: "#F59E0B", displayOrder: 3 },
+  { name: 'Tech', slug: 'tech', color: '#3B82F6', displayOrder: 1 },
+  { name: 'Life', slug: 'life', color: '#10B981', displayOrder: 2 },
+  { name: 'Books', slug: 'books', color: '#F59E0B', displayOrder: 3 },
 ];
 
 async function createCategory(category: CategoryInput): Promise<boolean> {
   try {
     const res = await fetch(`${API_URL}/categories`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${API_KEY}`,
       },
       body: JSON.stringify(category),
@@ -49,7 +49,7 @@ async function createCategory(category: CategoryInput): Promise<boolean> {
     return false;
   } catch (e) {
     console.log(
-      `  ❌ Error: ${category.name} (${e instanceof Error ? e.message : "Unknown error"})`,
+      `  ❌ Error: ${category.name} (${e instanceof Error ? e.message : 'Unknown error'})`
     );
     return false;
   }
@@ -59,17 +59,17 @@ async function createCategory(category: CategoryInput): Promise<boolean> {
 async function uploadPlaceholderImage(): Promise<string | null> {
   try {
     // Fetch random image from picsum.photos (800x400)
-    const imageRes = await fetch("https://picsum.photos/800/400");
+    const imageRes = await fetch('https://picsum.photos/800/400');
     if (!imageRes.ok) return null;
 
     const imageBlob = await imageRes.blob();
 
     // Upload to CMS API
     const formData = new FormData();
-    formData.append("file", imageBlob, "placeholder.jpg");
+    formData.append('file', imageBlob, 'placeholder.jpg');
 
     const res = await fetch(`${API_URL}/images`, {
-      method: "POST",
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${API_KEY}`,
       },
@@ -88,8 +88,8 @@ async function uploadPlaceholderImage(): Promise<string | null> {
 
 const articles: ArticleInput[] = [
   {
-    title: "Hello World - ブログを始めました",
-    description: "個人ブログを開設しました。技術記事やメモを書いていきます。",
+    title: 'Hello World - ブログを始めました',
+    description: '個人ブログを開設しました。技術記事やメモを書いていきます。',
     content: `# Hello World - ブログを始めました
 
 ## はじめに
@@ -190,13 +190,13 @@ sequenceDiagram
 ## まとめ
 
 今後も継続的に記事を更新していく予定です。`,
-    tags: ["Next.js", "Blog"],
-    status: "published",
+    tags: ['Next.js', 'Blog'],
+    status: 'published',
   },
   {
-    title: "Next.js App Router 完全ガイド",
+    title: 'Next.js App Router 完全ガイド',
     description:
-      "Next.js 14のApp Routerについて詳しく解説します。Server Components、Client Components、Layoutsの使い方を学びましょう。",
+      'Next.js 14のApp Routerについて詳しく解説します。Server Components、Client Components、Layoutsの使い方を学びましょう。',
     content: `# Next.js App Router 完全ガイド
 
 ## はじめに
@@ -233,13 +233,13 @@ export default function Counter() {
 ## まとめ
 
 App Routerを使いこなして、モダンなWebアプリケーションを構築しましょう。`,
-    tags: ["Next.js", "React", "TypeScript"],
-    status: "published",
+    tags: ['Next.js', 'React', 'TypeScript'],
+    status: 'published',
   },
   {
-    title: "TypeScript ベストプラクティス 2024",
+    title: 'TypeScript ベストプラクティス 2024',
     description:
-      "TypeScriptを効果的に使うためのベストプラクティスをまとめました。",
+      'TypeScriptを効果的に使うためのベストプラクティスをまとめました。',
     content: `# TypeScript ベストプラクティス 2024
 
 ## 型推論を活用する
@@ -273,12 +273,12 @@ function handleStatus(status: Status) {
 ## まとめ
 
 TypeScriptの型システムを正しく理解して、安全なコードを書きましょう。`,
-    tags: ["TypeScript", "JavaScript"],
-    status: "published",
+    tags: ['TypeScript', 'JavaScript'],
+    status: 'published',
   },
   {
-    title: "Cloudflare Workers 入門",
-    description: "Cloudflare Workersでエッジコンピューティングを始めましょう。",
+    title: 'Cloudflare Workers 入門',
+    description: 'Cloudflare Workersでエッジコンピューティングを始めましょう。',
     content: `# Cloudflare Workers 入門
 
 ## Cloudflare Workersとは
@@ -311,13 +311,13 @@ export default {
 ## まとめ
 
 Cloudflare Workersでエッジコンピューティングの世界を体験しましょう。`,
-    tags: ["Cloudflare", "TypeScript"],
-    status: "published",
+    tags: ['Cloudflare', 'TypeScript'],
+    status: 'published',
   },
   {
-    title: "Tailwind CSS 実践テクニック",
+    title: 'Tailwind CSS 実践テクニック',
     description:
-      "Tailwind CSSを使った効率的なスタイリングのテクニックを紹介します。",
+      'Tailwind CSSを使った効率的なスタイリングのテクニックを紹介します。',
     content: `# Tailwind CSS 実践テクニック
 
 ## カスタムカラーの定義
@@ -358,12 +358,12 @@ module.exports = {
 ## まとめ
 
 Tailwind CSSでモダンなUIを効率的に構築しましょう。`,
-    tags: ["CSS", "Tailwind"],
-    status: "published",
+    tags: ['CSS', 'Tailwind'],
+    status: 'published',
   },
   {
-    title: "React Hooks 徹底解説",
-    description: "React Hooksの仕組みと正しい使い方を深掘りします。",
+    title: 'React Hooks 徹底解説',
+    description: 'React Hooksの仕組みと正しい使い方を深掘りします。',
     content: `# React Hooks 徹底解説
 
 ## useStateの仕組み
@@ -399,12 +399,12 @@ const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
 ## まとめ
 
 Hooksを正しく理解して、効率的なReactコンポーネントを作りましょう。`,
-    tags: ["React", "JavaScript"],
-    status: "published",
+    tags: ['React', 'JavaScript'],
+    status: 'published',
   },
   {
-    title: "Git ワークフロー改善テクニック",
-    description: "日々のGit操作を効率化するテクニックを紹介します。",
+    title: 'Git ワークフロー改善テクニック',
+    description: '日々のGit操作を効率化するテクニックを紹介します。',
     content: `# Git ワークフロー改善テクニック
 
 ## 便利なエイリアス
@@ -433,12 +433,12 @@ git stash pop
 ## まとめ
 
 Gitを使いこなして、チーム開発を効率化しましょう。`,
-    tags: ["Git", "DevOps"],
-    status: "published",
+    tags: ['Git', 'DevOps'],
+    status: 'published',
   },
   {
-    title: "Docker Compose 設計パターン",
-    description: "Docker Composeを使った開発環境構築のパターンを解説します。",
+    title: 'Docker Compose 設計パターン',
+    description: 'Docker Composeを使った開発環境構築のパターンを解説します。',
     content: `# Docker Compose 設計パターン
 
 ## 基本構成
@@ -479,12 +479,12 @@ CMD ["node", "dist/index.js"]
 ## まとめ
 
 Docker Composeで再現可能な開発環境を構築しましょう。`,
-    tags: ["Docker", "DevOps"],
-    status: "published",
+    tags: ['Docker', 'DevOps'],
+    status: 'published',
   },
   {
-    title: "REST API 設計原則",
-    description: "良いREST APIを設計するための原則をまとめました。",
+    title: 'REST API 設計原則',
+    description: '良いREST APIを設計するための原則をまとめました。',
     content: `# REST API 設計原則
 
 ## リソース指向
@@ -524,12 +524,12 @@ DELETE /users/:id      # ユーザー削除
 ## まとめ
 
 一貫性のあるAPI設計で、使いやすいAPIを提供しましょう。`,
-    tags: ["API", "Backend"],
-    status: "published",
+    tags: ['API', 'Backend'],
+    status: 'published',
   },
   {
-    title: "フロントエンドテスト戦略",
-    description: "効果的なフロントエンドテストの戦略と実践方法を解説します。",
+    title: 'フロントエンドテスト戦略',
+    description: '効果的なフロントエンドテストの戦略と実践方法を解説します。',
     content: `# フロントエンドテスト戦略
 
 ## テストピラミッド
@@ -565,13 +565,13 @@ test('homepage has title', async ({ page }) => {
 ## まとめ
 
 適切なテスト戦略で、信頼性の高いアプリケーションを作りましょう。`,
-    tags: ["Testing", "JavaScript"],
-    status: "published",
+    tags: ['Testing', 'JavaScript'],
+    status: 'published',
   },
   {
-    title: "Webパフォーマンス最適化",
+    title: 'Webパフォーマンス最適化',
     description:
-      "Webアプリケーションのパフォーマンスを改善するテクニックを紹介します。",
+      'Webアプリケーションのパフォーマンスを改善するテクニックを紹介します。',
     content: `# Webパフォーマンス最適化
 
 ## Core Web Vitals
@@ -611,13 +611,13 @@ const HeavyComponent = dynamic(() => import('./HeavyComponent'), {
 ## まとめ
 
 パフォーマンスを意識して、ユーザー体験を向上させましょう。`,
-    tags: ["Performance", "Web"],
-    status: "published",
+    tags: ['Performance', 'Web'],
+    status: 'published',
   },
   {
-    title: "画像カルーセル機能のデモ",
+    title: '画像カルーセル機能のデモ',
     description:
-      "Markdownでカルーセルを使う方法を紹介します。複数の画像をスライド形式で表示できます。",
+      'Markdownでカルーセルを使う方法を紹介します。複数の画像をスライド形式で表示できます。',
     content: `# 画像カルーセル機能のデモ
 
 Markdown記法を拡張して画像カルーセルを簡単に作成できます。
@@ -682,14 +682,14 @@ Markdown記法を拡張して画像カルーセルを簡単に作成できます
 カルーセル機能で複数の関連画像をコンパクトに表示できます。
 
 旅行記や製品紹介、ギャラリーなどに活用してください。`,
-    tags: ["Tutorial", "Markdown"],
-    status: "published",
+    tags: ['Tutorial', 'Markdown'],
+    status: 'published',
     slideMode: true,
   },
   {
-    title: "TypeScript 入門スライド",
+    title: 'TypeScript 入門スライド',
     description:
-      "TypeScriptの基礎をスライド形式で学べるプレゼンテーション。スライドモードで閲覧できます。",
+      'TypeScriptの基礎をスライド形式で学べるプレゼンテーション。スライドモードで閲覧できます。',
     content: `# TypeScript 入門
 
 初心者向け TypeScript 基礎講座
@@ -821,14 +821,14 @@ const num = identity<number>(42);
 - Generics で再利用可能なコード
 
 **次のステップ**: 実際にプロジェクトで使ってみよう！`,
-    tags: ["TypeScript", "Tutorial"],
-    status: "published",
+    tags: ['TypeScript', 'Tutorial'],
+    status: 'published',
     slideMode: true,
   },
   {
-    title: "Before/After比較コンポーネントのデモ",
+    title: 'Before/After比較コンポーネントのデモ',
     description:
-      "画像の比較表示機能を使って、ビフォー・アフターを直感的に確認できます。",
+      '画像の比較表示機能を使って、ビフォー・アフターを直感的に確認できます。',
     content: `# Before/After比較コンポーネント
 
 スライダーをドラッグして、2枚の画像を比較できます。
@@ -882,14 +882,14 @@ Before/After比較は以下の用途に便利です：
 - デザインの変更比較
 - 時間経過による変化
 - A/Bテストの結果表示`,
-    tags: ["Tutorial", "UI"],
-    status: "published",
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
     slideMode: true,
   },
   {
-    title: "インタラクティブチャート機能のデモ",
+    title: 'インタラクティブチャート機能のデモ',
     description:
-      "YAML形式でデータを定義するだけで、折れ線・棒・円・エリアチャートを表示できます。",
+      'YAML形式でデータを定義するだけで、折れ線・棒・円・エリアチャートを表示できます。',
     content: `# インタラクティブチャート機能
 
 YAML形式でデータを定義するだけで、美しいチャートを表示できます。
@@ -996,14 +996,14 @@ data:
   - name: ラベル
     value: 数値
 \`\`\``,
-    tags: ["Tutorial", "UI"],
-    status: "published",
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
     slideMode: true,
   },
   {
-    title: "ターミナル再生コンポーネントのデモ",
+    title: 'ターミナル再生コンポーネントのデモ',
     description:
-      "コマンドラインの操作をタイピングアニメーション付きで表示できます。",
+      'コマンドラインの操作をタイピングアニメーション付きで表示できます。',
     content: `# ターミナル再生コンポーネント
 
 コマンドラインの操作を、タイピングアニメーション付きで表示できます。
@@ -1069,14 +1069,14 @@ Writing objects: 100% (3/3), done.
 - **再生/一時停止**: ヘッダーのボタンで制御
 - **コピー**: コマンド部分のみコピー可能
 - **リプレイ**: 完了後にリプレイ可能`,
-    tags: ["Tutorial", "UI"],
-    status: "published",
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
     slideMode: true,
   },
   {
-    title: "3Dモデルビューア機能のデモ",
+    title: '3Dモデルビューア機能のデモ',
     description:
-      ".glb/.gltfファイルを読み込んで、3Dモデルをインタラクティブに表示できます。",
+      '.glb/.gltfファイルを読み込んで、3Dモデルをインタラクティブに表示できます。',
     content: `# 3Dモデルビューア
 
 .glb/.gltf 形式の3Dモデルをインタラクティブに表示できます。
@@ -1126,13 +1126,13 @@ scale: 倍率 (デフォルト: 1)
 - 建築モデルの展示
 - キャラクターモデルの紹介
 - インタラクティブな説明図`,
-    tags: ["Tutorial", "UI", "Three.js"],
-    status: "published",
+    tags: ['Tutorial', 'UI', 'Three.js'],
+    status: 'published',
     slideMode: true,
   },
   {
-    title: "Code Diff機能のデモ",
-    description: "コードの変更差分をgit diff風に表示できます。",
+    title: 'Code Diff機能のデモ',
+    description: 'コードの変更差分をgit diff風に表示できます。',
     content: `# Code Diff
 
 コードの変更差分を視覚的に表示できます。
@@ -1198,13 +1198,13 @@ after: |
 - コードレビューの説明
 - リファクタリングのビフォーアフター
 - バグ修正の解説`,
-    tags: ["Tutorial", "UI"],
-    status: "published",
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
     slideMode: true,
   },
   {
-    title: "File Tree機能のデモ",
-    description: "ディレクトリ構造をインタラクティブに表示できます。",
+    title: 'File Tree機能のデモ',
+    description: 'ディレクトリ構造をインタラクティブに表示できます。',
     content: `# File Tree
 
 プロジェクトのディレクトリ構造を視覚的に表示できます。
@@ -1267,8 +1267,8 @@ README.md
 - プロジェクト構成の説明
 - 新規ファイル追加の案内
 - ディレクトリ設計のドキュメント`,
-    tags: ["Tutorial", "UI"],
-    status: "published",
+    tags: ['Tutorial', 'UI'],
+    status: 'published',
     slideMode: true,
   },
 ];
@@ -1276,9 +1276,9 @@ README.md
 async function createArticle(article: ArticleInput): Promise<boolean> {
   try {
     const res = await fetch(`${API_URL}/articles`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${API_KEY}`,
       },
       body: JSON.stringify(article),
@@ -1293,23 +1293,23 @@ async function createArticle(article: ArticleInput): Promise<boolean> {
     return false;
   } catch (e) {
     console.log(
-      `  ❌ Error: ${article.title} (${e instanceof Error ? e.message : "Unknown error"})`,
+      `  ❌ Error: ${article.title} (${e instanceof Error ? e.message : 'Unknown error'})`
     );
     return false;
   }
 }
 
 async function seed() {
-  console.log("🌱 Seeding sample data...\n");
+  console.log('🌱 Seeding sample data...\n');
 
   // Create categories
-  console.log("📁 Creating categories...\n");
+  console.log('📁 Creating categories...\n');
   for (const category of categories) {
     await createCategory(category);
   }
 
   // Upload placeholder images for first few articles
-  console.log("\n📷 Uploading placeholder images...\n");
+  console.log('\n📷 Uploading placeholder images...\n');
   const imageIds: (string | null)[] = [];
   const NUM_IMAGES = 3; // Number of articles to add images to
 
@@ -1323,7 +1323,7 @@ async function seed() {
     }
   }
 
-  console.log("\n📝 Creating articles...\n");
+  console.log('\n📝 Creating articles...\n');
 
   let created = 0;
   let failed = 0;

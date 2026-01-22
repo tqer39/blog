@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Copy, Pencil } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+import { Copy, Pencil } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
 
 interface ArticleTitleProps {
   title: string;
@@ -13,7 +13,7 @@ interface ArticleTitleProps {
 
 export function ArticleTitle({
   title,
-  id = "title",
+  id = 'title',
   hash,
   isLoggedIn,
 }: ArticleTitleProps) {
@@ -28,7 +28,7 @@ export function ArticleTitle({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error("Failed to copy:", err);
+      console.error('Failed to copy:', err);
     }
   };
 
