@@ -20,7 +20,7 @@ module "cms_r2" {
   account_id    = var.cloudflare_account_id
   bucket_name   = "blog-images-prod-v2"
   location      = "apac"
-  custom_domain = "cdn.${local.config.domain}"
+  custom_domain = "cdn.${local.config.project.domain}"
   zone_id       = var.cloudflare_zone_id
 }
 
