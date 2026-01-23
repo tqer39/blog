@@ -17,9 +17,11 @@ module "cms_d1" {
 module "cms_r2" {
   source = "../../../modules/cloudflare-r2"
 
-  account_id  = var.cloudflare_account_id
-  bucket_name = "blog-images-prod-v2"
-  location    = "apac"
+  account_id    = var.cloudflare_account_id
+  bucket_name   = "blog-images-prod-v2"
+  location      = "apac"
+  custom_domain = "cdn.${local.config.domain}"
+  zone_id       = var.cloudflare_zone_id
 }
 
 # Note: Worker deployment is handled by wrangler CLI for better DX.

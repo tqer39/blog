@@ -13,3 +13,15 @@ variable "location" {
   type        = string
   default     = "apac"
 }
+
+variable "custom_domain" {
+  description = "Custom domain for public access (e.g., cdn.tqer39.dev)"
+  type        = string
+  default     = null
+}
+
+variable "zone_id" {
+  description = "CloudFlare Zone ID (required if custom_domain is set)"
+  type        = string
+  default     = null
+}
