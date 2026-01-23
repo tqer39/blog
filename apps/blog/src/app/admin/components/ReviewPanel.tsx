@@ -161,13 +161,13 @@ export function ReviewPanel({
       {/* Backdrop */}
       <button
         type="button"
-        className="fixed inset-0 z-40 cursor-default border-none bg-black/50"
+        className="fixed inset-0 z-[70] cursor-default border-none bg-black/50"
         onClick={onClose}
         aria-label="Close panel"
       />
 
       {/* Slide-over panel */}
-      <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-lg flex-col bg-background shadow-xl">
+      <div className="fixed inset-y-0 right-0 z-[80] flex w-full max-w-lg flex-col bg-background shadow-xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b px-6 py-4">
           <h2 className="text-lg font-semibold">AI レビュー結果</h2>
