@@ -261,6 +261,15 @@ articlesHandler.put('/:hash', async (c) => {
       input.slideDuration === null ? null : String(input.slideDuration)
     );
   }
+  if (input.status !== undefined) {
+    updates.push('status = ?');
+    params.push(input.status);
+    // published の場合は published_at を設定（未設定の場合のみ）
+    if (input.status === 'published' && !existing.published_at) {
+      updates.push('published_at = ?');
+      params.push(new Date().toISOString());
+    }
+  }
 
   // Clear review results if title or content changed
   if (contentChanged) {
