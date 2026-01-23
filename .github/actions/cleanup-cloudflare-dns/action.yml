@@ -19,6 +19,10 @@ inputs:
     description: Record type to keep (e.g., "CNAME"). Others will be deleted.
     required: false
     default: "CNAME"
+  expected-content:
+    description: Expected content for keep-type record (e.g., "cname.vercel-dns.com"). If set and content differs, record will be deleted.
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -31,6 +35,7 @@ runs:
         SUBDOMAIN: ${{ inputs.subdomain }}
         DOMAIN: ${{ inputs.domain }}
         KEEP_TYPE: ${{ inputs.keep-type }}
+        EXPECTED_CONTENT: ${{ inputs.expected-content }}
       run: |
         FULL_NAME="${SUBDOMAIN}.${DOMAIN}"
         echo "Checking for DNS records: ${FULL_NAME}"
@@ -62,10 +67,19 @@ runs:
         echo "$RESPONSE" | jq -r '.result[] | "\(.id) \(.type) \(.content)"' | while read -r RECORD_ID RECORD_TYPE RECORD_CONTENT; do
           echo "  - ${RECORD_TYPE} record (ID: ${RECORD_ID}): ${RECORD_CONTENT}"
 
-          if [ "$RECORD_TYPE" = "$KEEP_TYPE" ]; then
-            echo "    → Keeping (matches desired type: ${KEEP_TYPE})"
-          else
-            echo "    → Deleting (type ${RECORD_TYPE} conflicts with desired ${KEEP_TYPE})"
+          SHOULD_DELETE=false
+          DELETE_REASON=""
+
+          if [ "$RECORD_TYPE" != "$KEEP_TYPE" ]; then
+            SHOULD_DELETE=true
+            DELETE_REASON="type ${RECORD_TYPE} conflicts with desired ${KEEP_TYPE}"
+          elif [ -n "$EXPECTED_CONTENT" ] && [ "$RECORD_CONTENT" != "$EXPECTED_CONTENT" ]; then
+            SHOULD_DELETE=true
+            DELETE_REASON="content '${RECORD_CONTENT}' differs from expected '${EXPECTED_CONTENT}'"
+          fi
+
+          if [ "$SHOULD_DELETE" = "true" ]; then
+            echo "    → Deleting (${DELETE_REASON})"
 
             DELETE_RESPONSE=$(curl -s -X DELETE \
               "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/dns_records/${RECORD_ID}" \
@@ -79,6 +93,8 @@ runs:
               echo "::warning::Failed to delete record ${RECORD_ID}"
               echo "$DELETE_RESPONSE" | jq -r '.errors'
             fi
+          else
+            echo "    → Keeping (matches desired type and content)"
           fi
         done
 

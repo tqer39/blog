@@ -232,6 +232,7 @@ jobs:
           subdomain: blog
           domain: tqer39.dev
           keep-type: CNAME
+          expected-content: cname.vercel-dns.com
 
       - name: Terraform Apply
         if: |
