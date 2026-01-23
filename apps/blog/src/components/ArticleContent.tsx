@@ -56,6 +56,9 @@ const sanitizeSchema = {
     h2: [...(defaultSchema.attributes?.h2 || []), 'className', 'id'],
     li: [...(defaultSchema.attributes?.li || []), 'id'],
   },
+  // Disable clobber prefix to prevent double-prefixing of footnote IDs
+  // (remark-gfm already adds 'user-content-' prefix)
+  clobberPrefix: '',
 };
 
 interface ArticleContentProps {
