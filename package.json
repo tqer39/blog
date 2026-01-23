@@ -25,7 +25,7 @@
     "e2e": "turbo e2e"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.11",
+    "@biomejs/biome": "2.3.12",
     "@vitest/coverage-v8": "4.0.17",
     "concurrently": "9.2.1",
     "turbo": "2.7.5",
