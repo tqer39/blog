@@ -10,8 +10,8 @@ import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 
-// Custom sanitize schema: allow className on code/pre for syntax highlighting
-// and SVG elements for anchor link icons
+// Custom sanitize schema: allow className on code/pre for syntax highlighting,
+// SVG elements for anchor link icons, and footnote elements
 const sanitizeSchema = {
   ...defaultSchema,
   tagNames: [
@@ -21,6 +21,8 @@ const sanitizeSchema = {
     'rect',
     'button',
     'span',
+    'section',
+    'sup',
   ],
   attributes: {
     ...defaultSchema.attributes,
@@ -42,6 +44,17 @@ const sanitizeSchema = {
     rect: ['x', 'y', 'width', 'height', 'rx', 'ry'],
     button: ['type', 'className', 'ariaLabel'],
     span: ['className'],
+    // Footnote support (GFM footnotes)
+    section: ['dataFootnotes', 'className'],
+    a: [
+      ...(defaultSchema.attributes?.a || []),
+      'dataFootnoteRef',
+      'dataFootnoteBackref',
+      'ariaDescribedBy',
+      'ariaLabel',
+    ],
+    h2: [...(defaultSchema.attributes?.h2 || []), 'className', 'id'],
+    li: [...(defaultSchema.attributes?.li || []), 'id'],
   },
 };
 
