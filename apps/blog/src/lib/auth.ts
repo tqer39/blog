@@ -101,11 +101,18 @@ export async function getSessionFromCookie(): Promise<string | undefined> {
 
 /**
  * Check if the current request is authenticated
+ * Returns false during static generation (when cookies aren't available)
  */
 export async function isAuthenticated(): Promise<boolean> {
-  const token = await getSessionFromCookie();
-  if (!token) return false;
-  return verifySession(token);
+  try {
+    const token = await getSessionFromCookie();
+    if (!token) return false;
+    return verifySession(token);
+  } catch {
+    // cookies() throws during static generation
+    // Return false in this case (user is not authenticated)
+    return false;
+  }
 }
 
 /**
