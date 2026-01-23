@@ -1271,6 +1271,50 @@ README.md
     status: 'published',
     slideMode: true,
   },
+  {
+    title: '脚注（Footnotes）機能のデモ',
+    description:
+      'GFM形式の脚注を使って、本文中に補足情報や参照を追加できます。',
+    content: `# 脚注（Footnotes）機能
+
+GFM（GitHub Flavored Markdown）の脚注機能を使って、本文中に補足情報や参照を追加できます。
+
+## 基本的な使い方
+
+脚注は学術論文やドキュメントで補足説明を加えるのに便利です[^1]。
+
+本文の流れを邪魔せずに、詳細な情報を提供できます[^detail]。
+
+## 技術的な注意点
+
+TypeScriptでは型安全性が重要です[^typescript]。また、パフォーマンスの最適化も忘れずに[^perf]。
+
+## 参照の活用例
+
+引用や出典を明記する際にも脚注が活用できます[^citation]。
+
+複数の脚注を使って、関連情報を整理することも可能です[^multiple]。
+
+## まとめ
+
+脚注機能を使うことで：
+
+- 本文をすっきり保てる
+- 補足情報を適切に配置できる
+- 参照や出典を明記できる
+- 読者が必要に応じて詳細を確認できる
+
+ぜひ活用してみてください！
+
+[^1]: これが最初の脚注です。脚注はページ下部にまとめて表示されます。
+[^detail]: 名前付きの脚注も使えます。数字だけでなく、意味のある名前を付けることで管理しやすくなります。
+[^typescript]: TypeScriptの公式ドキュメント: https://www.typescriptlang.org/docs/
+[^perf]: Web Vitalsの改善については、Lighthouse等のツールで計測することをお勧めします。
+[^citation]: 引用元を明記することで、情報の信頼性が向上します。
+[^multiple]: 脚注は自動的に番号が振られ、クリックで該当箇所にジャンプできます。`,
+    tags: ['Tutorial', 'Markdown'],
+    status: 'published',
+  },
 ];
 
 async function createArticle(article: ArticleInput): Promise<boolean> {
