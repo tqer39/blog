@@ -101,8 +101,8 @@ importers:
         specifier: 9.0.1
         version: 9.0.1
       lucide-react:
-        specifier: 0.562.0
-        version: 0.562.0(react@19.2.3)
+        specifier: 0.563.0
+        version: 0.563.0(react@19.2.3)
       next:
         specifier: '16'
         version: 16.1.4(@playwright/test@1.58.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -289,8 +289,8 @@ importers:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.3)
       lucide-react:
-        specifier: 0.562.0
-        version: 0.562.0(react@19.2.3)
+        specifier: 0.563.0
+        version: 0.563.0(react@19.2.3)
       next:
         specifier: '>=14'
         version: 15.5.9(@playwright/test@1.58.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -2581,8 +2581,8 @@ packages:
   longest-streak@3.1.0:
     resolution: {integrity: sha512-9Ri+o0JYgehTaVBBDoMqIl8GXtbWg711O3srftcHhZ0dqnETqLaoIK0x17fUw9rFSlK/0NlsKe0Ahhyl5pXE2g==}
 
-  lucide-react@0.562.0:
-    resolution: {integrity: sha512-82hOAu7y0dbVuFfmO4bYF1XEwYk/mEbM5E+b1jgci/udUBEE/R7LF5Ip0CCEmXe8AybRM8L+04eP+LGZeDvkiw==}
+  lucide-react@0.563.0:
+    resolution: {integrity: sha512-8dXPB2GI4dI8jV4MgUDGBeLdGk8ekfqVZ0BdLcrRzocGgG75ltNEmWS+gE7uokKF/0oSUuczNDT+g9hFJ23FkA==}
     peerDependencies:
       react: 19.2.3
 
@@ -5475,7 +5475,7 @@ snapshots:
 
   longest-streak@3.1.0: {}
 
-  lucide-react@0.562.0(react@19.2.3):
+  lucide-react@0.563.0(react@19.2.3):
     dependencies:
       react: 19.2.3
 
