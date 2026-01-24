@@ -65,7 +65,8 @@
       "!**/.wrangler",
       "!**/coverage",
       "!**/playwright-report",
-      "!**/lighthouse-report*"
+      "!**/lighthouse-report*",
+      "!**/.vitepress/cache"
     ]
   }
 }

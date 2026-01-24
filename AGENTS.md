@@ -10,6 +10,7 @@ Personal blog monorepo with Turborepo + pnpm workspaces.
 | -------------------- | --------------------------- | ----- |
 | `apps/blog`          | Next.js 15 blog frontend    | 3100  |
 | `apps/cms-api`       | Hono CMS API on CF Workers  | 3101  |
+| `apps/docs`          | VitePress documentation     | 3103  |
 | `packages/cms-types` | Shared TypeScript types     | -     |
 | `packages/ui`        | Shared UI components        | -     |
 | `packages/utils`     | Shared utilities            | -     |
@@ -33,12 +34,13 @@ apps/
   blog/e2e/               # Playwright E2E tests
   cms-api/src/handlers/   # Hono API handlers
   cms-api/migrations/     # D1 SQL migrations
+  docs/                   # VitePress documentation
 packages/
   cms-types/              # Shared types
   ui/                     # Shared components
   utils/                  # Shared utilities
 infra/terraform/          # Terraform IaC
-docs/                     # Documentation
+docs/                     # Project documentation
 ```
 
 ## Essential Commands

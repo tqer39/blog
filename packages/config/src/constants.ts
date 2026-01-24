@@ -12,6 +12,8 @@ export const PORTS = {
   CMS_API: 3101,
   /** R2 Local Emulator (MinIO) */
   R2_LOCAL: 3102,
+  /** VitePress Documentation */
+  DOCS: 3103,
 } as const;
 
 // ===========================================
