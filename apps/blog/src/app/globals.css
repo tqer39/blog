@@ -307,6 +307,65 @@ pre.shiki {
   opacity: 1;
 }
 
+/* Footnote styles (GFM footnotes) */
+.prose .footnotes {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.875rem;
+}
+
+.prose .footnotes h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.prose .footnotes ol {
+  padding-left: 1.5rem;
+}
+
+.prose .footnotes li {
+  margin-bottom: 0.5rem;
+}
+
+.prose .footnotes li {
+  scroll-margin-top: 80px;
+}
+
+.prose .footnotes li:target {
+  background-color: var(--color-accent);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  margin-left: -0.5rem;
+}
+
+/* Footnote reference (superscript number in text) */
+.prose sup a[data-footnote-ref] {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+  padding: 0 0.125rem;
+  scroll-margin-top: 80px;
+}
+
+.prose sup a[data-footnote-ref]:hover {
+  text-decoration: underline;
+}
+
+/* Footnote backref (↩ arrow) */
+.prose a[data-footnote-backref] {
+  font-size: 0.875rem;
+  text-decoration: none;
+  margin-left: 0.25rem;
+  color: var(--color-muted-foreground);
+}
+
+.prose a[data-footnote-backref]:hover {
+  color: var(--color-primary);
+}
+
 /* Category badge dark mode enhancement - use light text for readability */
 .dark .category-badge {
   color: #e7e5e4 !important; /* stone-200 */
@@ -650,6 +709,27 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(
   --tw-ring-color: #3b4261 !important; /* Selection border */
 }
 
+/* Tokyo Night: Footnotes */
+.tokyonight .prose .footnotes {
+  border-color: #3b4261;
+}
+
+.tokyonight .prose .footnotes li:target {
+  background-color: #283457;
+}
+
+.tokyonight .prose sup a[data-footnote-ref] {
+  color: #7aa2f7;
+}
+
+.tokyonight .prose a[data-footnote-backref] {
+  color: #7982a9;
+}
+
+.tokyonight .prose a[data-footnote-backref]:hover {
+  color: #7aa2f7;
+}
+
 /* Dark Mode (Standard) & Tokyo Night: FileTree Styling */
 /* Ensure FileTree matches CodeBlock (Shiki) appearance */
 .dark .file-tree-content {
@@ -901,6 +981,27 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(
   color: #a8a29e !important; /* stone-400 */
 }
 
+/* Nord Light: Footnotes */
+.nord-light .prose .footnotes {
+  border-color: #d8dee9; /* nord4 */
+}
+
+.nord-light .prose .footnotes li:target {
+  background-color: #d8dee9; /* nord4 */
+}
+
+.nord-light .prose sup a[data-footnote-ref] {
+  color: #5e81ac; /* nord10 */
+}
+
+.nord-light .prose a[data-footnote-backref] {
+  color: #4c566a; /* nord3 */
+}
+
+.nord-light .prose a[data-footnote-backref]:hover {
+  color: #5e81ac; /* nord10 */
+}
+
 /* Model Viewer Theme Backgrounds */
 .model-viewer-bg {
   background-color: #ffffff;
@@ -1081,6 +1182,27 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(
 
 .autumn .text-stone-400 {
   color: #a8a29e !important; /* stone-400 */
+}
+
+/* Autumn: Footnotes */
+.autumn .prose .footnotes {
+  border-color: #d7ccc8; /* light brown */
+}
+
+.autumn .prose .footnotes li:target {
+  background-color: #efebe9; /* light tan */
+}
+
+.autumn .prose sup a[data-footnote-ref] {
+  color: #d84315; /* burnt orange */
+}
+
+.autumn .prose a[data-footnote-backref] {
+  color: #795548; /* brown */
+}
+
+.autumn .prose a[data-footnote-backref]:hover {
+  color: #d84315; /* burnt orange */
 }
 
 /* General Chart Overrides */
