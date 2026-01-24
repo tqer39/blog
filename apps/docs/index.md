@@ -7,12 +7,24 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /guide/code-blocks
+      link: /guide/markdown
     - theme: alt
       text: Japanese
       link: /ja/
 features:
+  - title: Markdown Basics
+    details: Headings, lists, links, emphasis, tables, and more
+    link: /guide/markdown
+  - title: Images
+    details: Upload and embed images with captions and sizing
+    link: /guide/images
+  - title: Frontmatter
+    details: Configure article metadata like title, tags, and status
+    link: /guide/frontmatter
   - title: Code Blocks
-    details: Learn about syntax highlighting, line numbers, and more
+    details: Syntax highlighting, line numbers, and filenames
     link: /guide/code-blocks
+  - title: Special Components
+    details: Mermaid diagrams, charts, terminal animations, and more
+    link: /guide/components
 ---
