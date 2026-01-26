@@ -88,7 +88,7 @@ export function ArticleEditor({
   const [pendingDraft, setPendingDraft] = useState<ReturnType<
     typeof loadDraft
   > | null>(null);
-  const isInitialMount = useRef(true);
+  const pristineArticleRef = useRef(initialState.article);
 
   // Destructure state for easier access
   const { article, loading, ui, imageGen, review } = state;
@@ -110,9 +110,21 @@ export function ArticleEditor({
 
   // Auto-save draft when article changes (debounced in hook)
   useEffect(() => {
-    // Skip initial mount to avoid saving initial state immediately
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
+    // Only save if the article has actually changed from its initial state
+    // This prevents saving on initial mount or StrictMode double-invocation
+    const pristine = pristineArticleRef.current;
+    const hasChanges =
+      article.title !== pristine.title ||
+      article.description !== pristine.description ||
+      article.content !== pristine.content ||
+      article.categoryId !== pristine.categoryId ||
+      article.status !== pristine.status ||
+      article.headerImageId !== pristine.headerImageId ||
+      article.slideMode !== pristine.slideMode ||
+      article.slideDuration !== pristine.slideDuration ||
+      JSON.stringify(article.tags) !== JSON.stringify(pristine.tags);
+
+    if (!hasChanges) {
       return;
     }
 
