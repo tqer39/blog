@@ -13,7 +13,7 @@ resource "cloudflare_pages_domain" "this" {
 
   account_id   = var.account_id
   project_name = cloudflare_pages_project.this.name
-  domain       = var.custom_domain
+  name         = var.custom_domain
 }
 
 # DNS record for custom domain
