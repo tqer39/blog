@@ -1,0 +1,91 @@
+---
+name: "Task (jp)"
+description: "開発タスク（Claude Code 連携用）"
+labels: ["task", "claude-ready"]
+body:
+  - type: "markdown"
+    attributes:
+      value: |
+        開発タスクを作成します。Claude Code で処理しやすいように構造化されています。
+
+  - type: "textarea"
+    id: "goal"
+    attributes:
+      label: "ゴール"
+      description: "このタスクで達成したいことを明確に記述してください。"
+      placeholder: "例: ダークモード切り替え機能を追加する"
+    validations:
+      required: true
+
+  - type: "dropdown"
+    id: "type"
+    attributes:
+      label: "タイプ"
+      description: "タスクの種類を選択してください。"
+      options:
+        - "feat (新機能)"
+        - "fix (バグ修正)"
+        - "refactor (リファクタリング)"
+        - "docs (ドキュメント)"
+        - "test (テスト)"
+        - "chore (メンテナンス)"
+    validations:
+      required: true
+
+  - type: "dropdown"
+    id: "scope"
+    attributes:
+      label: "スコープ"
+      description: "影響範囲を選択してください。"
+      options:
+        - "apps/blog"
+        - "apps/cms-api"
+        - "apps/docs"
+        - "packages/*"
+        - "infra/terraform"
+        - "全体"
+    validations:
+      required: true
+
+  - type: "textarea"
+    id: "acceptance"
+    attributes:
+      label: "受け入れ条件"
+      description: "完了の定義をチェックリスト形式で記述してください。"
+      placeholder: |
+        - [ ] 条件1
+        - [ ] 条件2
+        - [ ] テストが追加されている
+        - [ ] ドキュメントが更新されている
+    validations:
+      required: true
+
+  - type: "textarea"
+    id: "context"
+    attributes:
+      label: "コンテキスト（Claude Code 用）"
+      description: "関連ファイル、参考情報、技術的な制約など。"
+      placeholder: |
+        関連ファイル:
+        - src/components/Header.tsx
+        - src/lib/theme.ts
+
+        参考:
+        - https://example.com/docs
+
+        制約:
+        - 既存のテーマシステムと互換性を維持
+    validations:
+      required: false
+
+  - type: "dropdown"
+    id: "priority"
+    attributes:
+      label: "優先度"
+      description: "タスクの優先度を選択してください。"
+      options:
+        - "high (高)"
+        - "medium (中)"
+        - "low (低)"
+    validations:
+      required: true

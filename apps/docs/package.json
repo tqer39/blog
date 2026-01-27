@@ -1,0 +1,14 @@
+{
+  "name": "@blog/docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev --port 3103",
+    "build": "vitepress build",
+    "preview": "vitepress preview --port 3103"
+  },
+  "devDependencies": {
+    "vitepress": "1.6.3"
+  }
+}

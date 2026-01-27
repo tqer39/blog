@@ -21,6 +21,7 @@
 | Blog (Next.js) | 3100 | フロントエンド |
 | CMS API (Hono) | 3101 | バックエンド API |
 | R2 Local | 3102 | R2 エミュレータ (MinIO) |
+| Docs (VitePress) | 3103 | ドキュメントサイト |
 
 ## ドメイン構造
 

@@ -1,0 +1,91 @@
+---
+name: "Task (en)"
+description: "Development task (Claude Code integration)"
+labels: ["task", "claude-ready"]
+body:
+  - type: "markdown"
+    attributes:
+      value: |
+        Create a development task. Structured for easy processing with Claude Code.
+
+  - type: "textarea"
+    id: "goal"
+    attributes:
+      label: "Goal"
+      description: "Clearly describe what you want to achieve with this task."
+      placeholder: "Example: Add dark mode toggle functionality"
+    validations:
+      required: true
+
+  - type: "dropdown"
+    id: "type"
+    attributes:
+      label: "Type"
+      description: "Select the task type."
+      options:
+        - "feat (new feature)"
+        - "fix (bug fix)"
+        - "refactor (refactoring)"
+        - "docs (documentation)"
+        - "test (testing)"
+        - "chore (maintenance)"
+    validations:
+      required: true
+
+  - type: "dropdown"
+    id: "scope"
+    attributes:
+      label: "Scope"
+      description: "Select the affected area."
+      options:
+        - "apps/blog"
+        - "apps/cms-api"
+        - "apps/docs"
+        - "packages/*"
+        - "infra/terraform"
+        - "entire project"
+    validations:
+      required: true
+
+  - type: "textarea"
+    id: "acceptance"
+    attributes:
+      label: "Acceptance Criteria"
+      description: "Define the completion criteria as a checklist."
+      placeholder: |
+        - [ ] Criterion 1
+        - [ ] Criterion 2
+        - [ ] Tests are added
+        - [ ] Documentation is updated
+    validations:
+      required: true
+
+  - type: "textarea"
+    id: "context"
+    attributes:
+      label: "Context (for Claude Code)"
+      description: "Related files, references, technical constraints, etc."
+      placeholder: |
+        Related files:
+        - src/components/Header.tsx
+        - src/lib/theme.ts
+
+        References:
+        - https://example.com/docs
+
+        Constraints:
+        - Must be compatible with existing theme system
+    validations:
+      required: false
+
+  - type: "dropdown"
+    id: "priority"
+    attributes:
+      label: "Priority"
+      description: "Select the task priority."
+      options:
+        - "high"
+        - "medium"
+        - "low"
+    validations:
+      required: true

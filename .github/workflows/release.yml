@@ -5,14 +5,20 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version (e.g., v1.2.3)"
-        required: true
+        description: "Version (e.g., v1.2.3) - leave empty for auto-calculate"
+        required: false
         type: string
+        default: ""
       description:
         description: "Release description"
         required: false
         type: string
         default: ""
+      auto_changelog:
+        description: "Auto-update CHANGELOG.md"
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   release:
@@ -21,25 +27,51 @@ jobs:
     permissions:
       contents: write
     outputs:
-      version: ${{ inputs.version }}
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Validate version format
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+
+      - name: Calculate version
+        id: version
         run: |
-          VERSION="${{ inputs.version }}"
+          INPUT_VERSION="${{ inputs.version }}"
+          if [ -z "$INPUT_VERSION" ]; then
+            # Auto-calculate version based on conventional commits
+            VERSION=$(./scripts/calculate-version.sh)
+            BUMP_TYPE=$(./scripts/calculate-version.sh --bump)
+            echo "Calculated version: $VERSION (bump type: $BUMP_TYPE)"
+          else
+            VERSION="$INPUT_VERSION"
+            BUMP_TYPE="manual"
+          fi
+
+          # Validate format
           if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::Invalid version format. Use v1.2.3 format."
+            echo "::error::Invalid version format: $VERSION. Use v1.2.3 format."
             exit 1
           fi
 
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
+
       - name: Check if tag exists
         run: |
-          if git rev-parse "${{ inputs.version }}" >/dev/null 2>&1; then
-            echo "::error::Tag ${{ inputs.version }} already exists"
+          if git rev-parse "${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "::error::Tag ${{ steps.version.outputs.version }} already exists"
             exit 1
+          fi
+
+      - name: Check for changes to release
+        run: |
+          BUMP_TYPE="${{ steps.version.outputs.bump_type }}"
+          if [ "$BUMP_TYPE" = "none" ]; then
+            echo "::warning::No releasable changes found (only chore/docs/ci commits)"
+            echo "Consider if a release is needed."
           fi
 
       - name: Get previous tag
@@ -48,33 +80,75 @@ jobs:
           PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           echo "tag=$PREV_TAG" >> $GITHUB_OUTPUT
 
-      - name: Generate changelog
+      - name: Update CHANGELOG.md
+        if: ${{ inputs.auto_changelog }}
+        run: |
+          npx tsx scripts/update-changelog.ts --version "${{ steps.version.outputs.version }}"
+
+      - name: Commit CHANGELOG.md
+        if: ${{ inputs.auto_changelog }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          if git diff --staged --quiet; then
+            echo "No changes to CHANGELOG.md"
+          else
+            git commit -m "docs: update CHANGELOG for ${{ steps.version.outputs.version }}"
+            git push
+          fi
+
+      - name: Generate release notes
         id: changelog
         run: |
           PREV_TAG="${{ steps.previous_tag.outputs.tag }}"
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Categorize commits
           if [ -z "$PREV_TAG" ]; then
-            COMMITS=$(git log --oneline --pretty=format:"- %s" | head -50)
+            RANGE="HEAD"
           else
-            COMMITS=$(git log --oneline --pretty=format:"- %s" ${PREV_TAG}..HEAD)
+            RANGE="${PREV_TAG}..HEAD"
           fi
 
-          # Create changelog file
-          cat > CHANGELOG_BODY.md << 'CHANGELOG_EOF'
+          FEATURES=$(git log $RANGE --oneline --grep="^feat" --pretty=format:"- %s" 2>/dev/null || echo "")
+          FIXES=$(git log $RANGE --oneline --grep="^fix" --pretty=format:"- %s" 2>/dev/null || echo "")
+          OTHERS=$(git log $RANGE --oneline --pretty=format:"- %s" | grep -vE "^- (feat|fix)" | head -20 || echo "")
+
+          # Create release notes
+          cat > CHANGELOG_BODY.md << 'EOF'
           ## What's Changed
 
           ${{ inputs.description }}
 
-          ### Commits
-          CHANGELOG_EOF
+          EOF
 
-          echo "$COMMITS" >> CHANGELOG_BODY.md
+          if [ -n "$FEATURES" ]; then
+            echo "### New Features" >> CHANGELOG_BODY.md
+            echo "" >> CHANGELOG_BODY.md
+            echo "$FEATURES" >> CHANGELOG_BODY.md
+            echo "" >> CHANGELOG_BODY.md
+          fi
+
+          if [ -n "$FIXES" ]; then
+            echo "### Bug Fixes" >> CHANGELOG_BODY.md
+            echo "" >> CHANGELOG_BODY.md
+            echo "$FIXES" >> CHANGELOG_BODY.md
+            echo "" >> CHANGELOG_BODY.md
+          fi
+
+          if [ -n "$OTHERS" ]; then
+            echo "### Other Changes" >> CHANGELOG_BODY.md
+            echo "" >> CHANGELOG_BODY.md
+            echo "$OTHERS" >> CHANGELOG_BODY.md
+          fi
 
       - name: Create Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${{ inputs.version }}" \
-            --title "${{ inputs.version }}" \
+          gh release create "${{ steps.version.outputs.version }}" \
+            --title "${{ steps.version.outputs.version }}" \
             --notes-file CHANGELOG_BODY.md \
             --generate-notes
 
@@ -84,7 +158,7 @@ jobs:
         uses: ./.github/actions/discord-notify
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
-          title: "Release Created: ${{ inputs.version }}"
+          title: "Release Created: ${{ steps.version.outputs.version }}"
           message: "New release created. Production deployment will start automatically."
           color: "3066993"
 
@@ -94,7 +168,7 @@ jobs:
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
           title: "Release Creation Failed"
-          message: "Failed to create release ${{ inputs.version }}"
+          message: "Failed to create release ${{ steps.version.outputs.version }}"
 
   deploy:
     name: Deploy to Production

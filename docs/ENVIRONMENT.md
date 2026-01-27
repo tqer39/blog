@@ -21,6 +21,7 @@ This project uses a 3-environment structure: Local, Dev, and Prod.
 | Blog (Next.js) | 3100 | Frontend application |
 | CMS API (Hono) | 3101 | Backend API |
 | R2 Local | 3102 | R2 emulator (MinIO) |
+| Docs (VitePress) | 3103 | Documentation site |
 
 ## Domain Structure
 

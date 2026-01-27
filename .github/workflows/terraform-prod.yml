@@ -260,6 +260,109 @@ jobs:
           env: ${{ steps.deployment.outputs.env }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
+  # CloudFlare Pages (docs)
+  terraform-cloudflare-docs:
+    name: CloudFlare Pages (docs)
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      deployments: write
+      pull-requests: write
+    timeout-minutes: 20
+    env:
+      WORKING_DIRECTORY: infra/terraform/envs/prod/docs
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Terraform Environment
+        uses: ./.github/actions/setup-terraform-env
+        with:
+          aws-account-id: ${{ env.AWS_ACCOUNT_ID }}
+          aws-region: ${{ env.AWS_REGION }}
+          oidc-iam-role: ${{ env.OIDC_IAM_ROLE }}
+          working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      - name: Terraform Plan
+        id: plan
+        continue-on-error: true
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          terraform plan -detailed-exitcode -no-color 2>&1 | tee tf_plan.txt
+
+      - name: Set Plan Status
+        id: plan-status
+        run: |
+          case "${{ steps.plan.outputs.exitcode }}" in
+            0) echo "status=no-changes" >> $GITHUB_OUTPUT ;;
+            2) echo "status=has-diff" >> $GITHUB_OUTPUT ;;
+            *) echo "status=error" >> $GITHUB_OUTPUT ;;
+          esac
+
+      - name: tfcmt Plan Comment
+        if: github.event_name == 'pull_request' && steps.plan.outputs.exitcode != '1'
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TARGET=$(echo "${{ env.WORKING_DIRECTORY }}" | sed -e 's|^.*infra/terraform/envs/||' | cut -c 1-36)
+          tfcmt --config $GITHUB_WORKSPACE/.github/tfcmt.yml --var target:$TARGET plan -patch -- cat tf_plan.txt
+
+      - name: Discord Notification (Plan Error)
+        if: steps.plan.outputs.exitcode == '1'
+        continue-on-error: true
+        uses: ./.github/actions/discord-notify
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_PROD }}
+          title: "Terraform Plan Error: docs"
+          message: "path: `${{ env.WORKING_DIRECTORY }}`"
+
+      - name: Fail on Plan Error
+        if: steps.plan.outputs.exitcode == '1'
+        run: |
+          echo "::error::Terraform plan failed with errors"
+          exit 1
+
+      - name: Start Deployment
+        if: steps.plan-status.outputs.status == 'has-diff' && github.ref == 'refs/heads/main'
+        uses: bobheadxi/deployments@v1
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: prod-cloudflare-docs
+
+      - name: Terraform Apply
+        if: |
+          steps.plan-status.outputs.status == 'has-diff' &&
+          env.RUN_APPLY == 'true'
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: terraform apply -auto-approve
+
+      - name: Finish Deployment
+        if: steps.plan-status.outputs.status == 'has-diff' && always() && env.RUN_APPLY == 'true'
+        uses: bobheadxi/deployments@v1
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          env: ${{ steps.deployment.outputs.env }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
   # Workflow result check
   workflow-result:
     name: Workflow Result
@@ -267,6 +370,7 @@ jobs:
     timeout-minutes: 5
     needs:
       - terraform-cloudflare-cms-api
+      - terraform-cloudflare-docs
       - terraform-vercel
     if: always()
     steps:
@@ -274,6 +378,8 @@ jobs:
         run: |
           if [[ "${{ needs.terraform-cloudflare-cms-api.result }}" == "failure" ]] || \
              [[ "${{ needs.terraform-cloudflare-cms-api.result }}" == "cancelled" ]] || \
+             [[ "${{ needs.terraform-cloudflare-docs.result }}" == "failure" ]] || \
+             [[ "${{ needs.terraform-cloudflare-docs.result }}" == "cancelled" ]] || \
              [[ "${{ needs.terraform-vercel.result }}" == "failure" ]] || \
              [[ "${{ needs.terraform-vercel.result }}" == "cancelled" ]]; then
             echo "::error::Workflow failed"

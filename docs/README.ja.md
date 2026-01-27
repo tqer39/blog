@@ -2,7 +2,8 @@
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![codecov](https://img.shields.io/codecov/c/github/tqer39/blog?style=for-the-badge&logo=codecov&logoColor=white)](https://codecov.io/gh/tqer39/blog)
-[![CI](https://img.shields.io/github/actions/workflow/status/tqer39/blog/ci.yml?branch=main&style=for-the-badge&logo=github&label=CI)](https://github.com/tqer39/blog/actions/workflows/ci.yml)
+[![Test](https://img.shields.io/github/actions/workflow/status/tqer39/blog/test-and-build.yml?branch=main&style=for-the-badge&logo=github&label=Test)](https://github.com/tqer39/blog/actions/workflows/test-and-build.yml)
+[![Deploy](https://img.shields.io/github/actions/workflow/status/tqer39/blog/deploy-prod.yml?style=for-the-badge&logo=cloudflare&label=Deploy)](https://github.com/tqer39/blog/actions/workflows/deploy-prod.yml)
 [![Terraform](https://img.shields.io/github/actions/workflow/status/tqer39/blog/terraform-dev.yml?branch=main&style=for-the-badge&logo=terraform&label=terraform)](https://github.com/tqer39/blog/actions/workflows/terraform-dev.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 
