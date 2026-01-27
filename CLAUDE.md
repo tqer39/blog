@@ -85,3 +85,35 @@ Personal blog service monorepo managed with Turborepo + pnpm workspaces.
 - TypeScript + Tailwind CSS + Turborepo + pnpm
 
 **Detailed documentation**: See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for complete tech stack and architecture decisions
+
+## Claude Code Skills
+
+Skills are reusable instructions for Claude Code stored in `.claude/skills/`.
+
+### Creating Skills
+
+When creating new skills, follow the template: [docs/SKILL-TEMPLATE.md](docs/SKILL-TEMPLATE.md)
+
+**Key requirements:**
+
+1. **name**: lowercase, numbers, hyphens only (max 64 chars)
+   - Use gerund form: `creating-issues`, `processing-pdfs`
+2. **description**: What it does + when to use it (third person)
+   - Good: "Creates GitHub Issues. Use when tasks are identified."
+   - Bad: "Helps with issues"
+3. **SKILL.md body**: Keep under 500 lines
+4. **References**: 1 level deep only (no nested references)
+
+### Directory Structure
+
+```text
+.claude/skills/
+├── skill-name/
+│   ├── SKILL.md          # Main instructions
+│   ├── REFERENCE.md      # Additional details (optional)
+│   └── scripts/          # Utility scripts (optional)
+```
+
+### Best Practices Reference
+
+See: [Claude Platform - Agent Skills Best Practices](https://platform.claude.com/docs/agents-and-tools/agent-skills/best-practices)

@@ -85,3 +85,35 @@ Turborepo + pnpm workspaces で管理された個人ブログサービスのモ�
 - TypeScript + Tailwind CSS + Turborepo + pnpm
 
 **詳細ドキュメント**: 完全な技術スタックとアーキテクチャ決定については [ARCHITECTURE.ja.md](ARCHITECTURE.ja.md) を参照。
+
+## Claude Code Skills
+
+Skills は `.claude/skills/` に格納される Claude Code の再利用可能な指示です。
+
+### Skills の作成
+
+新しい Skills を作成する際は、テンプレートに従ってください: [SKILL-TEMPLATE.md](SKILL-TEMPLATE.md)
+
+**主要な要件:**
+
+1. **name**: 小文字、数字、ハイフンのみ（最大64文字）
+   - 動名詞形を推奨: `creating-issues`, `processing-pdfs`
+2. **description**: 機能と使用条件を三人称で記述
+   - 良い例:「GitHub Issueを作成する。タスクを認識した際に使用。」
+   - 悪い例:「Issueに役立つ」
+3. **SKILL.md本文**: 500行以下に保つ
+4. **参照**: 1レベルの深さまで（ネストした参照は避ける）
+
+### ディレクトリ構造
+
+```text
+.claude/skills/
+├── skill-name/
+│   ├── SKILL.md          # メイン指示
+│   ├── REFERENCE.md      # 追加詳細（オプション）
+│   └── scripts/          # ユーティリティスクリプト（オプション）
+```
+
+### ベストプラクティス参照
+
+参照: [Claude Platform - Agent Skills Best Practices](https://platform.claude.com/docs/ja/agents-and-tools/agent-skills/best-practices)
