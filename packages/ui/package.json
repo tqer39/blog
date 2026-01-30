@@ -42,7 +42,7 @@
     "shiki": ">=1.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.12",
+    "@biomejs/biome": "2.3.13",
     "@blog/config": "workspace:*",
     "@types/react": "19.2.9",
     "@types/react-dom": "19.2.3",

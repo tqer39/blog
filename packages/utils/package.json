@@ -14,7 +14,7 @@
     "ulidx": "2.4.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.12",
+    "@biomejs/biome": "2.3.13",
     "typescript": "5.9.3"
   }
 }
