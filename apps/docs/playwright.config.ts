@@ -30,6 +30,8 @@ export default defineConfig({
     command: 'pnpm preview',
     url: DOCS_URL,
     reuseExistingServer: !process.env.CI,
-    timeout: 60000,
+    timeout: 120000,
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
 });
