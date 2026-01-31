@@ -1,0 +1,78 @@
+---
+name: Test Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/docs/**"
+      - ".github/workflows/test-docs.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "apps/docs/**"
+      - ".github/workflows/test-docs.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e-docs:
+    name: Docs E2E Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+
+      - name: Build docs
+        run: pnpm --filter @blog/docs build
+
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "version=$(pnpm --filter @blog/docs exec playwright --version | head -1)" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-docs-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm --filter @blog/docs exec playwright install --with-deps chromium
+
+      - name: Install Playwright system deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: |
+          cd apps/docs
+          sudo npx playwright install-deps chromium
+
+      - name: Run E2E tests
+        run: pnpm --filter @blog/docs test:e2e
+
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: docs-e2e-report
+          path: apps/docs/playwright-report/
+          retention-days: 30
+
+  notify-failure:
+    name: Notify Failure
+    runs-on: ubuntu-latest
+    needs: [e2e-docs]
+    if: failure()
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Discord Notification
+        uses: ./.github/actions/discord-notify
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_DEV }}
+          title: "Docs E2E Test Failed"
+          message: "Documentation E2E tests failed"
