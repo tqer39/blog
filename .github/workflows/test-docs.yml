@@ -21,6 +21,7 @@ jobs:
   e2e-docs:
     name: Docs E2E Test
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
 
