@@ -64,9 +64,7 @@ function getCommitsSince(tag: string): Commit[] {
 
 function parseCommit(hash: string, message: string): Commit | null {
   // Match conventional commit format: type(scope)!: subject
-  const match = message.match(
-    /^(\w+)(?:\(([^)]+)\))?(!)?:\s*(.+)$/
-  );
+  const match = message.match(/^(\w+)(?:\(([^)]+)\))?(!)?:\s*(.+)$/);
 
   if (!match) return null;
 
@@ -173,8 +171,7 @@ function updateChangelog(existingContent: string, newEntry: string): string {
 
   if (unreleasedMatch?.index !== undefined) {
     // Insert after [Unreleased] section header
-    const insertPos =
-      unreleasedMatch.index + unreleasedMatch[0].length;
+    const insertPos = unreleasedMatch.index + unreleasedMatch[0].length;
     return (
       existingContent.slice(0, insertPos) +
       '\n' +
@@ -200,14 +197,11 @@ function main() {
   const args = process.argv.slice(2);
   const dryRun = args.includes('--dry-run');
   const versionIndex = args.indexOf('--version');
-  const customVersion =
-    versionIndex !== -1 ? args[versionIndex + 1] : null;
+  const customVersion = versionIndex !== -1 ? args[versionIndex + 1] : null;
 
   const latestTag = getLatestTag();
   const version =
-    customVersion ||
-    exec('./scripts/calculate-version.sh') ||
-    'v0.1.0';
+    customVersion || exec('./scripts/calculate-version.sh') || 'v0.1.0';
 
   console.log(`Latest tag: ${latestTag || 'none'}`);
   console.log(`New version: ${version}`);

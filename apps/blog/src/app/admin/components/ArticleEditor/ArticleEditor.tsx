@@ -787,7 +787,7 @@ export function ArticleEditor({
           {ui.showImagePrompt && (
             <div className="space-y-3 rounded-lg border border-border bg-muted/30 p-4">
               {/* Use article content checkbox */}
-              <label className="flex items-center gap-2 text-sm">
+              <label className="flex cursor-pointer items-center gap-2 text-sm">
                 <input
                   type="checkbox"
                   checked={imageGen.useArticleContent}
