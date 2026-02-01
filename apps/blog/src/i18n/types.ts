@@ -279,6 +279,8 @@ export interface Messages {
     aiOutline: string;
     contentPlaceholder: string;
     uploadingImage: string;
+    characters: string;
+    contentEditorTitle: string;
     draftRecovery: {
       title: string;
       savedAt: string;
