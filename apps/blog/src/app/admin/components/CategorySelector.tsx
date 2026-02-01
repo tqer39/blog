@@ -4,6 +4,7 @@ import type { CategoryWithCount } from '@blog/cms-types';
 import { Label } from '@blog/ui';
 import { useCallback } from 'react';
 import { useFetchData } from '@/hooks';
+import { useI18n } from '@/i18n';
 import { getCategories } from '@/lib/api/client';
 
 interface CategorySelectorProps {
@@ -12,6 +13,8 @@ interface CategorySelectorProps {
 }
 
 export function CategorySelector({ value, onChange }: CategorySelectorProps) {
+  const { messages } = useI18n();
+  const t = messages.editor;
   const fetchCategories = useCallback(() => getCategories(), []);
   const { data: categories, isLoading } = useFetchData(fetchCategories, {
     transform: (res) => res.categories,
@@ -22,11 +25,11 @@ export function CategorySelector({ value, onChange }: CategorySelectorProps) {
 
   return (
     <div className="space-y-2">
-      <Label htmlFor="category-selector">Category</Label>
+      <Label htmlFor="category-selector">{t.category}</Label>
       <div className="relative">
         <select
           id="category-selector"
-          aria-label="Category"
+          aria-label={t.category}
           value={value || ''}
           onChange={(e) => onChange(e.target.value || null)}
           disabled={isLoading}
@@ -36,7 +39,7 @@ export function CategorySelector({ value, onChange }: CategorySelectorProps) {
           }}
         >
           <option value="">
-            {isLoading ? 'Loading...' : 'Select a category'}
+            {isLoading ? t.loadingCategories : t.selectCategory}
           </option>
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
@@ -58,8 +61,7 @@ export function CategorySelector({ value, onChange }: CategorySelectorProps) {
       </div>
       {selectedCategory && (
         <p className="text-xs text-muted-foreground">
-          {selectedCategory.articleCount} article
-          {selectedCategory.articleCount !== 1 ? 's' : ''} in this category
+          {t.articleCount.replace('{count}', String(selectedCategory.articleCount))}
         </p>
       )}
     </div>

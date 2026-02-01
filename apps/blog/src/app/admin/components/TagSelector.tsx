@@ -4,6 +4,7 @@ import { Badge, Button, Input, Label } from '@blog/ui';
 import { X } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useFetchData } from '@/hooks';
+import { useI18n } from '@/i18n';
 import { createTag, getTags } from '@/lib/api/client';
 
 interface TagSelectorProps {
@@ -12,6 +13,8 @@ interface TagSelectorProps {
 }
 
 export function TagSelector({ value, onChange }: TagSelectorProps) {
+  const { messages } = useI18n();
+  const t = messages.editor;
   const [inputValue, setInputValue] = useState('');
   const [newlyCreatedTags, setNewlyCreatedTags] = useState<string[]>([]);
 
@@ -63,7 +66,7 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
 
   return (
     <div className="space-y-2">
-      <Label>Tags</Label>
+      <Label>{t.tags}</Label>
 
       {/* Selected tags */}
       {value.length > 0 && (
@@ -95,7 +98,7 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
             setInputValue(e.target.value)
           }
           onKeyDown={handleKeyDown}
-          placeholder={isLoading ? 'Loading tags...' : 'Add tags (press Enter)'}
+          placeholder={isLoading ? t.loadingTags : t.tagsPlaceholder}
           disabled={isLoading}
         />
 

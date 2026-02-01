@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArticleContent } from '@/components/ArticleContent';
+import { useI18n } from '@/i18n';
 import { suggestContinuation } from '@/lib/api/client';
 import { AlertBox } from './AlertBox';
 import { EmojiSuggester } from './EmojiSuggester';
@@ -68,6 +69,8 @@ export function MarkdownEditor({
   title,
   aiSettings,
 }: MarkdownEditorProps) {
+  const { messages } = useI18n();
+  const t = messages.editor.toolbar;
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -355,7 +358,7 @@ export function MarkdownEditor({
                   <Bold className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Bold</TooltipContent>
+              <TooltipContent>{t.bold}</TooltipContent>
             </Tooltip>
 
             <Tooltip>
@@ -369,7 +372,7 @@ export function MarkdownEditor({
                   <Italic className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Italic</TooltipContent>
+              <TooltipContent>{t.italic}</TooltipContent>
             </Tooltip>
 
             <Separator orientation="vertical" className="mx-1 h-6" />
@@ -385,7 +388,7 @@ export function MarkdownEditor({
                   <Heading2 className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Heading</TooltipContent>
+              <TooltipContent>{t.heading}</TooltipContent>
             </Tooltip>
 
             <Tooltip>
@@ -399,7 +402,7 @@ export function MarkdownEditor({
                   <List className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>List</TooltipContent>
+              <TooltipContent>{t.list}</TooltipContent>
             </Tooltip>
 
             <Separator orientation="vertical" className="mx-1 h-6" />
@@ -415,7 +418,7 @@ export function MarkdownEditor({
                   <Code className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Code Block</TooltipContent>
+              <TooltipContent>{t.codeBlock}</TooltipContent>
             </Tooltip>
 
             <Tooltip>
@@ -429,7 +432,7 @@ export function MarkdownEditor({
                   <Link className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Link</TooltipContent>
+              <TooltipContent>{t.link}</TooltipContent>
             </Tooltip>
 
             <Separator orientation="vertical" className="mx-1 h-6" />
@@ -454,24 +457,24 @@ export function MarkdownEditor({
                     </Button>
                   </PopoverTrigger>
                 </TooltipTrigger>
-                <TooltipContent>AI 続き提案</TooltipContent>
+                <TooltipContent>{t.aiContinuation}</TooltipContent>
               </Tooltip>
               <PopoverContent className="w-96 p-0" align="start">
                 <div className="border-b px-4 py-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="font-medium">続きの提案</h4>
+                      <h4 className="font-medium">{t.continuationTitle}</h4>
                       <p className="text-xs text-muted-foreground">
-                        クリックして挿入 (⌘J)
+                        {t.continuationHelp}
                       </p>
                     </div>
                     <div className="flex gap-1">
                       {(
                         [
-                          { value: 'short', label: '短い' },
-                          { value: 'medium', label: '中' },
-                          { value: 'long', label: '長い' },
-                        ] as const
+                          { value: 'short' as const, label: t.short },
+                          { value: 'medium' as const, label: t.medium },
+                          { value: 'long' as const, label: t.long },
+                        ]
                       ).map((option) => (
                         <Button
                           key={option.value}
@@ -512,7 +515,7 @@ export function MarkdownEditor({
                           </p>
                           <div className="mt-2 flex items-center justify-between">
                             <span className="text-xs text-muted-foreground">
-                              確信度: {Math.round(suggestion.confidence * 100)}%
+                              {t.confidence}: {Math.round(suggestion.confidence * 100)}%
                             </span>
                           </div>
                         </button>
@@ -523,7 +526,7 @@ export function MarkdownEditor({
                     !suggestionError &&
                     suggestions.length === 0 && (
                       <div className="py-8 text-center text-sm text-muted-foreground">
-                        ボタンをクリックして提案を生成
+                        {t.generateSuggestion}
                       </div>
                     )}
                 </div>
@@ -564,7 +567,7 @@ export function MarkdownEditor({
                   <Maximize2 className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Fullscreen</TooltipContent>
+              <TooltipContent>{t.fullscreen}</TooltipContent>
             </Tooltip>
           </div>
         </div>
@@ -594,12 +597,12 @@ export function MarkdownEditor({
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 className="h-full w-full resize-none bg-background p-4 font-mono text-sm focus:outline-none"
-                placeholder="Write your article in Markdown... (Paste images from clipboard)"
+                placeholder={messages.editor.contentPlaceholder}
               />
               {isUploading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-background/80">
                   <div className="text-muted-foreground">
-                    Uploading image...
+                    {messages.editor.uploadingImage}
                   </div>
                 </div>
               )}

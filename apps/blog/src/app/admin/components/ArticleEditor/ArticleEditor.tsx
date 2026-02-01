@@ -35,6 +35,7 @@ import {
 } from 'react';
 import { useAIModelSettings } from '@/hooks/useAIModelSettings';
 import { useArticleDraft } from '@/hooks/useArticleDraft';
+import { useI18n } from '@/i18n';
 import {
   generateImage,
   generateMetadata,
@@ -72,6 +73,8 @@ export function ArticleEditor({
   onSave,
   onCancel,
 }: ArticleEditorProps) {
+  const { messages } = useI18n();
+  const t = messages.editor;
   const initialState = useMemo(
     () => createInitialState(initialData),
     [initialData]
@@ -458,10 +461,10 @@ export function ArticleEditor({
             </div>
             <div>
               <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
-                未保存の下書きがあります
+                {t.draftRecovery.title}
               </p>
               <p className="text-xs text-amber-700 dark:text-amber-300">
-                {new Date(pendingDraft.savedAt).toLocaleString('ja-JP')} に保存
+                {t.draftRecovery.savedAt.replace('{date}', new Date(pendingDraft.savedAt).toLocaleString())}
                 {pendingDraft.title &&
                   ` - "${pendingDraft.title.slice(0, 30)}${pendingDraft.title.length > 30 ? '...' : ''}"`}
               </p>
@@ -475,7 +478,7 @@ export function ArticleEditor({
               onClick={handleDiscardDraft}
               className="border-amber-500/50 text-amber-700 hover:bg-amber-500/20 dark:text-amber-300"
             >
-              破棄
+              {t.draftRecovery.discard}
             </Button>
             <Button
               type="button"
@@ -483,7 +486,7 @@ export function ArticleEditor({
               onClick={handleRestoreDraft}
               className="bg-amber-600 text-white hover:bg-amber-700"
             >
-              復元
+              {t.draftRecovery.restore}
             </Button>
           </div>
         </div>
@@ -492,12 +495,12 @@ export function ArticleEditor({
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">
-          {initialData ? 'Edit Article' : 'New Article'}
+          {initialData ? t.editArticle : t.newArticle}
         </h1>
         <div className="flex items-center gap-4">
           {/* Status toggle */}
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Status:</span>
+            <span className="text-sm text-muted-foreground">{t.status}:</span>
             <button
               type="button"
               className={`inline-flex cursor-pointer items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors ${
@@ -507,7 +510,7 @@ export function ArticleEditor({
               }`}
               onClick={() => dispatch({ type: 'TOGGLE_STATUS' })}
             >
-              {article.status === 'published' ? 'Published' : 'Draft'}
+              {article.status === 'published' ? t.published : t.draft}
             </button>
           </div>
 
@@ -534,7 +537,7 @@ export function ArticleEditor({
               }
             >
               <MessageSquare className="h-4 w-4" />
-              {loading.isReviewing ? 'Reviewing...' : 'AI Review'}
+              {loading.isReviewing ? t.reviewing : t.aiReview}
             </SplitButton>
             {review.reviewResult && !loading.isReviewing && (
               <Button
@@ -546,7 +549,7 @@ export function ArticleEditor({
                 }
                 className="gap-1.5 text-muted-foreground"
               >
-                前回の結果
+                {t.previousResult}
               </Button>
             )}
           </div>
@@ -562,12 +565,12 @@ export function ArticleEditor({
             className="gap-1.5"
           >
             <Eye className="h-4 w-4" />
-            Preview
+            {t.preview}
           </Button>
 
           {onCancel && (
             <Button type="button" variant="outline" onClick={onCancel}>
-              Cancel
+              {t.cancel}
             </Button>
           )}
           <Button
@@ -581,14 +584,14 @@ export function ArticleEditor({
             }
           >
             {loading.isSaving ? (
-              'Saving...'
+              t.saving
             ) : ui.saveSuccess ? (
               <span className="flex items-center gap-1">
                 <Check className="h-4 w-4" />
-                Saved
+                {t.saved}
               </span>
             ) : (
-              'Save'
+              t.save
             )}
           </Button>
         </div>
@@ -605,7 +608,7 @@ export function ArticleEditor({
       <div className="space-y-4 rounded-lg border border-border bg-card p-6 shadow-sm">
         {/* Title */}
         <div className="space-y-2">
-          <Label htmlFor="title">Title</Label>
+          <Label htmlFor="title">{t.title}</Label>
           <Input
             id="title"
             type="text"
@@ -613,7 +616,7 @@ export function ArticleEditor({
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               dispatch({ type: 'SET_TITLE', payload: e.target.value })
             }
-            placeholder="Article title"
+            placeholder={t.titlePlaceholder}
             className="text-xl font-semibold"
           />
         </div>
@@ -621,7 +624,7 @@ export function ArticleEditor({
         {/* Description & Tags with AI Generate */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label>Description & Tags</Label>
+            <Label>{t.descriptionAndTags}</Label>
             <SplitButton
               onClick={handleGenerateMetadata}
               disabled={
@@ -636,7 +639,7 @@ export function ArticleEditor({
               }
             >
               <Sparkles className="h-4 w-4" />
-              {loading.isGeneratingMetadata ? 'Generating...' : 'AI Generate'}
+              {loading.isGeneratingMetadata ? t.generating : t.aiGenerate}
             </SplitButton>
           </div>
           <div className="space-y-2">
@@ -644,7 +647,7 @@ export function ArticleEditor({
               htmlFor="description"
               className="text-sm text-muted-foreground"
             >
-              Description (SEO)
+              {t.description}
             </Label>
             <Textarea
               id="description"
@@ -652,11 +655,11 @@ export function ArticleEditor({
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                 dispatch({ type: 'SET_DESCRIPTION', payload: e.target.value })
               }
-              placeholder="Brief description for SEO (100-160 characters)"
+              placeholder={t.descriptionPlaceholder}
               rows={2}
             />
             <p className="text-xs text-muted-foreground">
-              {article.description.length} / 160 文字
+              {t.characterCount.replace('{count}', String(article.description.length))}
             </p>
           </div>
           <TagSelector
@@ -684,10 +687,10 @@ export function ArticleEditor({
                 }
                 className="h-4 w-4 rounded border-gray-300"
               />
-              <span>スライドモードを有効にする</span>
+              <span>{t.enableSlideMode}</span>
             </label>
             <span className="text-xs text-muted-foreground">
-              (記事を「---」で区切ってスライドとして表示)
+              {t.slideModeHelp}
             </span>
           </div>
 
@@ -698,7 +701,7 @@ export function ArticleEditor({
                 htmlFor="slideDuration"
                 className="text-sm whitespace-nowrap"
               >
-                制限時間
+                {t.duration}
               </Label>
               <Input
                 id="slideDuration"
@@ -718,7 +721,7 @@ export function ArticleEditor({
                 className="w-24"
               />
               <span className="text-xs text-muted-foreground">
-                秒（未設定時は3分）
+                {t.durationHelp}
               </span>
             </div>
           )}
@@ -726,7 +729,7 @@ export function ArticleEditor({
 
         {/* Header Image */}
         <div className="space-y-3">
-          <Label>Header Image</Label>
+          <Label>{t.headerImage}</Label>
 
           {/* Preview Area (always visible) */}
           <div className="relative">
@@ -753,7 +756,7 @@ export function ArticleEditor({
               <div className="flex h-32 items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/10">
                 <div className="text-center text-muted-foreground/50">
                   <ImageIcon className="mx-auto h-8 w-8" />
-                  <span className="mt-1 block text-xs">No image</span>
+                  <span className="mt-1 block text-xs">{t.noImage}</span>
                 </div>
               </div>
             )}
@@ -769,7 +772,7 @@ export function ArticleEditor({
               disabled={loading.isUploadingHeader}
             >
               <ImageIcon className="mr-1.5 h-4 w-4" />
-              {loading.isUploadingHeader ? 'Uploading...' : 'Upload'}
+              {loading.isUploadingHeader ? t.uploading : t.upload}
             </Button>
             <Button
               type="button"
@@ -779,7 +782,7 @@ export function ArticleEditor({
               className="gap-1.5"
             >
               <Sparkles className="h-4 w-4" />
-              AI Generate
+              {t.aiGenerate}
             </Button>
           </div>
 
@@ -799,14 +802,14 @@ export function ArticleEditor({
                   }
                   className="h-4 w-4 rounded border-gray-300"
                 />
-                記事の内容をプロンプトとして使用
+                {t.imageGeneration.useArticleContent}
               </label>
 
               {/* Custom prompt input */}
               <div className="space-y-2">
                 <Label htmlFor="imagePrompt" className="text-sm">
-                  カスタムプロンプト{' '}
-                  {imageGen.useArticleContent ? '(オプション)' : '(必須)'}
+                  {t.imageGeneration.customPrompt}{' '}
+                  {imageGen.useArticleContent ? t.imageGeneration.optional : t.imageGeneration.required}
                 </Label>
                 <Textarea
                   id="imagePrompt"
@@ -819,8 +822,8 @@ export function ArticleEditor({
                   }
                   placeholder={
                     imageGen.useArticleContent
-                      ? '追加の指示があれば入力...'
-                      : '生成したい画像を説明してください...'
+                      ? t.imageGeneration.additionalInstructions
+                      : t.imageGeneration.describeImage
                   }
                   rows={2}
                 />
@@ -829,7 +832,7 @@ export function ArticleEditor({
               {/* Prompt mode (only shown when article content is used and custom prompt exists) */}
               {imageGen.useArticleContent && imageGen.imagePrompt.trim() && (
                 <div className="flex items-center gap-4 text-sm">
-                  <span className="text-muted-foreground">モード:</span>
+                  <span className="text-muted-foreground">{t.imageGeneration.mode}:</span>
                   <label className="flex items-center gap-1.5">
                     <input
                       type="radio"
@@ -844,7 +847,7 @@ export function ArticleEditor({
                       }
                       className="h-4 w-4"
                     />
-                    追加
+                    {t.imageGeneration.append}
                   </label>
                   <label className="flex items-center gap-1.5">
                     <input
@@ -860,7 +863,7 @@ export function ArticleEditor({
                       }
                       className="h-4 w-4"
                     />
-                    上書き
+                    {t.imageGeneration.override}
                   </label>
                 </div>
               )}
@@ -886,7 +889,7 @@ export function ArticleEditor({
                   }
                 >
                   <Sparkles className="h-4 w-4" />
-                  {loading.isGeneratingImage ? 'Generating...' : 'Generate'}
+                  {loading.isGeneratingImage ? t.generating : t.imageGeneration.generate}
                 </SplitButton>
               </div>
             </div>
@@ -905,7 +908,7 @@ export function ArticleEditor({
         {/* Content */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label>Content</Label>
+            <Label>{t.content}</Label>
             <SplitButton
               onClick={() => handleGenerateOutline()}
               disabled={loading.isGeneratingOutline || !article.title.trim()}
@@ -916,7 +919,7 @@ export function ArticleEditor({
               }
             >
               <ListTree className="h-4 w-4" />
-              {loading.isGeneratingOutline ? 'Generating...' : 'AI Outline'}
+              {loading.isGeneratingOutline ? t.generating : t.aiOutline}
             </SplitButton>
           </div>
           <MarkdownEditor
