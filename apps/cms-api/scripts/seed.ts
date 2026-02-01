@@ -48,7 +48,9 @@ const categories: CategoryInput[] = [
   { name: 'Books', slug: 'books', color: '#F59E0B', displayOrder: 3 },
 ];
 
-async function createCategory(category: CategoryInput): Promise<string | null> {
+async function createCategory(
+  category: CategoryInput
+): Promise<string | null> {
   try {
     const res = await fetch(`${API_URL}/categories`, {
       method: 'POST',
