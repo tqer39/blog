@@ -5,7 +5,6 @@ import {
   Alert,
   AlertDescription,
   Button,
-  Checkbox,
   Tabs,
   TabsList,
   TabsTrigger,
@@ -25,13 +24,13 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useI18n } from '@/i18n';
 import {
   deleteArticle,
   getArticles,
   publishArticle,
   unpublishArticle,
 } from '@/lib/api/client';
+import { useI18n } from '@/i18n';
 import { useSorting } from '../hooks/use-sorting';
 
 type ArticleSortKey = 'title' | 'status' | 'date';
@@ -43,7 +42,6 @@ export default function ArticleListPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedHashes, setSelectedHashes] = useState<Set<string>>(new Set());
   const { sortKey, sortDirection, handleSort } = useSorting<ArticleSortKey>(
     'date',
     'desc'
@@ -91,78 +89,6 @@ export default function ArticleListPage() {
     }
   }
 
-  function handleSelectAll() {
-    if (selectedHashes.size === sortedArticles.length) {
-      setSelectedHashes(new Set());
-    } else {
-      setSelectedHashes(new Set(sortedArticles.map((a) => a.hash)));
-    }
-  }
-
-  function handleSelectOne(hash: string) {
-    const newSet = new Set(selectedHashes);
-    if (newSet.has(hash)) {
-      newSet.delete(hash);
-    } else {
-      newSet.add(hash);
-    }
-    setSelectedHashes(newSet);
-  }
-
-  async function handleBatchDelete() {
-    const count = selectedHashes.size;
-    if (count === 0) return;
-    if (
-      !confirm(
-        t('articles.bulkActions.confirmDelete').replace(
-          '{count}',
-          String(count)
-        )
-      )
-    )
-      return;
-
-    try {
-      await Promise.all(
-        Array.from(selectedHashes).map((hash) => deleteArticle(hash))
-      );
-      setSelectedHashes(new Set());
-      await loadArticles();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to delete articles');
-    }
-  }
-
-  async function handleBatchPublish() {
-    if (selectedHashes.size === 0) return;
-
-    try {
-      await Promise.all(
-        Array.from(selectedHashes).map((hash) => publishArticle(hash))
-      );
-      setSelectedHashes(new Set());
-      await loadArticles();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to publish articles');
-    }
-  }
-
-  async function handleBatchUnpublish() {
-    if (selectedHashes.size === 0) return;
-
-    try {
-      await Promise.all(
-        Array.from(selectedHashes).map((hash) => unpublishArticle(hash))
-      );
-      setSelectedHashes(new Set());
-      await loadArticles();
-    } catch (err) {
-      alert(
-        err instanceof Error ? err.message : 'Failed to unpublish articles'
-      );
-    }
-  }
-
   const sortedArticles = useMemo(() => {
     const filtered = searchQuery.trim()
       ? articles.filter(
@@ -199,7 +125,7 @@ export default function ArticleListPage() {
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold">{t('articles.title')}</h1>
         <Button asChild className="shadow-md hover:shadow-lg transition-shadow">
-          <Link href="/my/articles/new">{t('articles.newArticle')}</Link>
+          <Link href="/admin/articles/new">{t('articles.newArticle')}</Link>
         </Button>
       </div>
 
@@ -254,47 +180,6 @@ export default function ArticleListPage() {
         )}
       </div>
 
-      {/* Bulk actions toolbar */}
-      {selectedHashes.size > 0 && (
-        <div className="mb-4 flex items-center gap-4 rounded-lg border border-border bg-muted/50 p-3">
-          <span className="text-sm font-medium text-foreground">
-            {t('articles.bulkActions.selected').replace(
-              '{count}',
-              String(selectedHashes.size)
-            )}
-          </span>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleBatchPublish}
-              className="gap-1.5"
-            >
-              <Eye className="h-4 w-4" />
-              {t('articles.bulkActions.publish')}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleBatchUnpublish}
-              className="gap-1.5"
-            >
-              <EyeOff className="h-4 w-4" />
-              {t('articles.bulkActions.unpublish')}
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleBatchDelete}
-              className="gap-1.5"
-            >
-              <Trash2 className="h-4 w-4" />
-              {t('articles.bulkActions.delete')}
-            </Button>
-          </div>
-        </div>
-      )}
-
       {error && (
         <Alert variant="destructive" className="mb-6">
           <AlertDescription>{error}</AlertDescription>
@@ -318,17 +203,7 @@ export default function ArticleListPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-muted/50">
-                <th className="w-12 py-4 pl-4 text-left">
-                  <Checkbox
-                    checked={
-                      sortedArticles.length > 0 &&
-                      selectedHashes.size === sortedArticles.length
-                    }
-                    onCheckedChange={handleSelectAll}
-                    aria-label={t('articles.bulkActions.selectAll')}
-                  />
-                </th>
-                <th className="w-16 py-4 pl-2 text-left text-sm font-semibold text-foreground">
+                <th className="w-16 py-4 pl-4 text-left text-sm font-semibold text-foreground">
                   <span className="sr-only">{t('articles.table.image')}</span>
                 </th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
@@ -385,7 +260,7 @@ export default function ArticleListPage() {
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
                   {t('articles.table.tags')}
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
                   {t('articles.table.actions')}
                 </th>
               </tr>
@@ -398,14 +273,7 @@ export default function ArticleListPage() {
                     index % 2 === 0 ? 'bg-background' : 'bg-muted/20'
                   }`}
                 >
-                  <td className="w-12 py-2 pl-4">
-                    <Checkbox
-                      checked={selectedHashes.has(article.hash)}
-                      onCheckedChange={() => handleSelectOne(article.hash)}
-                      aria-label={`Select ${article.title}`}
-                    />
-                  </td>
-                  <td className="w-16 py-2 pl-2">
+                  <td className="w-16 py-2 pl-4">
                     {article.headerImageUrl ? (
                       <Image
                         src={article.headerImageUrl}
@@ -423,7 +291,7 @@ export default function ArticleListPage() {
                   </td>
                   <td className="px-6 py-5">
                     <Link
-                      href={`/my/articles/${article.hash}/edit`}
+                      href={`/admin/articles/${article.hash}/edit`}
                       className="block"
                     >
                       <span className="text-base font-medium text-foreground hover:text-primary">
@@ -436,7 +304,7 @@ export default function ArticleListPage() {
                   </td>
                   <td className="px-4 py-5">
                     <span
-                      className={`inline-flex items-center whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold ${
+                      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
                         article.status === 'published'
                           ? 'bg-emerald-500/20 text-emerald-700 ring-1 ring-inset ring-emerald-500/40 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-400/30'
                           : 'bg-amber-500/20 text-amber-700 ring-1 ring-inset ring-amber-500/40 dark:bg-amber-500/20 dark:text-amber-300 dark:ring-amber-400/30'
@@ -472,7 +340,7 @@ export default function ArticleListPage() {
                     </div>
                   </td>
                   <td className="px-6 py-5">
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center justify-end gap-1">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -501,7 +369,7 @@ export default function ArticleListPage() {
                         className="h-8 gap-1.5 px-2 text-muted-foreground hover:text-foreground"
                         asChild
                       >
-                        <Link href={`/my/articles/${article.hash}/edit`}>
+                        <Link href={`/admin/articles/${article.hash}/edit`}>
                           <Edit className="h-4 w-4" />
                           <span className="hidden sm:inline">
                             {t('articles.actions.edit')}

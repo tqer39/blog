@@ -73,37 +73,15 @@ settings:
     apiKeySet: APIキーが設定されています。新しい値を入力して置き換えできます。
     showApiKey: APIキーを表示
     hideApiKey: APIキーを非表示
-  apiKey:
-    title: CMS API キー
-    description: CMS APIへの外部アクセス用のAPIキーを管理します。環境変数 API_KEY が設定されている場合、そちらも引き続き使用可能です。
-    noKey: APIキーが設定されていません
-    hasKey: APIキーが設定されています
-    createdAt: '作成日時:'
-    enabled: 有効
-    disabled: 無効
-    generate: APIキーを生成
-    regenerate: 再生成
-    disable: 無効化
-    enable: 有効化
-    copyKey: キーをコピー
-    copied: コピーしました
-    warning: このキーは一度だけ表示されます。安全な場所に保存してください。
-    generatedKey: 生成されたAPIキー
-    confirmRegenerate: 新しいAPIキーを生成すると、現在のキーは無効になります。続行しますか？
-    generateError: APIキーの生成に失敗しました
-    statusError: APIキーの状態取得に失敗しました
-    enableError: APIキーの有効化に失敗しました
-    disableError: APIキーの無効化に失敗しました
 
 admin:
   sidebar:
-    admin: マイページ
+    admin: 管理画面
     dashboard: ダッシュボード
     articles: 記事
     newArticle: 新規記事
-    tags: タグ
-    images: 画像
     categories: カテゴリ
+    tags: タグ
     settings: 設定
     expandSidebar: サイドバーを展開
     collapseSidebar: サイドバーを折りたたむ
@@ -149,13 +127,6 @@ articles:
     unpublish: 非公開にする
     edit: 編集
     delete: 削除
-  bulkActions:
-    selectAll: 全選択
-    selected: '{count}件選択中'
-    delete: 削除
-    publish: 公開
-    unpublish: 非公開
-    confirmDelete: '{count}件の記事を削除しますか？'
 
 tags:
   title: タグ
@@ -206,47 +177,6 @@ categories:
     edit: 編集
     delete: 削除
 
-images:
-  title: 画像
-  searchPlaceholder: ファイル名で検索...
-  noImages: 画像がありません
-  noMatchingImages: 検索に一致する画像がありません
-  loadError: 画像の読み込みに失敗しました
-  deleteError: 画像の削除に失敗しました
-  deleteConfirm: この画像を削除しますか？
-  viewMode:
-    grid: グリッド
-    list: リスト
-  table:
-    thumbnail: サムネイル
-    filename: ファイル名
-    originalFilename: 元のファイル名
-    size: サイズ
-    mimeType: 種類
-    createdAt: 作成日
-    actions: 操作
-    sortByFilename: ファイル名で並び替え
-    sortBySize: サイズで並び替え
-    sortByCreatedAt: 作成日で並び替え
-  actions:
-    copyUrl: URLをコピー
-    openNewTab: 新しいタブで開く
-    delete: 削除
-    copied: コピーしました
-  detail:
-    title: 画像詳細
-    filename: ファイル名
-    originalFilename: 元のファイル名
-    size: サイズ
-    mimeType: 種類
-    createdAt: 作成日
-    url: URL
-  bulkActions:
-    selectAll: 全選択
-    selected: '{count}件選択中'
-    delete: 削除
-    confirmDelete: '{count}件の画像を削除しますか？'
-
 header:
   search: 検索
   searchPlaceholder: 検索...
@@ -272,7 +202,6 @@ article:
   backToTop: トップに戻る
   prevArticle: 前の記事
   nextArticle: 次の記事
-  updated: 更新
 
 breadcrumb:
   home: ホーム
@@ -285,91 +214,3 @@ preview:
   headerImage: ヘッダー画像
   noTitle: (タイトル未入力)
   noContent: (コンテンツ未入力)
-
-editor:
-  newArticle: 新規記事
-  editArticle: 記事編集
-  status: ステータス
-  draft: 下書き
-  published: 公開済み
-  aiReview: AIレビュー
-  reviewing: レビュー中...
-  preview: プレビュー
-  cancel: キャンセル
-  save: 保存
-  saving: 保存中...
-  saved: 保存完了
-  title: タイトル
-  titlePlaceholder: 記事タイトル
-  descriptionAndTags: 説明とタグ
-  description: 説明（SEO）
-  descriptionPlaceholder: SEO用の説明文（100-160文字）
-  characterCount: '{count} / 160 文字'
-  tags: タグ
-  tagsPlaceholder: タグを追加（Enterで確定）
-  loadingTags: タグを読み込み中...
-  category: カテゴリ
-  selectCategory: カテゴリを選択
-  loadingCategories: 読み込み中...
-  articleCount: '{count}件の記事'
-  slideMode: スライドモード
-  enableSlideMode: スライドモードを有効にする
-  slideModeHelp: （記事を「---」で区切ってスライドとして表示）
-  duration: 制限時間
-  durationHelp: 秒（未設定時は3分）
-  headerImage: ヘッダー画像
-  noImage: 画像なし
-  upload: アップロード
-  uploading: アップロード中...
-  aiGenerate: AI生成
-  generating: 生成中...
-  content: 本文
-  aiOutline: AIアウトライン
-  contentPlaceholder: Markdownで記事を書く...（クリップボードから画像貼り付け可）
-  uploadingImage: 画像をアップロード中...
-  characters: '{count} 文字'
-  contentEditorTitle: '本文エディタ（{count} 文字）'
-  draftRecovery:
-    title: 未保存の下書きがあります
-    savedAt: '{date}に保存'
-    discard: 破棄
-    restore: 復元
-  imageGeneration:
-    useArticleContent: 記事の内容をプロンプトとして使用
-    customPrompt: カスタムプロンプト
-    optional: （オプション）
-    required: （必須）
-    additionalInstructions: 追加の指示があれば入力...
-    describeImage: 生成したい画像を説明してください...
-    mode: モード
-    append: 追加
-    override: 上書き
-    generate: 生成
-  toolbar:
-    bold: 太字
-    italic: 斜体
-    heading: 見出し
-    list: リスト
-    codeBlock: コードブロック
-    link: リンク
-    fullscreen: 全画面
-    aiContinuation: AI続き提案
-    continuationTitle: 続きの提案
-    continuationHelp: クリックして挿入 (⌘J)
-    short: 短い
-    medium: 中
-    long: 長い
-    confidence: 確信度
-    generateSuggestion: ボタンをクリックして提案を生成
-  previousResult: 前回の結果
-
-aiModelSettings:
-  title: AIモデル設定
-  reset: リセット
-  metadata: メタデータ（OpenAI）
-  image: 画像（Gemini / DALL-E）
-  claudeAnthropic: Claude（Anthropic）
-  review: レビュー
-  outline: アウトライン
-  transform: 変換
-  continuation: 続き生成

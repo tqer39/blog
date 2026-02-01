@@ -15,6 +15,7 @@ import {
 import type { ClipboardEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { getSiteSettings, updateSiteSettings } from '@/lib/api/client';
+import { useI18n } from '@/i18n';
 
 // X (formerly Twitter) icon
 function XIcon({ className }: { className?: string }) {
@@ -132,25 +133,26 @@ function buildSocialUrl(
 const API_KEY_FIELDS = [
   {
     key: 'ai_openai_api_key' as const,
-    label: 'OpenAI API Key',
-    description: 'Used for metadata generation and DALL-E image generation',
+    labelKey: 'settings.aiTools.openai.label',
+    descriptionKey: 'settings.aiTools.openai.description',
     placeholder: 'sk-...',
   },
   {
     key: 'ai_anthropic_api_key' as const,
-    label: 'Anthropic API Key',
-    description: 'Used for review, outline, text transform, and continuation',
+    labelKey: 'settings.aiTools.anthropic.label',
+    descriptionKey: 'settings.aiTools.anthropic.description',
     placeholder: 'sk-ant-...',
   },
   {
     key: 'ai_gemini_api_key' as const,
-    label: 'Gemini API Key',
-    description: 'Used for image generation',
+    labelKey: 'settings.aiTools.gemini.label',
+    descriptionKey: 'settings.aiTools.gemini.description',
     placeholder: 'AIza...',
   },
 ] as const;
 
 export default function SettingsPage() {
+  const { t } = useI18n();
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -185,11 +187,11 @@ export default function SettingsPage() {
       setSaving(true);
       setMessage(null);
       await updateSiteSettings(settings);
-      setMessage({ type: 'success', text: 'Settings saved successfully' });
+      setMessage({ type: 'success', text: t('settings.saveSuccess') });
     } catch (err) {
       setMessage({
         type: 'error',
-        text: err instanceof Error ? err.message : 'Failed to save settings',
+        text: err instanceof Error ? err.message : t('settings.saveError'),
       });
     } finally {
       setSaving(false);
@@ -266,14 +268,14 @@ export default function SettingsPage() {
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Site Settings</h1>
+        <h1 className="text-3xl font-bold">{t('settings.title')}</h1>
         <Button onClick={handleSave} disabled={saving}>
           {saving ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Save className="mr-2 h-4 w-4" />
           )}
-          Save Settings
+          {t('settings.saveSettings')}
         </Button>
       </div>
 
@@ -289,14 +291,16 @@ export default function SettingsPage() {
       <div className="space-y-8">
         {/* Basic Settings */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-          <h2 className="mb-6 text-xl font-semibold">Basic Settings</h2>
+          <h2 className="mb-6 text-xl font-semibold">
+            {t('settings.basic.title')}
+          </h2>
           <div className="space-y-4">
             <div>
               <label
                 htmlFor="site_name"
                 className="mb-2 block text-sm font-medium"
               >
-                Site Name
+                {t('settings.basic.siteName')}
               </label>
               <input
                 id="site_name"
@@ -304,7 +308,7 @@ export default function SettingsPage() {
                 value={settings?.site_name || ''}
                 onChange={(e) => handleChange('site_name', e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="My Blog"
+                placeholder={t('settings.basic.siteNamePlaceholder')}
               />
             </div>
             <div>
@@ -312,7 +316,7 @@ export default function SettingsPage() {
                 htmlFor="site_description"
                 className="mb-2 block text-sm font-medium"
               >
-                Site Description
+                {t('settings.basic.siteDescription')}
               </label>
               <textarea
                 id="site_description"
@@ -322,7 +326,7 @@ export default function SettingsPage() {
                 }
                 rows={2}
                 className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="A brief description of your blog"
+                placeholder={t('settings.basic.siteDescriptionPlaceholder')}
               />
             </div>
             <div>
@@ -330,7 +334,7 @@ export default function SettingsPage() {
                 htmlFor="author_name"
                 className="mb-2 block text-sm font-medium"
               >
-                Author Name
+                {t('settings.basic.authorName')}
               </label>
               <input
                 id="author_name"
@@ -338,7 +342,7 @@ export default function SettingsPage() {
                 value={settings?.author_name || ''}
                 onChange={(e) => handleChange('author_name', e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="Your Name"
+                placeholder={t('settings.basic.authorNamePlaceholder')}
               />
             </div>
             <div>
@@ -346,7 +350,7 @@ export default function SettingsPage() {
                 htmlFor="footer_text"
                 className="mb-2 block text-sm font-medium"
               >
-                Footer Text (optional)
+                {t('settings.basic.footerText')}
               </label>
               <input
                 id="footer_text"
@@ -354,7 +358,7 @@ export default function SettingsPage() {
                 value={settings?.footer_text || ''}
                 onChange={(e) => handleChange('footer_text', e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="Additional footer text"
+                placeholder={t('settings.basic.footerTextPlaceholder')}
               />
             </div>
           </div>
@@ -362,7 +366,9 @@ export default function SettingsPage() {
 
         {/* Social Links */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-          <h2 className="mb-4 text-xl font-semibold">Social Links</h2>
+          <h2 className="mb-4 text-xl font-semibold">
+            {t('settings.social.title')}
+          </h2>
           <div className="space-y-2">
             {[
               {
@@ -496,7 +502,9 @@ export default function SettingsPage() {
 
         {/* Display Options */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-          <h2 className="mb-6 text-xl font-semibold">Display Options</h2>
+          <h2 className="mb-6 text-xl font-semibold">
+            {t('settings.display.title')}
+          </h2>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -504,10 +512,10 @@ export default function SettingsPage() {
                   htmlFor="show_rss_link"
                   className="block text-sm font-medium"
                 >
-                  Show RSS Link
+                  {t('settings.display.showRssLink')}
                 </label>
                 <p className="text-sm text-muted-foreground">
-                  Display RSS feed link in the footer
+                  {t('settings.display.showRssLinkDescription')}
                 </p>
               </div>
               <button
@@ -534,17 +542,18 @@ export default function SettingsPage() {
 
         {/* Appearance */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-          <h2 className="mb-6 text-xl font-semibold">Appearance</h2>
+          <h2 className="mb-6 text-xl font-semibold">
+            {t('settings.appearance.title')}
+          </h2>
           <div>
             <label
               htmlFor="default_theme"
               className="mb-2 block text-sm font-medium"
             >
-              Default Theme
+              {t('settings.appearance.defaultTheme')}
             </label>
             <p className="mb-2 text-sm text-muted-foreground">
-              Theme for first-time visitors (users can override with their
-              preference)
+              {t('settings.appearance.defaultThemeDescription')}
             </p>
             <select
               id="default_theme"
@@ -552,70 +561,118 @@ export default function SettingsPage() {
               onChange={(e) => handleChange('default_theme', e.target.value)}
               className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
-              <option value="system">システム設定に従う</option>
-              <option value="light">ライトモード</option>
-              <option value="dark">ダークモード</option>
-              <option value="tokyonight">Tokyo Night</option>
-              <option value="nord-light">Nord Light</option>
-              <option value="autumn">Autumn</option>
+              <option value="system">
+                {t('settings.appearance.themes.system')}
+              </option>
+              <option value="light">
+                {t('settings.appearance.themes.light')}
+              </option>
+              <option value="dark">
+                {t('settings.appearance.themes.dark')}
+              </option>
+              <option value="tokyonight">
+                {t('settings.appearance.themes.tokyonight')}
+              </option>
+              <option value="nord-light">
+                {t('settings.appearance.themes.nordLight')}
+              </option>
+              <option value="autumn">
+                {t('settings.appearance.themes.autumn')}
+              </option>
+            </select>
+          </div>
+          <div className="mt-4">
+            <label
+              htmlFor="default_locale"
+              className="mb-2 block text-sm font-medium"
+            >
+              {t('settings.appearance.defaultLocale')}
+            </label>
+            <p className="mb-2 text-sm text-muted-foreground">
+              {t('settings.appearance.defaultLocaleDescription')}
+            </p>
+            <select
+              id="default_locale"
+              value={settings?.default_locale || 'auto'}
+              onChange={(e) => handleChange('default_locale', e.target.value)}
+              className="w-full rounded-lg border border-border bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="auto">
+                {t('settings.appearance.locales.auto')}
+              </option>
+              <option value="ja">
+                {t('settings.appearance.locales.ja')}
+              </option>
+              <option value="en">
+                {t('settings.appearance.locales.en')}
+              </option>
             </select>
           </div>
         </div>
 
         {/* AI Tools */}
         <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-          <h2 className="mb-2 text-xl font-semibold">AI Tools</h2>
+          <h2 className="mb-2 text-xl font-semibold">
+            {t('settings.aiTools.title')}
+          </h2>
           <p className="mb-6 text-sm text-muted-foreground">
-            Configure API keys for AI-powered features. Environment variables
-            take priority if set.
+            {t('settings.aiTools.description')}
           </p>
           <div className="space-y-4">
-            {API_KEY_FIELDS.map(({ key, label, description, placeholder }) => {
-              const value = settings?.[key] || '';
-              const isVisible = showApiKeys[key] || false;
-              const isMasked = value.endsWith('****');
+            {API_KEY_FIELDS.map(
+              ({ key, labelKey, descriptionKey, placeholder }) => {
+                const value = settings?.[key] || '';
+                const isVisible = showApiKeys[key] || false;
+                const isMasked = value.endsWith('****');
 
-              return (
-                <div key={key}>
-                  <label
-                    htmlFor={key}
-                    className="mb-1 block text-sm font-medium"
-                  >
-                    {label}
-                  </label>
-                  <p className="mb-2 text-xs text-muted-foreground">
-                    {description}
-                  </p>
-                  <div className="flex">
-                    <input
-                      id={key}
-                      type={isVisible ? 'text' : 'password'}
-                      value={value}
-                      onChange={(e) => handleApiKeyChange(key, e.target.value)}
-                      className="flex-1 rounded-l-lg border border-border bg-background px-4 py-2 text-sm font-mono focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                      placeholder={placeholder}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => toggleApiKeyVisibility(key)}
-                      className="inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
-                      aria-label={isVisible ? 'Hide API key' : 'Show API key'}
+                return (
+                  <div key={key}>
+                    <label
+                      htmlFor={key}
+                      className="mb-1 block text-sm font-medium"
                     >
-                      {isVisible ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
-                  {isMasked && (
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      API key is set. Enter a new value to replace it.
+                      {t(labelKey)}
+                    </label>
+                    <p className="mb-2 text-xs text-muted-foreground">
+                      {t(descriptionKey)}
                     </p>
-                  )}
-                </div>
-              );
-            })}
+                    <div className="flex">
+                      <input
+                        id={key}
+                        type={isVisible ? 'text' : 'password'}
+                        value={value}
+                        onChange={(e) =>
+                          handleApiKeyChange(key, e.target.value)
+                        }
+                        className="flex-1 rounded-l-lg border border-border bg-background px-4 py-2 text-sm font-mono focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        placeholder={placeholder}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => toggleApiKeyVisibility(key)}
+                        className="inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
+                        aria-label={
+                          isVisible
+                            ? t('settings.aiTools.hideApiKey')
+                            : t('settings.aiTools.showApiKey')
+                        }
+                      >
+                        {isVisible ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                    {isMasked && (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {t('settings.aiTools.apiKeySet')}
+                      </p>
+                    )}
+                  </div>
+                );
+              }
+            )}
           </div>
         </div>
       </div>

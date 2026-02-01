@@ -73,37 +73,15 @@ settings:
     apiKeySet: API key is set. Enter a new value to replace it.
     showApiKey: Show API key
     hideApiKey: Hide API key
-  apiKey:
-    title: CMS API Key
-    description: Manage API keys for external access to the CMS API. If API_KEY environment variable is set, it will continue to work as well.
-    noKey: No API key configured
-    hasKey: API key is configured
-    createdAt: 'Created:'
-    enabled: Enabled
-    disabled: Disabled
-    generate: Generate API Key
-    regenerate: Regenerate
-    disable: Disable
-    enable: Enable
-    copyKey: Copy Key
-    copied: Copied
-    warning: This key will only be shown once. Save it in a secure location.
-    generatedKey: Generated API Key
-    confirmRegenerate: Generating a new API key will invalidate the current key. Continue?
-    generateError: Failed to generate API key
-    statusError: Failed to fetch API key status
-    enableError: Failed to enable API key
-    disableError: Failed to disable API key
 
 admin:
   sidebar:
-    admin: My Page
+    admin: Admin
     dashboard: Dashboard
     articles: Articles
     newArticle: New Article
-    tags: Tags
-    images: Images
     categories: Categories
+    tags: Tags
     settings: Settings
     expandSidebar: Expand sidebar
     collapseSidebar: Collapse sidebar
@@ -149,13 +127,6 @@ articles:
     unpublish: Unpublish
     edit: Edit
     delete: Delete
-  bulkActions:
-    selectAll: Select all
-    selected: '{count} selected'
-    delete: Delete
-    publish: Publish
-    unpublish: Unpublish
-    confirmDelete: 'Delete {count} article(s)?'
 
 tags:
   title: Tags
@@ -206,47 +177,6 @@ categories:
     edit: Edit
     delete: Delete
 
-images:
-  title: Images
-  searchPlaceholder: Search by filename...
-  noImages: No images found
-  noMatchingImages: No images match your search
-  loadError: Failed to load images
-  deleteError: Failed to delete image
-  deleteConfirm: Delete this image?
-  viewMode:
-    grid: Grid
-    list: List
-  table:
-    thumbnail: Thumbnail
-    filename: Filename
-    originalFilename: Original filename
-    size: Size
-    mimeType: Type
-    createdAt: Created
-    actions: Actions
-    sortByFilename: Sort by filename
-    sortBySize: Sort by size
-    sortByCreatedAt: Sort by created date
-  actions:
-    copyUrl: Copy URL
-    openNewTab: Open in new tab
-    delete: Delete
-    copied: Copied
-  detail:
-    title: Image Details
-    filename: Filename
-    originalFilename: Original filename
-    size: Size
-    mimeType: Type
-    createdAt: Created
-    url: URL
-  bulkActions:
-    selectAll: Select all
-    selected: '{count} selected'
-    delete: Delete
-    confirmDelete: 'Delete {count} image(s)?'
-
 header:
   search: Search
   searchPlaceholder: Search...
@@ -272,7 +202,6 @@ article:
   backToTop: Back to top
   prevArticle: Previous article
   nextArticle: Next article
-  updated: Updated
 
 breadcrumb:
   home: Home
@@ -285,91 +214,3 @@ preview:
   headerImage: Header image
   noTitle: (No title)
   noContent: (No content)
-
-editor:
-  newArticle: New Article
-  editArticle: Edit Article
-  status: Status
-  draft: Draft
-  published: Published
-  aiReview: AI Review
-  reviewing: Reviewing...
-  preview: Preview
-  cancel: Cancel
-  save: Save
-  saving: Saving...
-  saved: Saved
-  title: Title
-  titlePlaceholder: Article title
-  descriptionAndTags: Description & Tags
-  description: Description (SEO)
-  descriptionPlaceholder: Brief description for SEO (100-160 characters)
-  characterCount: '{count} / 160 characters'
-  tags: Tags
-  tagsPlaceholder: Add tags (press Enter)
-  loadingTags: Loading tags...
-  category: Category
-  selectCategory: Select a category
-  loadingCategories: Loading...
-  articleCount: '{count} article(s)'
-  slideMode: Slide Mode
-  enableSlideMode: Enable slide mode
-  slideModeHelp: (Display article as slides separated by '---')
-  duration: Duration
-  durationHelp: 'seconds (default: 3 minutes)'
-  headerImage: Header Image
-  noImage: No image
-  upload: Upload
-  uploading: Uploading...
-  aiGenerate: AI Generate
-  generating: Generating...
-  content: Content
-  aiOutline: AI Outline
-  contentPlaceholder: Write your article in Markdown... (Paste images from clipboard)
-  uploadingImage: Uploading image...
-  characters: '{count} characters'
-  contentEditorTitle: 'Content Editor ({count} characters)'
-  draftRecovery:
-    title: Unsaved draft found
-    savedAt: Saved at {date}
-    discard: Discard
-    restore: Restore
-  imageGeneration:
-    useArticleContent: Use article content as prompt
-    customPrompt: Custom prompt
-    optional: (optional)
-    required: (required)
-    additionalInstructions: Enter additional instructions...
-    describeImage: Describe the image you want to generate...
-    mode: Mode
-    append: Append
-    override: Override
-    generate: Generate
-  toolbar:
-    bold: Bold
-    italic: Italic
-    heading: Heading
-    list: List
-    codeBlock: Code Block
-    link: Link
-    fullscreen: Fullscreen
-    aiContinuation: AI Continuation
-    continuationTitle: Continuation Suggestions
-    continuationHelp: Click to insert (⌘J)
-    short: Short
-    medium: Medium
-    long: Long
-    confidence: Confidence
-    generateSuggestion: Click button to generate suggestions
-  previousResult: Previous result
-
-aiModelSettings:
-  title: AI Model Settings
-  reset: Reset
-  metadata: Metadata (OpenAI)
-  image: Image (Gemini / DALL-E)
-  claudeAnthropic: Claude (Anthropic)
-  review: Review
-  outline: Outline
-  transform: Transform
-  continuation: Continuation

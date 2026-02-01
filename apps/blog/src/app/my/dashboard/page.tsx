@@ -11,8 +11,8 @@ import {
 } from '@blog/ui';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useI18n } from '@/i18n';
 import { getArticles } from '@/lib/api/client';
+import { useI18n } from '@/i18n';
 
 export default function AdminDashboard() {
   const { t } = useI18n();
@@ -108,10 +108,10 @@ export default function AdminDashboard() {
 
       <div className="flex gap-4">
         <Button asChild className="shadow-md hover:shadow-lg transition-shadow">
-          <Link href="/my/articles/new">{t('dashboard.newArticle')}</Link>
+          <Link href="/admin/articles/new">{t('dashboard.newArticle')}</Link>
         </Button>
         <Button variant="outline" asChild>
-          <Link href="/my/articles">{t('dashboard.viewAllArticles')}</Link>
+          <Link href="/admin/articles">{t('dashboard.viewAllArticles')}</Link>
         </Button>
       </div>
     </div>
