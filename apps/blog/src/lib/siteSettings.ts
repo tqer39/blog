@@ -27,7 +27,6 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   show_wantedly_link: 'true',
   show_lapras_link: 'true',
   default_theme: 'system',
-  default_locale: 'auto', // "auto" | "ja" | "en"
   // AI API keys (empty by default, set via admin settings or environment variables)
   ai_openai_api_key: '',
   ai_anthropic_api_key: '',
