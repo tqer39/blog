@@ -1,0 +1,65 @@
+name: Generate PR description
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Generate PR body
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          TEMPLATE=""
+          if [ -f .github/pull_request_template.md ]; then
+            TEMPLATE=$(cat .github/pull_request_template.md)
+          fi
+
+          CURRENT_BODY=$(gh pr view "$PR_NUMBER" --json body -q .body)
+          if [ -n "$CURRENT_BODY" ] && [ "$CURRENT_BODY" != "$TEMPLATE" ]; then
+            echo "PR body already set; skipping."
+            exit 0
+          fi
+
+          COMMITS=$(git log --pretty=format:'- %s (%h)' "$BASE_SHA".."$HEAD_SHA")
+          FILES=$(git diff --name-status "$BASE_SHA".."$HEAD_SHA" | \
+            awk '{print "- " $1 " " $2}')
+
+          cat <<EOF > pr_body.md
+# Purpose
+- 
+
+# Scope
+- 
+
+# Impact
+- 
+
+# Changes
+${COMMITS:-"- (no commits found)"}
+
+# Files
+${FILES:-"- (no files changed)"}
+EOF
+
+          gh pr edit "$PR_NUMBER" --body-file pr_body.md
