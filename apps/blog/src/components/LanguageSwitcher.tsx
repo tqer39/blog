@@ -20,7 +20,7 @@ export function LanguageSwitcher({
       <button
         type="button"
         onClick={() => setLocale('ja')}
-        className={`px-2 py-1 text-sm transition-colors ${
+        className={`cursor-pointer px-2 py-1 text-sm transition-colors ${
           locale === 'ja'
             ? 'bg-primary text-primary-foreground'
             : 'text-muted-foreground hover:text-foreground'
@@ -34,7 +34,7 @@ export function LanguageSwitcher({
       <button
         type="button"
         onClick={() => setLocale('en')}
-        className={`px-2 py-1 text-sm transition-colors ${
+        className={`cursor-pointer px-2 py-1 text-sm transition-colors ${
           locale === 'en'
             ? 'bg-primary text-primary-foreground'
             : 'text-muted-foreground hover:text-foreground'

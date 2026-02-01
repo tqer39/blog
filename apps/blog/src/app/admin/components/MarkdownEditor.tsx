@@ -575,7 +575,7 @@ export function MarkdownEditor({
         {/* Character Count */}
         <div className="flex items-center justify-end border-b bg-muted/30 px-3 py-1">
           <span className="text-xs text-muted-foreground">
-            {value.length.toLocaleString()} 文字
+            {messages.editor.characters.replace('{count}', value.length.toLocaleString())}
           </span>
         </div>
 
@@ -653,7 +653,7 @@ export function MarkdownEditor({
       <FullscreenModal
         isOpen={isFullscreen}
         onClose={() => setIsFullscreen(false)}
-        title={`Content Editor (${value.length.toLocaleString()} 文字)`}
+        title={messages.editor.contentEditorTitle.replace('{count}', value.length.toLocaleString())}
       >
         <div
           ref={fullscreenContainerRef}
