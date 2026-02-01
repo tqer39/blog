@@ -238,6 +238,84 @@ export interface Messages {
     noTitle: string;
     noContent: string;
   };
+  editor: {
+    newArticle: string;
+    editArticle: string;
+    status: string;
+    draft: string;
+    published: string;
+    aiReview: string;
+    reviewing: string;
+    preview: string;
+    cancel: string;
+    save: string;
+    saving: string;
+    saved: string;
+    title: string;
+    titlePlaceholder: string;
+    descriptionAndTags: string;
+    description: string;
+    descriptionPlaceholder: string;
+    characterCount: string;
+    tags: string;
+    tagsPlaceholder: string;
+    loadingTags: string;
+    category: string;
+    selectCategory: string;
+    loadingCategories: string;
+    articleCount: string;
+    slideMode: string;
+    enableSlideMode: string;
+    slideModeHelp: string;
+    duration: string;
+    durationHelp: string;
+    headerImage: string;
+    noImage: string;
+    upload: string;
+    uploading: string;
+    aiGenerate: string;
+    generating: string;
+    content: string;
+    aiOutline: string;
+    contentPlaceholder: string;
+    uploadingImage: string;
+    draftRecovery: {
+      title: string;
+      savedAt: string;
+      discard: string;
+      restore: string;
+    };
+    imageGeneration: {
+      useArticleContent: string;
+      customPrompt: string;
+      optional: string;
+      required: string;
+      additionalInstructions: string;
+      describeImage: string;
+      mode: string;
+      append: string;
+      override: string;
+      generate: string;
+    };
+    toolbar: {
+      bold: string;
+      italic: string;
+      heading: string;
+      list: string;
+      codeBlock: string;
+      link: string;
+      fullscreen: string;
+      aiContinuation: string;
+      continuationTitle: string;
+      continuationHelp: string;
+      short: string;
+      medium: string;
+      long: string;
+      confidence: string;
+      generateSuggestion: string;
+    };
+    previousResult: string;
+  };
 }
 
 export interface I18nContextValue {
