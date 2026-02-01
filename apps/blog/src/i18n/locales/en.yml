@@ -311,3 +311,14 @@ editor:
     confidence: Confidence
     generateSuggestion: Click button to generate suggestions
   previousResult: Previous result
+
+aiModelSettings:
+  title: AI Model Settings
+  reset: Reset
+  metadata: Metadata (OpenAI)
+  image: Image (Gemini / DALL-E)
+  claudeAnthropic: Claude (Anthropic)
+  review: Review
+  outline: Outline
+  transform: Transform
+  continuation: Continuation

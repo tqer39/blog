@@ -16,6 +16,7 @@ import {
   Separator,
 } from '@blog/ui';
 import { RotateCcw, Settings } from 'lucide-react';
+import { useI18n } from '@/i18n';
 import {
   type ModelOption,
   type ModelOptionWithProvider,
@@ -64,6 +65,8 @@ export function AISettingsPopover({
   onSettingsChange,
   onReset,
 }: AISettingsPopoverProps) {
+  const { messages } = useI18n();
+  const t = messages.aiModelSettings;
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -71,7 +74,7 @@ export function AISettingsPopover({
           variant="ghost"
           size="sm"
           className="h-8 w-8 p-0"
-          aria-label="AI設定"
+          aria-label={t.title}
         >
           <Settings className="h-4 w-4" />
         </Button>
@@ -79,7 +82,7 @@ export function AISettingsPopover({
       <PopoverContent className="w-80" align="end">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="font-medium">AI Model Settings</h4>
+            <h4 className="font-medium">{t.title}</h4>
             <Button
               variant="ghost"
               size="sm"
@@ -87,7 +90,7 @@ export function AISettingsPopover({
               className="h-7 px-2 text-xs text-muted-foreground"
             >
               <RotateCcw className="mr-1 h-3 w-3" />
-              Reset
+              {t.reset}
             </Button>
           </div>
 
@@ -95,7 +98,7 @@ export function AISettingsPopover({
 
           {/* Metadata Generation (OpenAI) */}
           <ModelSelectField
-            label="Metadata (OpenAI)"
+            label={t.metadata}
             value={settings.metadata}
             onChange={(v) => onSettingsChange({ metadata: v })}
             options={OPENAI_MODELS}
@@ -103,7 +106,7 @@ export function AISettingsPopover({
 
           {/* Image Generation (Gemini / OpenAI) */}
           <ModelSelectField
-            label="Image (Gemini / DALL-E)"
+            label={t.image}
             value={settings.image}
             onChange={(v) => onSettingsChange({ image: v })}
             options={ALL_IMAGE_MODELS}
@@ -119,11 +122,11 @@ export function AISettingsPopover({
 
           <Separator />
 
-          <p className="text-xs text-muted-foreground">Claude (Anthropic)</p>
+          <p className="text-xs text-muted-foreground">{t.claudeAnthropic}</p>
 
           {/* Article Review */}
           <ModelSelectField
-            label="Review"
+            label={t.review}
             value={settings.review}
             onChange={(v) => onSettingsChange({ review: v })}
             options={ANTHROPIC_MODELS}
@@ -131,7 +134,7 @@ export function AISettingsPopover({
 
           {/* Outline Generation */}
           <ModelSelectField
-            label="Outline"
+            label={t.outline}
             value={settings.outline}
             onChange={(v) => onSettingsChange({ outline: v })}
             options={ANTHROPIC_MODELS}
@@ -139,7 +142,7 @@ export function AISettingsPopover({
 
           {/* Text Transform */}
           <ModelSelectField
-            label="Transform"
+            label={t.transform}
             value={settings.transform}
             onChange={(v) => onSettingsChange({ transform: v })}
             options={ANTHROPIC_MODELS}
@@ -147,7 +150,7 @@ export function AISettingsPopover({
 
           {/* Continuation Suggestion */}
           <ModelSelectField
-            label="Continuation"
+            label={t.continuation}
             value={settings.continuation}
             onChange={(v) => onSettingsChange({ continuation: v })}
             options={ANTHROPIC_MODELS}
