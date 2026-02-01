@@ -73,6 +73,27 @@ settings:
     apiKeySet: API key is set. Enter a new value to replace it.
     showApiKey: Show API key
     hideApiKey: Hide API key
+  apiKey:
+    title: CMS API Key
+    description: Manage API keys for external access to the CMS API. If API_KEY environment variable is set, it will continue to work as well.
+    noKey: No API key configured
+    hasKey: API key is configured
+    createdAt: 'Created:'
+    enabled: Enabled
+    disabled: Disabled
+    generate: Generate API Key
+    regenerate: Regenerate
+    disable: Disable
+    enable: Enable
+    copyKey: Copy Key
+    copied: Copied
+    warning: This key will only be shown once. Save it in a secure location.
+    generatedKey: Generated API Key
+    confirmRegenerate: Generating a new API key will invalidate the current key. Continue?
+    generateError: Failed to generate API key
+    statusError: Failed to fetch API key status
+    enableError: Failed to enable API key
+    disableError: Failed to disable API key
 
 admin:
   sidebar:
