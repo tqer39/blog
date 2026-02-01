@@ -39,7 +39,7 @@ export default function LoginPage() {
         return;
       }
 
-      router.push('/admin');
+      router.push('/my');
       router.refresh();
     } catch {
       setError('Failed to connect to server');

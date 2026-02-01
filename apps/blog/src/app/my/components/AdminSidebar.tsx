@@ -62,7 +62,7 @@ export function AdminSidebar() {
       {/* Header */}
       <div className="flex h-16 shrink-0 items-center justify-between border-b px-4">
         {!isCollapsed && (
-          <Link href="/admin" className="text-xl font-bold">
+          <Link href="/my" className="text-xl font-bold">
             {t('admin.sidebar.admin')}
           </Link>
         )}
@@ -121,37 +121,37 @@ export function AdminSidebar() {
       <nav className="flex-1 overflow-y-auto p-2">
         <ul className="space-y-1">
           <NavItem
-            href="/admin/dashboard"
+            href="/my/dashboard"
             icon={<DashboardIcon />}
             label={t('admin.sidebar.dashboard')}
             isCollapsed={isCollapsed}
           />
           <NavItem
-            href="/admin/articles"
+            href="/my/articles"
             icon={<ArticlesIcon />}
             label={t('admin.sidebar.articles')}
             isCollapsed={isCollapsed}
           />
           <NavItem
-            href="/admin/articles/new"
+            href="/my/articles/new"
             icon={<NewArticleIcon />}
             label={t('admin.sidebar.newArticle')}
             isCollapsed={isCollapsed}
           />
           <NavItem
-            href="/admin/tags"
+            href="/my/tags"
             icon={<TagsIcon />}
             label={t('admin.sidebar.tags')}
             isCollapsed={isCollapsed}
           />
           <NavItem
-            href="/admin/categories"
+            href="/my/categories"
             icon={<CategoriesIcon />}
             label={t('admin.sidebar.categories')}
             isCollapsed={isCollapsed}
           />
           <NavItem
-            href="/admin/settings"
+            href="/my/settings"
             icon={<SettingsIcon />}
             label={t('admin.sidebar.settings')}
             isCollapsed={isCollapsed}

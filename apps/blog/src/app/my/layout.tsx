@@ -11,7 +11,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = headersList.get('x-pathname') || '';
 
   // Login page uses minimal layout
-  if (pathname === '/admin/login') {
+  if (pathname === '/my/login') {
     return <>{children}</>;
   }
 

@@ -34,7 +34,7 @@ export default function EditArticlePage() {
   };
 
   const handleCancel = () => {
-    router.push('/admin/articles');
+    router.push('/my/articles');
   };
 
   if (loading) {

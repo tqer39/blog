@@ -122,7 +122,7 @@ export function HeaderClient({
           {isLoggedIn ? (
             <>
               <Link
-                href="/admin"
+                href="/my"
                 className="hidden rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:block"
                 aria-label={t('header.admin')}
                 title={t('header.admin')}
@@ -141,7 +141,7 @@ export function HeaderClient({
             </>
           ) : (
             <Link
-              href="/admin/login"
+              href="/my/login"
               className="hidden rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:block"
               aria-label={t('header.login')}
               title={t('header.login')}

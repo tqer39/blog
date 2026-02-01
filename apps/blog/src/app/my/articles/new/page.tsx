@@ -10,11 +10,11 @@ export default function NewArticlePage() {
 
   const handleSave = async (input: ArticleInput) => {
     await createArticle(input);
-    router.push('/admin/articles');
+    router.push('/my/articles');
   };
 
   const handleCancel = () => {
-    router.push('/admin/articles');
+    router.push('/my/articles');
   };
 
   return <ArticleEditor onSave={handleSave} onCancel={handleCancel} />;
