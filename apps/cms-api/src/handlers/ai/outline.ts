@@ -7,6 +7,7 @@ import type {
 } from '@blog/cms-types';
 import { Hono } from 'hono';
 import type { Env } from '../../index';
+import { getAnthropicApiKey } from '../../lib/api-keys';
 import { internalError, validationError } from '../../lib/errors';
 import {
   ANTHROPIC_API_URL,
@@ -18,7 +19,7 @@ import {
 export const outlineHandler = new Hono<{ Bindings: Env }>();
 
 outlineHandler.post('/', async (c) => {
-  const apiKey = c.env.ANTHROPIC_API_KEY;
+  const apiKey = await getAnthropicApiKey(c.env);
   if (!apiKey) {
     internalError('Anthropic API key not configured');
   }

@@ -51,6 +51,20 @@ app.use(
 // Health check (no auth required)
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
+// API keys that need masking in public endpoint
+const API_KEY_FIELDS = [
+  'ai_openai_api_key',
+  'ai_anthropic_api_key',
+  'ai_gemini_api_key',
+] as const;
+
+function maskApiKeyValue(value: string): string {
+  if (!value || value.length < 10) {
+    return '****';
+  }
+  return `${value.slice(0, 10)}****`;
+}
+
 // Public settings endpoint (no auth required for reading)
 app.get('/v1/settings', async (c) => {
   const { results } = await c.env.DB.prepare(
@@ -61,7 +75,18 @@ app.get('/v1/settings', async (c) => {
   let latestUpdatedAt = '';
 
   for (const row of results || []) {
-    settings[row.key as string] = row.value as string;
+    const key = row.key as string;
+    let value = row.value as string;
+
+    // Mask API key values for safe display
+    if (
+      API_KEY_FIELDS.includes(key as (typeof API_KEY_FIELDS)[number]) &&
+      value
+    ) {
+      value = maskApiKeyValue(value);
+    }
+
+    settings[key] = value;
     const updatedAt = row.updated_at as string;
     if (updatedAt > latestUpdatedAt) {
       latestUpdatedAt = updatedAt;

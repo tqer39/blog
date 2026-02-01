@@ -34,7 +34,7 @@ imagesHandler.post('/', async (c) => {
   }
 
   const id = generateId();
-  const imageId = generateImageId(); // UUIDv4 for unpredictable URL path
+  const imageId = generateImageId(); // ULID for time-sortable, unpredictable URL path
   const ext =
     getExtension(file.name) || getExtensionFromMime(file.type) || 'bin';
   const filename = `${imageId}.${ext}`;

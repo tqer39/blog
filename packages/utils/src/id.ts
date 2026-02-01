@@ -20,9 +20,10 @@ export function generateHash(): string {
 }
 
 /**
- * Generate a UUID v4 for image paths
- * Provides 128 bits of randomness for unpredictable public URLs
+ * Generate a ULID for image paths
+ * ULID is time-sortable, URL-safe (26 characters), and provides
+ * sufficient randomness (80 bits per millisecond) for unpredictable public URLs
  */
 export function generateImageId(): string {
-  return crypto.randomUUID();
+  return ulid();
 }

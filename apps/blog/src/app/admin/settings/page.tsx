@@ -4,6 +4,8 @@ import type { SiteSettings } from '@blog/cms-types';
 import { Alert, AlertDescription, Button } from '@blog/ui';
 import {
   ArrowUpRight,
+  Eye,
+  EyeOff,
   Github,
   LayoutGrid,
   Linkedin,
@@ -126,6 +128,28 @@ function buildSocialUrl(
   return `${SOCIAL_PREFIXES[service]}${id}`;
 }
 
+// API key field configuration
+const API_KEY_FIELDS = [
+  {
+    key: 'ai_openai_api_key' as const,
+    label: 'OpenAI API Key',
+    description: 'Used for metadata generation and DALL-E image generation',
+    placeholder: 'sk-...',
+  },
+  {
+    key: 'ai_anthropic_api_key' as const,
+    label: 'Anthropic API Key',
+    description: 'Used for review, outline, text transform, and continuation',
+    placeholder: 'sk-ant-...',
+  },
+  {
+    key: 'ai_gemini_api_key' as const,
+    label: 'Gemini API Key',
+    description: 'Used for image generation',
+    placeholder: 'AIza...',
+  },
+] as const;
+
 export default function SettingsPage() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [loading, setLoading] = useState(true);
@@ -135,6 +159,7 @@ export default function SettingsPage() {
     type: 'success' | 'error';
     text: string;
   } | null>(null);
+  const [showApiKeys, setShowApiKeys] = useState<Record<string, boolean>>({});
 
   const loadSettings = useCallback(async () => {
     try {
@@ -206,6 +231,19 @@ export default function SettingsPage() {
       e.preventDefault();
       const id = extractSocialId(pastedText, service);
       handleSocialIdChange(service, settingKey, id);
+    }
+  }
+
+  function toggleApiKeyVisibility(key: string) {
+    setShowApiKeys((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
+
+  function handleApiKeyChange(key: keyof SiteSettings, value: string) {
+    if (!settings) return;
+    // Only update if value is not the masked value (doesn't end with ****)
+    if (!value.endsWith('****')) {
+      setSettings({ ...settings, [key]: value });
+      setMessage(null);
     }
   }
 
@@ -521,6 +559,63 @@ export default function SettingsPage() {
               <option value="nord-light">Nord Light</option>
               <option value="autumn">Autumn</option>
             </select>
+          </div>
+        </div>
+
+        {/* AI Tools */}
+        <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+          <h2 className="mb-2 text-xl font-semibold">AI Tools</h2>
+          <p className="mb-6 text-sm text-muted-foreground">
+            Configure API keys for AI-powered features. Environment variables
+            take priority if set.
+          </p>
+          <div className="space-y-4">
+            {API_KEY_FIELDS.map(({ key, label, description, placeholder }) => {
+              const value = settings?.[key] || '';
+              const isVisible = showApiKeys[key] || false;
+              const isMasked = value.endsWith('****');
+
+              return (
+                <div key={key}>
+                  <label
+                    htmlFor={key}
+                    className="mb-1 block text-sm font-medium"
+                  >
+                    {label}
+                  </label>
+                  <p className="mb-2 text-xs text-muted-foreground">
+                    {description}
+                  </p>
+                  <div className="flex">
+                    <input
+                      id={key}
+                      type={isVisible ? 'text' : 'password'}
+                      value={value}
+                      onChange={(e) => handleApiKeyChange(key, e.target.value)}
+                      className="flex-1 rounded-l-lg border border-border bg-background px-4 py-2 text-sm font-mono focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                      placeholder={placeholder}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => toggleApiKeyVisibility(key)}
+                      className="inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
+                      aria-label={isVisible ? 'Hide API key' : 'Show API key'}
+                    >
+                      {isVisible ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                  {isMasked && (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      API key is set. Enter a new value to replace it.
+                    </p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

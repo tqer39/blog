@@ -28,6 +28,16 @@ const ALLOWED_KEYS = [
   'show_linkedin_link',
   'show_wantedly_link',
   'show_lapras_link',
+  'ai_openai_api_key',
+  'ai_anthropic_api_key',
+  'ai_gemini_api_key',
+] as const;
+
+// API keys that need masking in GET response
+const API_KEY_FIELDS = [
+  'ai_openai_api_key',
+  'ai_anthropic_api_key',
+  'ai_gemini_api_key',
 ] as const;
 
 // URL keys that require scheme validation
@@ -42,6 +52,24 @@ const URL_KEYS = [
   'social_lapras',
 ] as const;
 const ALLOWED_SCHEMES = ['https:', 'http:'];
+
+/**
+ * Mask an API key value for safe display
+ * Shows first 10 characters followed by ****
+ */
+function maskApiKeyValue(value: string): string {
+  if (!value || value.length < 10) {
+    return '****';
+  }
+  return `${value.slice(0, 10)}****`;
+}
+
+/**
+ * Check if a value is a masked API key value that should be ignored
+ */
+function isMaskedValue(value: string): boolean {
+  return value.endsWith('****');
+}
 
 /**
  * Validate URL scheme for social links
@@ -74,7 +102,18 @@ settingsHandler.get('/', async (c) => {
   let latestUpdatedAt = '';
 
   for (const row of results || []) {
-    settings[row.key as string] = row.value as string;
+    const key = row.key as string;
+    let value = row.value as string;
+
+    // Mask API key values for safe display
+    if (
+      API_KEY_FIELDS.includes(key as (typeof API_KEY_FIELDS)[number]) &&
+      value
+    ) {
+      value = maskApiKeyValue(value);
+    }
+
+    settings[key] = value;
     const updatedAt = row.updated_at as string;
     if (updatedAt > latestUpdatedAt) {
       latestUpdatedAt = updatedAt;
@@ -117,8 +156,20 @@ settingsHandler.put('/', async (c) => {
   }
 
   // Batch update using upsert
+  // For API keys: skip if value is empty or masked (ends with ****)
   const statements = Object.entries(input)
-    .filter(([, value]) => value !== undefined)
+    .filter(([key, value]) => {
+      if (value === undefined) return false;
+
+      // For API key fields, skip empty strings and masked values
+      if (API_KEY_FIELDS.includes(key as (typeof API_KEY_FIELDS)[number])) {
+        if (value === '' || isMaskedValue(value as string)) {
+          return false;
+        }
+      }
+
+      return true;
+    })
     .map(([key, value]) =>
       c.env.DB.prepare(
         'INSERT INTO site_settings (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = ?'
@@ -138,7 +189,18 @@ settingsHandler.put('/', async (c) => {
   let latestUpdatedAt = '';
 
   for (const row of results || []) {
-    settings[row.key as string] = row.value as string;
+    const key = row.key as string;
+    let value = row.value as string;
+
+    // Mask API key values for safe display
+    if (
+      API_KEY_FIELDS.includes(key as (typeof API_KEY_FIELDS)[number]) &&
+      value
+    ) {
+      value = maskApiKeyValue(value);
+    }
+
+    settings[key] = value;
     const updatedAt = row.updated_at as string;
     if (updatedAt > latestUpdatedAt) {
       latestUpdatedAt = updatedAt;
