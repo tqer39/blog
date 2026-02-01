@@ -316,6 +316,17 @@ export interface Messages {
     };
     previousResult: string;
   };
+  aiModelSettings: {
+    title: string;
+    reset: string;
+    metadata: string;
+    image: string;
+    claudeAnthropic: string;
+    review: string;
+    outline: string;
+    transform: string;
+    continuation: string;
+  };
 }
 
 export interface I18nContextValue {
