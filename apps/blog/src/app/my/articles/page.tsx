@@ -125,7 +125,7 @@ export default function ArticleListPage() {
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold">{t('articles.title')}</h1>
         <Button asChild className="shadow-md hover:shadow-lg transition-shadow">
-          <Link href="/admin/articles/new">{t('articles.newArticle')}</Link>
+          <Link href="/my/articles/new">{t('articles.newArticle')}</Link>
         </Button>
       </div>
 
@@ -291,7 +291,7 @@ export default function ArticleListPage() {
                   </td>
                   <td className="px-6 py-5">
                     <Link
-                      href={`/admin/articles/${article.hash}/edit`}
+                      href={`/my/articles/${article.hash}/edit`}
                       className="block"
                     >
                       <span className="text-base font-medium text-foreground hover:text-primary">
@@ -369,7 +369,7 @@ export default function ArticleListPage() {
                         className="h-8 gap-1.5 px-2 text-muted-foreground hover:text-foreground"
                         asChild
                       >
-                        <Link href={`/admin/articles/${article.hash}/edit`}>
+                        <Link href={`/my/articles/${article.hash}/edit`}>
                           <Edit className="h-4 w-4" />
                           <span className="hidden sm:inline">
                             {t('articles.actions.edit')}

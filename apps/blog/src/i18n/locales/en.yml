@@ -97,7 +97,7 @@ settings:
 
 admin:
   sidebar:
-    admin: Admin
+    admin: My Page
     dashboard: Dashboard
     articles: Articles
     newArticle: New Article

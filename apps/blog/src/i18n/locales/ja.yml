@@ -97,7 +97,7 @@ settings:
 
 admin:
   sidebar:
-    admin: 管理画面
+    admin: マイページ
     dashboard: ダッシュボード
     articles: 記事
     newArticle: 新規記事

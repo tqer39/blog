@@ -108,10 +108,10 @@ export default function AdminDashboard() {
 
       <div className="flex gap-4">
         <Button asChild className="shadow-md hover:shadow-lg transition-shadow">
-          <Link href="/admin/articles/new">{t('dashboard.newArticle')}</Link>
+          <Link href="/my/articles/new">{t('dashboard.newArticle')}</Link>
         </Button>
         <Button variant="outline" asChild>
-          <Link href="/admin/articles">{t('dashboard.viewAllArticles')}</Link>
+          <Link href="/my/articles">{t('dashboard.viewAllArticles')}</Link>
         </Button>
       </div>
     </div>
