@@ -73,6 +73,27 @@ settings:
     apiKeySet: APIキーが設定されています。新しい値を入力して置き換えできます。
     showApiKey: APIキーを表示
     hideApiKey: APIキーを非表示
+  apiKey:
+    title: CMS API キー
+    description: CMS APIへの外部アクセス用のAPIキーを管理します。環境変数 API_KEY が設定されている場合、そちらも引き続き使用可能です。
+    noKey: APIキーが設定されていません
+    hasKey: APIキーが設定されています
+    createdAt: '作成日時:'
+    enabled: 有効
+    disabled: 無効
+    generate: APIキーを生成
+    regenerate: 再生成
+    disable: 無効化
+    enable: 有効化
+    copyKey: キーをコピー
+    copied: コピーしました
+    warning: このキーは一度だけ表示されます。安全な場所に保存してください。
+    generatedKey: 生成されたAPIキー
+    confirmRegenerate: 新しいAPIキーを生成すると、現在のキーは無効になります。続行しますか？
+    generateError: APIキーの生成に失敗しました
+    statusError: APIキーの状態取得に失敗しました
+    enableError: APIキーの有効化に失敗しました
+    disableError: APIキーの無効化に失敗しました
 
 admin:
   sidebar:
