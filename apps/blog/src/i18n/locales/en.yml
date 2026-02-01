@@ -278,6 +278,8 @@ editor:
   aiOutline: AI Outline
   contentPlaceholder: Write your article in Markdown... (Paste images from clipboard)
   uploadingImage: Uploading image...
+  characters: '{count} characters'
+  contentEditorTitle: 'Content Editor ({count} characters)'
   draftRecovery:
     title: Unsaved draft found
     savedAt: Saved at {date}

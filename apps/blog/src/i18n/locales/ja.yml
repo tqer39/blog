@@ -278,6 +278,8 @@ editor:
   aiOutline: AIアウトライン
   contentPlaceholder: Markdownで記事を書く...（クリップボードから画像貼り付け可）
   uploadingImage: 画像をアップロード中...
+  characters: '{count} 文字'
+  contentEditorTitle: '本文エディタ（{count} 文字）'
   draftRecovery:
     title: 未保存の下書きがあります
     savedAt: '{date}に保存'
