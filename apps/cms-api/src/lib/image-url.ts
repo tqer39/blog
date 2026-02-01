@@ -5,7 +5,7 @@ import type { Env } from '../index';
  * Get public URL for an R2 image.
  * Images are always publicly accessible via CDN.
  * - Development: Local API URL
- * - Production/Staging: CDN URL
+ * - Dev/Production: CDN URL (environment-specific)
  */
 export function getImageUrl(env: Env, r2Key: string): string {
   // R2_PUBLIC_URL override (for custom CDN)
@@ -18,6 +18,7 @@ export function getImageUrl(env: Env, r2Key: string): string {
     return getLocalImageUrl(r2Key);
   }
 
-  // Production/Staging: use default CDN
-  return getCdnImageUrl(r2Key);
+  // Dev/Production: use environment-specific CDN
+  const cdnEnv = env.ENVIRONMENT === 'dev' ? 'dev' : 'prod';
+  return getCdnImageUrl(r2Key, cdnEnv);
 }
