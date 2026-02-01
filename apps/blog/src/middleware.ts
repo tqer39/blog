@@ -63,7 +63,9 @@ export async function middleware(request: NextRequest) {
     const isValid = await verifySession(token);
     if (!isValid) {
       // Clear invalid cookie and redirect
-      const response = NextResponse.redirect(new URL('/my/login', request.url));
+      const response = NextResponse.redirect(
+        new URL('/my/login', request.url)
+      );
       response.cookies.delete(COOKIE_NAME);
       return response;
     }
