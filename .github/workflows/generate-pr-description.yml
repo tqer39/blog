@@ -1,65 +1,33 @@
-name: Generate PR description
+---
+name: OpenAI Generate PR Title and Description
 
 on:
   pull_request:
+    branches:
+      - main
     types:
       - opened
-      - reopened
       - synchronize
 
-permissions:
-  contents: read
-  pull-requests: write
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  generate:
+  generate-pr-description:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pull-requests: write # uses: tqer39/openai-generate-pr-description
+    # Check if the PR is not created by 'renovate' or 'tqer39-apps'
+    if: contains(fromJSON('["renovate[bot]", "tqer39-apps[bot]"]'), github.event.pull_request.user.login) == false
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Generate PR body
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          set -euo pipefail
-
-          TEMPLATE=""
-          if [ -f .github/pull_request_template.md ]; then
-            TEMPLATE=$(cat .github/pull_request_template.md)
-          fi
-
-          CURRENT_BODY=$(gh pr view "$PR_NUMBER" --json body -q .body)
-          if [ -n "$CURRENT_BODY" ] && [ "$CURRENT_BODY" != "$TEMPLATE" ]; then
-            echo "PR body already set; skipping."
-            exit 0
-          fi
-
-          COMMITS=$(git log --pretty=format:'- %s (%h)' "$BASE_SHA".."$HEAD_SHA")
-          FILES=$(git diff --name-status "$BASE_SHA".."$HEAD_SHA" | \
-            awk '{print "- " $1 " " $2}')
-
-          cat <<EOF > pr_body.md
-# Purpose
-- 
-
-# Scope
-- 
-
-# Impact
-- 
-
-# Changes
-${COMMITS:-"- (no commits found)"}
-
-# Files
-${FILES:-"- (no files changed)"}
-EOF
-
-          gh pr edit "$PR_NUMBER" --body-file pr_body.md
+      - uses: tqer39/openai-generate-pr-description@v1.0.5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          openai-model: 'gpt-4o'
+          locale: 'ja'
