@@ -236,3 +236,78 @@ preview:
   headerImage: Header image
   noTitle: (No title)
   noContent: (No content)
+
+editor:
+  newArticle: New Article
+  editArticle: Edit Article
+  status: Status
+  draft: Draft
+  published: Published
+  aiReview: AI Review
+  reviewing: Reviewing...
+  preview: Preview
+  cancel: Cancel
+  save: Save
+  saving: Saving...
+  saved: Saved
+  title: Title
+  titlePlaceholder: Article title
+  descriptionAndTags: Description & Tags
+  description: Description (SEO)
+  descriptionPlaceholder: Brief description for SEO (100-160 characters)
+  characterCount: '{count} / 160 characters'
+  tags: Tags
+  tagsPlaceholder: Add tags (press Enter)
+  loadingTags: Loading tags...
+  category: Category
+  selectCategory: Select a category
+  loadingCategories: Loading...
+  articleCount: '{count} article(s)'
+  slideMode: Slide Mode
+  enableSlideMode: Enable slide mode
+  slideModeHelp: (Display article as slides separated by '---')
+  duration: Duration
+  durationHelp: 'seconds (default: 3 minutes)'
+  headerImage: Header Image
+  noImage: No image
+  upload: Upload
+  uploading: Uploading...
+  aiGenerate: AI Generate
+  generating: Generating...
+  content: Content
+  aiOutline: AI Outline
+  contentPlaceholder: Write your article in Markdown... (Paste images from clipboard)
+  uploadingImage: Uploading image...
+  draftRecovery:
+    title: Unsaved draft found
+    savedAt: Saved at {date}
+    discard: Discard
+    restore: Restore
+  imageGeneration:
+    useArticleContent: Use article content as prompt
+    customPrompt: Custom prompt
+    optional: (optional)
+    required: (required)
+    additionalInstructions: Enter additional instructions...
+    describeImage: Describe the image you want to generate...
+    mode: Mode
+    append: Append
+    override: Override
+    generate: Generate
+  toolbar:
+    bold: Bold
+    italic: Italic
+    heading: Heading
+    list: List
+    codeBlock: Code Block
+    link: Link
+    fullscreen: Fullscreen
+    aiContinuation: AI Continuation
+    continuationTitle: Continuation Suggestions
+    continuationHelp: Click to insert (⌘J)
+    short: Short
+    medium: Medium
+    long: Long
+    confidence: Confidence
+    generateSuggestion: Click button to generate suggestions
+  previousResult: Previous result

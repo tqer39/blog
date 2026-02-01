@@ -236,3 +236,78 @@ preview:
   headerImage: ヘッダー画像
   noTitle: (タイトル未入力)
   noContent: (コンテンツ未入力)
+
+editor:
+  newArticle: 新規記事
+  editArticle: 記事編集
+  status: ステータス
+  draft: 下書き
+  published: 公開済み
+  aiReview: AIレビュー
+  reviewing: レビュー中...
+  preview: プレビュー
+  cancel: キャンセル
+  save: 保存
+  saving: 保存中...
+  saved: 保存完了
+  title: タイトル
+  titlePlaceholder: 記事タイトル
+  descriptionAndTags: 説明とタグ
+  description: 説明（SEO）
+  descriptionPlaceholder: SEO用の説明文（100-160文字）
+  characterCount: '{count} / 160 文字'
+  tags: タグ
+  tagsPlaceholder: タグを追加（Enterで確定）
+  loadingTags: タグを読み込み中...
+  category: カテゴリ
+  selectCategory: カテゴリを選択
+  loadingCategories: 読み込み中...
+  articleCount: '{count}件の記事'
+  slideMode: スライドモード
+  enableSlideMode: スライドモードを有効にする
+  slideModeHelp: （記事を「---」で区切ってスライドとして表示）
+  duration: 制限時間
+  durationHelp: 秒（未設定時は3分）
+  headerImage: ヘッダー画像
+  noImage: 画像なし
+  upload: アップロード
+  uploading: アップロード中...
+  aiGenerate: AI生成
+  generating: 生成中...
+  content: 本文
+  aiOutline: AIアウトライン
+  contentPlaceholder: Markdownで記事を書く...（クリップボードから画像貼り付け可）
+  uploadingImage: 画像をアップロード中...
+  draftRecovery:
+    title: 未保存の下書きがあります
+    savedAt: '{date}に保存'
+    discard: 破棄
+    restore: 復元
+  imageGeneration:
+    useArticleContent: 記事の内容をプロンプトとして使用
+    customPrompt: カスタムプロンプト
+    optional: （オプション）
+    required: （必須）
+    additionalInstructions: 追加の指示があれば入力...
+    describeImage: 生成したい画像を説明してください...
+    mode: モード
+    append: 追加
+    override: 上書き
+    generate: 生成
+  toolbar:
+    bold: 太字
+    italic: 斜体
+    heading: 見出し
+    list: リスト
+    codeBlock: コードブロック
+    link: リンク
+    fullscreen: 全画面
+    aiContinuation: AI続き提案
+    continuationTitle: 続きの提案
+    continuationHelp: クリックして挿入 (⌘J)
+    short: 短い
+    medium: 中
+    long: 長い
+    confidence: 確信度
+    generateSuggestion: ボタンをクリックして提案を生成
+  previousResult: 前回の結果
