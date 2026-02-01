@@ -32,12 +32,12 @@ import {
   X,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useI18n } from '@/i18n';
 import {
   deleteCategory,
   getCategories,
   updateCategoriesOrder,
 } from '@/lib/api/client';
+import { useI18n } from '@/i18n';
 import { useSorting } from '../hooks/use-sorting';
 import { CategoryEditor } from './components/CategoryEditor';
 
@@ -404,9 +404,7 @@ export default function CategoryListPage() {
                     </th>
                   )}
                   <th className="w-10 px-4 py-4">
-                    <span className="sr-only">
-                      {t('categories.table.color')}
-                    </span>
+                    <span className="sr-only">{t('categories.table.color')}</span>
                   </th>
                   <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
                     <SortButton columnKey="name">
