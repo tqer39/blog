@@ -2,6 +2,7 @@
 
 import { Clock } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useI18n } from '@/i18n';
 
 interface TocItem {
   id: string;
@@ -14,6 +15,7 @@ interface TableOfContentsProps {
 }
 
 export function TableOfContents({ readingTime }: TableOfContentsProps) {
+  const { t } = useI18n();
   const [headings, setHeadings] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
 
@@ -87,15 +89,15 @@ export function TableOfContents({ readingTime }: TableOfContentsProps) {
     <nav
       className="hidden xl:block fixed top-24 w-64 max-h-[calc(100vh-8rem)] overflow-y-auto p-5"
       style={{ left: 'calc(50% + 28rem)' }}
-      aria-label="目次"
+      aria-label={t('article.tableOfContents')}
     >
       <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-stone-500 dark:text-stone-400">
-        目次
+        {t('article.tableOfContents')}
       </h2>
       {readingTime && (
         <div className="mb-4 flex items-center gap-1.5 text-base text-stone-500 dark:text-stone-400">
           <Clock className="h-4 w-4" />
-          <span>約{readingTime}分で読めます</span>
+          <span>{t('article.readingTime').replace('{min}', String(readingTime))}</span>
         </div>
       )}
       <TocList

@@ -1,2 +1,5 @@
 .vercel
 .env*.local
+
+# Generated i18n locale files (generated from YAML by build:i18n)
+src/i18n/locales/*.json

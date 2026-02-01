@@ -37,6 +37,7 @@ import {
   getCategories,
   updateCategoriesOrder,
 } from '@/lib/api/client';
+import { useI18n } from '@/i18n';
 import { useSorting } from '../hooks/use-sorting';
 import { CategoryEditor } from './components/CategoryEditor';
 
@@ -57,6 +58,7 @@ function SortableCategoryRow({
   onEdit,
   onDelete,
 }: SortableCategoryRowProps) {
+  const { t } = useI18n();
   const {
     attributes,
     listeners,
@@ -87,8 +89,8 @@ function SortableCategoryRow({
             {...attributes}
             {...listeners}
             className="cursor-grab p-1 text-muted-foreground hover:text-foreground active:cursor-grabbing"
-            aria-label="Drag to reorder"
-            title="Drag to reorder"
+            aria-label={t('categories.table.dragHandle')}
+            title={t('categories.table.dragHandle')}
           >
             <GripVertical className="h-4 w-4" />
           </button>
@@ -136,7 +138,9 @@ function SortableCategoryRow({
             onClick={() => onEdit(category)}
           >
             <Edit className="h-4 w-4" />
-            <span className="hidden sm:inline">Edit</span>
+            <span className="hidden sm:inline">
+              {t('categories.actions.edit')}
+            </span>
           </Button>
           <Button
             variant="ghost"
@@ -145,7 +149,9 @@ function SortableCategoryRow({
             onClick={() => onDelete(category)}
           >
             <Trash2 className="h-4 w-4" />
-            <span className="hidden sm:inline">Delete</span>
+            <span className="hidden sm:inline">
+              {t('categories.actions.delete')}
+            </span>
           </Button>
         </div>
       </td>
@@ -154,6 +160,7 @@ function SortableCategoryRow({
 }
 
 export default function CategoryListPage() {
+  const { t } = useI18n();
   const [categories, setCategories] = useState<CategoryWithCount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -309,13 +316,13 @@ export default function CategoryListPage() {
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Categories</h1>
+        <h1 className="text-3xl font-bold">{t('categories.title')}</h1>
         <Button
           onClick={() => setIsCreating(true)}
           className="shadow-md transition-shadow hover:shadow-lg"
         >
           <Plus className="mr-2 h-4 w-4" />
-          New Category
+          {t('categories.newCategory')}
         </Button>
       </div>
 
@@ -339,7 +346,7 @@ export default function CategoryListPage() {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search categories by name or slug..."
+          placeholder={t('categories.searchPlaceholder')}
           className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-10 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
         {searchQuery && (
@@ -347,8 +354,8 @@ export default function CategoryListPage() {
             type="button"
             onClick={() => setSearchQuery('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            aria-label="Clear search"
-            title="Clear search"
+            aria-label={t('common.clearSearch')}
+            title={t('common.clearSearch')}
           >
             <X className="h-4 w-4" />
           </button>
@@ -357,11 +364,11 @@ export default function CategoryListPage() {
 
       {isDragEnabled && (
         <p className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
-          <span>Drag and drop rows to reorder categories.</span>
+          <span>{t('categories.dragToReorder')}</span>
           {isSavingOrder && (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Saving...</span>
+              <span>{t('common.saving')}</span>
             </>
           )}
         </p>
@@ -369,15 +376,15 @@ export default function CategoryListPage() {
 
       {loading ? (
         <div className="py-12 text-center text-muted-foreground">
-          Loading...
+          {t('common.loading')}
         </div>
       ) : categories.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground">
-          No categories found. Create your first category!
+          {t('categories.noCategories')}
         </div>
       ) : sortedCategories.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground">
-          No categories match your search.
+          {t('categories.noMatchingCategories')}
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
@@ -391,26 +398,34 @@ export default function CategoryListPage() {
                 <tr className="border-b border-border bg-muted/50">
                   {isDragEnabled && (
                     <th className="w-10 px-2 py-4">
-                      <span className="sr-only">Drag handle</span>
+                      <span className="sr-only">
+                        {t('categories.table.dragHandle')}
+                      </span>
                     </th>
                   )}
                   <th className="w-10 px-4 py-4">
-                    <span className="sr-only">Color</span>
+                    <span className="sr-only">{t('categories.table.color')}</span>
                   </th>
                   <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                    <SortButton columnKey="name">Name</SortButton>
+                    <SortButton columnKey="name">
+                      {t('categories.table.name')}
+                    </SortButton>
                   </th>
                   <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                    Slug
+                    {t('categories.table.slug')}
                   </th>
                   <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                    <SortButton columnKey="articleCount">Articles</SortButton>
+                    <SortButton columnKey="articleCount">
+                      {t('categories.table.articles')}
+                    </SortButton>
                   </th>
                   <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                    <SortButton columnKey="createdAt">Created</SortButton>
+                    <SortButton columnKey="createdAt">
+                      {t('categories.table.created')}
+                    </SortButton>
                   </th>
                   <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
-                    Actions
+                    {t('categories.table.actions')}
                   </th>
                 </tr>
               </thead>

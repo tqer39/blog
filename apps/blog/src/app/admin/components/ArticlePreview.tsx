@@ -10,6 +10,7 @@ import { ArticleContent } from '@/components/ArticleContent';
 import { SlideViewer } from '@/components/SlideViewer';
 import { TableOfContents } from '@/components/TableOfContents';
 import { TagLink } from '@/components/TagLink';
+import { useI18n } from '@/i18n';
 import { calculateReadingTime } from '@/lib/readingTime';
 
 interface ArticlePreviewProps {
@@ -35,6 +36,7 @@ export function ArticlePreview({
   slideMode = false,
   slideDuration,
 }: ArticlePreviewProps) {
+  const { t } = useI18n();
   const [isSlideView, setIsSlideView] = useState(false);
   const displayDate = publishedAt || new Date().toISOString();
   const readingTime = calculateReadingTime(content);
@@ -59,7 +61,7 @@ export function ArticlePreview({
   }
 
   return (
-    <FullscreenModal isOpen={isOpen} onClose={handleClose} title="プレビュー">
+    <FullscreenModal isOpen={isOpen} onClose={handleClose} title={t('preview.title')}>
       <div className="min-h-full bg-white dark:bg-stone-950">
         <TableOfContents readingTime={readingTime} />
         <article className="mx-auto max-w-4xl px-4 py-8">
@@ -76,7 +78,7 @@ export function ArticlePreview({
                 }`}
               >
                 <Monitor className="h-4 w-4" />
-                記事
+                {t('preview.articleMode')}
               </button>
               <button
                 type="button"
@@ -88,7 +90,7 @@ export function ArticlePreview({
                 }`}
               >
                 <Presentation className="h-4 w-4" />
-                スライド
+                {t('preview.slideMode')}
               </button>
             </div>
           )}
@@ -97,7 +99,7 @@ export function ArticlePreview({
             <div className="relative mb-8 aspect-[2/1] w-full overflow-hidden rounded-lg">
               <Image
                 src={headerImageUrl}
-                alt={title || 'ヘッダー画像'}
+                alt={title || t('preview.headerImage')}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 896px"
@@ -107,7 +109,7 @@ export function ArticlePreview({
           )}
           <header className="mb-8">
             <h1 className="text-3xl font-bold">
-              {title || '(タイトル未入力)'}
+              {title || t('preview.noTitle')}
             </h1>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <time
@@ -118,7 +120,7 @@ export function ArticlePreview({
               </time>
               <span className="text-stone-400 dark:text-stone-500">·</span>
               <span className="flex items-center gap-1 text-stone-600 dark:text-stone-400">
-                <Clock className="h-4 w-4" />約{readingTime}分で読めます
+                <Clock className="h-4 w-4" />{t('article.readingTime').replace('{min}', String(readingTime))}
               </span>
               {tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
@@ -133,7 +135,7 @@ export function ArticlePreview({
             <ArticleContent content={content} />
           ) : (
             <p className="text-stone-500 dark:text-stone-400">
-              (コンテンツ未入力)
+              {t('preview.noContent')}
             </p>
           )}
         </article>

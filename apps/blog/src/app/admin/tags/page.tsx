@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { deleteTag, getTags } from '@/lib/api/client';
+import { useI18n } from '@/i18n';
 import { useListPage } from '../hooks/use-list-page';
 import { useSorting } from '../hooks/use-sorting';
 import { TagEditor } from './components/TagEditor';
@@ -21,6 +22,7 @@ import { TagEditor } from './components/TagEditor';
 type TagSortKey = 'name' | 'articleCount' | 'createdAt';
 
 export default function TagListPage() {
+  const { t } = useI18n();
   const {
     items: tags,
     loading,
@@ -80,13 +82,13 @@ export default function TagListPage() {
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Tags</h1>
+        <h1 className="text-3xl font-bold">{t('tags.title')}</h1>
         <Button
           onClick={() => setIsCreating(true)}
           className="shadow-md hover:shadow-lg transition-shadow"
         >
           <Plus className="mr-2 h-4 w-4" />
-          New Tag
+          {t('tags.newTag')}
         </Button>
       </div>
 
@@ -107,7 +109,7 @@ export default function TagListPage() {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search tags by name..."
+          placeholder={t('tags.searchPlaceholder')}
           className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-10 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
         {searchQuery && (
@@ -115,8 +117,8 @@ export default function TagListPage() {
             type="button"
             onClick={() => setSearchQuery('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            aria-label="Clear search"
-            title="Clear search"
+            aria-label={t('common.clearSearch')}
+            title={t('common.clearSearch')}
           >
             <X className="h-4 w-4" />
           </button>
@@ -125,15 +127,15 @@ export default function TagListPage() {
 
       {loading ? (
         <div className="py-12 text-center text-muted-foreground">
-          Loading...
+          {t('common.loading')}
         </div>
       ) : tags.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground">
-          No tags found. Create your first tag!
+          {t('tags.noTags')}
         </div>
       ) : sortedTags.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground">
-          No tags match your search.
+          {t('tags.noMatchingTags')}
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
@@ -145,10 +147,10 @@ export default function TagListPage() {
                     type="button"
                     onClick={() => handleSort('name')}
                     className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label="Sort by name"
-                    title="Sort by name"
+                    aria-label={t('tags.table.sortByName')}
+                    title={t('tags.table.sortByName')}
                   >
-                    Name
+                    {t('tags.table.name')}
                     {sortKey === 'name' &&
                       (sortDirection === 'asc' ? (
                         <ArrowUp className="h-3 w-3" />
@@ -162,10 +164,10 @@ export default function TagListPage() {
                     type="button"
                     onClick={() => handleSort('articleCount')}
                     className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label="Sort by article count"
-                    title="Sort by article count"
+                    aria-label={t('tags.table.sortByArticleCount')}
+                    title={t('tags.table.sortByArticleCount')}
                   >
-                    Articles
+                    {t('tags.table.articles')}
                     {sortKey === 'articleCount' &&
                       (sortDirection === 'asc' ? (
                         <ArrowUp className="h-3 w-3" />
@@ -179,10 +181,10 @@ export default function TagListPage() {
                     type="button"
                     onClick={() => handleSort('createdAt')}
                     className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label="Sort by created date"
-                    title="Sort by created date"
+                    aria-label={t('tags.table.sortByCreatedAt')}
+                    title={t('tags.table.sortByCreatedAt')}
                   >
-                    Created
+                    {t('tags.table.created')}
                     {sortKey === 'createdAt' &&
                       (sortDirection === 'asc' ? (
                         <ArrowUp className="h-3 w-3" />
@@ -192,7 +194,7 @@ export default function TagListPage() {
                   </button>
                 </th>
                 <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
-                  Actions
+                  {t('tags.table.actions')}
                 </th>
               </tr>
             </thead>
@@ -234,7 +236,9 @@ export default function TagListPage() {
                         onClick={() => setEditingTag(tag)}
                       >
                         <Edit className="h-4 w-4" />
-                        <span className="hidden sm:inline">Edit</span>
+                        <span className="hidden sm:inline">
+                          {t('tags.actions.edit')}
+                        </span>
                       </Button>
                       <Button
                         variant="ghost"
@@ -243,7 +247,9 @@ export default function TagListPage() {
                         onClick={() => handleDelete(tag)}
                       >
                         <Trash2 className="h-4 w-4" />
-                        <span className="hidden sm:inline">Delete</span>
+                        <span className="hidden sm:inline">
+                          {t('tags.actions.delete')}
+                        </span>
                       </Button>
                     </div>
                   </td>

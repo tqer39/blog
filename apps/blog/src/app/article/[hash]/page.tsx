@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { Clock } from 'lucide-react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -9,6 +8,7 @@ import { ArticleNavigation } from '@/components/ArticleNavigation';
 import { ArticleTitle } from '@/components/ArticleTitle';
 import { CategoryBadge } from '@/components/CategoryBadge';
 import { JsonLd } from '@/components/JsonLd';
+import { ReadingTime } from '@/components/ReadingTime';
 import { SlideModeButton } from '@/components/SlideModeButton';
 import { TableOfContents } from '@/components/TableOfContents';
 import { TagLink } from '@/components/TagLink';
@@ -169,9 +169,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               {dayjs(displayDate).format('YYYY/MM/DD')}
             </time>
             <span className="text-stone-400 dark:text-stone-500">·</span>
-            <span className="flex items-center gap-1 text-stone-600 dark:text-stone-400">
-              <Clock className="h-4 w-4" />約{readingTime}分で読めます
-            </span>
+            <ReadingTime minutes={readingTime} className="text-stone-600 dark:text-stone-400" />
             {article.category && <CategoryBadge category={article.category} />}
             {article.slideMode && (
               <SlideModeButton

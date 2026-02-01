@@ -2,11 +2,14 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useI18n } from '@/i18n';
 
 const SIDEBAR_COLLAPSED_KEY = 'admin-sidebar-collapsed';
 const MOBILE_BREAKPOINT = 1024; // lg breakpoint
 
 export function AdminSidebar() {
+  const { t } = useI18n();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isAutoCollapsed, setIsAutoCollapsed] = useState(false);
   const [userPreference, setUserPreference] = useState<boolean | null>(null);
@@ -61,7 +64,7 @@ export function AdminSidebar() {
       <div className="flex h-16 shrink-0 items-center justify-between border-b px-4">
         {!isCollapsed && (
           <Link href="/admin" className="text-xl font-bold">
-            Admin
+            {t('admin.sidebar.admin')}
           </Link>
         )}
         <button
@@ -70,8 +73,16 @@ export function AdminSidebar() {
           className={`rounded-lg p-2 text-muted-foreground hover:bg-secondary hover:text-foreground ${
             isCollapsed ? 'mx-auto' : ''
           }`}
-          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          title={
+            isCollapsed
+              ? t('admin.sidebar.expandSidebar')
+              : t('admin.sidebar.collapseSidebar')
+          }
+          aria-label={
+            isCollapsed
+              ? t('admin.sidebar.expandSidebar')
+              : t('admin.sidebar.collapseSidebar')
+          }
         >
           {isCollapsed ? (
             <svg
@@ -113,41 +124,50 @@ export function AdminSidebar() {
           <NavItem
             href="/admin/dashboard"
             icon={<DashboardIcon />}
-            label="Dashboard"
+            label={t('admin.sidebar.dashboard')}
             isCollapsed={isCollapsed}
           />
           <NavItem
             href="/admin/articles"
             icon={<ArticlesIcon />}
-            label="Articles"
+            label={t('admin.sidebar.articles')}
             isCollapsed={isCollapsed}
           />
           <NavItem
             href="/admin/articles/new"
             icon={<NewArticleIcon />}
-            label="New Article"
+            label={t('admin.sidebar.newArticle')}
             isCollapsed={isCollapsed}
           />
           <NavItem
             href="/admin/tags"
             icon={<TagsIcon />}
-            label="Tags"
+            label={t('admin.sidebar.tags')}
             isCollapsed={isCollapsed}
           />
           <NavItem
             href="/admin/categories"
             icon={<CategoriesIcon />}
-            label="Categories"
+            label={t('admin.sidebar.categories')}
             isCollapsed={isCollapsed}
           />
           <NavItem
             href="/admin/settings"
             icon={<SettingsIcon />}
-            label="Settings"
+            label={t('admin.sidebar.settings')}
             isCollapsed={isCollapsed}
           />
         </ul>
       </nav>
+
+      {/* Language Switcher */}
+      <div className="shrink-0 border-t p-2">
+        {isCollapsed ? (
+          <LanguageSwitcher compact className="mx-auto" />
+        ) : (
+          <LanguageSwitcher className="w-full justify-center" />
+        )}
+      </div>
     </aside>
   );
 }

@@ -12,6 +12,8 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useI18n } from '@/i18n';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { MobileMenu } from './MobileMenu';
 import { ThemeSwitcher } from './ThemeSwitcher';
 
@@ -24,6 +26,7 @@ export function HeaderClient({
   siteName,
   isLoggedIn = false,
 }: HeaderClientProps) {
+  const { t } = useI18n();
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -79,7 +82,7 @@ export function HeaderClient({
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="検索..."
+                  placeholder={t('header.searchPlaceholder')}
                   className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm text-foreground placeholder-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
                 />
               </form>
@@ -89,8 +92,8 @@ export function HeaderClient({
                 type="button"
                 onClick={handleCloseSearch}
                 className="cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                aria-label="検索を閉じる"
-                title="検索を閉じる"
+                aria-label={t('header.closeSearch')}
+                title={t('header.closeSearch')}
               >
                 <X className="h-5 w-5" />
               </button>
@@ -99,19 +102,20 @@ export function HeaderClient({
                 type="button"
                 onClick={() => setIsSearchOpen(true)}
                 className="cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                aria-label="検索を開く"
-                title="検索"
+                aria-label={t('header.openSearch')}
+                title={t('header.search')}
               >
                 <Search className="h-5 w-5" />
               </button>
             )}
           </div>
           <ThemeSwitcher />
+          <LanguageSwitcher compact className="hidden md:flex" />
           <Link
             href="/articles"
             className="hidden rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:block"
-            aria-label="Articles"
-            title="記事一覧"
+            aria-label={t('header.articles')}
+            title={t('header.articles')}
           >
             <BookOpen className="h-5 w-5" />
           </Link>
@@ -120,8 +124,8 @@ export function HeaderClient({
               <Link
                 href="/admin"
                 className="hidden rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:block"
-                aria-label="Admin"
-                title="管理画面"
+                aria-label={t('header.admin')}
+                title={t('header.admin')}
               >
                 <LayoutDashboard className="h-5 w-5" />
               </Link>
@@ -129,8 +133,8 @@ export function HeaderClient({
                 type="button"
                 onClick={handleLogout}
                 className="hidden cursor-pointer rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:block"
-                aria-label="Logout"
-                title="ログアウト"
+                aria-label={t('header.logout')}
+                title={t('header.logout')}
               >
                 <LogOut className="h-5 w-5" />
               </button>
@@ -139,8 +143,8 @@ export function HeaderClient({
             <Link
               href="/admin/login"
               className="hidden rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:block"
-              aria-label="Login"
-              title="ログイン"
+              aria-label={t('header.login')}
+              title={t('header.login')}
             >
               <LogIn className="h-5 w-5" />
             </Link>

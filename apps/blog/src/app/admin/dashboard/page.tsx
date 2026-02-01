@@ -12,8 +12,10 @@ import {
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getArticles } from '@/lib/api/client';
+import { useI18n } from '@/i18n';
 
 export default function AdminDashboard() {
+  const { t } = useI18n();
   const [stats, setStats] = useState({
     total: 0,
     published: 0,
@@ -48,7 +50,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-muted-foreground">Loading...</div>
+        <div className="text-muted-foreground">{t('common.loading')}</div>
       </div>
     );
   }
@@ -63,13 +65,13 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-bold">Dashboard</h1>
+      <h1 className="mb-8 text-3xl font-bold">{t('dashboard.title')}</h1>
 
       <div className="mb-8 grid gap-6 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Articles
+              {t('dashboard.totalArticles')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -80,7 +82,7 @@ export default function AdminDashboard() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Published
+              {t('dashboard.published')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -93,7 +95,7 @@ export default function AdminDashboard() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Drafts
+              {t('dashboard.drafts')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -106,10 +108,10 @@ export default function AdminDashboard() {
 
       <div className="flex gap-4">
         <Button asChild className="shadow-md hover:shadow-lg transition-shadow">
-          <Link href="/admin/articles/new">New Article</Link>
+          <Link href="/admin/articles/new">{t('dashboard.newArticle')}</Link>
         </Button>
         <Button variant="outline" asChild>
-          <Link href="/admin/articles">View All Articles</Link>
+          <Link href="/admin/articles">{t('dashboard.viewAllArticles')}</Link>
         </Button>
       </div>
     </div>

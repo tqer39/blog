@@ -1,0 +1,216 @@
+common:
+  save: 保存
+  cancel: キャンセル
+  loading: 読み込み中...
+  saving: 保存中...
+  delete: 削除
+  edit: 編集
+  create: 作成
+  search: 検索
+  noResults: 結果がありません
+  confirm: 確認
+  back: 戻る
+  next: 次へ
+  previous: 前へ
+  close: 閉じる
+  actions: 操作
+  clearSearch: 検索をクリア
+  sortBy: 並び替え
+
+settings:
+  title: サイト設定
+  saveSettings: 設定を保存
+  saveSuccess: 設定を保存しました
+  saveError: 設定の保存に失敗しました
+  loadError: 設定の読み込みに失敗しました
+  basic:
+    title: 基本設定
+    siteName: サイト名
+    siteNamePlaceholder: My Blog
+    siteDescription: サイト説明
+    siteDescriptionPlaceholder: ブログの簡単な説明
+    authorName: 著者名
+    authorNamePlaceholder: Your Name
+    footerText: フッターテキスト（任意）
+    footerTextPlaceholder: 追加のフッターテキスト
+  social:
+    title: ソーシャルリンク
+    hide: 非表示にする
+    show: 表示する
+  display:
+    title: 表示オプション
+    showRssLink: RSSリンクを表示
+    showRssLinkDescription: フッターにRSSフィードリンクを表示します
+  appearance:
+    title: 外観
+    defaultTheme: デフォルトテーマ
+    defaultThemeDescription: 初回訪問者向けのテーマ（ユーザーは後で変更可能）
+    defaultLocale: デフォルト言語
+    defaultLocaleDescription: 初回訪問者向けの言語（ユーザーは後で変更可能）
+    locales:
+      auto: ブラウザの言語設定に従う
+      ja: 日本語
+      en: English
+    themes:
+      system: システム設定に従う
+      light: ライトモード
+      dark: ダークモード
+      tokyonight: Tokyo Night
+      nordLight: Nord Light
+      autumn: Autumn
+  aiTools:
+    title: AI Tools
+    description: AI機能のAPIキーを設定します。環境変数が優先されます。
+    openai:
+      label: OpenAI API Key
+      description: メタデータ生成、DALL-E画像生成に使用
+    anthropic:
+      label: Anthropic API Key
+      description: レビュー、アウトライン、テキスト変換、続き提案に使用
+    gemini:
+      label: Gemini API Key
+      description: 画像生成に使用
+    apiKeySet: APIキーが設定されています。新しい値を入力して置き換えできます。
+    showApiKey: APIキーを表示
+    hideApiKey: APIキーを非表示
+
+admin:
+  sidebar:
+    admin: 管理画面
+    dashboard: ダッシュボード
+    articles: 記事
+    newArticle: 新規記事
+    categories: カテゴリ
+    tags: タグ
+    settings: 設定
+    expandSidebar: サイドバーを展開
+    collapseSidebar: サイドバーを折りたたむ
+
+dashboard:
+  title: ダッシュボード
+  totalArticles: 記事総数
+  published: 公開済み
+  drafts: 下書き
+  newArticle: 新規記事
+  viewAllArticles: すべての記事を見る
+  loadError: 統計の読み込みに失敗しました
+
+articles:
+  title: 記事
+  newArticle: 新規記事
+  searchPlaceholder: タイトル、ハッシュ、タグで記事を検索...
+  noArticles: 記事がありません
+  noMatchingArticles: 検索に一致する記事がありません。
+  loadError: 記事の読み込みに失敗しました
+  updateError: 記事の更新に失敗しました
+  deleteError: 記事の削除に失敗しました
+  deleteConfirm: '"{title}"を削除しますか？'
+  filters:
+    all: すべて
+    published: 公開済み
+    draft: 下書き
+  table:
+    image: 画像
+    title: タイトル
+    status: ステータス
+    date: 日付
+    tags: タグ
+    actions: 操作
+    sortByTitle: タイトルで並び替え
+    sortByStatus: ステータスで並び替え
+    sortByDate: 日付で並び替え
+  status:
+    published: 公開済み
+    draft: 下書き
+  actions:
+    publish: 公開
+    unpublish: 非公開にする
+    edit: 編集
+    delete: 削除
+
+tags:
+  title: タグ
+  newTag: 新規タグ
+  searchPlaceholder: タグ名で検索...
+  noTags: タグがありません。最初のタグを作成しましょう！
+  noMatchingTags: 検索に一致するタグがありません。
+  loadError: タグの読み込みに失敗しました
+  deleteError: タグの削除に失敗しました
+  deleteConfirm: '"{name}"を削除しますか？'
+  deleteConfirmWithArticles: '"{name}"は{count}件の記事で使用されています。削除してもよろしいですか？'
+  table:
+    name: 名前
+    articles: 記事数
+    created: 作成日
+    actions: 操作
+    sortByName: 名前で並び替え
+    sortByArticleCount: 記事数で並び替え
+    sortByCreatedAt: 作成日で並び替え
+  actions:
+    edit: 編集
+    delete: 削除
+
+categories:
+  title: カテゴリ
+  newCategory: 新規カテゴリ
+  searchPlaceholder: カテゴリ名またはスラッグで検索...
+  noCategories: カテゴリがありません。最初のカテゴリを作成しましょう！
+  noMatchingCategories: 検索に一致するカテゴリがありません。
+  loadError: カテゴリの読み込みに失敗しました
+  deleteError: カテゴリの削除に失敗しました
+  orderSaveError: カテゴリの順序の保存に失敗しました
+  deleteConfirm: '"{name}"を削除しますか？'
+  deleteConfirmWithArticles: '"{name}"は{count}件の記事で使用されています。削除してもよろしいですか？'
+  dragToReorder: ドラッグ＆ドロップでカテゴリを並び替えできます。
+  table:
+    color: 色
+    name: 名前
+    slug: スラッグ
+    articles: 記事数
+    created: 作成日
+    actions: 操作
+    dragHandle: ドラッグして並び替え
+    sortByName: 名前で並び替え
+    sortByArticleCount: 記事数で並び替え
+    sortByCreatedAt: 作成日で並び替え
+  actions:
+    edit: 編集
+    delete: 削除
+
+header:
+  search: 検索
+  searchPlaceholder: 検索...
+  closeSearch: 検索を閉じる
+  openSearch: 検索を開く
+  articles: 記事一覧
+  admin: 管理画面
+  login: ログイン
+  logout: ログアウト
+
+footer:
+  copyright: "All rights reserved."
+  rss: RSSフィード
+
+language:
+  toggle: 言語切り替え
+  ja: 日本語
+  en: English
+
+article:
+  tableOfContents: 目次
+  readingTime: 約{min}分で読めます
+  backToTop: トップに戻る
+  prevArticle: 前の記事
+  nextArticle: 次の記事
+
+breadcrumb:
+  home: ホーム
+  articles: 記事一覧
+
+preview:
+  title: プレビュー
+  articleMode: 記事
+  slideMode: スライド
+  headerImage: ヘッダー画像
+  noTitle: (タイトル未入力)
+  noContent: (コンテンツ未入力)

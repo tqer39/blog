@@ -30,11 +30,13 @@ import {
   publishArticle,
   unpublishArticle,
 } from '@/lib/api/client';
+import { useI18n } from '@/i18n';
 import { useSorting } from '../hooks/use-sorting';
 
 type ArticleSortKey = 'title' | 'status' | 'date';
 
 export default function ArticleListPage() {
+  const { t } = useI18n();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -121,9 +123,9 @@ export default function ArticleListPage() {
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Articles</h1>
+        <h1 className="text-3xl font-bold">{t('articles.title')}</h1>
         <Button asChild className="shadow-md hover:shadow-lg transition-shadow">
-          <Link href="/admin/articles/new">New Article</Link>
+          <Link href="/admin/articles/new">{t('articles.newArticle')}</Link>
         </Button>
       </div>
 
@@ -138,19 +140,19 @@ export default function ArticleListPage() {
             value="all"
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
           >
-            All
+            {t('articles.filters.all')}
           </TabsTrigger>
           <TabsTrigger
             value="published"
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
           >
-            Published
+            {t('articles.filters.published')}
           </TabsTrigger>
           <TabsTrigger
             value="draft"
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
           >
-            Draft
+            {t('articles.filters.draft')}
           </TabsTrigger>
         </TabsList>
       </Tabs>
@@ -162,7 +164,7 @@ export default function ArticleListPage() {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search articles by title, hash, or tag..."
+          placeholder={t('articles.searchPlaceholder')}
           className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-10 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
         {searchQuery && (
@@ -170,8 +172,8 @@ export default function ArticleListPage() {
             type="button"
             onClick={() => setSearchQuery('')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            aria-label="Clear search"
-            title="Clear search"
+            aria-label={t('common.clearSearch')}
+            title={t('common.clearSearch')}
           >
             <X className="h-4 w-4" />
           </button>
@@ -186,15 +188,15 @@ export default function ArticleListPage() {
 
       {loading ? (
         <div className="py-12 text-center text-muted-foreground">
-          Loading...
+          {t('common.loading')}
         </div>
       ) : articles.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground">
-          No articles found
+          {t('articles.noArticles')}
         </div>
       ) : sortedArticles.length === 0 ? (
         <div className="py-12 text-center text-muted-foreground">
-          No articles match your search.
+          {t('articles.noMatchingArticles')}
         </div>
       ) : (
         <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
@@ -202,17 +204,17 @@ export default function ArticleListPage() {
             <thead>
               <tr className="border-b border-border bg-muted/50">
                 <th className="w-16 py-4 pl-4 text-left text-sm font-semibold text-foreground">
-                  <span className="sr-only">Image</span>
+                  <span className="sr-only">{t('articles.table.image')}</span>
                 </th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                   <button
                     type="button"
                     onClick={() => handleSort('title')}
                     className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label="Sort by title"
-                    title="Sort by title"
+                    aria-label={t('articles.table.sortByTitle')}
+                    title={t('articles.table.sortByTitle')}
                   >
-                    Title
+                    {t('articles.table.title')}
                     {sortKey === 'title' &&
                       (sortDirection === 'asc' ? (
                         <ArrowUp className="h-3 w-3" />
@@ -226,10 +228,10 @@ export default function ArticleListPage() {
                     type="button"
                     onClick={() => handleSort('status')}
                     className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label="Sort by status"
-                    title="Sort by status"
+                    aria-label={t('articles.table.sortByStatus')}
+                    title={t('articles.table.sortByStatus')}
                   >
-                    Status
+                    {t('articles.table.status')}
                     {sortKey === 'status' &&
                       (sortDirection === 'asc' ? (
                         <ArrowUp className="h-3 w-3" />
@@ -243,10 +245,10 @@ export default function ArticleListPage() {
                     type="button"
                     onClick={() => handleSort('date')}
                     className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label="Sort by date"
-                    title="Sort by date"
+                    aria-label={t('articles.table.sortByDate')}
+                    title={t('articles.table.sortByDate')}
                   >
-                    Date
+                    {t('articles.table.date')}
                     {sortKey === 'date' &&
                       (sortDirection === 'asc' ? (
                         <ArrowUp className="h-3 w-3" />
@@ -256,10 +258,10 @@ export default function ArticleListPage() {
                   </button>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                  Tags
+                  {t('articles.table.tags')}
                 </th>
                 <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
-                  Actions
+                  {t('articles.table.actions')}
                 </th>
               </tr>
             </thead>
@@ -308,7 +310,9 @@ export default function ArticleListPage() {
                           : 'bg-amber-500/20 text-amber-700 ring-1 ring-inset ring-amber-500/40 dark:bg-amber-500/20 dark:text-amber-300 dark:ring-amber-400/30'
                       }`}
                     >
-                      {article.status === 'published' ? 'Published' : 'Draft'}
+                      {article.status === 'published'
+                        ? t('articles.status.published')
+                        : t('articles.status.draft')}
                     </span>
                   </td>
                   <td className="px-4 py-5">
@@ -346,12 +350,16 @@ export default function ArticleListPage() {
                         {article.status === 'published' ? (
                           <>
                             <EyeOff className="h-4 w-4" />
-                            <span className="hidden sm:inline">Unpublish</span>
+                            <span className="hidden sm:inline">
+                              {t('articles.actions.unpublish')}
+                            </span>
                           </>
                         ) : (
                           <>
                             <Eye className="h-4 w-4" />
-                            <span className="hidden sm:inline">Publish</span>
+                            <span className="hidden sm:inline">
+                              {t('articles.actions.publish')}
+                            </span>
                           </>
                         )}
                       </Button>
@@ -363,7 +371,9 @@ export default function ArticleListPage() {
                       >
                         <Link href={`/admin/articles/${article.hash}/edit`}>
                           <Edit className="h-4 w-4" />
-                          <span className="hidden sm:inline">Edit</span>
+                          <span className="hidden sm:inline">
+                            {t('articles.actions.edit')}
+                          </span>
                         </Link>
                       </Button>
                       <Button
@@ -373,7 +383,9 @@ export default function ArticleListPage() {
                         onClick={() => handleDelete(article)}
                       >
                         <Trash2 className="h-4 w-4" />
-                        <span className="hidden sm:inline">Delete</span>
+                        <span className="hidden sm:inline">
+                          {t('articles.actions.delete')}
+                        </span>
                       </Button>
                     </div>
                   </td>
