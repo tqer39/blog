@@ -1,4 +1,5 @@
 import type {
+  ApiKeyStatus,
   Article,
   ArticleCategory,
   ArticleInput,
@@ -7,6 +8,7 @@ import type {
   CategoryInput,
   CategoryListResponse,
   ContinuationLength,
+  GenerateApiKeyResponse,
   GenerateImageRequest,
   GenerateImageResponse,
   GenerateMetadataRequest,
@@ -278,4 +280,21 @@ export async function updateSiteSettings(
   input: SiteSettingsInput
 ): Promise<SiteSettingsResponse> {
   return putJson('/settings', input);
+}
+
+// API Key Management
+export async function getApiKeyStatus(): Promise<ApiKeyStatus> {
+  return fetchApi('/api-key/status');
+}
+
+export async function generateApiKey(): Promise<GenerateApiKeyResponse> {
+  return fetchApi('/api-key/generate', { method: 'POST' });
+}
+
+export async function disableApiKey(): Promise<{ success: boolean }> {
+  return fetchApi('/api-key/disable', { method: 'POST' });
+}
+
+export async function enableApiKey(): Promise<{ success: boolean }> {
+  return fetchApi('/api-key/enable', { method: 'POST' });
 }

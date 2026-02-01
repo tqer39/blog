@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 
 import { aiHandler } from './handlers/ai';
+import { apiKeyHandler } from './handlers/api-key';
 import { articlesHandler } from './handlers/articles';
 import { categoriesHandler } from './handlers/categories';
 import { imagesHandler } from './handlers/images';
@@ -131,6 +132,7 @@ app.get('/v1/images/file/*', async (c) => {
 const v1 = new Hono<{ Bindings: Env }>();
 v1.use('*', authMiddleware);
 v1.route('/ai', aiHandler);
+v1.route('/api-key', apiKeyHandler);
 v1.route('/articles', articlesHandler);
 v1.route('/categories', categoriesHandler);
 v1.route('/tags', tagsHandler);

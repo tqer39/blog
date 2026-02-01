@@ -1,12 +1,15 @@
 'use client';
 
-import type { SiteSettings } from '@blog/cms-types';
+import type { ApiKeyStatus, SiteSettings } from '@blog/cms-types';
 import { Alert, AlertDescription, Button } from '@blog/ui';
 import {
   ArrowUpRight,
+  Check,
+  Copy,
   Eye,
   EyeOff,
   Github,
+  Key,
   LayoutGrid,
   Linkedin,
   Loader2,
@@ -14,7 +17,14 @@ import {
 } from 'lucide-react';
 import type { ClipboardEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { getSiteSettings, updateSiteSettings } from '@/lib/api/client';
+import {
+  disableApiKey,
+  enableApiKey,
+  generateApiKey,
+  getApiKeyStatus,
+  getSiteSettings,
+  updateSiteSettings,
+} from '@/lib/api/client';
 import { useI18n } from '@/i18n';
 
 // X (formerly Twitter) icon
@@ -163,11 +173,21 @@ export default function SettingsPage() {
   } | null>(null);
   const [showApiKeys, setShowApiKeys] = useState<Record<string, boolean>>({});
 
+  // API Key Management state
+  const [apiKeyStatus, setApiKeyStatus] = useState<ApiKeyStatus | null>(null);
+  const [apiKeyLoading, setApiKeyLoading] = useState(false);
+  const [generatedKey, setGeneratedKey] = useState<string | null>(null);
+  const [keyCopied, setKeyCopied] = useState(false);
+
   const loadSettings = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await getSiteSettings();
-      setSettings(response.settings);
+      const [settingsResponse, apiKeyStatusResponse] = await Promise.all([
+        getSiteSettings(),
+        getApiKeyStatus().catch(() => null),
+      ]);
+      setSettings(settingsResponse.settings);
+      setApiKeyStatus(apiKeyStatusResponse);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load settings');
@@ -179,6 +199,65 @@ export default function SettingsPage() {
   useEffect(() => {
     loadSettings();
   }, [loadSettings]);
+
+  async function handleGenerateApiKey() {
+    const hasExistingKey = apiKeyStatus?.hasKey;
+    if (hasExistingKey) {
+      const confirmed = window.confirm(t('settings.apiKey.confirmRegenerate'));
+      if (!confirmed) return;
+    }
+
+    try {
+      setApiKeyLoading(true);
+      const result = await generateApiKey();
+      setGeneratedKey(result.key);
+      setApiKeyStatus({
+        hasKey: true,
+        enabled: true,
+        createdAt: result.createdAt,
+      });
+      setKeyCopied(false);
+    } catch (err) {
+      setMessage({
+        type: 'error',
+        text: err instanceof Error ? err.message : t('settings.apiKey.generateError'),
+      });
+    } finally {
+      setApiKeyLoading(false);
+    }
+  }
+
+  async function handleToggleApiKey() {
+    if (!apiKeyStatus) return;
+
+    try {
+      setApiKeyLoading(true);
+      if (apiKeyStatus.enabled) {
+        await disableApiKey();
+        setApiKeyStatus({ ...apiKeyStatus, enabled: false });
+      } else {
+        await enableApiKey();
+        setApiKeyStatus({ ...apiKeyStatus, enabled: true });
+      }
+    } catch (err) {
+      const errorKey = apiKeyStatus.enabled
+        ? 'settings.apiKey.disableError'
+        : 'settings.apiKey.enableError';
+      setMessage({
+        type: 'error',
+        text: err instanceof Error ? err.message : t(errorKey),
+      });
+    } finally {
+      setApiKeyLoading(false);
+    }
+  }
+
+  function handleCopyApiKey() {
+    if (!generatedKey) return;
+    navigator.clipboard.writeText(generatedKey);
+    setKeyCopied(true);
+    setTimeout(() => setKeyCopied(false), 2000);
+  }
 
   async function handleSave() {
     if (!settings) return;
@@ -672,6 +751,125 @@ export default function SettingsPage() {
                   </div>
                 );
               }
+            )}
+          </div>
+        </div>
+
+        {/* CMS API Key Management */}
+        <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+          <div className="mb-2 flex items-center gap-2">
+            <Key className="h-5 w-5" />
+            <h2 className="text-xl font-semibold">
+              {t('settings.apiKey.title')}
+            </h2>
+          </div>
+          <p className="mb-6 text-sm text-muted-foreground">
+            {t('settings.apiKey.description')}
+          </p>
+
+          {/* Generated Key Display */}
+          {generatedKey && (
+            <Alert className="mb-6">
+              <AlertDescription>
+                <div className="space-y-3">
+                  <p className="font-medium text-amber-600 dark:text-amber-400">
+                    {t('settings.apiKey.warning')}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 rounded bg-muted p-3 font-mono text-sm break-all">
+                      {generatedKey}
+                    </code>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleCopyApiKey}
+                      className="shrink-0"
+                    >
+                      {keyCopied ? (
+                        <Check className="h-4 w-4" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                      <span className="ml-2">
+                        {keyCopied
+                          ? t('settings.apiKey.copied')
+                          : t('settings.apiKey.copyKey')}
+                      </span>
+                    </Button>
+                  </div>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Status Display */}
+          <div className="mb-6 space-y-2">
+            <div className="flex items-center gap-2">
+              <span
+                className={`inline-flex h-2 w-2 rounded-full ${
+                  apiKeyStatus?.hasKey
+                    ? apiKeyStatus.enabled
+                      ? 'bg-green-500'
+                      : 'bg-yellow-500'
+                    : 'bg-gray-400'
+                }`}
+              />
+              <span className="text-sm">
+                {apiKeyStatus?.hasKey
+                  ? t('settings.apiKey.hasKey')
+                  : t('settings.apiKey.noKey')}
+              </span>
+              {apiKeyStatus?.hasKey && (
+                <span
+                  className={`text-xs px-2 py-0.5 rounded-full ${
+                    apiKeyStatus.enabled
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                      : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
+                  }`}
+                >
+                  {apiKeyStatus.enabled
+                    ? t('settings.apiKey.enabled')
+                    : t('settings.apiKey.disabled')}
+                </span>
+              )}
+            </div>
+            {apiKeyStatus?.createdAt && (
+              <p className="text-xs text-muted-foreground">
+                {t('settings.apiKey.createdAt')}{' '}
+                {new Date(apiKeyStatus.createdAt).toLocaleString()}
+              </p>
+            )}
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-wrap gap-3">
+            <Button
+              onClick={handleGenerateApiKey}
+              disabled={apiKeyLoading}
+              variant={apiKeyStatus?.hasKey ? 'outline' : 'default'}
+            >
+              {apiKeyLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Key className="mr-2 h-4 w-4" />
+              )}
+              {apiKeyStatus?.hasKey
+                ? t('settings.apiKey.regenerate')
+                : t('settings.apiKey.generate')}
+            </Button>
+            {apiKeyStatus?.hasKey && (
+              <Button
+                onClick={handleToggleApiKey}
+                disabled={apiKeyLoading}
+                variant="outline"
+              >
+                {apiKeyLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
+                {apiKeyStatus.enabled
+                  ? t('settings.apiKey.disable')
+                  : t('settings.apiKey.enable')}
+              </Button>
             )}
           </div>
         </div>

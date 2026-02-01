@@ -316,3 +316,15 @@ export interface SiteSettingsResponse {
 }
 
 export type SiteSettingsInput = Partial<SiteSettings>;
+
+// API Key Management types
+export interface ApiKeyStatus {
+  hasKey: boolean;
+  enabled: boolean;
+  createdAt: string | null;
+}
+
+export interface GenerateApiKeyResponse {
+  key: string;
+  createdAt: string;
+}
