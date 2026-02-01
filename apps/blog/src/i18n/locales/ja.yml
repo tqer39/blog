@@ -311,3 +311,14 @@ editor:
     confidence: 確信度
     generateSuggestion: ボタンをクリックして提案を生成
   previousResult: 前回の結果
+
+aiModelSettings:
+  title: AIモデル設定
+  reset: リセット
+  metadata: メタデータ（OpenAI）
+  image: 画像（Gemini / DALL-E）
+  claudeAnthropic: Claude（Anthropic）
+  review: レビュー
+  outline: アウトライン
+  transform: 変換
+  continuation: 続き生成
