@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useI18n } from '@/i18n';
 
 const SIDEBAR_COLLAPSED_KEY = 'admin-sidebar-collapsed';
@@ -159,15 +158,6 @@ export function AdminSidebar() {
           />
         </ul>
       </nav>
-
-      {/* Language Switcher */}
-      <div className="shrink-0 border-t p-2">
-        {isCollapsed ? (
-          <LanguageSwitcher compact className="mx-auto" />
-        ) : (
-          <LanguageSwitcher className="w-full justify-center" />
-        )}
-      </div>
     </aside>
   );
 }
