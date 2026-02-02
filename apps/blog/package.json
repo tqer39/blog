@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "pnpm build:i18n && next build",
-    "build:i18n": "tsx scripts/build-i18n.ts",
+    "build:i18n": "tsx ./scripts/build-i18n.ts",
     "start": "next start",
     "lint": "biome lint --write .",
     "check": "biome check --write .",
