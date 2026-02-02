@@ -101,8 +101,9 @@ admin:
     dashboard: Dashboard
     articles: Articles
     newArticle: New Article
-    categories: Categories
     tags: Tags
+    images: Images
+    categories: Categories
     settings: Settings
     expandSidebar: Expand sidebar
     collapseSidebar: Collapse sidebar
@@ -204,6 +205,47 @@ categories:
   actions:
     edit: Edit
     delete: Delete
+
+images:
+  title: Images
+  searchPlaceholder: Search by filename...
+  noImages: No images found
+  noMatchingImages: No images match your search
+  loadError: Failed to load images
+  deleteError: Failed to delete image
+  deleteConfirm: Delete this image?
+  viewMode:
+    grid: Grid
+    list: List
+  table:
+    thumbnail: Thumbnail
+    filename: Filename
+    originalFilename: Original filename
+    size: Size
+    mimeType: Type
+    createdAt: Created
+    actions: Actions
+    sortByFilename: Sort by filename
+    sortBySize: Sort by size
+    sortByCreatedAt: Sort by created date
+  actions:
+    copyUrl: Copy URL
+    openNewTab: Open in new tab
+    delete: Delete
+    copied: Copied
+  detail:
+    title: Image Details
+    filename: Filename
+    originalFilename: Original filename
+    size: Size
+    mimeType: Type
+    createdAt: Created
+    url: URL
+  bulkActions:
+    selectAll: Select all
+    selected: '{count} selected'
+    delete: Delete
+    confirmDelete: 'Delete {count} image(s)?'
 
 header:
   search: Search

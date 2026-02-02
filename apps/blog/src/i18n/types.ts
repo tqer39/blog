@@ -94,8 +94,9 @@ export interface Messages {
       dashboard: string;
       articles: string;
       newArticle: string;
-      categories: string;
       tags: string;
+      images: string;
+      categories: string;
       settings: string;
       expandSidebar: string;
       collapseSidebar: string;
@@ -206,6 +207,52 @@ export interface Messages {
     actions: {
       edit: string;
       delete: string;
+    };
+  };
+  images: {
+    title: string;
+    searchPlaceholder: string;
+    noImages: string;
+    noMatchingImages: string;
+    loadError: string;
+    deleteError: string;
+    deleteConfirm: string;
+    viewMode: {
+      grid: string;
+      list: string;
+    };
+    table: {
+      thumbnail: string;
+      filename: string;
+      originalFilename: string;
+      size: string;
+      mimeType: string;
+      createdAt: string;
+      actions: string;
+      sortByFilename: string;
+      sortBySize: string;
+      sortByCreatedAt: string;
+    };
+    actions: {
+      copyUrl: string;
+      openNewTab: string;
+      delete: string;
+      copied: string;
+    };
+    detail: {
+      title: string;
+      filename: string;
+      originalFilename: string;
+      size: string;
+      mimeType: string;
+      createdAt: string;
+      url: string;
+    };
+    bulkActions: {
+      selectAll: string;
+      selected: string;
+      delete: string;
+      confirmDelete: string;
     };
   };
   header: {
