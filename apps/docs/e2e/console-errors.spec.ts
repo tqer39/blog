@@ -71,7 +71,10 @@ test.describe('Documentation Console Error Check', () => {
       await page.waitForTimeout(500);
 
       // Assert no errors
-      expect(errors, `Console errors found on ${pagePath}:\n${errors.join('\n')}`).toHaveLength(0);
+      expect(
+        errors,
+        `Console errors found on ${pagePath}:\n${errors.join('\n')}`
+      ).toHaveLength(0);
     });
   }
 });
@@ -109,6 +112,9 @@ test.describe('Documentation Navigation', () => {
     }
 
     // Assert no errors during navigation
-    expect(errors, `Console errors during navigation:\n${errors.join('\n')}`).toHaveLength(0);
+    expect(
+      errors,
+      `Console errors during navigation:\n${errors.join('\n')}`
+    ).toHaveLength(0);
   });
 });

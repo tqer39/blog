@@ -3,6 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "scripts/**"],
       "outputs": [".next/**", "!.next/cache/**", "out/**", "dist/**"],
       "env": [
         "CMS_API_URL",

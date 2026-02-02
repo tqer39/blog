@@ -1,0 +1,375 @@
+common:
+  save: Save
+  cancel: Cancel
+  loading: Loading...
+  saving: Saving...
+  delete: Delete
+  edit: Edit
+  create: Create
+  search: Search
+  noResults: No results found
+  confirm: Confirm
+  back: Back
+  next: Next
+  previous: Previous
+  close: Close
+  actions: Actions
+  clearSearch: Clear search
+  sortBy: Sort by
+
+settings:
+  title: Site Settings
+  saveSettings: Save Settings
+  saveSuccess: Settings saved successfully
+  saveError: Failed to save settings
+  loadError: Failed to load settings
+  basic:
+    title: Basic Settings
+    siteName: Site Name
+    siteNamePlaceholder: My Blog
+    siteDescription: Site Description
+    siteDescriptionPlaceholder: A brief description of your blog
+    authorName: Author Name
+    authorNamePlaceholder: Your Name
+    footerText: Footer Text (optional)
+    footerTextPlaceholder: Additional footer text
+  social:
+    title: Social Links
+    hide: Hide
+    show: Show
+  display:
+    title: Display Options
+    showRssLink: Show RSS Link
+    showRssLinkDescription: Display RSS feed link in the footer
+  appearance:
+    title: Appearance
+    defaultTheme: Default Theme
+    defaultThemeDescription: Theme for first-time visitors (users can override with their preference)
+    defaultLocale: Default Language
+    defaultLocaleDescription: Language for first-time visitors (users can override with their preference)
+    locales:
+      auto: Follow browser language
+      ja: 日本語
+      en: English
+    themes:
+      system: Follow system settings
+      light: Light mode
+      dark: Dark mode
+      tokyonight: Tokyo Night
+      nordLight: Nord Light
+      autumn: Autumn
+  aiTools:
+    title: AI Tools
+    description: Configure API keys for AI-powered features. Environment variables take priority if set.
+    openai:
+      label: OpenAI API Key
+      description: Used for metadata generation and DALL-E image generation
+    anthropic:
+      label: Anthropic API Key
+      description: Used for review, outline, text transform, and continuation
+    gemini:
+      label: Gemini API Key
+      description: Used for image generation
+    apiKeySet: API key is set. Enter a new value to replace it.
+    showApiKey: Show API key
+    hideApiKey: Hide API key
+  apiKey:
+    title: CMS API Key
+    description: Manage API keys for external access to the CMS API. If API_KEY environment variable is set, it will continue to work as well.
+    noKey: No API key configured
+    hasKey: API key is configured
+    createdAt: 'Created:'
+    enabled: Enabled
+    disabled: Disabled
+    generate: Generate API Key
+    regenerate: Regenerate
+    disable: Disable
+    enable: Enable
+    copyKey: Copy Key
+    copied: Copied
+    warning: This key will only be shown once. Save it in a secure location.
+    generatedKey: Generated API Key
+    confirmRegenerate: Generating a new API key will invalidate the current key. Continue?
+    generateError: Failed to generate API key
+    statusError: Failed to fetch API key status
+    enableError: Failed to enable API key
+    disableError: Failed to disable API key
+
+admin:
+  sidebar:
+    admin: My Page
+    dashboard: Dashboard
+    articles: Articles
+    newArticle: New Article
+    tags: Tags
+    images: Images
+    categories: Categories
+    settings: Settings
+    expandSidebar: Expand sidebar
+    collapseSidebar: Collapse sidebar
+
+dashboard:
+  title: Dashboard
+  totalArticles: Total Articles
+  published: Published
+  drafts: Drafts
+  newArticle: New Article
+  viewAllArticles: View All Articles
+  loadError: Failed to load stats
+
+articles:
+  title: Articles
+  newArticle: New Article
+  searchPlaceholder: Search articles by title, hash, or tag...
+  noArticles: No articles found
+  noMatchingArticles: No articles match your search.
+  loadError: Failed to load articles
+  updateError: Failed to update article
+  deleteError: Failed to delete article
+  deleteConfirm: 'Delete "{title}"?'
+  filters:
+    all: All
+    published: Published
+    draft: Draft
+  table:
+    image: Image
+    title: Title
+    status: Status
+    date: Date
+    tags: Tags
+    actions: Actions
+    sortByTitle: Sort by title
+    sortByStatus: Sort by status
+    sortByDate: Sort by date
+  status:
+    published: Published
+    draft: Draft
+  actions:
+    publish: Publish
+    unpublish: Unpublish
+    edit: Edit
+    delete: Delete
+  bulkActions:
+    selectAll: Select all
+    selected: '{count} selected'
+    delete: Delete
+    publish: Publish
+    unpublish: Unpublish
+    confirmDelete: 'Delete {count} article(s)?'
+
+tags:
+  title: Tags
+  newTag: New Tag
+  searchPlaceholder: Search tags by name...
+  noTags: No tags found. Create your first tag!
+  noMatchingTags: No tags match your search.
+  loadError: Failed to load tags
+  deleteError: Failed to delete tag
+  deleteConfirm: 'Delete "{name}"?'
+  deleteConfirmWithArticles: '"{name}" is used in {count} article(s). Are you sure you want to delete it?'
+  table:
+    name: Name
+    articles: Articles
+    created: Created
+    actions: Actions
+    sortByName: Sort by name
+    sortByArticleCount: Sort by article count
+    sortByCreatedAt: Sort by created date
+  actions:
+    edit: Edit
+    delete: Delete
+
+categories:
+  title: Categories
+  newCategory: New Category
+  searchPlaceholder: Search categories by name or slug...
+  noCategories: No categories found. Create your first category!
+  noMatchingCategories: No categories match your search.
+  loadError: Failed to load categories
+  deleteError: Failed to delete category
+  orderSaveError: Failed to save category order
+  deleteConfirm: 'Delete "{name}"?'
+  deleteConfirmWithArticles: '"{name}" is used in {count} article(s). Are you sure you want to delete it?'
+  dragToReorder: Drag and drop rows to reorder categories.
+  table:
+    color: Color
+    name: Name
+    slug: Slug
+    articles: Articles
+    created: Created
+    actions: Actions
+    dragHandle: Drag to reorder
+    sortByName: Sort by name
+    sortByArticleCount: Sort by article count
+    sortByCreatedAt: Sort by created date
+  actions:
+    edit: Edit
+    delete: Delete
+
+images:
+  title: Images
+  searchPlaceholder: Search by filename...
+  noImages: No images found
+  noMatchingImages: No images match your search
+  loadError: Failed to load images
+  deleteError: Failed to delete image
+  deleteConfirm: Delete this image?
+  viewMode:
+    grid: Grid
+    list: List
+  table:
+    thumbnail: Thumbnail
+    filename: Filename
+    originalFilename: Original filename
+    size: Size
+    mimeType: Type
+    createdAt: Created
+    actions: Actions
+    sortByFilename: Sort by filename
+    sortBySize: Sort by size
+    sortByCreatedAt: Sort by created date
+  actions:
+    copyUrl: Copy URL
+    openNewTab: Open in new tab
+    delete: Delete
+    copied: Copied
+  detail:
+    title: Image Details
+    filename: Filename
+    originalFilename: Original filename
+    size: Size
+    mimeType: Type
+    createdAt: Created
+    url: URL
+  bulkActions:
+    selectAll: Select all
+    selected: '{count} selected'
+    delete: Delete
+    confirmDelete: 'Delete {count} image(s)?'
+
+header:
+  search: Search
+  searchPlaceholder: Search...
+  closeSearch: Close search
+  openSearch: Open search
+  articles: Articles
+  admin: Admin
+  login: Login
+  logout: Logout
+
+footer:
+  copyright: "All rights reserved."
+  rss: RSS Feed
+
+language:
+  toggle: Language
+  ja: 日本語
+  en: English
+
+article:
+  tableOfContents: Table of Contents
+  readingTime: "{min} min read"
+  backToTop: Back to top
+  prevArticle: Previous article
+  nextArticle: Next article
+  updated: Updated
+
+breadcrumb:
+  home: Home
+  articles: Articles
+
+preview:
+  title: Preview
+  articleMode: Article
+  slideMode: Slide
+  headerImage: Header image
+  noTitle: (No title)
+  noContent: (No content)
+
+editor:
+  newArticle: New Article
+  editArticle: Edit Article
+  status: Status
+  draft: Draft
+  published: Published
+  aiReview: AI Review
+  reviewing: Reviewing...
+  preview: Preview
+  cancel: Cancel
+  save: Save
+  saving: Saving...
+  saved: Saved
+  title: Title
+  titlePlaceholder: Article title
+  descriptionAndTags: Description & Tags
+  description: Description (SEO)
+  descriptionPlaceholder: Brief description for SEO (100-160 characters)
+  characterCount: '{count} / 160 characters'
+  tags: Tags
+  tagsPlaceholder: Add tags (press Enter)
+  loadingTags: Loading tags...
+  category: Category
+  selectCategory: Select a category
+  loadingCategories: Loading...
+  articleCount: '{count} article(s)'
+  slideMode: Slide Mode
+  enableSlideMode: Enable slide mode
+  slideModeHelp: (Display article as slides separated by '---')
+  duration: Duration
+  durationHelp: 'seconds (default: 3 minutes)'
+  headerImage: Header Image
+  noImage: No image
+  upload: Upload
+  uploading: Uploading...
+  aiGenerate: AI Generate
+  generating: Generating...
+  content: Content
+  aiOutline: AI Outline
+  contentPlaceholder: Write your article in Markdown... (Paste images from clipboard)
+  uploadingImage: Uploading image...
+  characters: '{count} characters'
+  contentEditorTitle: 'Content Editor ({count} characters)'
+  draftRecovery:
+    title: Unsaved draft found
+    savedAt: Saved at {date}
+    discard: Discard
+    restore: Restore
+  imageGeneration:
+    useArticleContent: Use article content as prompt
+    customPrompt: Custom prompt
+    optional: (optional)
+    required: (required)
+    additionalInstructions: Enter additional instructions...
+    describeImage: Describe the image you want to generate...
+    mode: Mode
+    append: Append
+    override: Override
+    generate: Generate
+  toolbar:
+    bold: Bold
+    italic: Italic
+    heading: Heading
+    list: List
+    codeBlock: Code Block
+    link: Link
+    fullscreen: Fullscreen
+    aiContinuation: AI Continuation
+    continuationTitle: Continuation Suggestions
+    continuationHelp: Click to insert (⌘J)
+    short: Short
+    medium: Medium
+    long: Long
+    confidence: Confidence
+    generateSuggestion: Click button to generate suggestions
+  previousResult: Previous result
+
+aiModelSettings:
+  title: AI Model Settings
+  reset: Reset
+  metadata: Metadata (OpenAI)
+  image: Image (Gemini / DALL-E)
+  claudeAnthropic: Claude (Anthropic)
+  review: Review
+  outline: Outline
+  transform: Transform
+  continuation: Continuation

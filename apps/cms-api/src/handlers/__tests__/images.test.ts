@@ -11,7 +11,7 @@ vi.mock('@blog/utils', async () => {
     ...actual,
     generateId: vi.fn(() => 'mock-image-id'),
     generateImageId: vi.fn(
-      () => '550e8400-e29b-41d4-a716-446655440000' // Mock UUIDv4
+      () => '01ARZ3NDEKTSV4RRFFQ69G5FAV' // Mock ULID (26 chars)
     ),
   };
 });

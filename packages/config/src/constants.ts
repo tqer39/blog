@@ -37,6 +37,7 @@ export const DOMAINS = {
 
   // CDN (R2 Public)
   CDN: `https://cdn.${BASE_DOMAIN}`,
+  CDN_DEV: `https://cdn-dev.${BASE_DOMAIN}`,
   R2_LOCAL: `http://localhost:${PORTS.R2_LOCAL}`,
 } as const;
 
@@ -70,9 +71,15 @@ export function getLocalImageUrl(r2Key: string): string {
 
 /**
  * Get CDN image URL for production/dev
+ * @param r2Key - The R2 key for the image
+ * @param env - The environment ('prod' | 'dev')
  */
-export function getCdnImageUrl(r2Key: string): string {
-  return `${DOMAINS.CDN}/${r2Key}`;
+export function getCdnImageUrl(
+  r2Key: string,
+  env: 'prod' | 'dev' = 'prod'
+): string {
+  const cdnDomain = env === 'dev' ? DOMAINS.CDN_DEV : DOMAINS.CDN;
+  return `${cdnDomain}/${r2Key}`;
 }
 
 // ===========================================

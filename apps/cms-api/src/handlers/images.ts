@@ -1,4 +1,8 @@
-import type { Image, ImageUploadResponse } from '@blog/cms-types';
+import type {
+  Image,
+  ImageListResponse,
+  ImageUploadResponse,
+} from '@blog/cms-types';
 import { generateId, generateImageId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
@@ -9,6 +13,43 @@ export const imagesHandler = new Hono<{ Bindings: Env }>();
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
+// List all images with pagination
+imagesHandler.get('/', async (c) => {
+  const page = parseInt(c.req.query('page') || '1', 10);
+  const perPage = parseInt(c.req.query('perPage') || '50', 10);
+
+  // Get total count
+  const countResult = await c.env.DB.prepare(
+    'SELECT COUNT(*) as count FROM images'
+  ).first<{ count: number }>();
+  const total = countResult?.count || 0;
+  const totalPages = Math.ceil(total / perPage);
+
+  // Get paginated images
+  const offset = (page - 1) * perPage;
+  const { results } = await c.env.DB.prepare(
+    'SELECT * FROM images ORDER BY created_at DESC LIMIT ? OFFSET ?'
+  )
+    .bind(perPage, offset)
+    .all();
+
+  const images: Image[] = (results || []).map((row) =>
+    mapRowToImage(row, c.env)
+  );
+
+  const response: ImageListResponse = {
+    images,
+    pagination: {
+      page,
+      perPage,
+      total,
+      totalPages,
+    },
+  };
+
+  return c.json(response);
+});
 
 // Upload image
 imagesHandler.post('/', async (c) => {
@@ -34,7 +75,7 @@ imagesHandler.post('/', async (c) => {
   }
 
   const id = generateId();
-  const imageId = generateImageId(); // UUIDv4 for unpredictable URL path
+  const imageId = generateImageId(); // ULID for time-sortable, unpredictable URL path
   const ext =
     getExtension(file.name) || getExtensionFromMime(file.type) || 'bin';
   const filename = `${imageId}.${ext}`;

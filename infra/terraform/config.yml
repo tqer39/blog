@@ -27,6 +27,7 @@ environments:
     cms_api:
       database_name: blog-cms-dev
       bucket_name: blog-images-dev-v2
+      cdn_domain: cdn-dev.tqer39.dev
     vercel:
       framework: nextjs
       root_directory: apps/blog

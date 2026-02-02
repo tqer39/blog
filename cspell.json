@@ -1,16 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
-  "files": [
-    "**",
-    ".*/**"
-  ],
-  "ignorePaths": [
-    ".git",
-    ".gitignore",
-    ".claude",
-    "pnpm-lock.yaml",
-    ".turbo"
-  ],
+  "files": ["**", ".*/**"],
+  "ignorePaths": [".git", ".gitignore", ".claude", "pnpm-lock.yaml", ".turbo"],
   "words": [
     "aahl",
     "adsense",
@@ -151,6 +142,7 @@
     "networkidle",
     "nextauth",
     "nextjs",
+    "NDEKTSV",
     "nodenv",
     "Noninteractive",
     "nord",
@@ -178,6 +170,7 @@
     "rego",
     "remotehub",
     "RFFAK",
+    "RRFFQ",
     "rinchsan",
     "ripgrep",
     "Rofi",

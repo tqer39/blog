@@ -57,7 +57,7 @@ export function ArticleTitle({
         </button>
         {isLoggedIn && hash && (
           <Link
-            href={`/admin/articles/${hash}/edit`}
+            href={`/my/articles/${hash}/edit`}
             className="ml-1 text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300"
             aria-label="Edit article"
             title="記事を編集"

@@ -1,14 +1,17 @@
 import type {
+  ApiKeyStatus,
   Article,
   ArticleInput,
   ArticleListResponse,
   Category,
   CategoryInput,
   CategoryListResponse,
+  GenerateApiKeyResponse,
   GenerateImageRequest,
   GenerateImageResponse,
   GenerateOutlineRequest,
   GenerateOutlineResponse,
+  ImageListResponse,
   ImageUploadResponse,
   ReviewArticleRequest,
   ReviewArticleResponse,
@@ -159,6 +162,18 @@ export async function updateCategoriesOrder(
 }
 
 // Images
+export async function getImages(params?: {
+  page?: number;
+  perPage?: number;
+}): Promise<ImageListResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.page) searchParams.set('page', String(params.page));
+  if (params?.perPage) searchParams.set('perPage', String(params.perPage));
+
+  const query = searchParams.toString();
+  return fetchApi(`/images${query ? `?${query}` : ''}`);
+}
+
 export async function uploadImage(
   formData: FormData
 ): Promise<ImageUploadResponse> {
@@ -259,4 +274,21 @@ export async function updateSiteSettings(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input),
   });
+}
+
+// API Key Management
+export async function getApiKeyStatus(): Promise<ApiKeyStatus> {
+  return fetchApi('/api-key/status');
+}
+
+export async function generateApiKey(): Promise<GenerateApiKeyResponse> {
+  return fetchApi('/api-key/generate', { method: 'POST' });
+}
+
+export async function disableApiKey(): Promise<{ success: boolean }> {
+  return fetchApi('/api-key/disable', { method: 'POST' });
+}
+
+export async function enableApiKey(): Promise<{ success: boolean }> {
+  return fetchApi('/api-key/enable', { method: 'POST' });
 }

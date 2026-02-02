@@ -7,13 +7,14 @@ import type {
 } from '@blog/cms-types';
 import { Hono } from 'hono';
 import type { Env } from '../../index';
+import { getOpenAIApiKey } from '../../lib/api-keys';
 import { internalError, validationError } from '../../lib/errors';
 import { DEFAULT_OPENAI_MODEL, VALID_OPENAI_MODELS } from './_shared';
 
 export const metadataHandler = new Hono<{ Bindings: Env }>();
 
 metadataHandler.post('/', async (c) => {
-  const apiKey = c.env.OPENAI_API_KEY;
+  const apiKey = await getOpenAIApiKey(c.env);
   if (!apiKey) {
     internalError('OpenAI API key not configured');
   }

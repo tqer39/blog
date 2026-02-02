@@ -110,6 +110,16 @@ export interface ImageUploadResponse {
   sizeBytes: number;
 }
 
+export interface ImageListResponse {
+  images: Image[];
+  pagination: {
+    page: number;
+    perPage: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 // API Response types
 export interface ApiResponse<T> {
   data?: T;
@@ -303,6 +313,11 @@ export interface SiteSettings {
   show_wantedly_link: string; // "true" or "false" (stored as text in DB)
   show_lapras_link: string; // "true" or "false" (stored as text in DB)
   default_theme: string; // "system" | "light" | "dark" | "tokyonight" | "nord-light" | "autumn"
+  default_locale: string; // "auto" | "ja" | "en"
+  // AI API Keys (masked in GET response)
+  ai_openai_api_key: string; // OpenAI API key for metadata generation, DALL-E images
+  ai_anthropic_api_key: string; // Anthropic API key for review, outline, transform, continuation
+  ai_gemini_api_key: string; // Gemini API key for image generation
 }
 
 export interface SiteSettingsResponse {
@@ -311,3 +326,15 @@ export interface SiteSettingsResponse {
 }
 
 export type SiteSettingsInput = Partial<SiteSettings>;
+
+// API Key Management types
+export interface ApiKeyStatus {
+  hasKey: boolean;
+  enabled: boolean;
+  createdAt: string | null;
+}
+
+export interface GenerateApiKeyResponse {
+  key: string;
+  createdAt: string;
+}

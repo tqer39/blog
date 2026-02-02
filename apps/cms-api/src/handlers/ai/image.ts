@@ -8,6 +8,7 @@ import type {
 import { generateId, generateImageId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../../index';
+import { getGeminiApiKey, getOpenAIApiKey } from '../../lib/api-keys';
 import { internalError, validationError } from '../../lib/errors';
 import { getImageUrl } from '../../lib/image-url';
 import {
@@ -160,7 +161,9 @@ imageHandler.post('/', async (c) => {
 
   // Check API key
   const apiKey =
-    provider === 'gemini' ? c.env.GEMINI_API_KEY : c.env.OPENAI_API_KEY;
+    provider === 'gemini'
+      ? await getGeminiApiKey(c.env)
+      : await getOpenAIApiKey(c.env);
   if (!apiKey) {
     internalError(
       `${provider === 'gemini' ? 'Gemini' : 'OpenAI'} API key not configured`
@@ -189,7 +192,7 @@ imageHandler.post('/', async (c) => {
 
     // Upload to R2
     const id = generateId();
-    const imageId = generateImageId(); // UUIDv4 for unpredictable URL path
+    const imageId = generateImageId(); // ULID for time-sortable, unpredictable URL path
     const ext = generated.mimeType === 'image/jpeg' ? 'jpg' : 'png';
     const filename = `${imageId}.${ext}`;
     const r2Key = `i/${filename}`;

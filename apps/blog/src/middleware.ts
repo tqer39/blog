@@ -52,32 +52,30 @@ export async function middleware(request: NextRequest) {
     return basicAuthResponse;
   }
 
-  // Only protect /admin routes (except /admin/login)
-  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+  // Only protect /my routes (except /my/login)
+  if (pathname.startsWith('/my') && pathname !== '/my/login') {
     const token = request.cookies.get(COOKIE_NAME)?.value;
 
     if (!token) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+      return NextResponse.redirect(new URL('/my/login', request.url));
     }
 
     const isValid = await verifySession(token);
     if (!isValid) {
       // Clear invalid cookie and redirect
-      const response = NextResponse.redirect(
-        new URL('/admin/login', request.url)
-      );
+      const response = NextResponse.redirect(new URL('/my/login', request.url));
       response.cookies.delete(COOKIE_NAME);
       return response;
     }
   }
 
-  // If authenticated user tries to access login page, redirect to admin
-  if (pathname === '/admin/login') {
+  // If authenticated user tries to access login page, redirect to my page
+  if (pathname === '/my/login') {
     const token = request.cookies.get(COOKIE_NAME)?.value;
     if (token) {
       const isValid = await verifySession(token);
       if (isValid) {
-        return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+        return NextResponse.redirect(new URL('/my/dashboard', request.url));
       }
     }
   }
