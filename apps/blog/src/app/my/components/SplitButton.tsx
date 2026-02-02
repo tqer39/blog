@@ -82,7 +82,7 @@ export function SplitButton({
             <ChevronDown className="h-3.5 w-3.5" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-56 p-2" align="end">
+        <PopoverContent className="w-72 p-2" align="end">
           <div className="space-y-2">
             <p className="text-xs font-medium text-muted-foreground">{label}</p>
             <Select value={modelValue} onValueChange={onModelChange}>
