@@ -25,13 +25,13 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useI18n } from '@/i18n';
 import {
   deleteArticle,
   getArticles,
   publishArticle,
   unpublishArticle,
 } from '@/lib/api/client';
-import { useI18n } from '@/i18n';
 import { useSorting } from '../hooks/use-sorting';
 
 type ArticleSortKey = 'title' | 'status' | 'date';
@@ -112,10 +112,20 @@ export default function ArticleListPage() {
   async function handleBatchDelete() {
     const count = selectedHashes.size;
     if (count === 0) return;
-    if (!confirm(t('articles.bulkActions.confirmDelete').replace('{count}', String(count)))) return;
+    if (
+      !confirm(
+        t('articles.bulkActions.confirmDelete').replace(
+          '{count}',
+          String(count)
+        )
+      )
+    )
+      return;
 
     try {
-      await Promise.all(Array.from(selectedHashes).map((hash) => deleteArticle(hash)));
+      await Promise.all(
+        Array.from(selectedHashes).map((hash) => deleteArticle(hash))
+      );
       setSelectedHashes(new Set());
       await loadArticles();
     } catch (err) {
@@ -127,7 +137,9 @@ export default function ArticleListPage() {
     if (selectedHashes.size === 0) return;
 
     try {
-      await Promise.all(Array.from(selectedHashes).map((hash) => publishArticle(hash)));
+      await Promise.all(
+        Array.from(selectedHashes).map((hash) => publishArticle(hash))
+      );
       setSelectedHashes(new Set());
       await loadArticles();
     } catch (err) {
@@ -139,11 +151,15 @@ export default function ArticleListPage() {
     if (selectedHashes.size === 0) return;
 
     try {
-      await Promise.all(Array.from(selectedHashes).map((hash) => unpublishArticle(hash)));
+      await Promise.all(
+        Array.from(selectedHashes).map((hash) => unpublishArticle(hash))
+      );
       setSelectedHashes(new Set());
       await loadArticles();
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to unpublish articles');
+      alert(
+        err instanceof Error ? err.message : 'Failed to unpublish articles'
+      );
     }
   }
 
@@ -242,7 +258,10 @@ export default function ArticleListPage() {
       {selectedHashes.size > 0 && (
         <div className="mb-4 flex items-center gap-4 rounded-lg border border-border bg-muted/50 p-3">
           <span className="text-sm font-medium text-foreground">
-            {t('articles.bulkActions.selected').replace('{count}', String(selectedHashes.size))}
+            {t('articles.bulkActions.selected').replace(
+              '{count}',
+              String(selectedHashes.size)
+            )}
           </span>
           <div className="flex items-center gap-2">
             <Button
@@ -301,7 +320,10 @@ export default function ArticleListPage() {
               <tr className="border-b border-border bg-muted/50">
                 <th className="w-12 py-4 pl-4 text-left">
                   <Checkbox
-                    checked={sortedArticles.length > 0 && selectedHashes.size === sortedArticles.length}
+                    checked={
+                      sortedArticles.length > 0 &&
+                      selectedHashes.size === sortedArticles.length
+                    }
                     onCheckedChange={handleSelectAll}
                     aria-label={t('articles.bulkActions.selectAll')}
                   />

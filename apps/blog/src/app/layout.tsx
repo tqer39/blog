@@ -85,7 +85,10 @@ export default async function RootLayout({
         className={`${bizUDGothic.variable} font-sans flex min-h-screen flex-col bg-background text-foreground`}
         suppressHydrationWarning
       >
-        <Providers defaultTheme={settings.default_theme} defaultLocale={settings.default_locale as 'auto' | 'ja' | 'en'}>
+        <Providers
+          defaultTheme={settings.default_theme}
+          defaultLocale={settings.default_locale as 'auto' | 'ja' | 'en'}
+        >
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />

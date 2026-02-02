@@ -13,8 +13,8 @@ import {
   X,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { deleteTag, getTags } from '@/lib/api/client';
 import { useI18n } from '@/i18n';
+import { deleteTag, getTags } from '@/lib/api/client';
 import { useListPage } from '../hooks/use-list-page';
 import { useSorting } from '../hooks/use-sorting';
 import { TagEditor } from './components/TagEditor';

@@ -61,7 +61,12 @@ export function ArticlePreview({
   }
 
   return (
-    <FullscreenModal isOpen={isOpen} onClose={handleClose} title={t('preview.title')} closeLabel={t('common.close')}>
+    <FullscreenModal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title={t('preview.title')}
+      closeLabel={t('common.close')}
+    >
       <div className="min-h-full bg-white dark:bg-stone-950">
         <TableOfContents readingTime={readingTime} />
         <article className="mx-auto max-w-4xl px-4 py-8">
@@ -120,7 +125,8 @@ export function ArticlePreview({
               </time>
               <span className="text-stone-400 dark:text-stone-500">·</span>
               <span className="flex items-center gap-1 text-stone-600 dark:text-stone-400">
-                <Clock className="h-4 w-4" />{t('article.readingTime').replace('{min}', String(readingTime))}
+                <Clock className="h-4 w-4" />
+                {t('article.readingTime').replace('{min}', String(readingTime))}
               </span>
               {tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">

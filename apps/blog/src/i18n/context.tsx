@@ -1,16 +1,21 @@
 'use client';
 
 import {
-  type ReactNode,
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useState,
 } from 'react';
-import ja from './locales/ja.json';
 import en from './locales/en.json';
-import type { I18nContextValue, Locale, Messages, SiteDefaultLocale } from './types';
+import ja from './locales/ja.json';
+import type {
+  I18nContextValue,
+  Locale,
+  Messages,
+  SiteDefaultLocale,
+} from './types';
 
 const LOCALE_STORAGE_KEY = 'blog-locale';
 
@@ -38,7 +43,10 @@ interface I18nProviderProps {
  */
 function detectBrowserLocale(): Locale {
   if (typeof navigator === 'undefined') return 'ja';
-  const browserLang = navigator.language || (navigator as Navigator & { userLanguage?: string }).userLanguage || '';
+  const browserLang =
+    navigator.language ||
+    (navigator as Navigator & { userLanguage?: string }).userLanguage ||
+    '';
   // Check if browser language starts with 'ja'
   if (browserLang.toLowerCase().startsWith('ja')) {
     return 'ja';
@@ -49,7 +57,9 @@ function detectBrowserLocale(): Locale {
 /**
  * Resolve site default locale to actual locale
  */
-function resolveSiteDefaultLocale(siteDefaultLocale: SiteDefaultLocale): Locale {
+function resolveSiteDefaultLocale(
+  siteDefaultLocale: SiteDefaultLocale
+): Locale {
   if (siteDefaultLocale === 'auto') {
     return detectBrowserLocale();
   }
