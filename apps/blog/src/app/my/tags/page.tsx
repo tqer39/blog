@@ -193,7 +193,7 @@ export default function TagListPage() {
                       ))}
                   </button>
                 </th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                   {t('tags.table.actions')}
                 </th>
               </tr>
@@ -228,7 +228,7 @@ export default function TagListPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center justify-end gap-1">
+                    <div className="flex items-center justify-start gap-1">
                       <Button
                         variant="ghost"
                         size="sm"
