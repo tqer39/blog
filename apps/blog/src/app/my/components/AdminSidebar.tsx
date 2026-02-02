@@ -145,6 +145,12 @@ export function AdminSidebar() {
             isCollapsed={isCollapsed}
           />
           <NavItem
+            href="/my/images"
+            icon={<ImagesIcon />}
+            label={t('admin.sidebar.images')}
+            isCollapsed={isCollapsed}
+          />
+          <NavItem
             href="/my/categories"
             icon={<CategoriesIcon />}
             label={t('admin.sidebar.categories')}
@@ -287,6 +293,27 @@ function CategoriesIcon() {
       <path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z" />
       <path d="M18 3h-4a2 2 0 0 0-2 2v4c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z" />
       <path d="M18 13h-4a2 2 0 0 0-2 2v4c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Z" />
+    </svg>
+  );
+}
+
+function ImagesIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+      <circle cx="9" cy="9" r="2" />
+      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
     </svg>
   );
 }

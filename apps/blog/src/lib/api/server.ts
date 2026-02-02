@@ -11,6 +11,7 @@ import type {
   GenerateImageResponse,
   GenerateOutlineRequest,
   GenerateOutlineResponse,
+  ImageListResponse,
   ImageUploadResponse,
   ReviewArticleRequest,
   ReviewArticleResponse,
@@ -161,6 +162,18 @@ export async function updateCategoriesOrder(
 }
 
 // Images
+export async function getImages(params?: {
+  page?: number;
+  perPage?: number;
+}): Promise<ImageListResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.page) searchParams.set('page', String(params.page));
+  if (params?.perPage) searchParams.set('perPage', String(params.perPage));
+
+  const query = searchParams.toString();
+  return fetchApi(`/images${query ? `?${query}` : ''}`);
+}
+
 export async function uploadImage(
   formData: FormData
 ): Promise<ImageUploadResponse> {
