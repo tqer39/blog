@@ -3,6 +3,7 @@
 import { FullscreenModal } from '@blog/ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useI18n } from '@/i18n';
 import { ArticleContent } from './ArticleContent';
 import { SlideTimer } from './SlideTimer';
 
@@ -86,6 +87,7 @@ export function SlideViewer({
   title,
   slideDuration,
 }: SlideViewerProps) {
+  const { t } = useI18n();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
 
@@ -184,7 +186,7 @@ export function SlideViewer({
   if (!isOpen || slides.length === 0) return null;
 
   return (
-    <FullscreenModal isOpen={isOpen} onClose={onClose} title={title}>
+    <FullscreenModal isOpen={isOpen} onClose={onClose} title={title} closeLabel={t('common.close')}>
       <div
         className="flex h-full flex-col overflow-hidden"
         onTouchStart={handleTouchStart}

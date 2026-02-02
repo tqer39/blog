@@ -12,6 +12,7 @@ interface FullscreenModalProps {
   title?: React.ReactNode;
   headerActions?: React.ReactNode;
   headerClassName?: string;
+  closeLabel?: string;
 }
 
 export function FullscreenModal({
@@ -21,6 +22,7 @@ export function FullscreenModal({
   title,
   headerActions,
   headerClassName,
+  closeLabel = 'Close',
 }: FullscreenModalProps) {
   useEscapeKey(onClose, isOpen);
 
@@ -51,7 +53,7 @@ export function FullscreenModal({
             className="cursor-pointer flex items-center gap-1 rounded-md px-2 py-1 transition-colors hover:bg-black/10 dark:hover:bg-white/10 text-inherit"
             aria-label="Close fullscreen"
           >
-            <span className="text-xs">Close</span>
+            <span className="text-xs">{closeLabel}</span>
             <X className="h-4 w-4" />
           </button>
         </div>
