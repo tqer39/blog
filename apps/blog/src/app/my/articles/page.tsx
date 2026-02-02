@@ -11,17 +11,7 @@ import {
   TabsTrigger,
 } from '@blog/ui';
 import dayjs from 'dayjs';
-import {
-  ArrowDown,
-  ArrowUp,
-  Edit,
-  Eye,
-  EyeOff,
-  ImageIcon,
-  Search,
-  Trash2,
-  X,
-} from 'lucide-react';
+import { Edit, Eye, EyeOff, ImageIcon, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -32,6 +22,10 @@ import {
   publishArticle,
   unpublishArticle,
 } from '@/lib/api/client';
+import { ListEmptyState } from '../components/ListEmptyState';
+import { SearchInput } from '../components/SearchInput';
+import { SortButton } from '../components/SortButton';
+import { useSelection } from '../hooks/use-selection';
 import { useSorting } from '../hooks/use-sorting';
 
 type ArticleSortKey = 'title' | 'status' | 'date';
@@ -43,7 +37,14 @@ export default function ArticleListPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedHashes, setSelectedHashes] = useState<Set<string>>(new Set());
+  const {
+    selectedIds: selectedHashes,
+    toggle: handleSelectOne,
+    toggleAll,
+    clear: clearSelection,
+    count: selectedCount,
+    isAllSelected,
+  } = useSelection();
   const { sortKey, sortDirection, handleSort } = useSorting<ArticleSortKey>(
     'date',
     'desc'
@@ -92,25 +93,11 @@ export default function ArticleListPage() {
   }
 
   function handleSelectAll() {
-    if (selectedHashes.size === sortedArticles.length) {
-      setSelectedHashes(new Set());
-    } else {
-      setSelectedHashes(new Set(sortedArticles.map((a) => a.hash)));
-    }
-  }
-
-  function handleSelectOne(hash: string) {
-    const newSet = new Set(selectedHashes);
-    if (newSet.has(hash)) {
-      newSet.delete(hash);
-    } else {
-      newSet.add(hash);
-    }
-    setSelectedHashes(newSet);
+    toggleAll(sortedArticles.map((a) => a.hash));
   }
 
   async function handleBatchDelete() {
-    const count = selectedHashes.size;
+    const count = selectedCount;
     if (count === 0) return;
     if (
       !confirm(
@@ -126,7 +113,7 @@ export default function ArticleListPage() {
       await Promise.all(
         Array.from(selectedHashes).map((hash) => deleteArticle(hash))
       );
-      setSelectedHashes(new Set());
+      clearSelection();
       await loadArticles();
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to delete articles');
@@ -134,13 +121,13 @@ export default function ArticleListPage() {
   }
 
   async function handleBatchPublish() {
-    if (selectedHashes.size === 0) return;
+    if (selectedCount === 0) return;
 
     try {
       await Promise.all(
         Array.from(selectedHashes).map((hash) => publishArticle(hash))
       );
-      setSelectedHashes(new Set());
+      clearSelection();
       await loadArticles();
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to publish articles');
@@ -148,13 +135,13 @@ export default function ArticleListPage() {
   }
 
   async function handleBatchUnpublish() {
-    if (selectedHashes.size === 0) return;
+    if (selectedCount === 0) return;
 
     try {
       await Promise.all(
         Array.from(selectedHashes).map((hash) => unpublishArticle(hash))
       );
-      setSelectedHashes(new Set());
+      clearSelection();
       await loadArticles();
     } catch (err) {
       alert(
@@ -232,35 +219,20 @@ export default function ArticleListPage() {
       </Tabs>
 
       {/* Search input */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={t('articles.searchPlaceholder')}
-          className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-10 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={() => setSearchQuery('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            aria-label={t('common.clearSearch')}
-            title={t('common.clearSearch')}
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
-      </div>
+      <SearchInput
+        value={searchQuery}
+        onChange={setSearchQuery}
+        placeholder={t('articles.searchPlaceholder')}
+        className="mb-6"
+      />
 
       {/* Bulk actions toolbar */}
-      {selectedHashes.size > 0 && (
+      {selectedCount > 0 && (
         <div className="mb-4 flex items-center gap-4 rounded-lg border border-border bg-muted/50 p-3">
           <span className="text-sm font-medium text-foreground">
             {t('articles.bulkActions.selected').replace(
               '{count}',
-              String(selectedHashes.size)
+              String(selectedCount)
             )}
           </span>
           <div className="flex items-center gap-2">
@@ -301,29 +273,22 @@ export default function ArticleListPage() {
         </Alert>
       )}
 
-      {loading ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('common.loading')}
-        </div>
-      ) : articles.length === 0 ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('articles.noArticles')}
-        </div>
-      ) : sortedArticles.length === 0 ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('articles.noMatchingArticles')}
-        </div>
-      ) : (
+      <ListEmptyState
+        loading={loading}
+        hasItems={articles.length > 0}
+        hasFilteredItems={sortedArticles.length > 0}
+        emptyMessage={t('articles.noArticles')}
+        noMatchMessage={t('articles.noMatchingArticles')}
+      />
+
+      {!loading && articles.length > 0 && sortedArticles.length > 0 && (
         <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-muted/50">
                 <th className="w-12 py-4 pl-4 text-left">
                   <Checkbox
-                    checked={
-                      sortedArticles.length > 0 &&
-                      selectedHashes.size === sortedArticles.length
-                    }
+                    checked={isAllSelected(sortedArticles.length)}
                     onCheckedChange={handleSelectAll}
                     aria-label={t('articles.bulkActions.selectAll')}
                   />
@@ -332,55 +297,37 @@ export default function ArticleListPage() {
                   <span className="sr-only">{t('articles.table.image')}</span>
                 </th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                  <button
-                    type="button"
-                    onClick={() => handleSort('title')}
-                    className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label={t('articles.table.sortByTitle')}
-                    title={t('articles.table.sortByTitle')}
+                  <SortButton
+                    columnKey="title"
+                    currentSortKey={sortKey}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                    ariaLabel={t('articles.table.sortByTitle')}
                   >
                     {t('articles.table.title')}
-                    {sortKey === 'title' &&
-                      (sortDirection === 'asc' ? (
-                        <ArrowUp className="h-3 w-3" />
-                      ) : (
-                        <ArrowDown className="h-3 w-3" />
-                      ))}
-                  </button>
+                  </SortButton>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                  <button
-                    type="button"
-                    onClick={() => handleSort('status')}
-                    className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label={t('articles.table.sortByStatus')}
-                    title={t('articles.table.sortByStatus')}
+                  <SortButton
+                    columnKey="status"
+                    currentSortKey={sortKey}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                    ariaLabel={t('articles.table.sortByStatus')}
                   >
                     {t('articles.table.status')}
-                    {sortKey === 'status' &&
-                      (sortDirection === 'asc' ? (
-                        <ArrowUp className="h-3 w-3" />
-                      ) : (
-                        <ArrowDown className="h-3 w-3" />
-                      ))}
-                  </button>
+                  </SortButton>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                  <button
-                    type="button"
-                    onClick={() => handleSort('date')}
-                    className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label={t('articles.table.sortByDate')}
-                    title={t('articles.table.sortByDate')}
+                  <SortButton
+                    columnKey="date"
+                    currentSortKey={sortKey}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                    ariaLabel={t('articles.table.sortByDate')}
                   >
                     {t('articles.table.date')}
-                    {sortKey === 'date' &&
-                      (sortDirection === 'asc' ? (
-                        <ArrowUp className="h-3 w-3" />
-                      ) : (
-                        <ArrowDown className="h-3 w-3" />
-                      ))}
-                  </button>
+                  </SortButton>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
                   {t('articles.table.tags')}

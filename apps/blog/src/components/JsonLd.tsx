@@ -1,5 +1,5 @@
 interface JsonLdProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- JSON-LD data can have various shapes
+  /** JSON-LD structured data for SEO. Type is intentionally loose for schema.org flexibility. */
   data: object;
 }
 

@@ -8,6 +8,10 @@ export {
   getCdnImageUrl,
   // Helper functions
   getLocalImageUrl,
+  // Image upload configuration
+  IMAGE_UPLOAD,
   // Environment configuration
   PORTS,
+  // Rate limiting configuration
+  RATE_LIMIT,
 } from './constants';

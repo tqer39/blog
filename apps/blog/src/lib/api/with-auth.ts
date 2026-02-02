@@ -4,9 +4,9 @@ import { requireAuth, requireAuthWithCsrf } from '@/lib/auth';
 /**
  * ルートコンテキストの型。
  * Next.js 15 の App Router では params が Promise になっている。
+ * Route params are always strings in Next.js.
  */
-// biome-ignore lint/suspicious/noExplicitAny: Route params vary by route
-type RouteContext = { params: Promise<Record<string, any>> };
+type RouteContext = { params: Promise<Record<string, string>> };
 
 /**
  * 認証付きルートハンドラーの型。

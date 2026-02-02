@@ -3,18 +3,13 @@
 import type { TagWithCount } from '@blog/cms-types';
 import { Alert, AlertDescription, Button } from '@blog/ui';
 import dayjs from 'dayjs';
-import {
-  ArrowDown,
-  ArrowUp,
-  Edit,
-  Plus,
-  Search,
-  Trash2,
-  X,
-} from 'lucide-react';
+import { Edit, Plus, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useI18n } from '@/i18n';
 import { deleteTag, getTags } from '@/lib/api/client';
+import { ListEmptyState } from '../components/ListEmptyState';
+import { SearchInput } from '../components/SearchInput';
+import { SortButton } from '../components/SortButton';
 import { useListPage } from '../hooks/use-list-page';
 import { useSorting } from '../hooks/use-sorting';
 import { TagEditor } from './components/TagEditor';
@@ -103,95 +98,58 @@ export default function TagListPage() {
       )}
 
       {/* Search input */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={t('tags.searchPlaceholder')}
-          className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-10 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={() => setSearchQuery('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            aria-label={t('common.clearSearch')}
-            title={t('common.clearSearch')}
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
-      </div>
+      <SearchInput
+        value={searchQuery}
+        onChange={setSearchQuery}
+        placeholder={t('tags.searchPlaceholder')}
+        className="mb-6"
+      />
 
-      {loading ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('common.loading')}
-        </div>
-      ) : tags.length === 0 ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('tags.noTags')}
-        </div>
-      ) : sortedTags.length === 0 ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('tags.noMatchingTags')}
-        </div>
-      ) : (
+      <ListEmptyState
+        loading={loading}
+        hasItems={tags.length > 0}
+        hasFilteredItems={sortedTags.length > 0}
+        emptyMessage={t('tags.noTags')}
+        noMatchMessage={t('tags.noMatchingTags')}
+      />
+
+      {!loading && tags.length > 0 && sortedTags.length > 0 && (
         <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
           <table className="w-full">
             <thead>
               <tr className="border-b border-border bg-muted/50">
                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                  <button
-                    type="button"
-                    onClick={() => handleSort('name')}
-                    className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label={t('tags.table.sortByName')}
-                    title={t('tags.table.sortByName')}
+                  <SortButton
+                    columnKey="name"
+                    currentSortKey={sortKey}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                    ariaLabel={t('tags.table.sortByName')}
                   >
                     {t('tags.table.name')}
-                    {sortKey === 'name' &&
-                      (sortDirection === 'asc' ? (
-                        <ArrowUp className="h-3 w-3" />
-                      ) : (
-                        <ArrowDown className="h-3 w-3" />
-                      ))}
-                  </button>
+                  </SortButton>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                  <button
-                    type="button"
-                    onClick={() => handleSort('articleCount')}
-                    className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label={t('tags.table.sortByArticleCount')}
-                    title={t('tags.table.sortByArticleCount')}
+                  <SortButton
+                    columnKey="articleCount"
+                    currentSortKey={sortKey}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                    ariaLabel={t('tags.table.sortByArticleCount')}
                   >
                     {t('tags.table.articles')}
-                    {sortKey === 'articleCount' &&
-                      (sortDirection === 'asc' ? (
-                        <ArrowUp className="h-3 w-3" />
-                      ) : (
-                        <ArrowDown className="h-3 w-3" />
-                      ))}
-                  </button>
+                  </SortButton>
                 </th>
                 <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                  <button
-                    type="button"
-                    onClick={() => handleSort('createdAt')}
-                    className="inline-flex items-center gap-1 hover:text-primary"
-                    aria-label={t('tags.table.sortByCreatedAt')}
-                    title={t('tags.table.sortByCreatedAt')}
+                  <SortButton
+                    columnKey="createdAt"
+                    currentSortKey={sortKey}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
+                    ariaLabel={t('tags.table.sortByCreatedAt')}
                   >
                     {t('tags.table.created')}
-                    {sortKey === 'createdAt' &&
-                      (sortDirection === 'asc' ? (
-                        <ArrowUp className="h-3 w-3" />
-                      ) : (
-                        <ArrowDown className="h-3 w-3" />
-                      ))}
-                  </button>
+                  </SortButton>
                 </th>
                 <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                   {t('tags.table.actions')}

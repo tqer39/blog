@@ -1,3 +1,4 @@
+import { RATE_LIMIT } from '@blog/config';
 import type { Context, Next } from 'hono';
 import type { Env } from '../index';
 
@@ -10,9 +11,6 @@ interface RateLimitEntry {
 // Note: This is per-isolate in Cloudflare Workers, so not perfectly distributed
 // but provides basic DoS protection
 const rateLimitStore = new Map<string, RateLimitEntry>();
-
-const WINDOW_MS = 60 * 1000; // 1 minute
-const MAX_REQUESTS = 60; // 60 requests per minute
 
 // Clean up expired entries periodically
 function cleanup() {
@@ -39,7 +37,7 @@ export async function rateLimitMiddleware(
 
   if (entry && entry.resetAt > now) {
     // Within current window
-    if (entry.count >= MAX_REQUESTS) {
+    if (entry.count >= RATE_LIMIT.MAX_REQUESTS) {
       return c.json(
         { error: 'Too many requests. Please try again later.' },
         429
@@ -50,7 +48,7 @@ export async function rateLimitMiddleware(
     // New window
     rateLimitStore.set(clientIp, {
       count: 1,
-      resetAt: now + WINDOW_MS,
+      resetAt: now + RATE_LIMIT.WINDOW_MS,
     });
   }
 

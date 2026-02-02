@@ -13,7 +13,8 @@ import {
   validationError,
 } from '../lib/errors';
 import { getImageUrl } from '../lib/image-url';
-import type { ArticleRow, CategoryRow } from '../types/rows';
+import { mapRowToCategory } from '../lib/mappers';
+import type { ArticleRow } from '../types/rows';
 
 export const articlesHandler = new Hono<{ Bindings: Env }>();
 
@@ -467,17 +468,6 @@ async function getCategoriesBatch(
   }
 
   return result;
-}
-
-function mapRowToCategory(row: CategoryRow): Category {
-  return {
-    id: row.id,
-    name: row.name,
-    slug: row.slug,
-    color: row.color,
-    displayOrder: row.display_order,
-    createdAt: row.created_at,
-  };
 }
 
 // Batch fetch header image URLs for multiple articles (avoids N+1)
