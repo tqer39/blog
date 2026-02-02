@@ -654,6 +654,7 @@ export function MarkdownEditor({
         isOpen={isFullscreen}
         onClose={() => setIsFullscreen(false)}
         title={messages.editor.contentEditorTitle.replace('{count}', value.length.toLocaleString())}
+        closeLabel={messages.common.close}
       >
         <div
           ref={fullscreenContainerRef}

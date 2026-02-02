@@ -61,7 +61,7 @@ export function ArticlePreview({
   }
 
   return (
-    <FullscreenModal isOpen={isOpen} onClose={handleClose} title={t('preview.title')}>
+    <FullscreenModal isOpen={isOpen} onClose={handleClose} title={t('preview.title')} closeLabel={t('common.close')}>
       <div className="min-h-full bg-white dark:bg-stone-950">
         <TableOfContents readingTime={readingTime} />
         <article className="mx-auto max-w-4xl px-4 py-8">
