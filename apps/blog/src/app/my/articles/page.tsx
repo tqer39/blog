@@ -304,7 +304,7 @@ export default function ArticleListPage() {
                   </td>
                   <td className="px-4 py-5">
                     <span
-                      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
+                      className={`inline-flex items-center whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold ${
                         article.status === 'published'
                           ? 'bg-emerald-500/20 text-emerald-700 ring-1 ring-inset ring-emerald-500/40 dark:bg-emerald-500/20 dark:text-emerald-300 dark:ring-emerald-400/30'
                           : 'bg-amber-500/20 text-amber-700 ring-1 ring-inset ring-amber-500/40 dark:bg-amber-500/20 dark:text-amber-300 dark:ring-amber-400/30'
