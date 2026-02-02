@@ -97,7 +97,9 @@ export function TableOfContents({ readingTime }: TableOfContentsProps) {
       {readingTime && (
         <div className="mb-4 flex items-center gap-1.5 text-base text-stone-500 dark:text-stone-400">
           <Clock className="h-4 w-4" />
-          <span>{t('article.readingTime').replace('{min}', String(readingTime))}</span>
+          <span>
+            {t('article.readingTime').replace('{min}', String(readingTime))}
+          </span>
         </div>
       )}
       <TocList

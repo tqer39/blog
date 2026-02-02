@@ -20,9 +20,9 @@ function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) {
     // Compare with dummy to maintain constant time
     const dummy = 'x'.repeat(a.length);
-    let result = 0;
+    let _result = 0;
     for (let i = 0; i < dummy.length; i++) {
-      result |= dummy.charCodeAt(i) ^ a.charCodeAt(i);
+      _result |= dummy.charCodeAt(i) ^ a.charCodeAt(i);
     }
     return false;
   }

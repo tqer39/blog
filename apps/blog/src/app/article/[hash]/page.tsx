@@ -125,7 +125,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   const displayDate = article.publishedAt || article.createdAt;
   const hasBeenUpdated =
-    article.updatedAt && dayjs(article.updatedAt).isAfter(dayjs(displayDate), 'day');
+    article.updatedAt &&
+    dayjs(article.updatedAt).isAfter(dayjs(displayDate), 'day');
   const readingTime = calculateReadingTime(article.content);
 
   const articleJsonLd = generateArticleJsonLd(article, BASE_URL, settings);
@@ -179,7 +180,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               )}
             </div>
             <span className="text-stone-400 dark:text-stone-500">·</span>
-            <ReadingTime minutes={readingTime} className="text-stone-600 dark:text-stone-400" />
+            <ReadingTime
+              minutes={readingTime}
+              className="text-stone-600 dark:text-stone-400"
+            />
             {article.category && <CategoryBadge category={article.category} />}
             {article.slideMode && (
               <SlideModeButton

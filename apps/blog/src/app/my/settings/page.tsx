@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import type { ClipboardEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
+import { useI18n } from '@/i18n';
 import {
   disableApiKey,
   enableApiKey,
@@ -25,7 +26,6 @@ import {
   getSiteSettings,
   updateSiteSettings,
 } from '@/lib/api/client';
-import { useI18n } from '@/i18n';
 
 // X (formerly Twitter) icon
 function XIcon({ className }: { className?: string }) {
@@ -220,7 +220,10 @@ export default function SettingsPage() {
     } catch (err) {
       setMessage({
         type: 'error',
-        text: err instanceof Error ? err.message : t('settings.apiKey.generateError'),
+        text:
+          err instanceof Error
+            ? err.message
+            : t('settings.apiKey.generateError'),
       });
     } finally {
       setApiKeyLoading(false);
@@ -679,12 +682,8 @@ export default function SettingsPage() {
               <option value="auto">
                 {t('settings.appearance.locales.auto')}
               </option>
-              <option value="ja">
-                {t('settings.appearance.locales.ja')}
-              </option>
-              <option value="en">
-                {t('settings.appearance.locales.en')}
-              </option>
+              <option value="ja">{t('settings.appearance.locales.ja')}</option>
+              <option value="en">{t('settings.appearance.locales.en')}</option>
             </select>
           </div>
         </div>
