@@ -12,8 +12,8 @@ coverage/
 playwright.config.ts
 vitest.config.ts
 
-# Development scripts
-scripts/
+# Development scripts (keep build-i18n.ts for i18n build)
+scripts/migrate-to-cms.ts
 
 # Documentation
 *.md
