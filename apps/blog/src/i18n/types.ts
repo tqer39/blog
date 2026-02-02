@@ -146,6 +146,14 @@ export interface Messages {
       edit: string;
       delete: string;
     };
+    bulkActions: {
+      selectAll: string;
+      selected: string;
+      delete: string;
+      publish: string;
+      unpublish: string;
+      confirmDelete: string;
+    };
   };
   tags: {
     title: string;
