@@ -148,6 +148,13 @@ articles:
     unpublish: 非公開にする
     edit: 編集
     delete: 削除
+  bulkActions:
+    selectAll: 全選択
+    selected: '{count}件選択中'
+    delete: 削除
+    publish: 公開
+    unpublish: 非公開
+    confirmDelete: '{count}件の記事を削除しますか？'
 
 tags:
   title: タグ
