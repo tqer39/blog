@@ -7,7 +7,7 @@ settings:
 overrides:
   react: 19.2.4
   react-dom: 19.2.4
-  undici: 7.19.2
+  undici: 7.20.0
   esbuild: 0.27.2
   next: 16.1.5
 
@@ -3421,8 +3421,8 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici@7.19.2:
-    resolution: {integrity: sha512-4VQSpGEGsWzk0VYxyB/wVX/Q7qf9t5znLRgs0dzszr9w9Fej/8RVNQ+S20vdXSAyra/bJ7ZQfGv6ZMj7UEbzSg==}
+  undici@7.20.0:
+    resolution: {integrity: sha512-MJZrkjyd7DeC+uPZh+5/YaMDxFiiEEaDgbUSVMXayofAkDWF1088CDo+2RPg7B1BuS1qf1vgNE7xqwPxE0DuSQ==}
     engines: {node: '>=20.18.1'}
 
   unenv@2.0.0-rc.24:
@@ -6282,7 +6282,7 @@ snapshots:
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       sharp: 0.34.5
-      undici: 7.19.2
+      undici: 7.20.0
       workerd: 1.20260128.0
       ws: 8.18.0
       youch: 4.1.0-beta.10
@@ -6896,7 +6896,7 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici@7.19.2: {}
+  undici@7.20.0: {}
 
   unenv@2.0.0-rc.24:
     dependencies:
