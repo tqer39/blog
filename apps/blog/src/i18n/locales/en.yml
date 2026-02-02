@@ -148,6 +148,13 @@ articles:
     unpublish: Unpublish
     edit: Edit
     delete: Delete
+  bulkActions:
+    selectAll: Select all
+    selected: '{count} selected'
+    delete: Delete
+    publish: Publish
+    unpublish: Unpublish
+    confirmDelete: 'Delete {count} article(s)?'
 
 tags:
   title: Tags
