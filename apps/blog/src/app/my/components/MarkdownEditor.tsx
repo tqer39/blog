@@ -469,13 +469,11 @@ export function MarkdownEditor({
                       </p>
                     </div>
                     <div className="flex gap-1">
-                      {(
-                        [
-                          { value: 'short' as const, label: t.short },
-                          { value: 'medium' as const, label: t.medium },
-                          { value: 'long' as const, label: t.long },
-                        ]
-                      ).map((option) => (
+                      {[
+                        { value: 'short' as const, label: t.short },
+                        { value: 'medium' as const, label: t.medium },
+                        { value: 'long' as const, label: t.long },
+                      ].map((option) => (
                         <Button
                           key={option.value}
                           variant={
@@ -515,7 +513,8 @@ export function MarkdownEditor({
                           </p>
                           <div className="mt-2 flex items-center justify-between">
                             <span className="text-xs text-muted-foreground">
-                              {t.confidence}: {Math.round(suggestion.confidence * 100)}%
+                              {t.confidence}:{' '}
+                              {Math.round(suggestion.confidence * 100)}%
                             </span>
                           </div>
                         </button>
@@ -575,7 +574,10 @@ export function MarkdownEditor({
         {/* Character Count */}
         <div className="flex items-center justify-end border-b bg-muted/30 px-3 py-1">
           <span className="text-xs text-muted-foreground">
-            {messages.editor.characters.replace('{count}', value.length.toLocaleString())}
+            {messages.editor.characters.replace(
+              '{count}',
+              value.length.toLocaleString()
+            )}
           </span>
         </div>
 
@@ -653,7 +655,10 @@ export function MarkdownEditor({
       <FullscreenModal
         isOpen={isFullscreen}
         onClose={() => setIsFullscreen(false)}
-        title={messages.editor.contentEditorTitle.replace('{count}', value.length.toLocaleString())}
+        title={messages.editor.contentEditorTitle.replace(
+          '{count}',
+          value.length.toLocaleString()
+        )}
         closeLabel={messages.common.close}
       >
         <div

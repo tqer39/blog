@@ -61,7 +61,10 @@ export function CategorySelector({ value, onChange }: CategorySelectorProps) {
       </div>
       {selectedCategory && (
         <p className="text-xs text-muted-foreground">
-          {t.articleCount.replace('{count}', String(selectedCategory.articleCount))}
+          {t.articleCount.replace(
+            '{count}',
+            String(selectedCategory.articleCount)
+          )}
         </p>
       )}
     </div>

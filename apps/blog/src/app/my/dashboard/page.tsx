@@ -11,8 +11,8 @@ import {
 } from '@blog/ui';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { getArticles } from '@/lib/api/client';
 import { useI18n } from '@/i18n';
+import { getArticles } from '@/lib/api/client';
 
 export default function AdminDashboard() {
   const { t } = useI18n();

@@ -1,4 +1,8 @@
-import type { Image, ImageListResponse, ImageUploadResponse } from '@blog/cms-types';
+import type {
+  Image,
+  ImageListResponse,
+  ImageUploadResponse,
+} from '@blog/cms-types';
 import { generateId, generateImageId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
@@ -16,8 +20,9 @@ imagesHandler.get('/', async (c) => {
   const perPage = parseInt(c.req.query('perPage') || '50', 10);
 
   // Get total count
-  const countResult = await c.env.DB.prepare('SELECT COUNT(*) as count FROM images')
-    .first<{ count: number }>();
+  const countResult = await c.env.DB.prepare(
+    'SELECT COUNT(*) as count FROM images'
+  ).first<{ count: number }>();
   const total = countResult?.count || 0;
   const totalPages = Math.ceil(total / perPage);
 

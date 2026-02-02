@@ -186,7 +186,12 @@ export function SlideViewer({
   if (!isOpen || slides.length === 0) return null;
 
   return (
-    <FullscreenModal isOpen={isOpen} onClose={onClose} title={title} closeLabel={t('common.close')}>
+    <FullscreenModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      closeLabel={t('common.close')}
+    >
       <div
         className="flex h-full flex-col overflow-hidden"
         onTouchStart={handleTouchStart}

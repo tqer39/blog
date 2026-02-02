@@ -464,7 +464,10 @@ export function ArticleEditor({
                 {t.draftRecovery.title}
               </p>
               <p className="text-xs text-amber-700 dark:text-amber-300">
-                {t.draftRecovery.savedAt.replace('{date}', new Date(pendingDraft.savedAt).toLocaleString())}
+                {t.draftRecovery.savedAt.replace(
+                  '{date}',
+                  new Date(pendingDraft.savedAt).toLocaleString()
+                )}
                 {pendingDraft.title &&
                   ` - "${pendingDraft.title.slice(0, 30)}${pendingDraft.title.length > 30 ? '...' : ''}"`}
               </p>
@@ -659,7 +662,10 @@ export function ArticleEditor({
               rows={2}
             />
             <p className="text-xs text-muted-foreground">
-              {t.characterCount.replace('{count}', String(article.description.length))}
+              {t.characterCount.replace(
+                '{count}',
+                String(article.description.length)
+              )}
             </p>
           </div>
           <TagSelector
@@ -809,7 +815,9 @@ export function ArticleEditor({
               <div className="space-y-2">
                 <Label htmlFor="imagePrompt" className="text-sm">
                   {t.imageGeneration.customPrompt}{' '}
-                  {imageGen.useArticleContent ? t.imageGeneration.optional : t.imageGeneration.required}
+                  {imageGen.useArticleContent
+                    ? t.imageGeneration.optional
+                    : t.imageGeneration.required}
                 </Label>
                 <Textarea
                   id="imagePrompt"
@@ -832,7 +840,9 @@ export function ArticleEditor({
               {/* Prompt mode (only shown when article content is used and custom prompt exists) */}
               {imageGen.useArticleContent && imageGen.imagePrompt.trim() && (
                 <div className="flex items-center gap-4 text-sm">
-                  <span className="text-muted-foreground">{t.imageGeneration.mode}:</span>
+                  <span className="text-muted-foreground">
+                    {t.imageGeneration.mode}:
+                  </span>
                   <label className="flex items-center gap-1.5">
                     <input
                       type="radio"
@@ -889,7 +899,9 @@ export function ArticleEditor({
                   }
                 >
                   <Sparkles className="h-4 w-4" />
-                  {loading.isGeneratingImage ? t.generating : t.imageGeneration.generate}
+                  {loading.isGeneratingImage
+                    ? t.generating
+                    : t.imageGeneration.generate}
                 </SplitButton>
               </div>
             </div>
