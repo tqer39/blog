@@ -51,12 +51,20 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: docs-production
 
+      - name: Create Cloudflare Pages project if not exists
+        uses: cloudflare/wrangler-action@v3
+        continue-on-error: true
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create blog-docs --production-branch=main
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy apps/docs/.vitepress/dist --project-name=blog-docs
+          command: pages deploy apps/docs/.vitepress/dist --project-name=blog-docs --commit-dirty=true
 
       - name: Finish Deployment
         uses: bobheadxi/deployments@v1
