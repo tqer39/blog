@@ -17,8 +17,8 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useI18n } from '@/i18n';
 import { deleteImage, getImages } from '@/lib/api/client';
+import { useI18n } from '@/i18n';
 import { useSorting } from '../hooks/use-sorting';
 
 type ImageSortKey = 'filename' | 'sizeBytes' | 'createdAt';
@@ -70,9 +70,7 @@ export default function ImageListPage() {
       ? images.filter(
           (image) =>
             image.filename.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            image.originalFilename
-              .toLowerCase()
-              .includes(searchQuery.toLowerCase())
+            image.originalFilename.toLowerCase().includes(searchQuery.toLowerCase())
         )
       : images;
 
@@ -224,7 +222,11 @@ export default function ImageListPage() {
                 String(selectedIds.size)
               )}
             </span>
-            <Button variant="destructive" size="sm" onClick={handleBulkDelete}>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleBulkDelete}
+            >
               <Trash2 className="mr-2 h-4 w-4" />
               {t('images.bulkActions.delete')}
             </Button>
@@ -282,15 +284,10 @@ export default function ImageListPage() {
                 </button>
               </div>
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
-                <p
-                  className="truncate text-xs text-white"
-                  title={image.originalFilename}
-                >
+                <p className="truncate text-xs text-white" title={image.originalFilename}>
                   {image.originalFilename}
                 </p>
-                <p className="text-xs text-white/70">
-                  {formatFileSize(image.sizeBytes)}
-                </p>
+                <p className="text-xs text-white/70">{formatFileSize(image.sizeBytes)}</p>
               </div>
               <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                 <button
@@ -300,17 +297,9 @@ export default function ImageListPage() {
                     handleCopyUrl(image);
                   }}
                   className="rounded bg-black/50 p-1.5 text-white hover:bg-black/70"
-                  title={
-                    copiedId === image.id
-                      ? t('images.actions.copied')
-                      : t('images.actions.copyUrl')
-                  }
+                  title={copiedId === image.id ? t('images.actions.copied') : t('images.actions.copyUrl')}
                 >
-                  {copiedId === image.id ? (
-                    <Check className="h-3 w-3" />
-                  ) : (
-                    <Copy className="h-3 w-3" />
-                  )}
+                  {copiedId === image.id ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                 </button>
                 <button
                   type="button"
@@ -348,15 +337,15 @@ export default function ImageListPage() {
                     type="button"
                     onClick={handleSelectAll}
                     className={`flex h-5 w-5 items-center justify-center rounded border transition-colors ${
-                      selectedIds.size === sortedImages.length &&
-                      sortedImages.length > 0
+                      selectedIds.size === sortedImages.length && sortedImages.length > 0
                         ? 'border-primary bg-primary text-primary-foreground'
                         : 'border-border bg-background hover:border-primary'
                     }`}
                     title={t('images.bulkActions.selectAll')}
                   >
-                    {selectedIds.size === sortedImages.length &&
-                      sortedImages.length > 0 && <Check className="h-3 w-3" />}
+                    {selectedIds.size === sortedImages.length && sortedImages.length > 0 && (
+                      <Check className="h-3 w-3" />
+                    )}
                   </button>
                 </th>
                 <th className="w-16 px-4 py-4 text-left text-sm font-semibold text-foreground">
@@ -436,9 +425,7 @@ export default function ImageListPage() {
                           : 'border-border bg-background hover:border-primary'
                       }`}
                     >
-                      {selectedIds.has(image.id) && (
-                        <Check className="h-3 w-3" />
-                      )}
+                      {selectedIds.has(image.id) && <Check className="h-3 w-3" />}
                     </button>
                   </td>
                   <td className="px-4 py-3">
@@ -457,16 +444,10 @@ export default function ImageListPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex flex-col">
-                      <span
-                        className="font-medium text-foreground"
-                        title={image.filename}
-                      >
+                      <span className="font-medium text-foreground" title={image.filename}>
                         {image.filename}
                       </span>
-                      <span
-                        className="text-xs text-muted-foreground"
-                        title={image.originalFilename}
-                      >
+                      <span className="text-xs text-muted-foreground" title={image.originalFilename}>
                         {image.originalFilename}
                       </span>
                     </div>
@@ -487,17 +468,9 @@ export default function ImageListPage() {
                         size="sm"
                         className="h-8 px-2 text-muted-foreground hover:text-foreground"
                         onClick={() => handleCopyUrl(image)}
-                        title={
-                          copiedId === image.id
-                            ? t('images.actions.copied')
-                            : t('images.actions.copyUrl')
-                        }
+                        title={copiedId === image.id ? t('images.actions.copied') : t('images.actions.copyUrl')}
                       >
-                        {copiedId === image.id ? (
-                          <Check className="h-4 w-4" />
-                        ) : (
-                          <Copy className="h-4 w-4" />
-                        )}
+                        {copiedId === image.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                       </Button>
                       <Button
                         variant="ghost"
@@ -607,41 +580,27 @@ function ImageDetailModal({
           </div>
           <dl className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <dt className="font-medium text-muted-foreground">
-                {t('images.detail.filename')}
-              </dt>
+              <dt className="font-medium text-muted-foreground">{t('images.detail.filename')}</dt>
               <dd className="mt-1">{image.filename}</dd>
             </div>
             <div>
-              <dt className="font-medium text-muted-foreground">
-                {t('images.detail.originalFilename')}
-              </dt>
+              <dt className="font-medium text-muted-foreground">{t('images.detail.originalFilename')}</dt>
               <dd className="mt-1">{image.originalFilename}</dd>
             </div>
             <div>
-              <dt className="font-medium text-muted-foreground">
-                {t('images.detail.size')}
-              </dt>
+              <dt className="font-medium text-muted-foreground">{t('images.detail.size')}</dt>
               <dd className="mt-1">{formatFileSize(image.sizeBytes)}</dd>
             </div>
             <div>
-              <dt className="font-medium text-muted-foreground">
-                {t('images.detail.mimeType')}
-              </dt>
+              <dt className="font-medium text-muted-foreground">{t('images.detail.mimeType')}</dt>
               <dd className="mt-1">{image.mimeType}</dd>
             </div>
             <div>
-              <dt className="font-medium text-muted-foreground">
-                {t('images.detail.createdAt')}
-              </dt>
-              <dd className="mt-1">
-                {dayjs(image.createdAt).format('YYYY/MM/DD HH:mm:ss')}
-              </dd>
+              <dt className="font-medium text-muted-foreground">{t('images.detail.createdAt')}</dt>
+              <dd className="mt-1">{dayjs(image.createdAt).format('YYYY/MM/DD HH:mm:ss')}</dd>
             </div>
             <div className="col-span-2">
-              <dt className="font-medium text-muted-foreground">
-                {t('images.detail.url')}
-              </dt>
+              <dt className="font-medium text-muted-foreground">{t('images.detail.url')}</dt>
               <dd className="mt-1 flex items-center gap-2">
                 <input
                   type="text"
@@ -674,7 +633,10 @@ function ImageDetailModal({
               <ExternalLink className="mr-2 h-4 w-4" />
               {t('images.actions.openNewTab')}
             </Button>
-            <Button variant="destructive" onClick={() => onDelete(image)}>
+            <Button
+              variant="destructive"
+              onClick={() => onDelete(image)}
+            >
               <Trash2 className="mr-2 h-4 w-4" />
               {t('images.actions.delete')}
             </Button>

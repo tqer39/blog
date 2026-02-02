@@ -101,8 +101,9 @@ admin:
     dashboard: ダッシュボード
     articles: 記事
     newArticle: 新規記事
-    categories: カテゴリ
     tags: タグ
+    images: 画像
+    categories: カテゴリ
     settings: 設定
     expandSidebar: サイドバーを展開
     collapseSidebar: サイドバーを折りたたむ
@@ -204,6 +205,47 @@ categories:
   actions:
     edit: 編集
     delete: 削除
+
+images:
+  title: 画像
+  searchPlaceholder: ファイル名で検索...
+  noImages: 画像がありません
+  noMatchingImages: 検索に一致する画像がありません
+  loadError: 画像の読み込みに失敗しました
+  deleteError: 画像の削除に失敗しました
+  deleteConfirm: この画像を削除しますか？
+  viewMode:
+    grid: グリッド
+    list: リスト
+  table:
+    thumbnail: サムネイル
+    filename: ファイル名
+    originalFilename: 元のファイル名
+    size: サイズ
+    mimeType: 種類
+    createdAt: 作成日
+    actions: 操作
+    sortByFilename: ファイル名で並び替え
+    sortBySize: サイズで並び替え
+    sortByCreatedAt: 作成日で並び替え
+  actions:
+    copyUrl: URLをコピー
+    openNewTab: 新しいタブで開く
+    delete: 削除
+    copied: コピーしました
+  detail:
+    title: 画像詳細
+    filename: ファイル名
+    originalFilename: 元のファイル名
+    size: サイズ
+    mimeType: 種類
+    createdAt: 作成日
+    url: URL
+  bulkActions:
+    selectAll: 全選択
+    selected: '{count}件選択中'
+    delete: 削除
+    confirmDelete: '{count}件の画像を削除しますか？'
 
 header:
   search: 検索

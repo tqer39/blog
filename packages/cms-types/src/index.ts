@@ -110,6 +110,16 @@ export interface ImageUploadResponse {
   sizeBytes: number;
 }
 
+export interface ImageListResponse {
+  images: Image[];
+  pagination: {
+    page: number;
+    perPage: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 // API Response types
 export interface ApiResponse<T> {
   data?: T;
