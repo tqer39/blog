@@ -85,18 +85,41 @@ jobs:
         run: |
           pnpm tsx scripts/update-changelog.ts --version "${{ steps.version.outputs.version }}"
 
-      - name: Commit CHANGELOG.md
+      - name: Create PR for CHANGELOG.md
         if: ${{ inputs.auto_changelog }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add CHANGELOG.md
-          if git diff --staged --quiet; then
+
+          # Check if CHANGELOG.md has changes
+          if git diff --quiet CHANGELOG.md; then
             echo "No changes to CHANGELOG.md"
-          else
-            git commit -m "docs: update CHANGELOG for ${{ steps.version.outputs.version }}"
-            git push
+            exit 0
           fi
+
+          # Create branch for CHANGELOG update
+          BRANCH_NAME="chore/changelog-${{ steps.version.outputs.version }}"
+          git checkout -b "$BRANCH_NAME"
+          git add CHANGELOG.md
+          git commit -m "docs: update CHANGELOG for ${{ steps.version.outputs.version }}"
+          git push -u origin "$BRANCH_NAME"
+
+          # Create and merge PR
+          PR_URL=$(gh pr create \
+            --title "docs: update CHANGELOG for ${{ steps.version.outputs.version }}" \
+            --body "Auto-generated CHANGELOG update for release ${{ steps.version.outputs.version }}" \
+            --base main \
+            --head "$BRANCH_NAME")
+
+          echo "Created PR: $PR_URL"
+
+          # Auto-merge the PR (requires merge queue or auto-merge enabled)
+          gh pr merge "$PR_URL" --auto --squash --delete-branch || echo "Auto-merge not available, PR created for manual review"
+
+          # Return to main branch
+          git checkout main
 
       - name: Generate release notes
         id: changelog
