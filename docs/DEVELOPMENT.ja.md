@@ -4,11 +4,11 @@
 
 ## サービス一覧
 
-| サービス       | ポート | URL                           | 説明             |
-| -------------- | ------ | ----------------------------- | ---------------- |
-| Blog (Next.js) | 3100   | <http://localhost:3100>       | フロントエンド   |
-| Admin UI       | 3100   | <http://localhost:3100/admin> | 記事管理画面     |
-| CMS API        | 3101   | <http://localhost:3101>       | バックエンド API |
+| サービス       | ポート | URL                        | 説明             |
+| -------------- | ------ | -------------------------- | ---------------- |
+| Blog (Next.js) | 3100   | <http://localhost:3100>    | フロントエンド   |
+| マイページ     | 3100   | <http://localhost:3100/my> | 記事管理画面     |
+| CMS API        | 3101   | <http://localhost:3101>    | バックエンド API |
 
 ## クイックスタート
 
@@ -234,13 +234,13 @@ just db-migrate
    just dev-blog
    ```
 
-2. <http://localhost:3100/admin> にアクセス
+2. <http://localhost:3100/my> にアクセス
 
 3. ログイン（開発環境）
 
 ### 新規記事の作成
 
-1. Admin 画面で **New Article** をクリック
+1. マイページで **New Article** をクリック
 2. 以下のフィールドを入力:
 
    | フィールド   | 説明                                       |
@@ -269,14 +269,14 @@ just db-migrate
 http://localhost:3100/articles/{hash}
 ```
 
-### Admin 画面 URL 一覧
+### マイページ URL 一覧
 
-| URL                                                | 説明           |
-| -------------------------------------------------- | -------------- |
-| <http://localhost:3100/admin>                      | ダッシュボード |
-| <http://localhost:3100/admin/articles>             | 記事一覧       |
-| <http://localhost:3100/admin/articles/new>         | 新規作成       |
-| <http://localhost:3100/admin/articles/{hash}/edit> | 記事編集       |
+| URL                                             | 説明           |
+| ----------------------------------------------- | -------------- |
+| <http://localhost:3100/my>                      | ダッシュボード |
+| <http://localhost:3100/my/articles>             | 記事一覧       |
+| <http://localhost:3100/my/articles/new>         | 新規作成       |
+| <http://localhost:3100/my/articles/{hash}/edit> | 記事編集       |
 
 ### Markdown 記法
 

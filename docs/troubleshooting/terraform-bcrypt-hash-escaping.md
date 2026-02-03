@@ -6,7 +6,7 @@ GitHub Actions から Terraform 経由で Vercel に bcrypt ハッシュ（`ADMI
 
 ## 症状
 
-- Vercel の `/admin/login` で 500 Internal Server Error が発生
+- Vercel の `/my/login` で 500 Internal Server Error が発生
 - Vercel ダッシュボードで手動設定すると正常に動作
 - Terraform 経由で設定すると認証が失敗
 

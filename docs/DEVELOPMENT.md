@@ -4,11 +4,11 @@
 
 ## Services
 
-| Service        | Port | URL                           | Description      |
-| -------------- | ---- | ----------------------------- | ---------------- |
-| Blog (Next.js) | 3100 | <http://localhost:3100>       | Frontend         |
-| Admin UI       | 3100 | <http://localhost:3100/admin> | Article manager  |
-| CMS API        | 3101 | <http://localhost:3101>       | Backend API      |
+| Service        | Port | URL                        | Description      |
+| -------------- | ---- | -------------------------- | ---------------- |
+| Blog (Next.js) | 3100 | <http://localhost:3100>    | Frontend         |
+| My Page        | 3100 | <http://localhost:3100/my> | Article manager  |
+| CMS API        | 3101 | <http://localhost:3101>    | Backend API      |
 
 ## Quick Start
 
@@ -234,13 +234,13 @@ just db-migrate
    just dev-blog
    ```
 
-2. Access <http://localhost:3100/admin>
+2. Access <http://localhost:3100/my>
 
 3. Login (development environment)
 
 ### Creating Articles
 
-1. Click **New Article** in Admin
+1. Click **New Article** in My Page
 2. Fill in the fields:
 
    | Field        | Description                                  |
@@ -268,14 +268,14 @@ Published articles available at:
 http://localhost:3100/articles/{hash}
 ```
 
-### Admin URLs
+### My Page URLs
 
-| URL                                                | Description  |
-| -------------------------------------------------- | ------------ |
-| <http://localhost:3100/admin>                      | Dashboard    |
-| <http://localhost:3100/admin/articles>             | Article list |
-| <http://localhost:3100/admin/articles/new>         | New article  |
-| <http://localhost:3100/admin/articles/{hash}/edit> | Edit article |
+| URL                                             | Description  |
+| ----------------------------------------------- | ------------ |
+| <http://localhost:3100/my>                      | Dashboard    |
+| <http://localhost:3100/my/articles>             | Article list |
+| <http://localhost:3100/my/articles/new>         | New article  |
+| <http://localhost:3100/my/articles/{hash}/edit> | Edit article |
 
 ### Markdown Syntax
 

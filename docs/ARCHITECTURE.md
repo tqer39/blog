@@ -155,12 +155,12 @@ app/
 │   │   └── [id]/page.tsx     # Article detail
 │   ├── about/page.tsx        # About page
 │   └── layout.tsx            # Public layout (header, footer)
-├── admin/
-│   ├── login/page.tsx        # Admin login
+├── my/
+│   ├── login/page.tsx        # My Page login
 │   ├── articles/
-│   │   ├── page.tsx          # Admin article list
-│   │   └── [id]/page.tsx     # Admin editor
-│   └── layout.tsx            # Admin layout (protected)
+│   │   ├── page.tsx          # My Page article list
+│   │   └── [id]/page.tsx     # My Page editor
+│   └── layout.tsx            # My Page layout (protected)
 ├── error.tsx                 # Client-side error boundary
 ├── global-error.tsx          # Global error handler
 ├── not-found.tsx             # 404 page (with recent articles)
@@ -447,15 +447,15 @@ graph TD
 - `GET /v1/settings`
 - `GET /v1/images/file/*` (local dev only)
 
-### 3. Password (Admin UI)
+### 3. Password (My Page)
 
-**Purpose**: Protect admin dashboard
+**Purpose**: Protect My Page dashboard
 
 **Environment Variable**: `ADMIN_PASSWORD`
 
 **Flow**:
-1. Admin navigates to `/admin`
-2. Redirected to `/admin/login`
+1. User navigates to `/my`
+2. Redirected to `/my/login`
 3. Submit password
 4. Session stored in browser
 
@@ -877,7 +877,7 @@ const articles: Article[] = await response.json();
 
 **Location**: `packages/ui`
 
-**Purpose**: Reusable UI components across blog and admin
+**Purpose**: Reusable UI components across blog and my page
 
 ```typescript
 // Shared Button component
