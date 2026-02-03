@@ -130,7 +130,8 @@ jobs:
       - name: Generate GitHub App Token
         if: |
           (github.event_name == 'workflow_call' && inputs.RUN_APPLY) ||
-          (steps.plan-status.outputs.status == 'has-diff' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true')))
+          (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true') ||
+          (steps.plan-status.outputs.status == 'has-diff' && github.event_name == 'push')
         id: app_token
         uses: actions/create-github-app-token@v2
         with:
@@ -141,7 +142,8 @@ jobs:
       - name: Sync Webhook URLs to GitHub Secrets
         if: |
           (github.event_name == 'workflow_call' && inputs.RUN_APPLY) ||
-          (steps.plan-status.outputs.status == 'has-diff' && (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true')))
+          (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true') ||
+          (steps.plan-status.outputs.status == 'has-diff' && github.event_name == 'push')
         working-directory: ${{ env.WORKING_DIRECTORY }}
         env:
           GH_TOKEN: ${{ steps.app_token.outputs.token }}
