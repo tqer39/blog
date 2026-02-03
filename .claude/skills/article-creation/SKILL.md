@@ -7,19 +7,115 @@ description: 新規ブログ記事の作成。「記事を書きたい」「新�
 
 新規 Markdown 記事を作成するスキル。
 
-## 記事の配置場所
+## 投稿方法
+
+2つの方法がある。CMS API（推奨）を優先し、API が利用できない場合はファイル直接作成を使用。
+
+| 方法 | 説明 | 利用シーン |
+| --- | --- | --- |
+| CMS API（推奨） | API 経由で記事を投稿 | `just dev-api` で API 起動済み |
+| ファイル直接作成 | Markdown ファイルを直接配置 | API が利用できない場合のフォールバック |
+
+## 環境変数
+
+ローカル開発環境:
+
+```bash
+CMS_API_URL=http://localhost:3101/v1
+CMS_API_KEY=dev-api-key
+```
+
+## 方法1: CMS API 経由（推奨）
+
+### ArticleInput 型
+
+```typescript
+{
+  title: string;                    // 必須
+  content: string;                  // 必須（Markdown 本文）
+  description?: string;             // SEO 用説明文
+  status?: 'draft' | 'published';   // デフォルト: draft
+  tags?: string[];                  // タグ配列
+  categoryId?: string | null;       // カテゴリ ID
+}
+```
+
+### API エンドポイント
+
+| メソッド | エンドポイント | 用途 |
+| --- | --- | --- |
+| POST | `/articles` | 記事作成 |
+| POST | `/articles/{hash}/publish` | 公開 |
+| POST | `/articles/{hash}/unpublish` | 下書きに戻す |
+
+### 記事作成コマンド
+
+```bash
+curl -X POST "${CMS_API_URL}/articles" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: ${CMS_API_KEY}" \
+  -d '{
+    "title": "記事タイトル",
+    "content": "## はじめに\n\n本文をここに...",
+    "description": "SEO用の記事説明",
+    "status": "draft",
+    "tags": ["Tag1", "Tag2"]
+  }'
+```
+
+レスポンス例:
+
+```json
+{
+  "success": true,
+  "data": {
+    "hash": "01JKABCD1234567890ABCDEF",
+    "title": "記事タイトル",
+    "status": "draft"
+  }
+}
+```
+
+### 記事公開コマンド
+
+```bash
+curl -X POST "${CMS_API_URL}/articles/{hash}/publish" \
+  -H "X-API-Key: ${CMS_API_KEY}"
+```
+
+### 下書きに戻すコマンド
+
+```bash
+curl -X POST "${CMS_API_URL}/articles/{hash}/unpublish" \
+  -H "X-API-Key: ${CMS_API_KEY}"
+```
+
+### 手順（CMS API）
+
+1. ユーザーからタイトル・テーマを確認
+2. 適切なタグを提案
+3. 記事コンテンツを Markdown で作成
+4. curl で `status: "draft"` として投稿
+5. レスポンスの `hash` を確認
+6. ユーザー確認後、publish エンドポイントで公開
+
+## 方法2: ファイル直接作成（フォールバック）
+
+CMS API が利用できない場合に使用。
+
+### 記事の配置場所
 
 ```text
 apps/blog/src/contents/YYYY-MM-DD-slug.md
 ```
 
-## ファイル名規則
+### ファイル名規則
 
 - 形式: `YYYY-MM-DD-slug.md`
 - slug: 英数字とハイフンのみ（例: `hello-world`, `nextjs-tips`）
 - 日付: 記事の公開日
 
-## Front-matter 構造
+### Front-matter 構造
 
 ```yaml
 ---
@@ -31,7 +127,7 @@ description: "SEO用の記事説明（100-160文字程度）"
 ---
 ```
 
-### フィールド説明
+#### フィールド説明
 
 | フィールド    | 必須 | 説明                                 |
 | ------------- | ---- | ------------------------------------ |
@@ -41,7 +137,7 @@ description: "SEO用の記事説明（100-160文字程度）"
 | tags          | Yes  | タグの配列（2-5個推奨）              |
 | description   | Yes  | SEO用説明文                          |
 
-## 記事テンプレート
+### 記事テンプレート
 
 ```markdown
 ---
@@ -78,7 +174,7 @@ graph TD
 締めくくり。
 ```
 
-## 手順
+### 手順（ファイル直接作成）
 
 1. ユーザーからタイトル・テーマを確認
 2. slug を提案（英語、ハイフン区切り）
