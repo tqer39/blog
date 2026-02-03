@@ -2,26 +2,10 @@ import type { Tag, TagInput, TagWithCount } from '@blog/cms-types';
 import { Hono } from 'hono';
 import type { Env } from '../index';
 import { createCrudHandlers } from '../lib/crud-factory';
+import { mapRowToTag, mapRowToTagWithCount } from '../lib/mappers';
 import type { TagRow, TagWithCountRow } from '../types/rows';
 
 export const tagsHandler = new Hono<{ Bindings: Env }>();
-
-function mapRowToTag(row: TagRow): Tag {
-  return {
-    id: row.id,
-    name: row.name,
-    createdAt: row.created_at,
-  };
-}
-
-function mapRowToTagWithCount(row: TagWithCountRow): TagWithCount {
-  return {
-    id: row.id,
-    name: row.name,
-    createdAt: row.created_at,
-    articleCount: row.article_count || 0,
-  };
-}
 
 const handlers = createCrudHandlers<
   TagInput,

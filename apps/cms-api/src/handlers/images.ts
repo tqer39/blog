@@ -3,6 +3,7 @@ import type {
   ImageListResponse,
   ImageUploadResponse,
 } from '@blog/cms-types';
+import { IMAGE_UPLOAD } from '@blog/config';
 import { generateId, generateImageId } from '@blog/utils';
 import { Hono } from 'hono';
 import type { Env } from '../index';
@@ -10,9 +11,6 @@ import { notFound, validationError } from '../lib/errors';
 import { getImageUrl } from '../lib/image-url';
 
 export const imagesHandler = new Hono<{ Bindings: Env }>();
-
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-const MAX_SIZE = 10 * 1024 * 1024; // 10MB
 
 // List all images with pagination
 imagesHandler.get('/', async (c) => {
@@ -62,15 +60,19 @@ imagesHandler.post('/', async (c) => {
     validationError('Invalid input', { file: 'Required' });
   }
 
-  if (!ALLOWED_TYPES.includes(file.type)) {
+  if (
+    !IMAGE_UPLOAD.ALLOWED_TYPES.includes(
+      file.type as (typeof IMAGE_UPLOAD.ALLOWED_TYPES)[number]
+    )
+  ) {
     validationError('Invalid input', {
-      file: `Invalid file type. Allowed: ${ALLOWED_TYPES.join(', ')}`,
+      file: `Invalid file type. Allowed: ${IMAGE_UPLOAD.ALLOWED_TYPES.join(', ')}`,
     });
   }
 
-  if (file.size > MAX_SIZE) {
+  if (file.size > IMAGE_UPLOAD.MAX_SIZE_BYTES) {
     validationError('Invalid input', {
-      file: `File too large. Max size: ${MAX_SIZE / 1024 / 1024}MB`,
+      file: `File too large. Max size: ${IMAGE_UPLOAD.MAX_SIZE_BYTES / 1024 / 1024}MB`,
     });
   }
 

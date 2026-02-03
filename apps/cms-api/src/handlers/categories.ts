@@ -7,33 +7,14 @@ import { Hono } from 'hono';
 import type { Env } from '../index';
 import { createCrudHandlers } from '../lib/crud-factory';
 import { validationError } from '../lib/errors';
+import {
+  type CategoryWithCountRow,
+  mapRowToCategory,
+  mapRowToCategoryWithCount,
+} from '../lib/mappers';
 import type { CategoryRow } from '../types/rows';
 
 export const categoriesHandler = new Hono<{ Bindings: Env }>();
-
-interface CategoryWithCountRow extends CategoryRow {
-  article_count: number;
-}
-
-function mapRowToCategory(row: CategoryRow): Category {
-  return {
-    id: row.id,
-    name: row.name,
-    slug: row.slug,
-    color: row.color,
-    displayOrder: row.display_order,
-    createdAt: row.created_at,
-  };
-}
-
-function mapRowToCategoryWithCount(
-  row: CategoryWithCountRow
-): CategoryWithCount {
-  return {
-    ...mapRowToCategory(row),
-    articleCount: row.article_count || 0,
-  };
-}
 
 const handlers = createCrudHandlers<
   CategoryInput,

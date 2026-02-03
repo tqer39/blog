@@ -95,3 +95,28 @@ export const DEFAULT_API_URL = `${DOMAINS.CMS_API_LOCAL}${API_PATHS.V1}`;
  * Number of articles to display per page
  */
 export const ARTICLES_PER_PAGE = 10;
+
+// ===========================================
+// Image Upload Configuration
+// ===========================================
+export const IMAGE_UPLOAD = {
+  /** Allowed MIME types for image uploads */
+  ALLOWED_TYPES: [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+  ] as const,
+  /** Maximum file size in bytes (10MB) */
+  MAX_SIZE_BYTES: 10 * 1024 * 1024,
+} as const;
+
+// ===========================================
+// Rate Limiting Configuration
+// ===========================================
+export const RATE_LIMIT = {
+  /** Time window in milliseconds (1 minute) */
+  WINDOW_MS: 60 * 1000,
+  /** Maximum requests per window */
+  MAX_REQUESTS: 60,
+} as const;

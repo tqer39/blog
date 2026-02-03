@@ -20,17 +20,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import dayjs from 'dayjs';
-import {
-  ArrowDown,
-  ArrowUp,
-  Edit,
-  GripVertical,
-  Loader2,
-  Plus,
-  Search,
-  Trash2,
-  X,
-} from 'lucide-react';
+import { Edit, GripVertical, Loader2, Plus, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useI18n } from '@/i18n';
 import {
@@ -38,6 +28,9 @@ import {
   getCategories,
   updateCategoriesOrder,
 } from '@/lib/api/client';
+import { ListEmptyState } from '../components/ListEmptyState';
+import { SearchInput } from '../components/SearchInput';
+import { SortButton } from '../components/SortButton';
 import { useSorting } from '../hooks/use-sorting';
 import { CategoryEditor } from './components/CategoryEditor';
 
@@ -289,30 +282,6 @@ export default function CategoryListPage() {
     });
   }, [categories, searchQuery, sortKey, sortDirection]);
 
-  const SortButton = ({
-    columnKey,
-    children,
-  }: {
-    columnKey: CategorySortKey;
-    children: React.ReactNode;
-  }) => (
-    <button
-      type="button"
-      onClick={() => handleSort(columnKey)}
-      className="inline-flex items-center gap-1 hover:text-primary"
-      aria-label={`Sort by ${columnKey}`}
-      title={`Sort by ${columnKey}`}
-    >
-      {children}
-      {sortKey === columnKey &&
-        (sortDirection === 'asc' ? (
-          <ArrowUp className="h-3 w-3" />
-        ) : (
-          <ArrowDown className="h-3 w-3" />
-        ))}
-    </button>
-  );
-
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
@@ -340,27 +309,12 @@ export default function CategoryListPage() {
       )}
 
       {/* Search input */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={t('categories.searchPlaceholder')}
-          className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-10 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={() => setSearchQuery('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            aria-label={t('common.clearSearch')}
-            title={t('common.clearSearch')}
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
-      </div>
+      <SearchInput
+        value={searchQuery}
+        onChange={setSearchQuery}
+        placeholder={t('categories.searchPlaceholder')}
+        className="mb-6"
+      />
 
       {isDragEnabled && (
         <p className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
@@ -374,19 +328,15 @@ export default function CategoryListPage() {
         </p>
       )}
 
-      {loading ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('common.loading')}
-        </div>
-      ) : categories.length === 0 ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('categories.noCategories')}
-        </div>
-      ) : sortedCategories.length === 0 ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('categories.noMatchingCategories')}
-        </div>
-      ) : (
+      <ListEmptyState
+        loading={loading}
+        hasItems={categories.length > 0}
+        hasFilteredItems={sortedCategories.length > 0}
+        emptyMessage={t('categories.noCategories')}
+        noMatchMessage={t('categories.noMatchingCategories')}
+      />
+
+      {!loading && categories.length > 0 && sortedCategories.length > 0 && (
         <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
           <DndContext
             sensors={sensors}
@@ -409,7 +359,12 @@ export default function CategoryListPage() {
                     </span>
                   </th>
                   <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                    <SortButton columnKey="name">
+                    <SortButton
+                      columnKey="name"
+                      currentSortKey={sortKey}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                    >
                       {t('categories.table.name')}
                     </SortButton>
                   </th>
@@ -417,12 +372,22 @@ export default function CategoryListPage() {
                     {t('categories.table.slug')}
                   </th>
                   <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                    <SortButton columnKey="articleCount">
+                    <SortButton
+                      columnKey="articleCount"
+                      currentSortKey={sortKey}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                    >
                       {t('categories.table.articles')}
                     </SortButton>
                   </th>
                   <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                    <SortButton columnKey="createdAt">
+                    <SortButton
+                      columnKey="createdAt"
+                      currentSortKey={sortKey}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                    >
                       {t('categories.table.created')}
                     </SortButton>
                   </th>

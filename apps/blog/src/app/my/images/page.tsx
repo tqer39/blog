@@ -3,22 +3,15 @@
 import type { Image } from '@blog/cms-types';
 import { Alert, AlertDescription, Button, useEscapeKey } from '@blog/ui';
 import dayjs from 'dayjs';
-import {
-  ArrowDown,
-  ArrowUp,
-  Check,
-  Copy,
-  ExternalLink,
-  Grid,
-  List,
-  Search,
-  Trash2,
-  X,
-} from 'lucide-react';
+import { Check, Copy, ExternalLink, Grid, List, Trash2, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useI18n } from '@/i18n';
 import { deleteImage, getImages } from '@/lib/api/client';
+import { ListEmptyState } from '../components/ListEmptyState';
+import { SearchInput } from '../components/SearchInput';
+import { SortButton } from '../components/SortButton';
+import { useSelection } from '../hooks/use-selection';
 import { useSorting } from '../hooks/use-sorting';
 
 type ImageSortKey = 'filename' | 'sizeBytes' | 'createdAt';
@@ -39,7 +32,15 @@ export default function ImageListPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const {
+    selectedIds,
+    toggle: handleSelect,
+    toggleAll,
+    clear: clearSelection,
+    remove: removeFromSelection,
+    count: selectedCount,
+    isAllSelected,
+  } = useSelection();
   const [selectedImage, setSelectedImage] = useState<Image | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -89,21 +90,7 @@ export default function ImageListPage() {
   }, [images, searchQuery, sortKey, sortDirection]);
 
   const handleSelectAll = () => {
-    if (selectedIds.size === sortedImages.length) {
-      setSelectedIds(new Set());
-    } else {
-      setSelectedIds(new Set(sortedImages.map((img) => img.id)));
-    }
-  };
-
-  const handleSelect = (id: string) => {
-    const newSelected = new Set(selectedIds);
-    if (newSelected.has(id)) {
-      newSelected.delete(id);
-    } else {
-      newSelected.add(id);
-    }
-    setSelectedIds(newSelected);
+    toggleAll(sortedImages.map((img) => img.id));
   };
 
   const handleDelete = async (image: Image) => {
@@ -112,29 +99,25 @@ export default function ImageListPage() {
     try {
       await deleteImage(image.id);
       await loadImages();
-      setSelectedIds((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(image.id);
-        return newSet;
-      });
+      removeFromSelection(image.id);
     } catch (err) {
       alert(err instanceof Error ? err.message : t('images.deleteError'));
     }
   };
 
   const handleBulkDelete = async () => {
-    if (selectedIds.size === 0) return;
+    if (selectedCount === 0) return;
 
     const message = t('images.bulkActions.confirmDelete').replace(
       '{count}',
-      String(selectedIds.size)
+      String(selectedCount)
     );
     if (!confirm(message)) return;
 
     try {
       await Promise.all(Array.from(selectedIds).map((id) => deleteImage(id)));
       await loadImages();
-      setSelectedIds(new Set());
+      clearSelection();
     } catch (err) {
       alert(err instanceof Error ? err.message : t('images.deleteError'));
     }
@@ -194,34 +177,19 @@ export default function ImageListPage() {
 
       {/* Search and bulk actions */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('images.searchPlaceholder')}
-            className="w-full rounded-lg border border-border bg-background py-2 pl-10 pr-10 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              aria-label={t('common.clearSearch')}
-              title={t('common.clearSearch')}
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
+        <SearchInput
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder={t('images.searchPlaceholder')}
+          className="flex-1 max-w-md"
+        />
 
-        {selectedIds.size > 0 && (
+        {selectedCount > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground">
               {t('images.bulkActions.selected').replace(
                 '{count}',
-                String(selectedIds.size)
+                String(selectedCount)
               )}
             </span>
             <Button variant="destructive" size="sm" onClick={handleBulkDelete}>
@@ -232,299 +200,283 @@ export default function ImageListPage() {
         )}
       </div>
 
-      {loading ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('common.loading')}
-        </div>
-      ) : images.length === 0 ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('images.noImages')}
-        </div>
-      ) : sortedImages.length === 0 ? (
-        <div className="py-12 text-center text-muted-foreground">
-          {t('images.noMatchingImages')}
-        </div>
-      ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {sortedImages.map((image) => (
-            <div
-              key={image.id}
-              className={`group relative overflow-hidden rounded-lg border bg-card shadow-sm transition-all hover:shadow-md ${
-                selectedIds.has(image.id) ? 'ring-2 ring-primary' : ''
-              }`}
-            >
-              <button
-                type="button"
-                onClick={() => setSelectedImage(image)}
-                className="block aspect-square w-full cursor-pointer"
+      <ListEmptyState
+        loading={loading}
+        hasItems={images.length > 0}
+        hasFilteredItems={sortedImages.length > 0}
+        emptyMessage={t('images.noImages')}
+        noMatchMessage={t('images.noMatchingImages')}
+      />
+
+      {!loading &&
+        images.length > 0 &&
+        sortedImages.length > 0 &&
+        (viewMode === 'grid' ? (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            {sortedImages.map((image) => (
+              <div
+                key={image.id}
+                className={`group relative overflow-hidden rounded-lg border bg-card shadow-sm transition-all hover:shadow-md ${
+                  selectedIds.has(image.id) ? 'ring-2 ring-primary' : ''
+                }`}
               >
-                <img
-                  src={image.url}
-                  alt={image.originalFilename}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                />
-              </button>
-              <div className="absolute left-2 top-2">
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSelect(image.id);
-                  }}
-                  className={`flex h-5 w-5 items-center justify-center rounded border transition-colors ${
-                    selectedIds.has(image.id)
-                      ? 'border-primary bg-primary text-primary-foreground'
-                      : 'border-white/50 bg-black/30 text-white hover:bg-black/50'
-                  }`}
+                  onClick={() => setSelectedImage(image)}
+                  className="block aspect-square w-full cursor-pointer"
                 >
-                  {selectedIds.has(image.id) && <Check className="h-3 w-3" />}
+                  <img
+                    src={image.url}
+                    alt={image.originalFilename}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
                 </button>
-              </div>
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
-                <p
-                  className="truncate text-xs text-white"
-                  title={image.originalFilename}
-                >
-                  {image.originalFilename}
-                </p>
-                <p className="text-xs text-white/70">
-                  {formatFileSize(image.sizeBytes)}
-                </p>
-              </div>
-              <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleCopyUrl(image);
-                  }}
-                  className="rounded bg-black/50 p-1.5 text-white hover:bg-black/70"
-                  title={
-                    copiedId === image.id
-                      ? t('images.actions.copied')
-                      : t('images.actions.copyUrl')
-                  }
-                >
-                  {copiedId === image.id ? (
-                    <Check className="h-3 w-3" />
-                  ) : (
-                    <Copy className="h-3 w-3" />
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleOpenNewTab(image);
-                  }}
-                  className="rounded bg-black/50 p-1.5 text-white hover:bg-black/70"
-                  title={t('images.actions.openNewTab')}
-                >
-                  <ExternalLink className="h-3 w-3" />
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDelete(image);
-                  }}
-                  className="rounded bg-black/50 p-1.5 text-white hover:bg-red-600"
-                  title={t('images.actions.delete')}
-                >
-                  <Trash2 className="h-3 w-3" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border bg-muted/50">
-                <th className="w-10 px-4 py-4">
+                <div className="absolute left-2 top-2">
                   <button
                     type="button"
-                    onClick={handleSelectAll}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelect(image.id);
+                    }}
                     className={`flex h-5 w-5 items-center justify-center rounded border transition-colors ${
-                      selectedIds.size === sortedImages.length &&
-                      sortedImages.length > 0
+                      selectedIds.has(image.id)
                         ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-border bg-background hover:border-primary'
+                        : 'border-white/50 bg-black/30 text-white hover:bg-black/50'
                     }`}
-                    title={t('images.bulkActions.selectAll')}
                   >
-                    {selectedIds.size === sortedImages.length &&
-                      sortedImages.length > 0 && <Check className="h-3 w-3" />}
+                    {selectedIds.has(image.id) && <Check className="h-3 w-3" />}
                   </button>
-                </th>
-                <th className="w-16 px-4 py-4 text-left text-sm font-semibold text-foreground">
-                  {t('images.table.thumbnail')}
-                </th>
-                <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
+                </div>
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
+                  <p
+                    className="truncate text-xs text-white"
+                    title={image.originalFilename}
+                  >
+                    {image.originalFilename}
+                  </p>
+                  <p className="text-xs text-white/70">
+                    {formatFileSize(image.sizeBytes)}
+                  </p>
+                </div>
+                <div className="absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                   <button
                     type="button"
-                    onClick={() => handleSort('filename')}
-                    className="inline-flex items-center gap-1 hover:text-primary"
-                    title={t('images.table.sortByFilename')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopyUrl(image);
+                    }}
+                    className="rounded bg-black/50 p-1.5 text-white hover:bg-black/70"
+                    title={
+                      copiedId === image.id
+                        ? t('images.actions.copied')
+                        : t('images.actions.copyUrl')
+                    }
                   >
-                    {t('images.table.filename')}
-                    {sortKey === 'filename' &&
-                      (sortDirection === 'asc' ? (
-                        <ArrowUp className="h-3 w-3" />
-                      ) : (
-                        <ArrowDown className="h-3 w-3" />
-                      ))}
+                    {copiedId === image.id ? (
+                      <Check className="h-3 w-3" />
+                    ) : (
+                      <Copy className="h-3 w-3" />
+                    )}
                   </button>
-                </th>
-                <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
                   <button
                     type="button"
-                    onClick={() => handleSort('sizeBytes')}
-                    className="inline-flex items-center gap-1 hover:text-primary"
-                    title={t('images.table.sortBySize')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenNewTab(image);
+                    }}
+                    className="rounded bg-black/50 p-1.5 text-white hover:bg-black/70"
+                    title={t('images.actions.openNewTab')}
                   >
-                    {t('images.table.size')}
-                    {sortKey === 'sizeBytes' &&
-                      (sortDirection === 'asc' ? (
-                        <ArrowUp className="h-3 w-3" />
-                      ) : (
-                        <ArrowDown className="h-3 w-3" />
-                      ))}
+                    <ExternalLink className="h-3 w-3" />
                   </button>
-                </th>
-                <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
-                  {t('images.table.mimeType')}
-                </th>
-                <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
                   <button
                     type="button"
-                    onClick={() => handleSort('createdAt')}
-                    className="inline-flex items-center gap-1 hover:text-primary"
-                    title={t('images.table.sortByCreatedAt')}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(image);
+                    }}
+                    className="rounded bg-black/50 p-1.5 text-white hover:bg-red-600"
+                    title={t('images.actions.delete')}
                   >
-                    {t('images.table.createdAt')}
-                    {sortKey === 'createdAt' &&
-                      (sortDirection === 'asc' ? (
-                        <ArrowUp className="h-3 w-3" />
-                      ) : (
-                        <ArrowDown className="h-3 w-3" />
-                      ))}
+                    <Trash2 className="h-3 w-3" />
                   </button>
-                </th>
-                <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
-                  {t('images.table.actions')}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {sortedImages.map((image, index) => (
-                <tr
-                  key={image.id}
-                  className={`transition-colors hover:bg-muted/50 ${
-                    index % 2 === 0 ? 'bg-background' : 'bg-muted/20'
-                  }`}
-                >
-                  <td className="px-4 py-3">
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border bg-muted/50">
+                  <th className="w-10 px-4 py-4">
                     <button
                       type="button"
-                      onClick={() => handleSelect(image.id)}
+                      onClick={handleSelectAll}
                       className={`flex h-5 w-5 items-center justify-center rounded border transition-colors ${
-                        selectedIds.has(image.id)
+                        isAllSelected(sortedImages.length)
                           ? 'border-primary bg-primary text-primary-foreground'
                           : 'border-border bg-background hover:border-primary'
                       }`}
+                      title={t('images.bulkActions.selectAll')}
                     >
-                      {selectedIds.has(image.id) && (
+                      {isAllSelected(sortedImages.length) && (
                         <Check className="h-3 w-3" />
                       )}
                     </button>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedImage(image)}
-                      className="block overflow-hidden rounded"
+                  </th>
+                  <th className="w-16 px-4 py-4 text-left text-sm font-semibold text-foreground">
+                    {t('images.table.thumbnail')}
+                  </th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
+                    <SortButton
+                      columnKey="filename"
+                      currentSortKey={sortKey}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                      ariaLabel={t('images.table.sortByFilename')}
                     >
-                      <img
-                        src={image.url}
-                        alt={image.originalFilename}
-                        className="h-10 w-10 object-cover"
-                        loading="lazy"
-                      />
-                    </button>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-col">
-                      <span
-                        className="font-medium text-foreground"
-                        title={image.filename}
-                      >
-                        {image.filename}
-                      </span>
-                      <span
-                        className="text-xs text-muted-foreground"
-                        title={image.originalFilename}
-                      >
-                        {image.originalFilename}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-muted-foreground">
-                    {formatFileSize(image.sizeBytes)}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-muted-foreground">
-                    {image.mimeType}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-muted-foreground">
-                    {dayjs(image.createdAt).format('YYYY/MM/DD HH:mm')}
-                  </td>
-                  <td className="px-6 py-3">
-                    <div className="flex items-center justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 px-2 text-muted-foreground hover:text-foreground"
-                        onClick={() => handleCopyUrl(image)}
-                        title={
-                          copiedId === image.id
-                            ? t('images.actions.copied')
-                            : t('images.actions.copyUrl')
-                        }
-                      >
-                        {copiedId === image.id ? (
-                          <Check className="h-4 w-4" />
-                        ) : (
-                          <Copy className="h-4 w-4" />
-                        )}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 px-2 text-muted-foreground hover:text-foreground"
-                        onClick={() => handleOpenNewTab(image)}
-                        title={t('images.actions.openNewTab')}
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 px-2 text-muted-foreground hover:text-destructive"
-                        onClick={() => handleDelete(image)}
-                        title={t('images.actions.delete')}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </td>
+                      {t('images.table.filename')}
+                    </SortButton>
+                  </th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
+                    <SortButton
+                      columnKey="sizeBytes"
+                      currentSortKey={sortKey}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                      ariaLabel={t('images.table.sortBySize')}
+                    >
+                      {t('images.table.size')}
+                    </SortButton>
+                  </th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
+                    {t('images.table.mimeType')}
+                  </th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-foreground">
+                    <SortButton
+                      columnKey="createdAt"
+                      currentSortKey={sortKey}
+                      sortDirection={sortDirection}
+                      onSort={handleSort}
+                      ariaLabel={t('images.table.sortByCreatedAt')}
+                    >
+                      {t('images.table.createdAt')}
+                    </SortButton>
+                  </th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                    {t('images.table.actions')}
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody className="divide-y divide-border">
+                {sortedImages.map((image, index) => (
+                  <tr
+                    key={image.id}
+                    className={`transition-colors hover:bg-muted/50 ${
+                      index % 2 === 0 ? 'bg-background' : 'bg-muted/20'
+                    }`}
+                  >
+                    <td className="px-4 py-3">
+                      <button
+                        type="button"
+                        onClick={() => handleSelect(image.id)}
+                        className={`flex h-5 w-5 items-center justify-center rounded border transition-colors ${
+                          selectedIds.has(image.id)
+                            ? 'border-primary bg-primary text-primary-foreground'
+                            : 'border-border bg-background hover:border-primary'
+                        }`}
+                      >
+                        {selectedIds.has(image.id) && (
+                          <Check className="h-3 w-3" />
+                        )}
+                      </button>
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedImage(image)}
+                        className="block overflow-hidden rounded"
+                      >
+                        <img
+                          src={image.url}
+                          alt={image.originalFilename}
+                          className="h-10 w-10 object-cover"
+                          loading="lazy"
+                        />
+                      </button>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col">
+                        <span
+                          className="font-medium text-foreground"
+                          title={image.filename}
+                        >
+                          {image.filename}
+                        </span>
+                        <span
+                          className="text-xs text-muted-foreground"
+                          title={image.originalFilename}
+                        >
+                          {image.originalFilename}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-muted-foreground">
+                      {formatFileSize(image.sizeBytes)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-muted-foreground">
+                      {image.mimeType}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-muted-foreground">
+                      {dayjs(image.createdAt).format('YYYY/MM/DD HH:mm')}
+                    </td>
+                    <td className="px-6 py-3">
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                          onClick={() => handleCopyUrl(image)}
+                          title={
+                            copiedId === image.id
+                              ? t('images.actions.copied')
+                              : t('images.actions.copyUrl')
+                          }
+                        >
+                          {copiedId === image.id ? (
+                            <Check className="h-4 w-4" />
+                          ) : (
+                            <Copy className="h-4 w-4" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                          onClick={() => handleOpenNewTab(image)}
+                          title={t('images.actions.openNewTab')}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2 text-muted-foreground hover:text-destructive"
+                          onClick={() => handleDelete(image)}
+                          title={t('images.actions.delete')}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
 
       {/* Image detail modal */}
       {selectedImage && (
