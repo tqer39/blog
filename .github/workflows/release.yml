@@ -83,7 +83,7 @@ jobs:
       - name: Update CHANGELOG.md
         if: ${{ inputs.auto_changelog }}
         run: |
-          npx tsx scripts/update-changelog.ts --version "${{ steps.version.outputs.version }}"
+          pnpm tsx scripts/update-changelog.ts --version "${{ steps.version.outputs.version }}"
 
       - name: Commit CHANGELOG.md
         if: ${{ inputs.auto_changelog }}
