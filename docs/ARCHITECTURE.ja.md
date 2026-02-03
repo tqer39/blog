@@ -152,12 +152,12 @@ app/
 │   │   └── [id]/page.tsx     # 記事詳細
 │   ├── about/page.tsx        # Aboutページ
 │   └── layout.tsx            # 公開レイアウト(ヘッダー、フッター)
-├── admin/
-│   ├── login/page.tsx        # 管理者ログイン
+├── my/
+│   ├── login/page.tsx        # マイページログイン
 │   ├── articles/
-│   │   ├── page.tsx          # 管理者記事一覧
-│   │   └── [id]/page.tsx     # 管理者エディタ
-│   └── layout.tsx            # 管理者レイアウト(保護)
+│   │   ├── page.tsx          # マイページ記事一覧
+│   │   └── [id]/page.tsx     # マイページエディタ
+│   └── layout.tsx            # マイページレイアウト(保護)
 ├── error.tsx                 # クライアントサイドエラーバウンダリ
 ├── global-error.tsx          # グローバルエラーハンドラ
 ├── not-found.tsx             # 404ページ(最近の記事付き)
@@ -444,15 +444,15 @@ graph TD
 - `GET /v1/settings`
 - `GET /v1/images/file/*` (ローカル開発のみ)
 
-### 3. パスワード (Admin UI)
+### 3. パスワード (マイページ)
 
-**目的**: 管理者ダッシュボードを保護
+**目的**: マイページダッシュボードを保護
 
 **環境変数**: `ADMIN_PASSWORD`
 
 **フロー**:
-1. 管理者が`/admin`に移動
-2. `/admin/login`にリダイレクト
+1. ユーザーが`/my`に移動
+2. `/my/login`にリダイレクト
 3. パスワードを送信
 4. ブラウザにセッションを保存
 
