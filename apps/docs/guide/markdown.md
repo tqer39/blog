@@ -107,6 +107,37 @@ Use `>` for quotes:
 > > Like this
 ```
 
+## Alerts
+
+Use GitHub-style alerts to highlight important information:
+
+```markdown
+> [!NOTE]
+> Supplementary information or reference.
+
+> [!TIP]
+> Helpful tips and tricks.
+
+> [!IMPORTANT]
+> Critical information for success.
+
+> [!WARNING]
+> Attention required before proceeding.
+
+> [!CAUTION]
+> Risks or negative outcomes to avoid.
+```
+
+### Alert Types
+
+| Type | Usage |
+|------|-------|
+| NOTE | Additional context or references |
+| TIP | Best practices and shortcuts |
+| IMPORTANT | Key information not to miss |
+| WARNING | Potential issues to be aware of |
+| CAUTION | Dangerous actions or consequences |
+
 ## Tables
 
 Create tables with pipes and hyphens:
