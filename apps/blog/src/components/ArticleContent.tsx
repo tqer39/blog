@@ -9,9 +9,10 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
+import { remarkAlert } from 'remark-github-blockquote-alert';
 
 // Custom sanitize schema: allow className on code/pre for syntax highlighting,
-// SVG elements for anchor link icons, and footnote elements
+// SVG elements for anchor link icons, footnote elements, and alert elements
 const sanitizeSchema = {
   ...defaultSchema,
   tagNames: [
@@ -23,6 +24,7 @@ const sanitizeSchema = {
     'span',
     'section',
     'sup',
+    'div',
   ],
   attributes: {
     ...defaultSchema.attributes,
@@ -55,6 +57,9 @@ const sanitizeSchema = {
     ],
     h2: [...(defaultSchema.attributes?.h2 || []), 'className', 'id'],
     li: [...(defaultSchema.attributes?.li || []), 'id'],
+    // Alert support (remark-github-blockquote-alert)
+    div: [...(defaultSchema.attributes?.div || []), 'className'],
+    p: [...(defaultSchema.attributes?.p || []), 'className'],
   },
   // Disable clobber prefix to prevent double-prefixing of footnote IDs
   // (remark-gfm already adds 'user-content-' prefix)
@@ -164,7 +169,7 @@ export function ArticleContent({
             },
           ],
         ]}
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkAlert]}
         components={{
           code({ children, className, ...props }) {
             return (
