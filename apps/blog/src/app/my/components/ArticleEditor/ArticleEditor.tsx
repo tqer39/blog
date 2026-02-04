@@ -789,6 +789,7 @@ export function ArticleEditor({
               variant="outline"
               size="sm"
               onClick={() => dispatch({ type: 'TOGGLE_IMAGE_PROMPT' })}
+              disabled={!aiToolsStatus?.hasAnyKey}
               className="gap-1.5"
             >
               <Sparkles className="h-4 w-4" />
