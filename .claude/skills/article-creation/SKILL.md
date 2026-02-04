@@ -18,12 +18,21 @@ description: 新規ブログ記事の作成。「記事を書きたい」「新�
 
 ## 環境変数
 
-ローカル開発環境:
+`.envrc.local` に設定（direnv で自動読込）:
 
 ```bash
-CMS_API_URL=http://localhost:3101/v1
-CMS_API_KEY=dev-api-key
+# .envrc.local.example をコピーして設定
+cp .envrc.local.example .envrc.local
+# 値を編集
+vim .envrc.local
+# direnv を許可
+direnv allow
 ```
+
+| 変数名 | 説明 | 例 |
+| --- | --- | --- |
+| `SKILL_CMS_API_URL` | CMS API エンドポイント | `https://cms-api.tqer39.dev/v1` |
+| `SKILL_CMS_API_KEY` | CMS API 認証キー | Cloudflare Workers から取得 |
 
 ## 方法1: CMS API 経由（推奨）
 
@@ -51,9 +60,9 @@ CMS_API_KEY=dev-api-key
 ### 記事作成コマンド
 
 ```bash
-curl -X POST "${CMS_API_URL}/articles" \
+curl -X POST "${SKILL_CMS_API_URL}/articles" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: ${CMS_API_KEY}" \
+  -H "X-API-Key: ${SKILL_CMS_API_KEY}" \
   -d '{
     "title": "記事タイトル",
     "content": "## はじめに\n\n本文をここに...",
@@ -79,15 +88,15 @@ curl -X POST "${CMS_API_URL}/articles" \
 ### 記事公開コマンド
 
 ```bash
-curl -X POST "${CMS_API_URL}/articles/{hash}/publish" \
-  -H "X-API-Key: ${CMS_API_KEY}"
+curl -X POST "${SKILL_CMS_API_URL}/articles/{hash}/publish" \
+  -H "X-API-Key: ${SKILL_CMS_API_KEY}"
 ```
 
 ### 下書きに戻すコマンド
 
 ```bash
-curl -X POST "${CMS_API_URL}/articles/{hash}/unpublish" \
-  -H "X-API-Key: ${CMS_API_KEY}"
+curl -X POST "${SKILL_CMS_API_URL}/articles/{hash}/unpublish" \
+  -H "X-API-Key: ${SKILL_CMS_API_KEY}"
 ```
 
 ### 手順（CMS API）
