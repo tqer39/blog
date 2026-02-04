@@ -87,23 +87,11 @@ See `infra/terraform/envs/{env}/frontend/main.tf` for configuration.
 
 Note: Basic Auth variables are only used in dev environment.
 
-### OpenAI (op://shared-secrets/openai)
+### AI API Keys (OpenAI, Anthropic, Gemini)
 
-| Field Name        | Maps To        | Target                       |
-| ----------------- | -------------- | ---------------------------- |
-| `blog-secret-key` | OPENAI_API_KEY | GitHub + Wrangler dev & prod |
-
-### Google AI Studio (op://shared-secrets/google-ai-studio)
-
-| Field Name     | Maps To        | Target              |
-| -------------- | -------------- | ------------------- |
-| `blog-api-key` | GEMINI_API_KEY | Wrangler dev & prod |
-
-### Anthropic (op://shared-secrets/anthropic)
-
-| Field Name     | Maps To           | Target                       |
-| -------------- | ----------------- | ---------------------------- |
-| `blog-api-key` | ANTHROPIC_API_KEY | GitHub + Wrangler dev & prod |
+> **Note**: AI API Keys are now managed via the Settings page (`/my/settings`), not environment variables.
+> They are stored in the D1 database and retrieved at runtime.
+> Do NOT set `OPENAI_API_KEY`, `GEMINI_API_KEY`, or `ANTHROPIC_API_KEY` as environment variables.
 
 ### Application (op://blog-secrets)
 
@@ -386,9 +374,6 @@ op read "op://shared-secrets/cloudflare/blog-api-token"
 cd apps/cms-api
 
 # Set secrets for dev environment
-pnpm wrangler secret put OPENAI_API_KEY --env dev
-pnpm wrangler secret put GEMINI_API_KEY --env dev
-pnpm wrangler secret put ANTHROPIC_API_KEY --env dev
 pnpm wrangler secret put AUTH_SECRET --env dev
 pnpm wrangler secret put ADMIN_PASSWORD_HASH --env dev
 pnpm wrangler secret put R2_ACCESS_KEY_ID --env dev
@@ -397,14 +382,14 @@ pnpm wrangler secret put BASIC_AUTH_USER --env dev
 pnpm wrangler secret put BASIC_AUTH_PASS --env dev
 
 # Set secrets for prod environment
-pnpm wrangler secret put OPENAI_API_KEY --env prod
-pnpm wrangler secret put GEMINI_API_KEY --env prod
-pnpm wrangler secret put ANTHROPIC_API_KEY --env prod
 pnpm wrangler secret put AUTH_SECRET --env prod
 pnpm wrangler secret put ADMIN_PASSWORD_HASH --env prod
 pnpm wrangler secret put R2_ACCESS_KEY_ID --env prod
 pnpm wrangler secret put R2_SECRET_ACCESS_KEY --env prod
 ```
+
+> **Note**: AI API Keys (`OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`)
+> are managed via the Settings page, not Wrangler secrets.
 
 Or via Cloudflare Dashboard:
 
@@ -430,9 +415,8 @@ CMS_API_KEY=dev-api-key
 Create `apps/cms-api/.dev.vars`:
 
 ```bash
-OPENAI_API_KEY=sk-...
-GEMINI_API_KEY=...
-ANTHROPIC_API_KEY=sk-ant-...
-AUTH_SECRET=your-local-secret
-ADMIN_PASSWORD_HASH=$2b$12$...
+API_KEY=dev-api-key
+
+# AI API Keys are managed via the Settings page (/my/settings)
+# Do NOT set them as environment variables
 ```

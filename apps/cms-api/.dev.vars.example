@@ -3,7 +3,5 @@
 
 API_KEY=your-dev-api-key-here
 
-# AI API Keys (optional - only needed for AI features)
-OPENAI_API_KEY=your-openai-api-key-here
-GEMINI_API_KEY=your-gemini-api-key-here
-ANTHROPIC_API_KEY=your-anthropic-api-key-here
+# AI API Keys are managed via the Settings page (/my/settings)
+# Do NOT set them as environment variables
