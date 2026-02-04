@@ -1,4 +1,5 @@
 import type {
+  AIToolsStatus,
   ApiKeyStatus,
   Article,
   ArticleInput,
@@ -291,4 +292,9 @@ export async function disableApiKey(): Promise<{ success: boolean }> {
 
 export async function enableApiKey(): Promise<{ success: boolean }> {
   return fetchApi('/api-key/enable', { method: 'POST' });
+}
+
+// AI Tools Status
+export async function getAIToolsStatus(): Promise<AIToolsStatus> {
+  return fetchApi('/ai/status');
 }
