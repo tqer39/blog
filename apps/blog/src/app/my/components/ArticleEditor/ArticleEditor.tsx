@@ -524,6 +524,7 @@ export function ArticleEditor({
             settings={aiSettings}
             onSettingsChange={updateAISettings}
             onReset={resetAISettings}
+            aiToolsStatus={aiToolsStatus}
           />
 
           {/* AI Review button */}

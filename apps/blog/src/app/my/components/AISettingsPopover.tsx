@@ -2,6 +2,7 @@
 
 import type {
   AIModelSettings,
+  AIToolsStatus,
   AnthropicModel,
   GeminiImageModel,
   ImageModel,
@@ -27,6 +28,7 @@ interface AISettingsPopoverProps {
   settings: AIModelSettings;
   onSettingsChange: (settings: Partial<AIModelSettings>) => void;
   onReset: () => void;
+  aiToolsStatus?: AIToolsStatus | null;
 }
 
 // Model options with display labels (exported for reuse)
@@ -64,6 +66,7 @@ export function AISettingsPopover({
   settings,
   onSettingsChange,
   onReset,
+  aiToolsStatus,
 }: AISettingsPopoverProps) {
   const { messages } = useI18n();
   const t = messages.aiModelSettings;
@@ -102,6 +105,7 @@ export function AISettingsPopover({
             value={settings.metadata}
             onChange={(v) => onSettingsChange({ metadata: v })}
             options={OPENAI_MODELS}
+            disabled={!aiToolsStatus?.hasOpenAI}
           />
 
           {/* Image Generation (Gemini / OpenAI) */}
@@ -118,6 +122,7 @@ export function AISettingsPopover({
                 {opt.label}
               </span>
             )}
+            disabled={!aiToolsStatus?.hasGemini && !aiToolsStatus?.hasOpenAI}
           />
 
           <Separator />
@@ -130,6 +135,7 @@ export function AISettingsPopover({
             value={settings.review}
             onChange={(v) => onSettingsChange({ review: v })}
             options={ANTHROPIC_MODELS}
+            disabled={!aiToolsStatus?.hasAnthropic}
           />
 
           {/* Outline Generation */}
@@ -138,6 +144,7 @@ export function AISettingsPopover({
             value={settings.outline}
             onChange={(v) => onSettingsChange({ outline: v })}
             options={ANTHROPIC_MODELS}
+            disabled={!aiToolsStatus?.hasAnthropic}
           />
 
           {/* Text Transform */}
@@ -146,6 +153,7 @@ export function AISettingsPopover({
             value={settings.transform}
             onChange={(v) => onSettingsChange({ transform: v })}
             options={ANTHROPIC_MODELS}
+            disabled={!aiToolsStatus?.hasAnthropic}
           />
 
           {/* Continuation Suggestion */}
@@ -154,6 +162,7 @@ export function AISettingsPopover({
             value={settings.continuation}
             onChange={(v) => onSettingsChange({ continuation: v })}
             options={ANTHROPIC_MODELS}
+            disabled={!aiToolsStatus?.hasAnthropic}
           />
         </div>
       </PopoverContent>
