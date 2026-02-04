@@ -1,4 +1,5 @@
 import type {
+  AIProvider,
   AIToolsStatus,
   ApiKeyStatus,
   Article,
@@ -28,6 +29,7 @@ import type {
   Tag,
   TagInput,
   TagListResponse,
+  TestAIKeyResponse,
   TransformAction,
   TransformTextRequest,
   TransformTextResponse,
@@ -287,6 +289,12 @@ export async function transformText(
 
 export async function getAIToolsStatus(): Promise<AIToolsStatus> {
   return fetchApi('/ai/status');
+}
+
+export async function testAIKey(
+  provider: AIProvider
+): Promise<TestAIKeyResponse> {
+  return postJson('/ai/test-key', { provider });
 }
 
 // Settings

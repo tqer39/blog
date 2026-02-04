@@ -346,3 +346,16 @@ export interface AIToolsStatus {
   hasAnthropic: boolean;
   hasGemini: boolean;
 }
+
+// AI API Key Test types
+export type AIProvider = 'openai' | 'anthropic' | 'gemini';
+
+export interface TestAIKeyRequest {
+  provider: AIProvider;
+}
+
+export interface TestAIKeyResponse {
+  success: boolean;
+  provider: AIProvider;
+  message?: string;
+}

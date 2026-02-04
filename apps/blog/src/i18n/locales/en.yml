@@ -73,6 +73,10 @@ settings:
     apiKeySet: API key is set. Enter a new value to replace it.
     showApiKey: Show API key
     hideApiKey: Hide API key
+    testButton: Test
+    testConfirm: This will test if the API key is working correctly. Continue?
+    testSuccess: API key is working correctly
+    testError: API key test failed
   apiKey:
     title: CMS API Key
     description: Manage API keys for external access to the CMS API. If API_KEY environment variable is set, it will continue to work as well.

@@ -73,6 +73,10 @@ settings:
     apiKeySet: APIキーが設定されています。新しい値を入力して置き換えできます。
     showApiKey: APIキーを表示
     hideApiKey: APIキーを非表示
+    testButton: テスト
+    testConfirm: APIキーの動作確認を行います。よろしいですか？
+    testSuccess: APIキーは正常に動作しています
+    testError: APIキーのテストに失敗しました
   apiKey:
     title: CMS API キー
     description: CMS APIへの外部アクセス用のAPIキーを管理します。環境変数 API_KEY が設定されている場合、そちらも引き続き使用可能です。

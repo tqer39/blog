@@ -1,6 +1,6 @@
 'use client';
 
-import type { ApiKeyStatus, SiteSettings } from '@blog/cms-types';
+import type { AIProvider, ApiKeyStatus, SiteSettings } from '@blog/cms-types';
 import { Alert, AlertDescription, Button } from '@blog/ui';
 import {
   ArrowUpRight,
@@ -13,6 +13,7 @@ import {
   LayoutGrid,
   Linkedin,
   Loader2,
+  Play,
   Save,
 } from 'lucide-react';
 import type { ClipboardEvent } from 'react';
@@ -24,6 +25,7 @@ import {
   generateApiKey,
   getApiKeyStatus,
   getSiteSettings,
+  testAIKey,
   updateSiteSettings,
 } from '@/lib/api/client';
 
@@ -143,18 +145,21 @@ function buildSocialUrl(
 const API_KEY_FIELDS = [
   {
     key: 'ai_openai_api_key' as const,
+    provider: 'openai' as AIProvider,
     labelKey: 'settings.aiTools.openai.label',
     descriptionKey: 'settings.aiTools.openai.description',
     placeholder: 'sk-...',
   },
   {
     key: 'ai_anthropic_api_key' as const,
+    provider: 'anthropic' as AIProvider,
     labelKey: 'settings.aiTools.anthropic.label',
     descriptionKey: 'settings.aiTools.anthropic.description',
     placeholder: 'sk-ant-...',
   },
   {
     key: 'ai_gemini_api_key' as const,
+    provider: 'gemini' as AIProvider,
     labelKey: 'settings.aiTools.gemini.label',
     descriptionKey: 'settings.aiTools.gemini.description',
     placeholder: 'AIza...',
@@ -178,6 +183,11 @@ export default function SettingsPage() {
   const [apiKeyLoading, setApiKeyLoading] = useState(false);
   const [generatedKey, setGeneratedKey] = useState<string | null>(null);
   const [keyCopied, setKeyCopied] = useState(false);
+
+  // AI API Key Test state
+  const [testingProvider, setTestingProvider] = useState<AIProvider | null>(
+    null
+  );
 
   const loadSettings = useCallback(async () => {
     try {
@@ -328,6 +338,36 @@ export default function SettingsPage() {
     if (!value.endsWith('****')) {
       setSettings({ ...settings, [key]: value });
       setMessage(null);
+    }
+  }
+
+  async function handleTestAIKey(provider: AIProvider) {
+    const confirmed = window.confirm(t('settings.aiTools.testConfirm'));
+    if (!confirmed) return;
+
+    try {
+      setTestingProvider(provider);
+      setMessage(null);
+      const result = await testAIKey(provider);
+      if (result.success) {
+        setMessage({
+          type: 'success',
+          text: t('settings.aiTools.testSuccess'),
+        });
+      } else {
+        setMessage({
+          type: 'error',
+          text: result.message || t('settings.aiTools.testError'),
+        });
+      }
+    } catch (err) {
+      setMessage({
+        type: 'error',
+        text:
+          err instanceof Error ? err.message : t('settings.aiTools.testError'),
+      });
+    } finally {
+      setTestingProvider(null);
     }
   }
 
@@ -698,10 +738,12 @@ export default function SettingsPage() {
           </p>
           <div className="space-y-4">
             {API_KEY_FIELDS.map(
-              ({ key, labelKey, descriptionKey, placeholder }) => {
+              ({ key, provider, labelKey, descriptionKey, placeholder }) => {
                 const value = settings?.[key] || '';
                 const isVisible = showApiKeys[key] || false;
                 const isMasked = value.endsWith('****');
+                const hasKey = Boolean(value);
+                const isTesting = testingProvider === provider;
 
                 return (
                   <div key={key}>
@@ -714,33 +756,50 @@ export default function SettingsPage() {
                     <p className="mb-2 text-xs text-muted-foreground">
                       {t(descriptionKey)}
                     </p>
-                    <div className="flex">
-                      <input
-                        id={key}
-                        type={isVisible ? 'text' : 'password'}
-                        value={value}
-                        onChange={(e) =>
-                          handleApiKeyChange(key, e.target.value)
-                        }
-                        className="flex-1 rounded-l-lg border border-border bg-background px-4 py-2 text-sm font-mono focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                        placeholder={placeholder}
-                      />
-                      <button
+                    <div className="flex gap-2">
+                      <div className="flex flex-1">
+                        <input
+                          id={key}
+                          type={isVisible ? 'text' : 'password'}
+                          value={value}
+                          onChange={(e) =>
+                            handleApiKeyChange(key, e.target.value)
+                          }
+                          className="flex-1 rounded-l-lg border border-border bg-background px-4 py-2 text-sm font-mono focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                          placeholder={placeholder}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => toggleApiKeyVisibility(key)}
+                          className="inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
+                          aria-label={
+                            isVisible
+                              ? t('settings.aiTools.hideApiKey')
+                              : t('settings.aiTools.showApiKey')
+                          }
+                        >
+                          {isVisible ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                      <Button
                         type="button"
-                        onClick={() => toggleApiKeyVisibility(key)}
-                        className="inline-flex items-center rounded-r-lg border border-l-0 border-border bg-muted px-3 text-muted-foreground transition-colors hover:bg-muted/80 hover:text-foreground"
-                        aria-label={
-                          isVisible
-                            ? t('settings.aiTools.hideApiKey')
-                            : t('settings.aiTools.showApiKey')
-                        }
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleTestAIKey(provider)}
+                        disabled={!hasKey || isTesting}
+                        className="shrink-0"
                       >
-                        {isVisible ? (
-                          <EyeOff className="h-4 w-4" />
+                        {isTesting ? (
+                          <Loader2 className="mr-1 h-4 w-4 animate-spin" />
                         ) : (
-                          <Eye className="h-4 w-4" />
+                          <Play className="mr-1 h-4 w-4" />
                         )}
-                      </button>
+                        {t('settings.aiTools.testButton')}
+                      </Button>
                     </div>
                     {isMasked && (
                       <p className="mt-1 text-xs text-muted-foreground">

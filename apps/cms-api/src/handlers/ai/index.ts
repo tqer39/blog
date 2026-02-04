@@ -3,6 +3,7 @@
  *
  * Endpoints:
  * - GET /status - Get AI tools status (API key availability)
+ * - POST /test-key - Test AI API key validity
  * - POST /generate-metadata - Generate article metadata using OpenAI
  * - POST /generate-image - Generate header image using Gemini
  * - POST /review-article - Review article using Claude
@@ -10,7 +11,12 @@
  * - POST /generate-outline - Generate article outline using Claude
  * - POST /transform-text - Transform text using Claude
  */
-import type { AIToolsStatus } from '@blog/cms-types';
+import type {
+  AIProvider,
+  AIToolsStatus,
+  TestAIKeyRequest,
+  TestAIKeyResponse,
+} from '@blog/cms-types';
 import { Hono } from 'hono';
 import type { Env } from '../../index';
 import { continuationHandler } from './continuation';
@@ -54,6 +60,113 @@ aiHandler.get('/status', async (c) => {
   };
 
   return c.json(status);
+});
+
+// Test API key endpoint
+aiHandler.post('/test-key', async (c) => {
+  const { provider } = await c.req.json<TestAIKeyRequest>();
+
+  if (!provider || !['openai', 'anthropic', 'gemini'].includes(provider)) {
+    return c.json<TestAIKeyResponse>(
+      {
+        success: false,
+        provider: provider || 'openai',
+        message: 'Invalid provider',
+      },
+      400
+    );
+  }
+
+  // Get the API key from settings
+  const keyMap: Record<AIProvider, string> = {
+    openai: 'ai_openai_api_key',
+    anthropic: 'ai_anthropic_api_key',
+    gemini: 'ai_gemini_api_key',
+  };
+
+  const { results } = await c.env.DB.prepare(
+    'SELECT value FROM site_settings WHERE key = ?'
+  )
+    .bind(keyMap[provider])
+    .all();
+
+  const apiKey = (results?.[0]?.value as string) || '';
+
+  if (!apiKey) {
+    return c.json<TestAIKeyResponse>(
+      { success: false, provider, message: 'API key not configured' },
+      400
+    );
+  }
+
+  try {
+    switch (provider) {
+      case 'openai': {
+        // Test OpenAI API with a simple models list request
+        const response = await fetch('https://api.openai.com/v1/models', {
+          headers: { Authorization: `Bearer ${apiKey}` },
+        });
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          throw new Error(
+            (error as { error?: { message?: string } }).error?.message ||
+              'Invalid API key'
+          );
+        }
+        break;
+      }
+      case 'anthropic': {
+        // Test Anthropic API with a minimal messages request
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 1,
+            messages: [{ role: 'user', content: 'Hi' }],
+          }),
+        });
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          // Check for authentication errors
+          if (response.status === 401) {
+            throw new Error('Invalid API key');
+          }
+          throw new Error(
+            (error as { error?: { message?: string } }).error?.message ||
+              'API request failed'
+          );
+        }
+        break;
+      }
+      case 'gemini': {
+        // Test Gemini API with a simple models list request
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`
+        );
+        if (!response.ok) {
+          const error = await response.json().catch(() => ({}));
+          throw new Error(
+            (error as { error?: { message?: string } }).error?.message ||
+              'Invalid API key'
+          );
+        }
+        break;
+      }
+    }
+
+    return c.json<TestAIKeyResponse>({ success: true, provider });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Test failed';
+    return c.json<TestAIKeyResponse>(
+      { success: false, provider, message },
+      400
+    );
+  }
 });
 
 // Mount handlers

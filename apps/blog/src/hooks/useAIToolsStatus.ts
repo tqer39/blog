@@ -28,7 +28,9 @@ export function useAIToolsStatus() {
       } catch (err) {
         if (isMounted) {
           setError(
-            err instanceof Error ? err.message : 'Failed to fetch AI tools status'
+            err instanceof Error
+              ? err.message
+              : 'Failed to fetch AI tools status'
           );
         }
       } finally {

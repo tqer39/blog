@@ -1,4 +1,5 @@
 import type {
+  AIProvider,
   AIToolsStatus,
   ApiKeyStatus,
   Article,
@@ -23,6 +24,7 @@ import type {
   Tag,
   TagInput,
   TagListResponse,
+  TestAIKeyResponse,
   TransformTextRequest,
   TransformTextResponse,
 } from '@blog/cms-types';
@@ -297,4 +299,14 @@ export async function enableApiKey(): Promise<{ success: boolean }> {
 // AI Tools Status
 export async function getAIToolsStatus(): Promise<AIToolsStatus> {
   return fetchApi('/ai/status');
+}
+
+export async function testAIKey(
+  provider: AIProvider
+): Promise<TestAIKeyResponse> {
+  return fetchApi('/ai/test-key', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ provider }),
+  });
 }

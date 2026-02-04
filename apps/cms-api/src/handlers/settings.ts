@@ -159,7 +159,10 @@ settingsHandler.put('/', async (c) => {
   }
 
   // Validate required fields are not empty strings
-  if (filteredInput.site_name !== undefined && filteredInput.site_name.trim() === '') {
+  if (
+    filteredInput.site_name !== undefined &&
+    filteredInput.site_name.trim() === ''
+  ) {
     validationError('site_name cannot be empty');
   }
 
