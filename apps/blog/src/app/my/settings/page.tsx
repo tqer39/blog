@@ -17,6 +17,7 @@ import {
   Loader2,
   Play,
   Save,
+  Trash2,
 } from 'lucide-react';
 import type { ClipboardEvent } from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -171,6 +172,9 @@ const API_KEY_FIELDS = [
 export default function SettingsPage() {
   const { t } = useI18n();
   const [settings, setSettings] = useState<SiteSettings | null>(null);
+  const [originalSettings, setOriginalSettings] = useState<SiteSettings | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -198,6 +202,31 @@ export default function SettingsPage() {
     gemini: null,
   });
 
+  // Check if a specific field has been modified
+  const isFieldModified = useCallback(
+    (key: keyof SiteSettings): boolean => {
+      if (!settings || !originalSettings) return false;
+      return settings[key] !== originalSettings[key];
+    },
+    [settings, originalSettings]
+  );
+
+  // Check if any field has been modified
+  const hasUnsavedChanges = useCallback((): boolean => {
+    if (!settings || !originalSettings) return false;
+    return Object.keys(settings).some(
+      (key) =>
+        settings[key as keyof SiteSettings] !==
+        originalSettings[key as keyof SiteSettings]
+    );
+  }, [settings, originalSettings]);
+
+  // Modified indicator component
+  const ModifiedIndicator = ({ field }: { field: keyof SiteSettings }) =>
+    isFieldModified(field) ? (
+      <span className="ml-1.5 inline-block h-2 w-2 rounded-full bg-blue-500" />
+    ) : null;
+
   const loadSettings = useCallback(async () => {
     try {
       setLoading(true);
@@ -206,6 +235,7 @@ export default function SettingsPage() {
         getApiKeyStatus().catch(() => null),
       ]);
       setSettings(settingsResponse.settings);
+      setOriginalSettings(settingsResponse.settings);
       setApiKeyStatus(apiKeyStatusResponse);
       setError(null);
     } catch (err) {
@@ -218,6 +248,19 @@ export default function SettingsPage() {
   useEffect(() => {
     loadSettings();
   }, [loadSettings]);
+
+  // Warn before leaving with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges()) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   async function handleGenerateApiKey() {
     const hasExistingKey = apiKeyStatus?.hasKey;
@@ -287,7 +330,8 @@ export default function SettingsPage() {
     try {
       setSaving(true);
       setMessage(null);
-      await updateSiteSettings(settings);
+      const response = await updateSiteSettings(settings);
+      setOriginalSettings(response.settings);
       setMessage({ type: 'success', text: t('settings.saveSuccess') });
     } catch (err) {
       setMessage({
@@ -350,6 +394,15 @@ export default function SettingsPage() {
     }
   }
 
+  function handleClearApiKey(key: keyof SiteSettings, provider: AIProvider) {
+    if (!settings) return;
+    const confirmed = window.confirm(t('settings.aiTools.clearConfirm'));
+    if (!confirmed) return;
+    setSettings({ ...settings, [key]: '' });
+    setTestResults((prev) => ({ ...prev, [provider]: null }));
+    setMessage(null);
+  }
+
   async function handleTestAIKey(provider: AIProvider, apiKey: string) {
     const confirmed = window.confirm(t('settings.aiTools.testConfirm'));
     if (!confirmed) return;
@@ -393,11 +446,17 @@ export default function SettingsPage() {
     );
   }
 
+  const unsavedChanges = hasUnsavedChanges();
+
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold">{t('settings.title')}</h1>
-        <Button onClick={handleSave} disabled={saving}>
+        <Button
+          onClick={handleSave}
+          disabled={saving || !unsavedChanges}
+          className={unsavedChanges ? 'animate-pulse' : ''}
+        >
           {saving ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
@@ -406,6 +465,15 @@ export default function SettingsPage() {
           {t('settings.saveSettings')}
         </Button>
       </div>
+
+      {unsavedChanges && (
+        <Alert className="mb-6 border-amber-500 bg-amber-50 dark:border-amber-600 dark:bg-amber-950/30">
+          <AlertDescription className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
+            <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
+            {t('settings.unsavedChanges')}
+          </AlertDescription>
+        </Alert>
+      )}
 
       {message && (
         <Alert
@@ -426,9 +494,10 @@ export default function SettingsPage() {
             <div>
               <label
                 htmlFor="site_name"
-                className="mb-2 block text-sm font-medium"
+                className="mb-2 flex items-center text-sm font-medium"
               >
                 {t('settings.basic.siteName')}
+                <ModifiedIndicator field="site_name" />
               </label>
               <input
                 id="site_name"
@@ -442,9 +511,10 @@ export default function SettingsPage() {
             <div>
               <label
                 htmlFor="site_description"
-                className="mb-2 block text-sm font-medium"
+                className="mb-2 flex items-center text-sm font-medium"
               >
                 {t('settings.basic.siteDescription')}
+                <ModifiedIndicator field="site_description" />
               </label>
               <textarea
                 id="site_description"
@@ -460,9 +530,10 @@ export default function SettingsPage() {
             <div>
               <label
                 htmlFor="author_name"
-                className="mb-2 block text-sm font-medium"
+                className="mb-2 flex items-center text-sm font-medium"
               >
                 {t('settings.basic.authorName')}
+                <ModifiedIndicator field="author_name" />
               </label>
               <input
                 id="author_name"
@@ -476,9 +547,10 @@ export default function SettingsPage() {
             <div>
               <label
                 htmlFor="footer_text"
-                className="mb-2 block text-sm font-medium"
+                className="mb-2 flex items-center text-sm font-medium"
               >
                 {t('settings.basic.footerText')}
+                <ModifiedIndicator field="footer_text" />
               </label>
               <input
                 id="footer_text"
@@ -580,6 +652,9 @@ export default function SettingsPage() {
                   >
                     {icon}
                     {label}
+                    {(isFieldModified(settingKey) || isFieldModified(showKey)) && (
+                      <span className="inline-block h-2 w-2 rounded-full bg-blue-500" />
+                    )}
                   </label>
 
                   {/* Input */}
@@ -638,9 +713,10 @@ export default function SettingsPage() {
               <div>
                 <label
                   htmlFor="show_rss_link"
-                  className="block text-sm font-medium"
+                  className="flex items-center text-sm font-medium"
                 >
                   {t('settings.display.showRssLink')}
+                  <ModifiedIndicator field="show_rss_link" />
                 </label>
                 <p className="text-sm text-muted-foreground">
                   {t('settings.display.showRssLinkDescription')}
@@ -676,9 +752,10 @@ export default function SettingsPage() {
           <div>
             <label
               htmlFor="default_theme"
-              className="mb-2 block text-sm font-medium"
+              className="mb-2 flex items-center text-sm font-medium"
             >
               {t('settings.appearance.defaultTheme')}
+              <ModifiedIndicator field="default_theme" />
             </label>
             <p className="mb-2 text-sm text-muted-foreground">
               {t('settings.appearance.defaultThemeDescription')}
@@ -712,9 +789,10 @@ export default function SettingsPage() {
           <div className="mt-4">
             <label
               htmlFor="default_locale"
-              className="mb-2 block text-sm font-medium"
+              className="mb-2 flex items-center text-sm font-medium"
             >
               {t('settings.appearance.defaultLocale')}
+              <ModifiedIndicator field="default_locale" />
             </label>
             <p className="mb-2 text-sm text-muted-foreground">
               {t('settings.appearance.defaultLocaleDescription')}
@@ -756,9 +834,10 @@ export default function SettingsPage() {
                   <div key={key}>
                     <label
                       htmlFor={key}
-                      className="mb-1 block text-sm font-medium"
+                      className="mb-1 flex items-center text-sm font-medium"
                     >
                       {t(labelKey)}
+                      <ModifiedIndicator field={key} />
                     </label>
                     <p className="mb-2 text-xs text-muted-foreground">
                       {t(descriptionKey)}
@@ -806,6 +885,17 @@ export default function SettingsPage() {
                           <Play className="mr-1 h-4 w-4" />
                         )}
                         {t('settings.aiTools.testButton')}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleClearApiKey(key, provider)}
+                        disabled={!hasKey}
+                        className="shrink-0 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        aria-label={t('settings.aiTools.clearButton')}
+                      >
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                     {isMasked && !testResult && (

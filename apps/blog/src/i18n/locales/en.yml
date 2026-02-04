@@ -23,6 +23,7 @@ settings:
   saveSuccess: Settings saved successfully
   saveError: Failed to save settings
   loadError: Failed to load settings
+  unsavedChanges: You have unsaved changes
   basic:
     title: Basic Settings
     siteName: Site Name
@@ -77,6 +78,8 @@ settings:
     testConfirm: This will test if the API key is working correctly. Continue?
     testSuccess: API key is working correctly
     testError: API key test failed
+    clearButton: Clear
+    clearConfirm: Delete this API key? Changes won't be saved until you click Save.
   apiKey:
     title: CMS API Key
     description: Manage API keys for external access to the CMS API. If API_KEY environment variable is set, it will continue to work as well.

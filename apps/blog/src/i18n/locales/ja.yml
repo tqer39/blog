@@ -23,6 +23,7 @@ settings:
   saveSuccess: 設定を保存しました
   saveError: 設定の保存に失敗しました
   loadError: 設定の読み込みに失敗しました
+  unsavedChanges: 未保存の変更があります
   basic:
     title: 基本設定
     siteName: サイト名
@@ -77,6 +78,8 @@ settings:
     testConfirm: APIキーの動作確認を行います。よろしいですか？
     testSuccess: APIキーは正常に動作しています
     testError: APIキーのテストに失敗しました
+    clearButton: クリア
+    clearConfirm: APIキーを削除しますか？保存ボタンを押すまで変更は反映されません。
   apiKey:
     title: CMS API キー
     description: CMS APIへの外部アクセス用のAPIキーを管理します。環境変数 API_KEY が設定されている場合、そちらも引き続き使用可能です。
