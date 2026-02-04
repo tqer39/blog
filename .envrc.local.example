@@ -1,0 +1,16 @@
+# ===========================================
+# Claude Code Skills - CMS API Configuration
+# ===========================================
+# Copy this file to .envrc.local and set your values
+# .envrc.local is gitignored and will not be committed
+#
+# After copying, run: direnv allow
+
+# CMS API endpoint for article creation skill
+# Local: http://localhost:3101/v1
+# Production: https://cms-api.tqer39.dev/v1
+export SKILL_CMS_API_URL=https://cms-api.tqer39.dev/v1
+
+# CMS API authentication key
+# Get from: Cloudflare Workers > cms-api > Settings > Variables
+export SKILL_CMS_API_KEY=your-production-api-key-here
