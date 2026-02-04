@@ -26,6 +26,7 @@ interface TextTransformPopoverProps {
   value: string;
   onChange: (value: string) => void;
   model?: AnthropicModel;
+  disabled?: boolean;
 }
 
 interface TransformOption {
@@ -79,6 +80,7 @@ export function TextTransformPopover({
   value,
   onChange,
   model,
+  disabled,
 }: TextTransformPopoverProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedText, setSelectedText] = useState('');
@@ -243,7 +245,7 @@ export function TextTransformPopover({
     textareaRef,
   ]);
 
-  if (!isOpen || !selectedText) return null;
+  if (!isOpen || !selectedText || disabled) return null;
 
   return (
     <div

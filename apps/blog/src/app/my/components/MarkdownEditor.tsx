@@ -2,6 +2,7 @@
 
 import type {
   AIModelSettings,
+  AIToolsStatus,
   ContinuationLength,
   ContinuationSuggestion,
 } from '@blog/cms-types';
@@ -60,6 +61,8 @@ interface MarkdownEditorProps {
   title?: string;
   /** AI機能のモデル設定 */
   aiSettings?: AIModelSettings;
+  /** AI Tools の API Key ステータス */
+  aiToolsStatus?: AIToolsStatus | null;
 }
 
 export function MarkdownEditor({
@@ -68,6 +71,7 @@ export function MarkdownEditor({
   onImageUpload,
   title,
   aiSettings,
+  aiToolsStatus,
 }: MarkdownEditorProps) {
   const { messages } = useI18n();
   const t = messages.editor.toolbar;
@@ -447,7 +451,11 @@ export function MarkdownEditor({
                       size="sm"
                       className="h-8 w-8 p-0"
                       onClick={() => handleSuggestContinuation()}
-                      disabled={isSuggesting || !title?.trim()}
+                      disabled={
+                        isSuggesting ||
+                        !title?.trim() ||
+                        !aiToolsStatus?.hasAnthropic
+                      }
                     >
                       {isSuggesting ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -649,6 +657,7 @@ export function MarkdownEditor({
         value={value}
         onChange={onChange}
         model={aiSettings?.transform}
+        disabled={!aiToolsStatus?.hasAnthropic}
       />
 
       {/* Fullscreen Modal */}

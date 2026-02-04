@@ -338,3 +338,11 @@ export interface GenerateApiKeyResponse {
   key: string;
   createdAt: string;
 }
+
+// AI Tools Status types
+export interface AIToolsStatus {
+  hasAnyKey: boolean;
+  hasOpenAI: boolean;
+  hasAnthropic: boolean;
+  hasGemini: boolean;
+}

@@ -34,6 +34,7 @@ import {
   useState,
 } from 'react';
 import { useAIModelSettings } from '@/hooks/useAIModelSettings';
+import { useAIToolsStatus } from '@/hooks/useAIToolsStatus';
 import { useArticleDraft } from '@/hooks/useArticleDraft';
 import { useI18n } from '@/i18n';
 import {
@@ -85,6 +86,7 @@ export function ArticleEditor({
     updateSettings: updateAISettings,
     resetSettings: resetAISettings,
   } = useAIModelSettings();
+  const { status: aiToolsStatus } = useAIToolsStatus();
   const { saveDraft, loadDraft, clearDraft } = useArticleDraft(initialData?.id);
   const headerImageInputRef = useRef<HTMLInputElement>(null);
   const [showDraftDialog, setShowDraftDialog] = useState(false);
@@ -531,7 +533,8 @@ export function ArticleEditor({
               disabled={
                 loading.isReviewing ||
                 !article.title.trim() ||
-                !article.content.trim()
+                !article.content.trim() ||
+                !aiToolsStatus?.hasAnthropic
               }
               modelType="anthropic"
               modelValue={aiSettings.review}
@@ -633,7 +636,8 @@ export function ArticleEditor({
               disabled={
                 loading.isGeneratingMetadata ||
                 !article.title.trim() ||
-                !article.content.trim()
+                !article.content.trim() ||
+                !aiToolsStatus?.hasOpenAI
               }
               modelType="openai"
               modelValue={aiSettings.metadata}
@@ -890,7 +894,8 @@ export function ArticleEditor({
                       !article.title.trim() &&
                       !article.description.trim() &&
                       !article.content.trim() &&
-                      !imageGen.imagePrompt.trim())
+                      !imageGen.imagePrompt.trim()) ||
+                    !aiToolsStatus?.hasAnyKey
                   }
                   modelType="image"
                   modelValue={aiSettings.image}
@@ -923,7 +928,11 @@ export function ArticleEditor({
             <Label>{t.content}</Label>
             <SplitButton
               onClick={() => handleGenerateOutline()}
-              disabled={loading.isGeneratingOutline || !article.title.trim()}
+              disabled={
+                loading.isGeneratingOutline ||
+                !article.title.trim() ||
+                !aiToolsStatus?.hasAnthropic
+              }
               modelType="anthropic"
               modelValue={aiSettings.outline}
               onModelChange={(v) =>
@@ -942,6 +951,7 @@ export function ArticleEditor({
             onImageUpload={handleImageUpload}
             title={article.title}
             aiSettings={aiSettings}
+            aiToolsStatus={aiToolsStatus}
           />
         </div>
       </div>

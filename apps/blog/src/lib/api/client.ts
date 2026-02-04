@@ -1,4 +1,5 @@
 import type {
+  AIToolsStatus,
   ApiKeyStatus,
   Article,
   ArticleCategory,
@@ -282,6 +283,10 @@ export async function transformText(
   request: TransformTextRequest
 ): Promise<TransformTextResponse> {
   return postJson('/ai/transform-text', request);
+}
+
+export async function getAIToolsStatus(): Promise<AIToolsStatus> {
+  return fetchApi('/ai/status');
 }
 
 // Settings
