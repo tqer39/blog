@@ -11,15 +11,21 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Get Node.js version from mise
+    - name: Setup mise
+      uses: jdx/mise-action@v2
+
+    - name: Install tools with mise
+      shell: bash
+      run: |
+        mise trust 2>/dev/null || true
+        mise install
+
+    - name: Get Node.js version from mise.toml
       id: node-version
       shell: bash
       run: |
-        NODE_VERSION=$(grep '^node' .mise.toml | sed 's/.*= *"//' | sed 's/".*//')
+        NODE_VERSION=$(grep '^node = ' .mise.toml | sed 's/node = "\(.*\)"/\1/')
         echo "version=$NODE_VERSION" >> $GITHUB_OUTPUT
-
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v4
 
     - name: Setup Node.js
       uses: actions/setup-node@v6
