@@ -11,20 +11,19 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Get Node.js version from mise
-      id: node-version
+    - name: Setup mise
+      uses: jdx/mise-action@v2
+
+    - name: Install tools with mise
       shell: bash
       run: |
-        NODE_VERSION=$(grep '^node' .mise.toml | sed 's/.*= *"//' | sed 's/".*//')
-        echo "version=$NODE_VERSION" >> $GITHUB_OUTPUT
-
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v4
+        mise trust 2>/dev/null || true
+        mise install
 
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
-        node-version: ${{ steps.node-version.outputs.version }}
+        node-version-file: .mise.toml
         cache: pnpm
 
     - name: Cache Turborepo
