@@ -87,23 +87,11 @@ Vercel プロジェクトの環境変数は 1Password sync ではなく Terrafor
 
 注: Basic Auth 変数は dev 環境でのみ使用されます。
 
-### OpenAI (op://shared-secrets/openai)
+### AI API Keys (OpenAI, Anthropic, Gemini)
 
-| フィールド名      | 環境変数       | 同期先                       |
-| ----------------- | -------------- | ---------------------------- |
-| `blog-secret-key` | OPENAI_API_KEY | GitHub + Wrangler dev & prod |
-
-### Google AI Studio (op://shared-secrets/google-ai-studio)
-
-| フィールド名   | 環境変数       | 同期先              |
-| -------------- | -------------- | ------------------- |
-| `blog-api-key` | GEMINI_API_KEY | Wrangler dev & prod |
-
-### Anthropic (op://shared-secrets/anthropic)
-
-| フィールド名   | 環境変数          | 同期先                       |
-| -------------- | ----------------- | ---------------------------- |
-| `blog-api-key` | ANTHROPIC_API_KEY | GitHub + Wrangler dev & prod |
+> **注意**: AI API Key は設定ページ (`/my/settings`) で管理されるようになりました。環境変数ではありません。
+> D1 データベースに保存され、実行時に取得されます。
+> `OPENAI_API_KEY`、`GEMINI_API_KEY`、`ANTHROPIC_API_KEY` を環境変数として設定しないでください。
 
 ### アプリケーション (op://blog-secrets)
 
@@ -384,21 +372,18 @@ op read "op://shared-secrets/cloudflare/blog-api-token"
 cd apps/cms-api
 
 # dev 環境のシークレット設定
-pnpm wrangler secret put OPENAI_API_KEY --env dev
-pnpm wrangler secret put GEMINI_API_KEY --env dev
-pnpm wrangler secret put ANTHROPIC_API_KEY --env dev
 pnpm wrangler secret put AUTH_SECRET --env dev
 pnpm wrangler secret put ADMIN_PASSWORD_HASH --env dev
 pnpm wrangler secret put BASIC_AUTH_USER --env dev
 pnpm wrangler secret put BASIC_AUTH_PASS --env dev
 
 # prod 環境のシークレット設定
-pnpm wrangler secret put OPENAI_API_KEY --env prod
-pnpm wrangler secret put GEMINI_API_KEY --env prod
-pnpm wrangler secret put ANTHROPIC_API_KEY --env prod
 pnpm wrangler secret put AUTH_SECRET --env prod
 pnpm wrangler secret put ADMIN_PASSWORD_HASH --env prod
 ```
+
+> **注意**: AI API Key (`OPENAI_API_KEY`、`GEMINI_API_KEY`、`ANTHROPIC_API_KEY`)
+> は Wrangler secrets ではなく、設定ページで管理されます。
 
 または Cloudflare Dashboard から:
 
@@ -424,9 +409,8 @@ CMS_API_KEY=dev-api-key
 `apps/cms-api/.dev.vars` を作成:
 
 ```bash
-OPENAI_API_KEY=sk-...
-GEMINI_API_KEY=...
-ANTHROPIC_API_KEY=sk-ant-...
-AUTH_SECRET=your-local-secret
-ADMIN_PASSWORD_HASH=$2b$12$...
+API_KEY=dev-api-key
+
+# AI API Key は設定ページ (/my/settings) で管理されます
+# 環境変数として設定しないでください
 ```

@@ -33,6 +33,14 @@ const ALLOWED_KEYS = [
   'ai_gemini_api_key',
 ] as const;
 
+// API key management fields (managed by /api/api-key/* endpoints)
+// These should be filtered out from settings update to prevent accidental overwrites
+const API_KEY_MANAGEMENT_KEYS = [
+  'cms_api_key_hash',
+  'cms_api_key_created_at',
+  'cms_api_key_enabled',
+];
+
 // API keys that need masking in GET response
 const API_KEY_FIELDS = [
   'ai_openai_api_key',
@@ -136,28 +144,35 @@ settingsHandler.get('/', async (c) => {
 settingsHandler.put('/', async (c) => {
   const input = await c.req.json<SiteSettingsInput>();
 
+  // Filter out API key management fields (managed by /api/api-key/*)
+  const filteredInput = Object.fromEntries(
+    Object.entries(input).filter(
+      ([key]) => !API_KEY_MANAGEMENT_KEYS.includes(key)
+    )
+  ) as SiteSettingsInput;
+
   // Validate input keys
-  for (const key of Object.keys(input)) {
+  for (const key of Object.keys(filteredInput)) {
     if (!ALLOWED_KEYS.includes(key as (typeof ALLOWED_KEYS)[number])) {
       validationError(`Unknown setting key: ${key}`);
     }
   }
 
   // Validate required fields are not empty strings
-  if (input.site_name !== undefined && input.site_name.trim() === '') {
+  if (filteredInput.site_name !== undefined && filteredInput.site_name.trim() === '') {
     validationError('site_name cannot be empty');
   }
 
   // Validate URL schemes for social links
   for (const key of URL_KEYS) {
-    if (input[key] !== undefined) {
-      validateUrlScheme(input[key] as string, key);
+    if (filteredInput[key] !== undefined) {
+      validateUrlScheme(filteredInput[key] as string, key);
     }
   }
 
   // Batch update using upsert
   // For API keys: skip if value is empty or masked (ends with ****)
-  const statements = Object.entries(input)
+  const statements = Object.entries(filteredInput)
     .filter(([key, value]) => {
       if (value === undefined) return false;
 

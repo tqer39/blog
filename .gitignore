@@ -636,3 +636,6 @@ lighthouse-report.report.json
 
 # tmp
 tmp/
+
+# Local environment overrides (contains secrets)
+.envrc.local
