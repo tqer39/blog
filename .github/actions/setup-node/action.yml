@@ -20,10 +20,17 @@ runs:
         mise trust 2>/dev/null || true
         mise install
 
+    - name: Get Node.js version from mise.toml
+      id: node-version
+      shell: bash
+      run: |
+        NODE_VERSION=$(grep '^node = ' .mise.toml | sed 's/node = "\(.*\)"/\1/')
+        echo "version=$NODE_VERSION" >> $GITHUB_OUTPUT
+
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
-        node-version-file: .mise.toml
+        node-version: ${{ steps.node-version.outputs.version }}
         cache: pnpm
 
     - name: Cache Turborepo
