@@ -93,10 +93,11 @@ aiHandler.post('/test-key', async (c) => {
   const apiKey = (results?.[0]?.value as string) || '';
 
   if (!apiKey) {
-    return c.json<TestAIKeyResponse>(
-      { success: false, provider, message: 'API key not configured' },
-      400
-    );
+    return c.json<TestAIKeyResponse>({
+      success: false,
+      provider,
+      message: 'API key not configured',
+    });
   }
 
   try {
@@ -162,10 +163,7 @@ aiHandler.post('/test-key', async (c) => {
     return c.json<TestAIKeyResponse>({ success: true, provider });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Test failed';
-    return c.json<TestAIKeyResponse>(
-      { success: false, provider, message },
-      400
-    );
+    return c.json<TestAIKeyResponse>({ success: false, provider, message });
   }
 });
 
