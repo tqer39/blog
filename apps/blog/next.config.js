@@ -41,6 +41,7 @@ const cspDirectives = {
     'https://picsum.photos',
     'https://*.picsum.photos',
     'https://images.unsplash.com',
+    'https://*.esa.io',
     ...(isDev ? [DOMAINS.CMS_API_LOCAL] : []),
   ],
   'font-src': ["'self'", 'https://fonts.gstatic.com'],
