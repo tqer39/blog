@@ -64,7 +64,8 @@ aiHandler.get('/status', async (c) => {
 
 // Test API key endpoint
 aiHandler.post('/test-key', async (c) => {
-  const { provider } = await c.req.json<TestAIKeyRequest>();
+  const { provider, apiKey: providedKey } =
+    await c.req.json<TestAIKeyRequest>();
 
   if (!provider || !['openai', 'anthropic', 'gemini'].includes(provider)) {
     return c.json<TestAIKeyResponse>(
@@ -77,20 +78,25 @@ aiHandler.post('/test-key', async (c) => {
     );
   }
 
-  // Get the API key from settings
-  const keyMap: Record<AIProvider, string> = {
-    openai: 'ai_openai_api_key',
-    anthropic: 'ai_anthropic_api_key',
-    gemini: 'ai_gemini_api_key',
-  };
+  // Use provided key or fall back to saved key from database
+  let apiKey = providedKey || '';
 
-  const { results } = await c.env.DB.prepare(
-    'SELECT value FROM site_settings WHERE key = ?'
-  )
-    .bind(keyMap[provider])
-    .all();
+  if (!apiKey) {
+    // Get the API key from settings
+    const keyMap: Record<AIProvider, string> = {
+      openai: 'ai_openai_api_key',
+      anthropic: 'ai_anthropic_api_key',
+      gemini: 'ai_gemini_api_key',
+    };
 
-  const apiKey = (results?.[0]?.value as string) || '';
+    const { results } = await c.env.DB.prepare(
+      'SELECT value FROM site_settings WHERE key = ?'
+    )
+      .bind(keyMap[provider])
+      .all();
+
+    apiKey = (results?.[0]?.value as string) || '';
+  }
 
   if (!apiKey) {
     return c.json<TestAIKeyResponse>({

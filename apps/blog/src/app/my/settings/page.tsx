@@ -350,14 +350,17 @@ export default function SettingsPage() {
     }
   }
 
-  async function handleTestAIKey(provider: AIProvider) {
+  async function handleTestAIKey(provider: AIProvider, apiKey: string) {
     const confirmed = window.confirm(t('settings.aiTools.testConfirm'));
     if (!confirmed) return;
+
+    // Don't send masked values - use empty string to fall back to saved key
+    const keyToTest = apiKey.endsWith('****') ? undefined : apiKey;
 
     try {
       setTestingProvider(provider);
       setTestResults((prev) => ({ ...prev, [provider]: null }));
-      const result = await testAIKey(provider);
+      const result = await testAIKey(provider, keyToTest);
       setTestResults((prev) => ({
         ...prev,
         [provider]: { success: result.success, message: result.message },
@@ -793,7 +796,7 @@ export default function SettingsPage() {
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => handleTestAIKey(provider)}
+                        onClick={() => handleTestAIKey(provider, value)}
                         disabled={!hasKey || isTesting}
                         className="shrink-0"
                       >

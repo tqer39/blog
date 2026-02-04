@@ -352,6 +352,7 @@ export type AIProvider = 'openai' | 'anthropic' | 'gemini';
 
 export interface TestAIKeyRequest {
   provider: AIProvider;
+  apiKey?: string; // Optional: test this key instead of the saved one
 }
 
 export interface TestAIKeyResponse {

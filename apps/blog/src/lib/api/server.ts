@@ -302,11 +302,12 @@ export async function getAIToolsStatus(): Promise<AIToolsStatus> {
 }
 
 export async function testAIKey(
-  provider: AIProvider
+  provider: AIProvider,
+  apiKey?: string
 ): Promise<TestAIKeyResponse> {
   return fetchApi('/ai/test-key', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ provider }),
+    body: JSON.stringify({ provider, apiKey }),
   });
 }

@@ -292,9 +292,10 @@ export async function getAIToolsStatus(): Promise<AIToolsStatus> {
 }
 
 export async function testAIKey(
-  provider: AIProvider
+  provider: AIProvider,
+  apiKey?: string
 ): Promise<TestAIKeyResponse> {
-  return postJson('/ai/test-key', { provider });
+  return postJson('/ai/test-key', { provider, apiKey });
 }
 
 // Settings

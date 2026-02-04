@@ -4,7 +4,10 @@ import { testAIKey } from '@/lib/api/server';
 
 export async function POST(request: Request) {
   try {
-    const { provider } = (await request.json()) as { provider: AIProvider };
+    const { provider, apiKey } = (await request.json()) as {
+      provider: AIProvider;
+      apiKey?: string;
+    };
 
     if (!provider || !['openai', 'anthropic', 'gemini'].includes(provider)) {
       return NextResponse.json(
@@ -17,7 +20,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await testAIKey(provider);
+    const result = await testAIKey(provider, apiKey);
     return NextResponse.json(result);
   } catch (error) {
     const message =
