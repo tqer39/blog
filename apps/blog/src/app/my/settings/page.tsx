@@ -5,6 +5,8 @@ import { Alert, AlertDescription, Button } from '@blog/ui';
 import {
   ArrowUpRight,
   Check,
+  CircleCheck,
+  CircleX,
   Copy,
   Eye,
   EyeOff,
@@ -188,6 +190,13 @@ export default function SettingsPage() {
   const [testingProvider, setTestingProvider] = useState<AIProvider | null>(
     null
   );
+  const [testResults, setTestResults] = useState<
+    Record<AIProvider, { success: boolean; message?: string } | null>
+  >({
+    openai: null,
+    anthropic: null,
+    gemini: null,
+  });
 
   const loadSettings = useCallback(async () => {
     try {
@@ -347,25 +356,19 @@ export default function SettingsPage() {
 
     try {
       setTestingProvider(provider);
-      setMessage(null);
+      setTestResults((prev) => ({ ...prev, [provider]: null }));
       const result = await testAIKey(provider);
-      if (result.success) {
-        setMessage({
-          type: 'success',
-          text: t('settings.aiTools.testSuccess'),
-        });
-      } else {
-        setMessage({
-          type: 'error',
-          text: result.message || t('settings.aiTools.testError'),
-        });
-      }
+      setTestResults((prev) => ({
+        ...prev,
+        [provider]: { success: result.success, message: result.message },
+      }));
     } catch (err) {
-      setMessage({
-        type: 'error',
-        text:
-          err instanceof Error ? err.message : t('settings.aiTools.testError'),
-      });
+      const errorMessage =
+        err instanceof Error ? err.message : t('settings.aiTools.testError');
+      setTestResults((prev) => ({
+        ...prev,
+        [provider]: { success: false, message: errorMessage },
+      }));
     } finally {
       setTestingProvider(null);
     }
@@ -744,6 +747,7 @@ export default function SettingsPage() {
                 const isMasked = value.endsWith('****');
                 const hasKey = Boolean(value);
                 const isTesting = testingProvider === provider;
+                const testResult = testResults[provider];
 
                 return (
                   <div key={key}>
@@ -801,10 +805,31 @@ export default function SettingsPage() {
                         {t('settings.aiTools.testButton')}
                       </Button>
                     </div>
-                    {isMasked && (
+                    {isMasked && !testResult && (
                       <p className="mt-1 text-xs text-muted-foreground">
                         {t('settings.aiTools.apiKeySet')}
                       </p>
+                    )}
+                    {testResult && (
+                      <div
+                        className={`mt-2 flex items-center gap-2 rounded-lg px-3 py-2 text-sm ${
+                          testResult.success
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                            : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                        }`}
+                      >
+                        {testResult.success ? (
+                          <CircleCheck className="h-4 w-4 shrink-0" />
+                        ) : (
+                          <CircleX className="h-4 w-4 shrink-0" />
+                        )}
+                        <span>
+                          {testResult.success
+                            ? t('settings.aiTools.testSuccess')
+                            : testResult.message ||
+                              t('settings.aiTools.testError')}
+                        </span>
+                      </div>
                     )}
                   </div>
                 );
