@@ -20,7 +20,7 @@ jobs:
       - uses: ./.github/actions/deploy-cms-api
         with:
           wrangler_env: dev
-          placeholder: to-be-set-by-terraform-dev
+          placeholder: to-be-set-by-ci-dev
           d1_database_id: ${{ secrets.D1_DATABASE_ID_DEV }}
           cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

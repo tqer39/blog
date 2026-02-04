@@ -32,7 +32,8 @@ vars = { ENVIRONMENT = "dev", BASIC_AUTH_ENABLED = "true" }
 [[env.dev.d1_databases]]
 binding = "DB"
 database_name = "blog-cms-dev"
-database_id = "to-be-set-by-terraform-dev"
+# Placeholder: replaced with actual D1 database ID from GitHub Secrets during CI/CD deployment
+database_id = "to-be-set-by-ci-dev"
 
 [[env.dev.r2_buckets]]
 binding = "R2_BUCKET"
@@ -49,7 +50,8 @@ vars = { ENVIRONMENT = "prod", BASIC_AUTH_ENABLED = "false" }
 [[env.prod.d1_databases]]
 binding = "DB"
 database_name = "blog-cms-prod"
-database_id = "to-be-set-by-terraform"
+# Placeholder: replaced with actual D1 database ID from GitHub Secrets during CI/CD deployment
+database_id = "to-be-set-by-ci"
 
 [[env.prod.r2_buckets]]
 binding = "R2_BUCKET"
