@@ -113,12 +113,10 @@ export function ArticleEditor({
     }
   }, []);
 
-  // Auto-save draft when article changes (debounced in hook)
-  useEffect(() => {
-    // Only save if the article has actually changed from its initial state
-    // This prevents saving on initial mount or StrictMode double-invocation
+  // Check if article has changed from its initial state
+  const hasArticleChanges = useCallback(() => {
     const pristine = pristineArticleRef.current;
-    const hasChanges =
+    return (
       article.title !== pristine.title ||
       article.description !== pristine.description ||
       article.content !== pristine.content ||
@@ -127,9 +125,15 @@ export function ArticleEditor({
       article.headerImageId !== pristine.headerImageId ||
       article.slideMode !== pristine.slideMode ||
       article.slideDuration !== pristine.slideDuration ||
-      JSON.stringify(article.tags) !== JSON.stringify(pristine.tags);
+      JSON.stringify(article.tags) !== JSON.stringify(pristine.tags)
+    );
+  }, [article]);
 
-    if (!hasChanges) {
+  // Auto-save draft when article changes (debounced in hook)
+  useEffect(() => {
+    // Only save if the article has actually changed from its initial state
+    // This prevents saving on initial mount or StrictMode double-invocation
+    if (!hasArticleChanges()) {
       return;
     }
 
@@ -145,7 +149,7 @@ export function ArticleEditor({
       slideMode: article.slideMode,
       slideDuration: article.slideDuration,
     });
-  }, [article, saveDraft]);
+  }, [article, saveDraft, hasArticleChanges]);
 
   // Handle draft restoration
   const handleRestoreDraft = useCallback(() => {
@@ -576,7 +580,18 @@ export function ArticleEditor({
           </Button>
 
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                // Only clear draft if changes were made during this session
+                // This preserves existing drafts when user cancels without making changes
+                if (hasArticleChanges()) {
+                  clearDraft();
+                }
+                onCancel();
+              }}
+            >
               {t.cancel}
             </Button>
           )}
