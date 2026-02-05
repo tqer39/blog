@@ -174,14 +174,19 @@ settingsHandler.put('/', async (c) => {
   }
 
   // Batch update using upsert
-  // For API keys: skip if value is empty or masked (ends with ****)
-  const statements = Object.entries(filteredInput)
+  // For API keys: skip masked values, but allow empty strings (for deletion)
+  const upsertStatements = Object.entries(filteredInput)
     .filter(([key, value]) => {
       if (value === undefined) return false;
 
-      // For API key fields, skip empty strings and masked values
+      // For API key fields, skip masked values but allow empty strings
       if (API_KEY_FIELDS.includes(key as (typeof API_KEY_FIELDS)[number])) {
-        if (value === '' || isMaskedValue(value as string)) {
+        // Skip masked values (user didn't change the key)
+        if (isMaskedValue(value as string)) {
+          return false;
+        }
+        // Empty strings will be handled separately as DELETE
+        if (value === '') {
           return false;
         }
       }
@@ -194,8 +199,22 @@ settingsHandler.put('/', async (c) => {
       ).bind(key, value, value)
     );
 
-  if (statements.length > 0) {
-    await c.env.DB.batch(statements);
+  // Delete API keys that are set to empty string
+  const deleteStatements = Object.entries(filteredInput)
+    .filter(([key, value]) => {
+      if (value === undefined) return false;
+      if (!API_KEY_FIELDS.includes(key as (typeof API_KEY_FIELDS)[number])) {
+        return false;
+      }
+      return value === '';
+    })
+    .map(([key]) =>
+      c.env.DB.prepare('DELETE FROM site_settings WHERE key = ?').bind(key)
+    );
+
+  const allStatements = [...upsertStatements, ...deleteStatements];
+  if (allStatements.length > 0) {
+    await c.env.DB.batch(allStatements);
   }
 
   // Return updated settings

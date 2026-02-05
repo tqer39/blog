@@ -652,7 +652,8 @@ export default function SettingsPage() {
                   >
                     {icon}
                     {label}
-                    {(isFieldModified(settingKey) || isFieldModified(showKey)) && (
+                    {(isFieldModified(settingKey) ||
+                      isFieldModified(showKey)) && (
                       <span className="inline-block h-2 w-2 rounded-full bg-blue-500" />
                     )}
                   </label>

@@ -20,7 +20,11 @@ interface ColorPickerProps {
   label?: string;
 }
 
-export function ColorPicker({ value, onChange, label = 'Color' }: ColorPickerProps) {
+export function ColorPicker({
+  value,
+  onChange,
+  label = 'Color',
+}: ColorPickerProps) {
   return (
     <div className="space-y-2">
       <Label htmlFor="color-picker">{label}</Label>
