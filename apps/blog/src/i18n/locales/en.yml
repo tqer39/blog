@@ -382,6 +382,7 @@ editor:
     list: List
     codeBlock: Code Block
     link: Link
+    emoji: Emoji
     fullscreen: Fullscreen
     aiContinuation: AI Continuation
     continuationTitle: Continuation Suggestions
@@ -391,6 +392,16 @@ editor:
     long: Long
     confidence: Confidence
     generateSuggestion: Click button to generate suggestions
+  emojiPicker:
+    searchPlaceholder: Search...
+    noResults: No results found
+    smileys: Smileys
+    gestures: Gestures
+    symbols: Symbols
+    food: Food
+    activities: Activities
+    tech: Tech
+    nature: Nature
   previousResult: Previous result
 
 aiModelSettings:

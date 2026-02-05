@@ -33,6 +33,7 @@ import {
   Loader2,
   Maximize2,
   Pencil,
+  Smile,
   Wand2,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -40,6 +41,7 @@ import { ArticleContent } from '@/components/ArticleContent';
 import { useI18n } from '@/i18n';
 import { suggestContinuation } from '@/lib/api/client';
 import { AlertBox } from './AlertBox';
+import { EmojiPicker } from './EmojiPicker';
 import { EmojiSuggester } from './EmojiSuggester';
 import { LoadingState } from './LoadingState';
 import { TextTransformPopover } from './TextTransformPopover';
@@ -96,6 +98,7 @@ export function MarkdownEditor({
   const [isSuggestionOpen, setIsSuggestionOpen] = useState(false);
   const [selectedLength, setSelectedLength] =
     useState<ContinuationLength>('medium');
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
 
   const insertTextAtCursor = useCallback(
     (text: string) => {
@@ -438,6 +441,31 @@ export function MarkdownEditor({
               </TooltipTrigger>
               <TooltipContent>{t.link}</TooltipContent>
             </Tooltip>
+
+            {/* Emoji Picker Button */}
+            <Popover
+              open={isEmojiPickerOpen}
+              onOpenChange={setIsEmojiPickerOpen}
+            >
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <Smile className="h-4 w-4" />
+                    </Button>
+                  </PopoverTrigger>
+                </TooltipTrigger>
+                <TooltipContent>{t.emoji}</TooltipContent>
+              </Tooltip>
+              <PopoverContent className="w-auto p-0" align="start">
+                <EmojiPicker
+                  onSelect={(emoji) => {
+                    insertTextAtCursor(emoji);
+                    setIsEmojiPickerOpen(false);
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
 
             <Separator orientation="vertical" className="mx-1 h-6" />
 

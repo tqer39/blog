@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // Common emojis with colon notation
-const EMOJI_MAP: Record<string, string> = {
+export const EMOJI_MAP: Record<string, string> = {
   // Smileys & People
   smile: '😄',
   grinning: '😀',

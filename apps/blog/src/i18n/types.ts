@@ -361,6 +361,7 @@ export interface Messages {
       list: string;
       codeBlock: string;
       link: string;
+      emoji: string;
       fullscreen: string;
       aiContinuation: string;
       continuationTitle: string;
@@ -370,6 +371,17 @@ export interface Messages {
       long: string;
       confidence: string;
       generateSuggestion: string;
+    };
+    emojiPicker: {
+      searchPlaceholder: string;
+      noResults: string;
+      smileys: string;
+      gestures: string;
+      symbols: string;
+      food: string;
+      activities: string;
+      tech: string;
+      nature: string;
     };
     previousResult: string;
   };

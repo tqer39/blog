@@ -382,6 +382,7 @@ editor:
     list: リスト
     codeBlock: コードブロック
     link: リンク
+    emoji: 絵文字
     fullscreen: 全画面
     aiContinuation: AI続き提案
     continuationTitle: 続きの提案
@@ -391,6 +392,16 @@ editor:
     long: 長い
     confidence: 確信度
     generateSuggestion: ボタンをクリックして提案を生成
+  emojiPicker:
+    searchPlaceholder: 検索...
+    noResults: 結果がありません
+    smileys: 顔・感情
+    gestures: ジェスチャー
+    symbols: シンボル
+    food: 食べ物
+    activities: アクティビティ
+    tech: テック
+    nature: 自然
   previousResult: 前回の結果
 
 aiModelSettings:
