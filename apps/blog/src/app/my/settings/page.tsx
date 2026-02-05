@@ -331,6 +331,8 @@ export default function SettingsPage() {
       setSaving(true);
       setMessage(null);
       const response = await updateSiteSettings(settings);
+      // Update both settings and originalSettings to reflect saved state
+      setSettings(response.settings);
       setOriginalSettings(response.settings);
       setMessage({ type: 'success', text: t('settings.saveSuccess') });
     } catch (err) {
