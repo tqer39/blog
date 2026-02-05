@@ -143,12 +143,12 @@ articles:
     image: 画像
     title: タイトル
     status: ステータス
-    date: 日付
+    date: 公開日
     tags: タグ
     actions: 操作
     sortByTitle: タイトルで並び替え
     sortByStatus: ステータスで並び替え
-    sortByDate: 日付で並び替え
+    sortByDate: 公開日で並び替え
   status:
     published: 公開済み
     draft: 下書き

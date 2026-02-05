@@ -143,12 +143,12 @@ articles:
     image: Image
     title: Title
     status: Status
-    date: Date
+    date: Published
     tags: Tags
     actions: Actions
     sortByTitle: Sort by title
     sortByStatus: Sort by status
-    sortByDate: Sort by date
+    sortByDate: Sort by published date
   status:
     published: Published
     draft: Draft
