@@ -777,7 +777,7 @@ export function ArticleEditor({
                   alt="Header preview"
                   width={400}
                   height={200}
-                  className="max-h-48 rounded-lg border object-cover"
+                  className="max-h-48 w-auto rounded-lg border object-cover"
                   unoptimized
                 />
                 <button

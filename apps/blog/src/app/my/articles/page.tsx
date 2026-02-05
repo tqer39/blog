@@ -359,7 +359,7 @@ export default function ArticleListPage() {
                         alt=""
                         width={48}
                         height={32}
-                        className="rounded object-cover"
+                        className="h-8 w-12 rounded object-cover"
                         unoptimized
                       />
                     ) : (
