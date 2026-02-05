@@ -154,19 +154,28 @@ export type GeminiImageModel =
   | 'gemini-2.5-flash-image'
   | 'gemini-3-pro-image-preview';
 
+export type GeminiTextModel =
+  | 'gemini-2.5-flash'
+  | 'gemini-2.5-pro'
+  | 'gemini-3-flash-preview';
+
 export type OpenAIImageModel = 'dall-e-3' | 'dall-e-2';
 
 export type ImageModel = GeminiImageModel | OpenAIImageModel;
 
 export type ImageProvider = 'gemini' | 'openai';
 
+// Unified text model type for multi-provider support
+export type TextModel = OpenAIModel | AnthropicModel | GeminiTextModel;
+export type TextProvider = 'openai' | 'anthropic' | 'gemini';
+
 // AI Model Settings
 export interface AIModelSettings {
-  metadata: OpenAIModel;
-  review: AnthropicModel;
-  outline: AnthropicModel;
-  transform: AnthropicModel;
-  continuation: AnthropicModel;
+  metadata: TextModel;
+  review: TextModel;
+  outline: TextModel;
+  transform: TextModel;
+  continuation: TextModel;
   image: ImageModel;
 }
 
@@ -199,7 +208,7 @@ export interface ReviewItem {
 export interface ReviewArticleRequest {
   title: string;
   content: string;
-  model?: AnthropicModel;
+  model?: TextModel;
   articleHash?: string;
 }
 
@@ -217,7 +226,7 @@ export interface SuggestContinuationRequest {
   content: string;
   cursorPosition: number;
   length?: ContinuationLength;
-  model?: AnthropicModel;
+  model?: TextModel;
 }
 
 export interface ContinuationSuggestion {
@@ -235,7 +244,7 @@ export type ArticleCategory = 'tech' | 'life' | 'books';
 export interface GenerateOutlineRequest {
   title: string;
   category?: ArticleCategory;
-  model?: AnthropicModel;
+  model?: TextModel;
 }
 
 export interface GenerateOutlineResponse {
@@ -257,7 +266,7 @@ export interface TransformTextRequest {
   text: string;
   action: TransformAction;
   targetLanguage?: TransformLanguage;
-  model?: AnthropicModel;
+  model?: TextModel;
 }
 
 export interface TransformTextResponse {
@@ -269,7 +278,7 @@ export interface GenerateMetadataRequest {
   title: string;
   content: string;
   existingTags?: string[];
-  model?: OpenAIModel;
+  model?: TextModel;
 }
 
 export interface GenerateMetadataResponse {

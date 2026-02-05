@@ -333,9 +333,7 @@ export function EmojiPicker({ onSelect }: EmojiPickerProps) {
 
     for (const [categoryKey, category] of Object.entries(EMOJI_CATEGORIES)) {
       const filteredKeys = category.keys.filter(
-        (key) =>
-          key.includes(lowerSearch) ||
-          EMOJI_MAP[key]?.includes(search)
+        (key) => key.includes(lowerSearch) || EMOJI_MAP[key]?.includes(search)
       );
 
       if (filteredKeys.length > 0) {

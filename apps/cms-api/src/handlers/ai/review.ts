@@ -1,5 +1,5 @@
 /**
- * Review article using Claude
+ * Review article using multiple providers
  */
 import type {
   ReviewArticleRequest,
@@ -8,23 +8,25 @@ import type {
 } from '@blog/cms-types';
 import { Hono } from 'hono';
 import type { Env } from '../../index';
-import { getAnthropicApiKey } from '../../lib/api-keys';
-import { internalError, validationError } from '../../lib/errors';
 import {
-  ANTHROPIC_API_URL,
+  getAnthropicApiKey,
+  getGeminiApiKey,
+  getOpenAIApiKey,
+} from '../../lib/api-keys';
+import { internalError, validationError } from '../../lib/errors';
+import { callTextProvider } from './_providers';
+import {
   DEFAULT_ANTHROPIC_MODEL,
+  getTextProvider,
   REVIEW_SYSTEM_PROMPT,
   VALID_ANTHROPIC_MODELS,
+  VALID_GEMINI_TEXT_MODELS,
+  VALID_OPENAI_MODELS,
 } from './_shared';
 
 export const reviewHandler = new Hono<{ Bindings: Env }>();
 
 reviewHandler.post('/', async (c) => {
-  const apiKey = await getAnthropicApiKey(c.env);
-  if (!apiKey) {
-    internalError('Anthropic API key not configured');
-  }
-
   const body = await c.req.json<ReviewArticleRequest>();
   const { title, content, model = DEFAULT_ANTHROPIC_MODEL, articleHash } = body;
 
@@ -35,11 +37,32 @@ reviewHandler.post('/', async (c) => {
     });
   }
 
-  // Validate model
-  if (!VALID_ANTHROPIC_MODELS.includes(model)) {
+  // Detect provider from model
+  const provider = getTextProvider(model);
+  if (!provider) {
     validationError('Invalid model', {
-      model: `Must be one of: ${VALID_ANTHROPIC_MODELS.join(', ')}`,
+      model: `Must be one of: ${[...VALID_OPENAI_MODELS, ...VALID_ANTHROPIC_MODELS, ...VALID_GEMINI_TEXT_MODELS].join(', ')}`,
     });
+  }
+
+  // Get API key based on provider
+  let apiKey: string | null = null;
+  switch (provider) {
+    case 'openai':
+      apiKey = await getOpenAIApiKey(c.env);
+      break;
+    case 'anthropic':
+      apiKey = await getAnthropicApiKey(c.env);
+      break;
+    case 'gemini':
+      apiKey = await getGeminiApiKey(c.env);
+      break;
+  }
+
+  if (!apiKey) {
+    internalError(
+      `${provider.charAt(0).toUpperCase() + provider.slice(1)} API key not configured`
+    );
   }
 
   // Truncate content if too long (keep first 30000 chars)
@@ -53,40 +76,17 @@ reviewHandler.post('/', async (c) => {
 ${truncatedContent}`;
 
   try {
-    const response = await fetch(ANTHROPIC_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey as string,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: 4096,
-        system: REVIEW_SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: userPrompt }],
-      }),
+    const response = await callTextProvider(provider, apiKey, {
+      model,
+      systemPrompt: REVIEW_SYSTEM_PROMPT,
+      userPrompt,
+      maxTokens: 4096,
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      console.error('Anthropic API error:', error);
-      internalError('Failed to review article');
-    }
-
-    const data = await response.json<{
-      content: Array<{ type: string; text: string }>;
-    }>();
-
-    const textContent = data.content.find((c) => c.type === 'text');
-    if (!textContent) {
-      internalError('No text response from Claude');
-    }
-
     // Parse JSON from response
-    const jsonMatch = textContent.text.match(/\{[\s\S]*\}/);
+    const jsonMatch = response.text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.error('Failed to parse JSON from response:', textContent.text);
+      console.error('Failed to parse JSON from response:', response.text);
       internalError('Failed to parse review response');
     }
 
