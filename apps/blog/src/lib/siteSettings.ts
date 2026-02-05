@@ -17,6 +17,10 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   social_linkedin: '',
   social_wantedly: '',
   social_lapras: '',
+  social_hatena: '',
+  social_medium: '',
+  social_note: '',
+  social_techfeed: '',
   show_rss_link: 'true',
   show_github_link: 'true',
   show_twitter_link: 'true',
@@ -26,6 +30,10 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   show_linkedin_link: 'true',
   show_wantedly_link: 'true',
   show_lapras_link: 'true',
+  show_hatena_link: 'true',
+  show_medium_link: 'true',
+  show_note_link: 'true',
+  show_techfeed_link: 'true',
   default_theme: 'system',
   default_locale: 'auto', // "auto" | "ja" | "en"
   // AI API keys (empty by default, set via admin settings or environment variables)

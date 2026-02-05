@@ -71,6 +71,62 @@ function LaprasIcon({ className }: { className?: string }) {
   );
 }
 
+// Hatena Blog icon (B! logo)
+function HatenaIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12.017 22.162c-5.5 0-9.962-4.462-9.962-9.962S6.517 2.238 12.017 2.238s9.962 4.462 9.962 9.962-4.462 9.962-9.962 9.962zm-1.5-14.5h-3v10h3v-4h.5c2.5 0 3.5-1.5 3.5-3s-1-3-3.5-3h-.5zm.5 4h-.5v-2h.5c1 0 1.5.5 1.5 1s-.5 1-1.5 1zm5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+    </svg>
+  );
+}
+
+// Medium icon
+function MediumIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
+    </svg>
+  );
+}
+
+// note.com icon
+function NoteIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M22.8 3.6H1.2C.54 3.6 0 4.14 0 4.8v14.4c0 .66.54 1.2 1.2 1.2h21.6c.66 0 1.2-.54 1.2-1.2V4.8c0-.66-.54-1.2-1.2-1.2zM8.4 16.8H4.8v-9.6h3.6v9.6zm6 0h-3.6V12h3.6v4.8zm5.4 0h-3.6V9.6h3.6v7.2z" />
+    </svg>
+  );
+}
+
+// TechFeed icon
+function TechFeedIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M3 3h18v3H3V3zm0 5h18v2H3V8zm0 4h12v2H3v-2zm0 4h18v2H3v-2zm0 4h12v2H3v-2z" />
+    </svg>
+  );
+}
+
 export async function Footer() {
   const settings = await getSiteSettings();
 
@@ -79,30 +135,6 @@ export async function Footer() {
       <div className="mx-auto max-w-4xl px-4 py-8">
         <div className="flex flex-col items-center gap-4">
           <div className="flex gap-4">
-            {settings.social_github &&
-              settings.show_github_link !== 'false' && (
-                <a
-                  href={settings.social_github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
-                  aria-label="GitHub"
-                >
-                  <Github className="h-6 w-6" />
-                </a>
-              )}
-            {settings.social_twitter &&
-              settings.show_twitter_link !== 'false' && (
-                <a
-                  href={settings.social_twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
-                  aria-label="X (Twitter)"
-                >
-                  <XIcon className="h-6 w-6" />
-                </a>
-              )}
             {settings.social_bento && settings.show_bento_link !== 'false' && (
               <a
                 href={settings.social_bento}
@@ -126,16 +158,40 @@ export async function Footer() {
                   <BlueSkyIcon className="h-6 w-6" />
                 </a>
               )}
-            {settings.social_threads &&
-              settings.show_threads_link !== 'false' && (
+            {settings.social_github &&
+              settings.show_github_link !== 'false' && (
                 <a
-                  href={settings.social_threads}
+                  href={settings.social_github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
-                  aria-label="Threads"
+                  aria-label="GitHub"
                 >
-                  <ThreadsIcon className="h-6 w-6" />
+                  <Github className="h-6 w-6" />
+                </a>
+              )}
+            {settings.social_hatena &&
+              settings.show_hatena_link !== 'false' && (
+                <a
+                  href={settings.social_hatena}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                  aria-label="Hatena Blog"
+                >
+                  <HatenaIcon className="h-6 w-6" />
+                </a>
+              )}
+            {settings.social_lapras &&
+              settings.show_lapras_link !== 'false' && (
+                <a
+                  href={settings.social_lapras}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                  aria-label="Lapras"
+                >
+                  <LaprasIcon className="h-6 w-6" />
                 </a>
               )}
             {settings.social_linkedin &&
@@ -150,6 +206,53 @@ export async function Footer() {
                   <Linkedin className="h-6 w-6" />
                 </a>
               )}
+            {settings.social_medium &&
+              settings.show_medium_link !== 'false' && (
+                <a
+                  href={settings.social_medium}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                  aria-label="Medium"
+                >
+                  <MediumIcon className="h-6 w-6" />
+                </a>
+              )}
+            {settings.social_note && settings.show_note_link !== 'false' && (
+              <a
+                href={settings.social_note}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                aria-label="note"
+              >
+                <NoteIcon className="h-6 w-6" />
+              </a>
+            )}
+            {settings.social_techfeed &&
+              settings.show_techfeed_link !== 'false' && (
+                <a
+                  href={settings.social_techfeed}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                  aria-label="TechFeed"
+                >
+                  <TechFeedIcon className="h-6 w-6" />
+                </a>
+              )}
+            {settings.social_threads &&
+              settings.show_threads_link !== 'false' && (
+                <a
+                  href={settings.social_threads}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
+                  aria-label="Threads"
+                >
+                  <ThreadsIcon className="h-6 w-6" />
+                </a>
+              )}
             {settings.social_wantedly &&
               settings.show_wantedly_link !== 'false' && (
                 <a
@@ -162,16 +265,16 @@ export async function Footer() {
                   <WantedlyIcon className="h-6 w-6" />
                 </a>
               )}
-            {settings.social_lapras &&
-              settings.show_lapras_link !== 'false' && (
+            {settings.social_twitter &&
+              settings.show_twitter_link !== 'false' && (
                 <a
-                  href={settings.social_lapras}
+                  href={settings.social_twitter}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="cursor-pointer text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
-                  aria-label="Lapras"
+                  aria-label="X (Twitter)"
                 >
-                  <LaprasIcon className="h-6 w-6" />
+                  <XIcon className="h-6 w-6" />
                 </a>
               )}
             {settings.show_rss_link === 'true' && (

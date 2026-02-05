@@ -19,6 +19,10 @@ const ALLOWED_KEYS = [
   'social_linkedin',
   'social_wantedly',
   'social_lapras',
+  'social_hatena',
+  'social_medium',
+  'social_note',
+  'social_techfeed',
   'show_rss_link',
   'show_github_link',
   'show_twitter_link',
@@ -28,6 +32,10 @@ const ALLOWED_KEYS = [
   'show_linkedin_link',
   'show_wantedly_link',
   'show_lapras_link',
+  'show_hatena_link',
+  'show_medium_link',
+  'show_note_link',
+  'show_techfeed_link',
   'ai_openai_api_key',
   'ai_anthropic_api_key',
   'ai_gemini_api_key',
@@ -58,6 +66,10 @@ const URL_KEYS = [
   'social_linkedin',
   'social_wantedly',
   'social_lapras',
+  'social_hatena',
+  'social_medium',
+  'social_note',
+  'social_techfeed',
 ] as const;
 const ALLOWED_SCHEMES = ['https:', 'http:'];
 

@@ -102,6 +102,62 @@ function WantedlyIcon({ className }: { className?: string }) {
   );
 }
 
+// Hatena Blog icon (B! logo)
+function HatenaIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12.017 22.162c-5.5 0-9.962-4.462-9.962-9.962S6.517 2.238 12.017 2.238s9.962 4.462 9.962 9.962-4.462 9.962-9.962 9.962zm-1.5-14.5h-3v10h3v-4h.5c2.5 0 3.5-1.5 3.5-3s-1-3-3.5-3h-.5zm.5 4h-.5v-2h.5c1 0 1.5.5 1.5 1s-.5 1-1.5 1zm5 6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+    </svg>
+  );
+}
+
+// Medium icon
+function MediumIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
+    </svg>
+  );
+}
+
+// note.com icon
+function NoteIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M22.8 3.6H1.2C.54 3.6 0 4.14 0 4.8v14.4c0 .66.54 1.2 1.2 1.2h21.6c.66 0 1.2-.54 1.2-1.2V4.8c0-.66-.54-1.2-1.2-1.2zM8.4 16.8H4.8v-9.6h3.6v9.6zm6 0h-3.6V12h3.6v4.8zm5.4 0h-3.6V9.6h3.6v7.2z" />
+    </svg>
+  );
+}
+
+// TechFeed icon
+function TechFeedIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M3 3h18v3H3V3zm0 5h18v2H3V8zm0 4h12v2H3v-2zm0 4h18v2H3v-2zm0 4h12v2H3v-2z" />
+    </svg>
+  );
+}
+
 // Social link prefixes for each service
 const SOCIAL_PREFIXES = {
   github: 'https://github.com/',
@@ -112,6 +168,10 @@ const SOCIAL_PREFIXES = {
   linkedin: 'https://www.linkedin.com/in/',
   wantedly: 'https://www.wantedly.com/id/',
   lapras: 'https://lapras.com/public/',
+  hatena: 'https://', // Special: {id}.hatenablog.com format
+  medium: 'https://medium.com/@',
+  note: 'https://note.com/',
+  techfeed: 'https://techfeed.io/people/@',
 } as const;
 
 // Extract ID from full URL
@@ -120,6 +180,22 @@ function extractSocialId(
   service: keyof typeof SOCIAL_PREFIXES
 ): string {
   if (!url) return '';
+
+  // Special handling for Hatena Blog (https://{id}.hatenablog.com/)
+  if (service === 'hatena') {
+    const hatenaMatch = url.match(
+      /^https?:\/\/([^.]+)\.hatenablog\.(com|jp|ne\.jp)\/?$/
+    );
+    if (hatenaMatch) {
+      return hatenaMatch[1];
+    }
+    // If it's not a full URL, treat it as an ID
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      return url;
+    }
+    return '';
+  }
+
   const prefix = SOCIAL_PREFIXES[service];
   if (url.startsWith(prefix)) {
     return url.slice(prefix.length).replace(/\/$/, '');
@@ -141,6 +217,12 @@ function buildSocialUrl(
   service: keyof typeof SOCIAL_PREFIXES
 ): string {
   if (!id) return '';
+
+  // Special handling for Hatena Blog (https://{id}.hatenablog.com/)
+  if (service === 'hatena') {
+    return `https://${id}.hatenablog.com/`;
+  }
+
   return `${SOCIAL_PREFIXES[service]}${id}`;
 }
 
@@ -469,7 +551,7 @@ export default function SettingsPage() {
       </div>
 
       {unsavedChanges && (
-        <Alert className="mb-6 border-amber-500 bg-amber-50 dark:border-amber-600 dark:bg-amber-950/30">
+        <Alert className="mb-6 !border-amber-500 !bg-amber-50 dark:!border-amber-600 dark:!bg-amber-950/30">
           <AlertDescription className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
             <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
             {t('settings.unsavedChanges')}
@@ -480,7 +562,7 @@ export default function SettingsPage() {
       {message && (
         <Alert
           variant={message.type === 'error' ? 'destructive' : 'default'}
-          className="mb-6"
+          className={`mb-6 ${message.type === 'success' ? '!border-green-500 !bg-green-50 !text-green-800 dark:!border-green-600 dark:!bg-green-950/30 dark:!text-green-400' : ''}`}
         >
           <AlertDescription>{message.text}</AlertDescription>
         </Alert>
@@ -574,15 +656,9 @@ export default function SettingsPage() {
           <div className="space-y-2">
             {[
               {
-                key: 'github',
-                label: 'GitHub',
-                icon: <Github className="h-4 w-4" />,
-                placeholder: 'username',
-              },
-              {
-                key: 'twitter',
-                label: 'X',
-                icon: <XIcon className="h-4 w-4" />,
+                key: 'bento',
+                label: 'Bento',
+                icon: <LayoutGrid className="h-4 w-4" />,
                 placeholder: 'username',
               },
               {
@@ -592,9 +668,21 @@ export default function SettingsPage() {
                 placeholder: 'user.bsky.social',
               },
               {
-                key: 'threads',
-                label: 'Threads',
-                icon: <ThreadsIcon className="h-4 w-4" />,
+                key: 'github',
+                label: 'GitHub',
+                icon: <Github className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'hatena',
+                label: 'Hatena',
+                icon: <HatenaIcon className="h-4 w-4" />,
+                placeholder: 'username (→ username.hatenablog.com)',
+              },
+              {
+                key: 'lapras',
+                label: 'Lapras',
+                icon: <LaprasIcon className="h-4 w-4" />,
                 placeholder: 'username',
               },
               {
@@ -604,21 +692,39 @@ export default function SettingsPage() {
                 placeholder: 'username',
               },
               {
+                key: 'medium',
+                label: 'Medium',
+                icon: <MediumIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'note',
+                label: 'note',
+                icon: <NoteIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'techfeed',
+                label: 'TechFeed',
+                icon: <TechFeedIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'threads',
+                label: 'Threads',
+                icon: <ThreadsIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
                 key: 'wantedly',
                 label: 'Wantedly',
                 icon: <WantedlyIcon className="h-4 w-4" />,
                 placeholder: 'username',
               },
               {
-                key: 'lapras',
-                label: 'Lapras',
-                icon: <LaprasIcon className="h-4 w-4" />,
-                placeholder: 'username',
-              },
-              {
-                key: 'bento',
-                label: 'Bento',
-                icon: <LayoutGrid className="h-4 w-4" />,
+                key: 'twitter',
+                label: 'X',
+                icon: <XIcon className="h-4 w-4" />,
                 placeholder: 'username',
               },
             ].map(({ key, label, icon, placeholder }) => {
