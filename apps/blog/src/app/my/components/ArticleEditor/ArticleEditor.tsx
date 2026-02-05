@@ -5,6 +5,7 @@ import type {
   Article,
   ArticleInput,
   ImageModel,
+  Image as ImageType,
   OpenAIModel,
 } from '@blog/cms-types';
 import {
@@ -19,6 +20,7 @@ import {
   Check,
   Eye,
   ImageIcon,
+  Images,
   ListTree,
   MessageSquare,
   Sparkles,
@@ -48,6 +50,7 @@ import {
 import { AISettingsPopover } from '../AISettingsPopover';
 import { ArticlePreview } from '../ArticlePreview';
 import { CategorySelector } from '../CategorySelector';
+import { ImagePickerModal } from '../ImagePickerModal';
 import { MarkdownEditor } from '../MarkdownEditor';
 import { ReviewPanel } from '../ReviewPanel';
 import { SplitButton } from '../SplitButton';
@@ -90,6 +93,7 @@ export function ArticleEditor({
   const { saveDraft, loadDraft, clearDraft } = useArticleDraft(initialData?.id);
   const headerImageInputRef = useRef<HTMLInputElement>(null);
   const [showDraftDialog, setShowDraftDialog] = useState(false);
+  const [showImagePicker, setShowImagePicker] = useState(false);
   const [pendingDraft, setPendingDraft] = useState<ReturnType<
     typeof loadDraft
   > | null>(null);
@@ -236,6 +240,13 @@ export function ArticleEditor({
 
   const handleRemoveHeaderImage = () => {
     dispatch({ type: 'SET_HEADER_IMAGE', payload: { id: null, url: null } });
+  };
+
+  const handleSelectFromLibrary = (image: ImageType) => {
+    dispatch({
+      type: 'SET_HEADER_IMAGE',
+      payload: { id: image.id, url: image.url },
+    });
   };
 
   const handleGenerateMetadata = async () => {
@@ -804,13 +815,23 @@ export function ArticleEditor({
               type="button"
               variant="outline"
               size="sm"
+              onClick={() => setShowImagePicker(true)}
+            >
+              <Images className="mr-1.5 h-4 w-4" />
+              {t.selectFromLibrary}
+            </Button>
+            <SplitButton
               onClick={() => dispatch({ type: 'TOGGLE_IMAGE_PROMPT' })}
               disabled={!aiToolsStatus?.hasAnyKey}
-              className="gap-1.5"
+              modelType="image"
+              modelValue={aiSettings.image}
+              onModelChange={(v) =>
+                updateAISettings({ image: v as ImageModel })
+              }
             >
               <Sparkles className="h-4 w-4" />
               {t.aiGenerate}
-            </Button>
+            </SplitButton>
           </div>
 
           {/* AI Generate Options (collapsible) */}
@@ -991,6 +1012,12 @@ export function ArticleEditor({
         publishedAt={initialData?.publishedAt}
         slideMode={article.slideMode}
         slideDuration={article.slideDuration}
+      />
+      <ImagePickerModal
+        isOpen={showImagePicker}
+        onClose={() => setShowImagePicker(false)}
+        onSelect={handleSelectFromLibrary}
+        currentImageId={article.headerImageId}
       />
     </div>
   );

@@ -138,9 +138,10 @@ export function CategoryEditor({ category, onClose }: CategoryEditorProps) {
       {isEditing && category.articleCount > 0 && (
         <Alert>
           <AlertDescription>
-            {t('categories.editor.usedInArticles', {
-              count: category.articleCount,
-            })}
+            {t('categories.editor.usedInArticles').replace(
+              '{count}',
+              String(category.articleCount)
+            )}
           </AlertDescription>
         </Alert>
       )}

@@ -76,7 +76,10 @@ export function TagEditor({ tag, onClose }: TagEditorProps) {
       {isEditing && tag.articleCount > 0 && (
         <Alert>
           <AlertDescription>
-            {t('tags.editor.usedInArticles', { count: tag.articleCount })}
+            {t('tags.editor.usedInArticles').replace(
+              '{count}',
+              String(tag.articleCount)
+            )}
           </AlertDescription>
         </Alert>
       )}

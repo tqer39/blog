@@ -1,7 +1,7 @@
 'use client';
 
 import type {
-  AnthropicModel,
+  TextModel,
   TransformAction,
   TransformLanguage,
 } from '@blog/cms-types';
@@ -25,7 +25,7 @@ interface TextTransformPopoverProps {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   value: string;
   onChange: (value: string) => void;
-  model?: AnthropicModel;
+  model?: TextModel;
   disabled?: boolean;
 }
 

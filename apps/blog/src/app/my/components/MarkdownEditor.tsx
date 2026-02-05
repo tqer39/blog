@@ -685,7 +685,7 @@ export function MarkdownEditor({
         value={value}
         onChange={onChange}
         model={aiSettings?.transform}
-        disabled={!aiToolsStatus?.hasAnthropic}
+        disabled={!aiToolsStatus?.hasAnyKey}
       />
 
       {/* Fullscreen Modal */}

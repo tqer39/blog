@@ -364,6 +364,7 @@ editor:
     savedAt: Saved at {date}
     discard: Discard
     restore: Restore
+  selectFromLibrary: Select from Library
   imageGeneration:
     useArticleContent: Use article content as prompt
     customPrompt: Custom prompt
@@ -375,6 +376,13 @@ editor:
     append: Append
     override: Override
     generate: Generate
+  imagePicker:
+    title: Select Image
+    searchPlaceholder: Search by filename...
+    loading: Loading...
+    noImages: No images found
+    imageCount: '{count} images'
+    cancel: Cancel
   toolbar:
     bold: Bold
     italic: Italic
