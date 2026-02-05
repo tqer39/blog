@@ -17,12 +17,13 @@ const PRESET_COLORS = [
 interface ColorPickerProps {
   value: string;
   onChange: (color: string) => void;
+  label?: string;
 }
 
-export function ColorPicker({ value, onChange }: ColorPickerProps) {
+export function ColorPicker({ value, onChange, label = 'Color' }: ColorPickerProps) {
   return (
     <div className="space-y-2">
-      <Label htmlFor="color-picker">Color</Label>
+      <Label htmlFor="color-picker">{label}</Label>
       <div className="flex items-center gap-3">
         <div className="relative">
           <input

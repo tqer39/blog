@@ -3,6 +3,7 @@
 import type { CategoryInput, CategoryWithCount } from '@blog/cms-types';
 import { Alert, AlertDescription, Input, Label } from '@blog/ui';
 import { useEffect, useState } from 'react';
+import { useI18n } from '@/i18n';
 import { createCategory, updateCategory } from '@/lib/api/client';
 import { EditorModal } from '../../components/EditorModal';
 import { ColorPicker } from './ColorPicker';
@@ -22,6 +23,7 @@ function toSlug(name: string): string {
 }
 
 export function CategoryEditor({ category, onClose }: CategoryEditorProps) {
+  const { t } = useI18n();
   const [name, setName] = useState(category?.name ?? '');
   const [slug, setSlug] = useState(category?.slug ?? '');
   const [color, setColor] = useState(category?.color ?? '#6B7280');
@@ -44,17 +46,17 @@ export function CategoryEditor({ category, onClose }: CategoryEditorProps) {
 
   async function handleSave() {
     if (!name.trim()) {
-      setError('Name is required');
+      setError(t('categories.editor.nameRequired'));
       return;
     }
 
     if (!slug.trim()) {
-      setError('Slug is required');
+      setError(t('categories.editor.slugRequired'));
       return;
     }
 
     if (!/^[a-z0-9-]+$/.test(slug)) {
-      setError('Slug can only contain lowercase letters, numbers, and hyphens');
+      setError(t('categories.editor.slugInvalid'));
       return;
     }
 
@@ -76,7 +78,9 @@ export function CategoryEditor({ category, onClose }: CategoryEditorProps) {
 
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save category');
+      setError(
+        err instanceof Error ? err.message : t('categories.editor.saveError')
+      );
     } finally {
       setIsSaving(false);
     }
@@ -84,7 +88,11 @@ export function CategoryEditor({ category, onClose }: CategoryEditorProps) {
 
   return (
     <EditorModal
-      title={isEditing ? 'Edit Category' : 'Create Category'}
+      title={
+        isEditing
+          ? t('categories.editor.editTitle')
+          : t('categories.editor.createTitle')
+      }
       onClose={onClose}
       onSave={handleSave}
       isSaving={isSaving}
@@ -92,7 +100,7 @@ export function CategoryEditor({ category, onClose }: CategoryEditorProps) {
       error={error}
     >
       <div className="space-y-2">
-        <Label htmlFor="category-name">Name</Label>
+        <Label htmlFor="category-name">{t('categories.editor.name')}</Label>
         <Input
           id="category-name"
           type="text"
@@ -100,13 +108,13 @@ export function CategoryEditor({ category, onClose }: CategoryEditorProps) {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setName(e.target.value)
           }
-          placeholder="Category name"
+          placeholder={t('categories.editor.namePlaceholder')}
           autoFocus
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="category-slug">Slug</Label>
+        <Label htmlFor="category-slug">{t('categories.editor.slug')}</Label>
         <Input
           id="category-slug"
           type="text"
@@ -114,20 +122,25 @@ export function CategoryEditor({ category, onClose }: CategoryEditorProps) {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleSlugChange(e.target.value)
           }
-          placeholder="category-slug"
+          placeholder={t('categories.editor.slugPlaceholder')}
         />
         <p className="text-xs text-muted-foreground">
-          URL-safe identifier. Auto-generated from name if not edited.
+          {t('categories.editor.slugDescription')}
         </p>
       </div>
 
-      <ColorPicker value={color} onChange={setColor} />
+      <ColorPicker
+        value={color}
+        onChange={setColor}
+        label={t('categories.editor.color')}
+      />
 
       {isEditing && category.articleCount > 0 && (
         <Alert>
           <AlertDescription>
-            This category is used in {category.articleCount} article(s). Changes
-            will be reflected across all associated articles.
+            {t('categories.editor.usedInArticles', {
+              count: category.articleCount,
+            })}
           </AlertDescription>
         </Alert>
       )}

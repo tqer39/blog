@@ -6,6 +6,7 @@ common:
   delete: Delete
   edit: Edit
   create: Create
+  update: Update
   search: Search
   noResults: No results found
   confirm: Confirm
@@ -185,6 +186,14 @@ tags:
   actions:
     edit: Edit
     delete: Delete
+  editor:
+    editTitle: Edit Tag
+    createTitle: Create Tag
+    name: Name
+    namePlaceholder: Tag name
+    usedInArticles: This tag is used in {count} article(s). Changes will be reflected across all associated articles.
+    saveError: Failed to save tag
+    nameRequired: Name is required
 
 categories:
   title: Categories
@@ -212,6 +221,20 @@ categories:
   actions:
     edit: Edit
     delete: Delete
+  editor:
+    editTitle: Edit Category
+    createTitle: Create Category
+    name: Name
+    namePlaceholder: Category name
+    slug: Slug
+    slugPlaceholder: category-slug
+    slugDescription: URL-safe identifier. Auto-generated from name if not edited.
+    color: Color
+    usedInArticles: This category is used in {count} article(s). Changes will be reflected across all associated articles.
+    saveError: Failed to save category
+    nameRequired: Name is required
+    slugRequired: Slug is required
+    slugInvalid: Slug can only contain lowercase letters, numbers, and hyphens
 
 images:
   title: Images

@@ -11,6 +11,7 @@ import {
   useEscapeKey,
 } from '@blog/ui';
 import { X } from 'lucide-react';
+import { useI18n } from '@/i18n';
 
 interface EditorModalProps {
   /** モーダルのタイトル */
@@ -56,6 +57,7 @@ export function EditorModal({
   error,
   children,
 }: EditorModalProps) {
+  const { t } = useI18n();
   useEscapeKey(onClose);
 
   return (
@@ -65,7 +67,7 @@ export function EditorModal({
           <CardTitle>{title}</CardTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{t('common.close')}</span>
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -79,10 +81,14 @@ export function EditorModal({
 
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={onClose}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button onClick={onSave} disabled={isSaving}>
-              {isSaving ? 'Saving...' : isEditing ? 'Update' : 'Create'}
+              {isSaving
+                ? t('common.saving')
+                : isEditing
+                  ? t('common.update')
+                  : t('common.create')}
             </Button>
           </div>
         </CardContent>

@@ -6,6 +6,7 @@ common:
   delete: 削除
   edit: 編集
   create: 作成
+  update: 更新
   search: 検索
   noResults: 結果がありません
   confirm: 確認
@@ -185,6 +186,14 @@ tags:
   actions:
     edit: 編集
     delete: 削除
+  editor:
+    editTitle: タグを編集
+    createTitle: タグを作成
+    name: 名前
+    namePlaceholder: タグ名
+    usedInArticles: このタグは{count}件の記事で使用されています。変更は関連するすべての記事に反映されます。
+    saveError: タグの保存に失敗しました
+    nameRequired: 名前は必須です
 
 categories:
   title: カテゴリ
@@ -212,6 +221,20 @@ categories:
   actions:
     edit: 編集
     delete: 削除
+  editor:
+    editTitle: カテゴリを編集
+    createTitle: カテゴリを作成
+    name: 名前
+    namePlaceholder: カテゴリ名
+    slug: スラッグ
+    slugPlaceholder: category-slug
+    slugDescription: URL用の識別子。編集しない場合は名前から自動生成されます。
+    color: 色
+    usedInArticles: このカテゴリは{count}件の記事で使用されています。変更は関連するすべての記事に反映されます。
+    saveError: カテゴリの保存に失敗しました
+    nameRequired: 名前は必須です
+    slugRequired: スラッグは必須です
+    slugInvalid: スラッグには小文字、数字、ハイフンのみ使用できます
 
 images:
   title: 画像
