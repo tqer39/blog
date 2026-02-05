@@ -312,10 +312,15 @@ export interface SiteSettings {
   social_linkedin: string;
   social_wantedly: string;
   social_lapras: string;
+  social_devto: string; // https://dev.to/[username]
+  social_hackernews: string; // https://news.ycombinator.com/user?id=[username]
   social_hatena: string; // https://[username].hatenablog.com/
   social_medium: string; // https://medium.com/@[username]
   social_note: string; // https://note.com/[username]
+  social_qiita: string; // https://qiita.com/[username]
+  social_reddit: string; // https://www.reddit.com/user/[username]
   social_techfeed: string; // https://techfeed.io/people/@[username]
+  social_zenn: string; // https://zenn.dev/[username]
   show_rss_link: string; // "true" or "false" (stored as text in DB)
   show_github_link: string; // "true" or "false" (stored as text in DB)
   show_twitter_link: string; // "true" or "false" (stored as text in DB)
@@ -325,10 +330,15 @@ export interface SiteSettings {
   show_linkedin_link: string; // "true" or "false" (stored as text in DB)
   show_wantedly_link: string; // "true" or "false" (stored as text in DB)
   show_lapras_link: string; // "true" or "false" (stored as text in DB)
+  show_devto_link: string; // "true" or "false" (stored as text in DB)
+  show_hackernews_link: string; // "true" or "false" (stored as text in DB)
   show_hatena_link: string; // "true" or "false" (stored as text in DB)
   show_medium_link: string; // "true" or "false" (stored as text in DB)
   show_note_link: string; // "true" or "false" (stored as text in DB)
+  show_qiita_link: string; // "true" or "false" (stored as text in DB)
+  show_reddit_link: string; // "true" or "false" (stored as text in DB)
   show_techfeed_link: string; // "true" or "false" (stored as text in DB)
+  show_zenn_link: string; // "true" or "false" (stored as text in DB)
   default_theme: string; // "system" | "light" | "dark" | "tokyonight" | "nord-light" | "autumn"
   default_locale: string; // "auto" | "ja" | "en"
   // AI API Keys (masked in GET response)

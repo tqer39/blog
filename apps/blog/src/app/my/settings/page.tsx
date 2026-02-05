@@ -158,6 +158,76 @@ function TechFeedIcon({ className }: { className?: string }) {
   );
 }
 
+// Dev.to icon
+function DevToIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M7.42 10.05c-.18-.16-.46-.23-.84-.23H6v4.36h.58c.37 0 .65-.08.84-.23.19-.16.29-.45.29-.89v-2.12c0-.44-.1-.73-.29-.89zM0 4.94v14.12h24V4.94H0zM8.56 15.3c-.44.58-1.06.77-1.98.77H4.67V8.01h1.93c.93 0 1.54.17 1.98.77.44.6.66 1.42.66 2.47v1.58c0 1.05-.22 1.87-.68 2.47zm4.04-2.78c0 .29-.1.57-.27.84-.17.27-.43.47-.75.63-.32.16-.7.24-1.14.24-.51 0-.97-.13-1.39-.39-.42-.26-.63-.66-.63-1.2h1.34c0 .23.07.4.21.52.14.12.35.18.62.18.23 0 .41-.05.54-.15.13-.1.2-.24.2-.42 0-.19-.07-.35-.2-.47s-.36-.25-.68-.4c-.56-.26-.97-.53-1.23-.81-.26-.28-.39-.64-.39-1.08 0-.49.17-.88.52-1.18.35-.3.82-.45 1.4-.45.58 0 1.07.15 1.44.46.37.31.55.71.55 1.21h-1.34c0-.18-.05-.33-.14-.44-.09-.11-.25-.17-.47-.17-.18 0-.33.05-.43.14-.1.09-.15.22-.15.37 0 .17.07.32.21.45.14.13.39.27.75.42.54.23.95.5 1.21.81.26.31.39.68.39 1.11zm5.07 2.73h-2.5V8.01h2.5c.55 0 .97.18 1.26.53.29.35.43.83.43 1.43v3.1c0 .6-.14 1.08-.43 1.43-.29.35-.71.53-1.26.53z" />
+    </svg>
+  );
+}
+
+// Hacker News icon
+function HackerNewsIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M0 0v24h24V0H0zm12.8 13.4v5.3h-1.5v-5.3L7.5 5.3h1.7l2.8 5.8 2.8-5.8h1.7l-3.7 8.1z" />
+    </svg>
+  );
+}
+
+// Qiita icon
+function QiitaIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 17.568c-3.073 0-5.568-2.495-5.568-5.568S8.927 6.432 12 6.432s5.568 2.495 5.568 5.568-2.495 5.568-5.568 5.568zm6.503 2.391l1.414-1.414-2.12-2.121-1.415 1.414 2.121 2.121z" />
+    </svg>
+  );
+}
+
+// Reddit icon
+function RedditIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z" />
+    </svg>
+  );
+}
+
+// Zenn icon
+function ZennIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M.264 23.771h4.984c.264 0 .498-.147.645-.352L19.614.874c.176-.293-.029-.645-.381-.645h-4.72c-.235 0-.44.117-.587.323L.03 23.361c-.088.176.029.41.234.41zM17.445 23.419l6.479-10.408c.205-.323-.029-.733-.41-.733h-4.691c-.176 0-.352.088-.44.235l-6.655 10.643c-.176.264.029.616.352.616h4.779c.205-.001.381-.118.586-.353z" />
+    </svg>
+  );
+}
+
 // Social link prefixes for each service
 const SOCIAL_PREFIXES = {
   github: 'https://github.com/',
@@ -168,10 +238,15 @@ const SOCIAL_PREFIXES = {
   linkedin: 'https://www.linkedin.com/in/',
   wantedly: 'https://www.wantedly.com/id/',
   lapras: 'https://lapras.com/public/',
+  devto: 'https://dev.to/',
+  hackernews: 'https://news.ycombinator.com/user?id=',
   hatena: 'https://', // Special: {id}.hatenablog.com format
   medium: 'https://medium.com/@',
   note: 'https://note.com/',
+  qiita: 'https://qiita.com/',
+  reddit: 'https://www.reddit.com/user/',
   techfeed: 'https://techfeed.io/people/@',
+  zenn: 'https://zenn.dev/',
 } as const;
 
 // Extract ID from full URL
@@ -668,9 +743,21 @@ export default function SettingsPage() {
                 placeholder: 'user.bsky.social',
               },
               {
+                key: 'devto',
+                label: 'Dev.to',
+                icon: <DevToIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
                 key: 'github',
                 label: 'GitHub',
                 icon: <Github className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'hackernews',
+                label: 'Hacker News',
+                icon: <HackerNewsIcon className="h-4 w-4" />,
                 placeholder: 'username',
               },
               {
@@ -704,6 +791,18 @@ export default function SettingsPage() {
                 placeholder: 'username',
               },
               {
+                key: 'qiita',
+                label: 'Qiita',
+                icon: <QiitaIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'reddit',
+                label: 'Reddit',
+                icon: <RedditIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
                 key: 'techfeed',
                 label: 'TechFeed',
                 icon: <TechFeedIcon className="h-4 w-4" />,
@@ -725,6 +824,12 @@ export default function SettingsPage() {
                 key: 'twitter',
                 label: 'X',
                 icon: <XIcon className="h-4 w-4" />,
+                placeholder: 'username',
+              },
+              {
+                key: 'zenn',
+                label: 'Zenn',
+                icon: <ZennIcon className="h-4 w-4" />,
                 placeholder: 'username',
               },
             ].map(({ key, label, icon, placeholder }) => {
