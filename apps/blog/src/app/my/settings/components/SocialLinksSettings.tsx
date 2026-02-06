@@ -179,12 +179,12 @@ export function SocialLinksSettings({
                 aria-checked={isVisible}
                 aria-label={`${isVisible ? 'Hide' : 'Show'} ${label} link`}
                 onClick={() => onToggle(showKey)}
-                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-                  isVisible ? 'bg-primary' : 'bg-muted'
+                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background ${
+                  isVisible ? 'bg-primary' : 'bg-zinc-300 dark:bg-zinc-600'
                 }`}
               >
                 <span
-                  className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                  className={`inline-block h-3 w-3 transform rounded-full bg-background shadow-sm transition-transform ${
                     isVisible ? 'translate-x-5' : 'translate-x-1'
                   }`}
                 />

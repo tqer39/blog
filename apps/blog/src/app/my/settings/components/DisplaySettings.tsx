@@ -40,12 +40,14 @@ export function DisplaySettings({
             role="switch"
             aria-checked={settings?.show_rss_link === 'true'}
             onClick={() => onToggle('show_rss_link')}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-              settings?.show_rss_link === 'true' ? 'bg-primary' : 'bg-muted'
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background ${
+              settings?.show_rss_link === 'true'
+                ? 'bg-primary'
+                : 'bg-zinc-300 dark:bg-zinc-600'
             }`}
           >
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+              className={`inline-block h-4 w-4 transform rounded-full bg-background shadow-sm transition-transform ${
                 settings?.show_rss_link === 'true'
                   ? 'translate-x-6'
                   : 'translate-x-1'
