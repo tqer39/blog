@@ -480,6 +480,18 @@ export default function ArticleListPage() {
           </table>
         </div>
       )}
+
+      {/* Bottom new article button */}
+      {!loading && articles.length > 0 && (
+        <div className="mt-8 flex justify-end">
+          <Button
+            asChild
+            className="shadow-md hover:shadow-lg transition-shadow"
+          >
+            <Link href="/my/articles/new">{t('articles.newArticle')}</Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -375,6 +375,22 @@ export default function SettingsPage() {
           onCopyKey={handleCopyApiKey}
         />
       </div>
+
+      {/* Bottom save button */}
+      <div className="mt-8 flex justify-end">
+        <Button
+          onClick={handleSave}
+          disabled={saving || !unsavedChanges}
+          className={unsavedChanges ? 'animate-pulse' : ''}
+        >
+          {saving ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Save className="mr-2 h-4 w-4" />
+          )}
+          {t('settings.saveSettings')}
+        </Button>
+      </div>
     </div>
   );
 }

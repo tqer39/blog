@@ -417,6 +417,19 @@ export default function CategoryListPage() {
           </DndContext>
         </div>
       )}
+
+      {/* Bottom new category button */}
+      {!loading && categories.length > 0 && (
+        <div className="mt-8 flex justify-end">
+          <Button
+            onClick={() => setIsCreating(true)}
+            className="shadow-md transition-shadow hover:shadow-lg"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            {t('categories.newCategory')}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

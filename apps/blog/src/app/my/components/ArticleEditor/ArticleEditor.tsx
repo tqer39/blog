@@ -992,6 +992,59 @@ export function ArticleEditor({
             aiToolsStatus={aiToolsStatus}
           />
         </div>
+
+        {/* Bottom action buttons */}
+        <div className="flex items-center justify-end gap-4 border-t border-border pt-4">
+          {/* Preview button */}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              dispatch({ type: 'SET_PREVIEW_OPEN', payload: true })
+            }
+            className="gap-1.5"
+          >
+            <Eye className="h-4 w-4" />
+            {t.preview}
+          </Button>
+
+          {onCancel && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                if (hasArticleChanges()) {
+                  clearDraft();
+                }
+                onCancel();
+              }}
+            >
+              {t.cancel}
+            </Button>
+          )}
+          <Button
+            type="button"
+            onClick={handleSave}
+            disabled={loading.isSaving}
+            className={
+              ui.saveSuccess
+                ? 'bg-green-600 hover:bg-green-600 transition-colors shadow-md'
+                : 'shadow-md hover:shadow-lg transition-shadow'
+            }
+          >
+            {loading.isSaving ? (
+              t.saving
+            ) : ui.saveSuccess ? (
+              <span className="flex items-center gap-1">
+                <Check className="h-4 w-4" />
+                {t.saved}
+              </span>
+            ) : (
+              t.save
+            )}
+          </Button>
+        </div>
       </div>
 
       {/* Review Panel */}
