@@ -18,7 +18,7 @@
   "dependencies": {
     "@blog/cms-types": "workspace:*",
     "@blog/utils": "workspace:*",
-    "hono": "4.11.7"
+    "hono": "4.11.8"
   },
   "devDependencies": {
     "@blog/config": "workspace:*",
