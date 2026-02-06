@@ -16,7 +16,7 @@ export {
 } from './guards';
 export { generateHash, generateId, generateImageId } from './id';
 // Result type for error handling
-export { err, ok, type Result, toError } from './result';
+export { err, getErrorMessage, ok, type Result, toError } from './result';
 // Style utilities
 export { cn } from './style';
 // Validators

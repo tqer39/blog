@@ -26,3 +26,13 @@ export function err<E>(error: E): Result<never, E> {
 export function toError(error: unknown): Error {
   return error instanceof Error ? error : new Error(String(error));
 }
+
+/**
+ * Extract error message from unknown error type
+ * Safe for logging and displaying to users
+ */
+export function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  return 'Unknown error occurred';
+}
