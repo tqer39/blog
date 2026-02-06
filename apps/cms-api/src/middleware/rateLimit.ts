@@ -7,17 +7,17 @@ interface RateLimitEntry {
   resetAt: number;
 }
 
-// In-memory store for rate limiting
-// Note: This is per-isolate in Cloudflare Workers, so not perfectly distributed
-// but provides basic DoS protection
-const rateLimitStore = new Map<string, RateLimitEntry>();
+// Separate stores for GET and mutating requests
+// GET requests have a higher limit as they don't modify data
+const rateLimitStoreGet = new Map<string, RateLimitEntry>();
+const rateLimitStoreMutate = new Map<string, RateLimitEntry>();
 
 // Clean up expired entries periodically
-function cleanup() {
+function cleanup(store: Map<string, RateLimitEntry>) {
   const now = Date.now();
-  for (const [key, entry] of rateLimitStore.entries()) {
+  for (const [key, entry] of store.entries()) {
     if (entry.resetAt < now) {
-      rateLimitStore.delete(key);
+      store.delete(key);
     }
   }
 }
@@ -32,12 +32,24 @@ export async function rateLimitMiddleware(
     c.req.header('x-forwarded-for')?.split(',')[0] ||
     'unknown';
 
+  const method = c.req.method;
+  const isReadOnly =
+    method === 'GET' || method === 'HEAD' || method === 'OPTIONS';
+
+  // Use different stores and limits for read vs mutating requests
+  // GET requests: 5x higher limit (300/min) to allow page navigation and refresh
+  // Mutating requests: standard limit (60/min) for DoS protection
+  const store = isReadOnly ? rateLimitStoreGet : rateLimitStoreMutate;
+  const maxRequests = isReadOnly
+    ? RATE_LIMIT.MAX_REQUESTS * 5
+    : RATE_LIMIT.MAX_REQUESTS;
+
   const now = Date.now();
-  const entry = rateLimitStore.get(clientIp);
+  const entry = store.get(clientIp);
 
   if (entry && entry.resetAt > now) {
     // Within current window
-    if (entry.count >= RATE_LIMIT.MAX_REQUESTS) {
+    if (entry.count >= maxRequests) {
       return c.json(
         { error: 'Too many requests. Please try again later.' },
         429
@@ -46,7 +58,7 @@ export async function rateLimitMiddleware(
     entry.count++;
   } else {
     // New window
-    rateLimitStore.set(clientIp, {
+    store.set(clientIp, {
       count: 1,
       resetAt: now + RATE_LIMIT.WINDOW_MS,
     });
@@ -54,7 +66,8 @@ export async function rateLimitMiddleware(
 
   // Cleanup old entries occasionally (1% of requests)
   if (Math.random() < 0.01) {
-    cleanup();
+    cleanup(rateLimitStoreGet);
+    cleanup(rateLimitStoreMutate);
   }
 
   await next();

@@ -8,6 +8,7 @@ function createTestApp() {
 
   app.use('*', rateLimitMiddleware);
   app.get('/test', (c) => c.json({ success: true }));
+  app.post('/test', (c) => c.json({ success: true }));
 
   return app;
 }
@@ -42,26 +43,41 @@ describe('rateLimitMiddleware', () => {
     }
   });
 
-  it('should block requests over the limit (60 per minute)', async () => {
+  it('should block POST requests over the limit (60 per minute)', async () => {
     const app = createTestApp();
-    const ip = `rate-limit-test-${Date.now()}`;
+    const ip = `rate-limit-post-${Date.now()}`;
 
-    // Make 60 requests (should all succeed)
+    // Make 60 POST requests (should all succeed)
     for (let i = 0; i < 60; i++) {
       const res = await app.request('/test', {
+        method: 'POST',
         headers: { 'cf-connecting-ip': ip },
       });
       expect(res.status).toBe(200);
     }
 
-    // 61st request should be rate limited
+    // 61st POST request should be rate limited
     const res = await app.request('/test', {
+      method: 'POST',
       headers: { 'cf-connecting-ip': ip },
     });
 
     expect(res.status).toBe(429);
     const data = await res.json();
     expect(data.error).toContain('Too many requests');
+  });
+
+  it('should allow more GET requests than POST (300 vs 60 per minute)', async () => {
+    const app = createTestApp();
+    const ip = `rate-limit-get-${Date.now()}`;
+
+    // Make 100 GET requests (should all succeed since limit is 300)
+    for (let i = 0; i < 100; i++) {
+      const res = await app.request('/test', {
+        headers: { 'cf-connecting-ip': ip },
+      });
+      expect(res.status).toBe(200);
+    }
   });
 
   it('should use x-forwarded-for if cf-connecting-ip is not present', async () => {
