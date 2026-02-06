@@ -26,102 +26,119 @@ const SOCIAL_LINKS_CONFIG = [
     label: 'Bento',
     icon: <LayoutGrid className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://bento.me',
   },
   {
     key: 'bluesky',
     label: 'BlueSky',
     icon: <BlueSkyIcon className="h-4 w-4" />,
     placeholder: 'user.bsky.social',
+    url: 'https://bsky.app',
   },
   {
     key: 'devto',
     label: 'Dev.to',
     icon: <DevToIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://dev.to',
   },
   {
     key: 'github',
     label: 'GitHub',
     icon: <Github className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://github.com',
   },
   {
     key: 'hackernews',
     label: 'Hacker News',
     icon: <HackerNewsIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://news.ycombinator.com',
   },
   {
     key: 'hatena',
     label: 'Hatena',
     icon: <HatenaIcon className="h-4 w-4" />,
     placeholder: 'username (→ username.hatenablog.com)',
+    url: 'https://hatenablog.com',
   },
   {
     key: 'lapras',
     label: 'Lapras',
     icon: <LaprasIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://lapras.com',
   },
   {
     key: 'linkedin',
     label: 'LinkedIn',
     icon: <Linkedin className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://linkedin.com',
   },
   {
     key: 'medium',
     label: 'Medium',
     icon: <MediumIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://medium.com',
   },
   {
     key: 'note',
     label: 'note',
     icon: <NoteIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://note.com',
   },
   {
     key: 'qiita',
     label: 'Qiita',
     icon: <QiitaIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://qiita.com',
   },
   {
     key: 'reddit',
     label: 'Reddit',
     icon: <RedditIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://reddit.com',
   },
   {
     key: 'techfeed',
     label: 'TechFeed',
     icon: <TechFeedIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://techfeed.io',
   },
   {
     key: 'threads',
     label: 'Threads',
     icon: <ThreadsIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://threads.net',
   },
   {
     key: 'wantedly',
     label: 'Wantedly',
     icon: <WantedlyIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://wantedly.com',
   },
   {
     key: 'twitter',
     label: 'X',
     icon: <XIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://x.com',
   },
   {
     key: 'zenn',
     label: 'Zenn',
     icon: <ZennIcon className="h-4 w-4" />,
     placeholder: 'username',
+    url: 'https://zenn.dev',
   },
 ] as const;
 
@@ -164,7 +181,7 @@ export function SocialLinksSettings({
         {t('settings.social.title')}
       </h2>
       <div className="space-y-2">
-        {SOCIAL_LINKS_CONFIG.map(({ key, label, icon, placeholder }) => {
+        {SOCIAL_LINKS_CONFIG.map(({ key, label, icon, placeholder, url }) => {
           const settingKey = `social_${key}` as keyof SiteSettings;
           const showKey = `show_${key}_link` as keyof SiteSettings;
           const value = settings?.[settingKey] || '';
@@ -191,16 +208,20 @@ export function SocialLinksSettings({
               </button>
 
               {/* Icon + Label */}
-              <label
-                htmlFor={settingKey}
-                className="flex w-24 shrink-0 items-center gap-2 text-sm font-medium"
-              >
+              <div className="flex w-24 shrink-0 items-center gap-2 text-sm font-medium">
                 {icon}
-                {label}
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary hover:underline"
+                >
+                  {label}
+                </a>
                 {(isFieldModified(settingKey) || isFieldModified(showKey)) && (
                   <span className="inline-block h-2 w-2 rounded-full bg-blue-500" />
                 )}
-              </label>
+              </div>
 
               {/* Input */}
               <div className="flex flex-1">
