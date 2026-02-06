@@ -1,5 +1,6 @@
 'use client';
 
+import { devError } from '@blog/utils';
 import { useCallback, useEffect, useRef } from 'react';
 
 const DRAFT_KEY_PREFIX = 'article_draft_';
@@ -43,7 +44,7 @@ export function useArticleDraft(articleId?: string) {
           };
           localStorage.setItem(key, JSON.stringify(draftWithTime));
         } catch (e) {
-          console.error('Failed to save draft:', e);
+          devError('Failed to save draft:', e);
         }
       }, DEBOUNCE_MS);
     },
@@ -67,7 +68,7 @@ export function useArticleDraft(articleId?: string) {
 
       return draft;
     } catch (e) {
-      console.error('Failed to load draft:', e);
+      devError('Failed to load draft:', e);
       return null;
     }
   }, [articleId]);
@@ -77,7 +78,7 @@ export function useArticleDraft(articleId?: string) {
       const key = getDraftKey(articleId);
       localStorage.removeItem(key);
     } catch (e) {
-      console.error('Failed to clear draft:', e);
+      devError('Failed to clear draft:', e);
     }
   }, [articleId]);
 

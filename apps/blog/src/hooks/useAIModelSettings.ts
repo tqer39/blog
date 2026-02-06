@@ -2,6 +2,7 @@
 
 import type { AIModelSettings } from '@blog/cms-types';
 import { DEFAULT_AI_MODEL_SETTINGS } from '@blog/cms-types';
+import { devError } from '@blog/utils';
 import { useCallback, useEffect, useState } from 'react';
 
 const STORAGE_KEY = 'blog-ai-model-settings';
@@ -21,7 +22,7 @@ export function useAIModelSettings() {
         setSettings({ ...DEFAULT_AI_MODEL_SETTINGS, ...parsed });
       }
     } catch (e) {
-      console.error('Failed to load AI model settings:', e);
+      devError('Failed to load AI model settings:', e);
     }
     setIsLoaded(true);
   }, []);
@@ -34,7 +35,7 @@ export function useAIModelSettings() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
         } catch (e) {
-          console.error('Failed to save AI model settings:', e);
+          devError('Failed to save AI model settings:', e);
         }
         return updated;
       });
@@ -48,7 +49,7 @@ export function useAIModelSettings() {
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch (e) {
-      console.error('Failed to reset AI model settings:', e);
+      devError('Failed to reset AI model settings:', e);
     }
   }, []);
 
