@@ -111,6 +111,7 @@ export function ImageDetailModal({
                   type="text"
                   value={image.url}
                   readOnly
+                  aria-label={t('images.detail.url')}
                   className="flex-1 rounded border border-border bg-muted px-2 py-1 text-sm"
                 />
                 <Button
