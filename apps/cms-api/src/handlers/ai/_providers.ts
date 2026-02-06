@@ -44,7 +44,10 @@ async function callOpenAI(
 
   if (!response.ok) {
     const error = await response.text();
-    console.error('OpenAI API error:', error);
+    console.error(
+      'OpenAI API error:',
+      `status=${response.status}, message=${error.slice(0, 200)}`
+    );
     throw new Error(`OpenAI API error (${response.status}): ${error}`);
   }
 
@@ -79,7 +82,10 @@ async function callAnthropic(
 
   if (!response.ok) {
     const error = await response.text();
-    console.error('Anthropic API error:', error);
+    console.error(
+      'Anthropic API error:',
+      `status=${response.status}, message=${error.slice(0, 200)}`
+    );
     throw new Error(`Anthropic API error (${response.status}): ${error}`);
   }
 
@@ -132,7 +138,10 @@ async function callGemini(
 
   if (!response.ok) {
     const error = await response.text();
-    console.error('Gemini API error:', error);
+    console.error(
+      'Gemini API error:',
+      `status=${response.status}, message=${error.slice(0, 200)}`
+    );
     throw new Error(`Gemini API error (${response.status}): ${error}`);
   }
 

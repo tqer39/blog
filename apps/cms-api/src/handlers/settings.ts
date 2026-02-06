@@ -90,13 +90,13 @@ const ALLOWED_SCHEMES = ['https:', 'http:'];
 
 /**
  * Mask an API key value for safe display
- * Shows first 10 characters followed by ****
+ * Shows first 4 characters followed by ****
  */
 function maskApiKeyValue(value: string): string {
-  if (!value || value.length < 10) {
+  if (!value || value.length < 4) {
     return '****';
   }
-  return `${value.slice(0, 10)}****`;
+  return `${value.slice(0, 4)}****`;
 }
 
 /**
