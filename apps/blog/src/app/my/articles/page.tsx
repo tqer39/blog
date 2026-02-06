@@ -68,35 +68,37 @@ export default function ArticleListPage() {
     loadArticles();
   }, [loadArticles]);
 
-  async function handleTogglePublish(article: Article) {
-    try {
-      if (article.status === 'published') {
-        await unpublishArticle(article.hash);
-      } else {
-        await publishArticle(article.hash);
+  const handleTogglePublish = useCallback(
+    async (article: Article) => {
+      try {
+        if (article.status === 'published') {
+          await unpublishArticle(article.hash);
+        } else {
+          await publishArticle(article.hash);
+        }
+        await loadArticles();
+      } catch (err) {
+        alert(err instanceof Error ? err.message : 'Failed to update article');
       }
-      await loadArticles();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to update article');
-    }
-  }
+    },
+    [loadArticles]
+  );
 
-  async function handleDelete(article: Article) {
-    if (!confirm(`Delete "${article.title}"?`)) return;
+  const handleDelete = useCallback(
+    async (article: Article) => {
+      if (!confirm(`Delete "${article.title}"?`)) return;
 
-    try {
-      await deleteArticle(article.hash);
-      await loadArticles();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to delete article');
-    }
-  }
+      try {
+        await deleteArticle(article.hash);
+        await loadArticles();
+      } catch (err) {
+        alert(err instanceof Error ? err.message : 'Failed to delete article');
+      }
+    },
+    [loadArticles]
+  );
 
-  function handleSelectAll() {
-    toggleAll(sortedArticles.map((a) => a.hash));
-  }
-
-  async function handleBatchDelete() {
+  const handleBatchDelete = useCallback(async () => {
     const count = selectedCount;
     if (count === 0) return;
     if (
@@ -118,9 +120,9 @@ export default function ArticleListPage() {
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to delete articles');
     }
-  }
+  }, [selectedCount, selectedHashes, clearSelection, loadArticles, t]);
 
-  async function handleBatchPublish() {
+  const handleBatchPublish = useCallback(async () => {
     if (selectedCount === 0) return;
 
     try {
@@ -132,9 +134,9 @@ export default function ArticleListPage() {
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to publish articles');
     }
-  }
+  }, [selectedCount, selectedHashes, clearSelection, loadArticles]);
 
-  async function handleBatchUnpublish() {
+  const handleBatchUnpublish = useCallback(async () => {
     if (selectedCount === 0) return;
 
     try {
@@ -148,7 +150,7 @@ export default function ArticleListPage() {
         err instanceof Error ? err.message : 'Failed to unpublish articles'
       );
     }
-  }
+  }, [selectedCount, selectedHashes, clearSelection, loadArticles]);
 
   const sortedArticles = useMemo(() => {
     const filtered = searchQuery.trim()
@@ -180,6 +182,10 @@ export default function ArticleListPage() {
       }
     });
   }, [articles, searchQuery, sortKey, sortDirection]);
+
+  const handleSelectAll = useCallback(() => {
+    toggleAll(sortedArticles.map((article) => article.hash));
+  }, [toggleAll, sortedArticles]);
 
   return (
     <div>
