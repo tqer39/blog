@@ -62,6 +62,7 @@ export function ImageDetailModal({
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">{t('images.detail.title')}</h2>
           <div className="overflow-hidden rounded-lg bg-muted">
+            {/* biome-ignore lint/performance/noImgElement: External URL with unknown dimensions */}
             <img
               src={image.url}
               alt={image.originalFilename}

@@ -133,6 +133,7 @@ export function ImageListView({
                   onClick={() => onImageClick(image)}
                   className="block overflow-hidden rounded"
                 >
+                  {/* biome-ignore lint/performance/noImgElement: External URL with unknown dimensions */}
                   <img
                     src={image.url}
                     alt={image.originalFilename}
