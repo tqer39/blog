@@ -167,8 +167,16 @@ export async function unpublishArticle(hash: string): Promise<Article> {
 }
 
 // Tags
-export async function getTags(): Promise<TagListResponse> {
-  return fetchApi('/tags');
+export async function getTags(params?: {
+  page?: number;
+  perPage?: number;
+}): Promise<TagListResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.page) searchParams.set('page', String(params.page));
+  if (params?.perPage) searchParams.set('perPage', String(params.perPage));
+
+  const query = searchParams.toString();
+  return fetchApi(`/tags${query ? `?${query}` : ''}`);
 }
 
 export async function getTag(id: string): Promise<Tag> {
@@ -188,8 +196,16 @@ export async function deleteTag(id: string): Promise<void> {
 }
 
 // Categories
-export async function getCategories(): Promise<CategoryListResponse> {
-  return fetchApi('/categories');
+export async function getCategories(params?: {
+  page?: number;
+  perPage?: number;
+}): Promise<CategoryListResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.page) searchParams.set('page', String(params.page));
+  if (params?.perPage) searchParams.set('perPage', String(params.perPage));
+
+  const query = searchParams.toString();
+  return fetchApi(`/categories${query ? `?${query}` : ''}`);
 }
 
 export async function getCategory(id: string): Promise<Category> {

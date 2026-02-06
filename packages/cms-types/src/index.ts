@@ -59,8 +59,16 @@ export interface TagWithCount extends Tag {
   articleCount: number;
 }
 
+export interface PaginationInfo {
+  page: number;
+  perPage: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface TagListResponse {
   tags: TagWithCount[];
+  pagination: PaginationInfo;
 }
 
 // Category types
@@ -86,6 +94,7 @@ export interface CategoryWithCount extends Category {
 
 export interface CategoryListResponse {
   categories: CategoryWithCount[];
+  pagination: PaginationInfo;
 }
 
 // Image types

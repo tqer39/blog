@@ -1,6 +1,6 @@
 'use client';
 
-import type { CategoryWithCount } from '@blog/cms-types';
+import type { CategoryWithCount, PaginationInfo } from '@blog/cms-types';
 import { Alert, AlertDescription, Button } from '@blog/ui';
 import {
   closestCenter,
@@ -28,6 +28,7 @@ import {
   getCategories,
   updateCategoriesOrder,
 } from '@/lib/api/client';
+import { AdminPagination } from '../components/AdminPagination';
 import { ListEmptyState } from '../components/ListEmptyState';
 import { SearchInput } from '../components/SearchInput';
 import { SortButton } from '../components/SortButton';
@@ -166,6 +167,8 @@ export default function CategoryListPage() {
     'asc'
   );
   const [isSavingOrder, setIsSavingOrder] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -177,11 +180,12 @@ export default function CategoryListPage() {
   const loadCategories = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await getCategories();
+      const response = await getCategories({ page, perPage: 50 });
       const sorted = [...response.categories].sort(
         (a, b) => a.displayOrder - b.displayOrder
       );
       setCategories(sorted);
+      setPagination(response.pagination);
       setError(null);
     } catch (err) {
       setError(
@@ -190,7 +194,7 @@ export default function CategoryListPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     loadCategories();
@@ -416,6 +420,15 @@ export default function CategoryListPage() {
             </table>
           </DndContext>
         </div>
+      )}
+
+      {/* Pagination */}
+      {pagination && pagination.totalPages > 1 && (
+        <AdminPagination
+          currentPage={page}
+          totalPages={pagination.totalPages}
+          onPageChange={setPage}
+        />
       )}
 
       {/* Bottom new category button */}

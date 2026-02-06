@@ -22,6 +22,7 @@ import {
   publishArticle,
   unpublishArticle,
 } from '@/lib/api/client';
+import { AdminPagination } from '../components/AdminPagination';
 import { ListEmptyState } from '../components/ListEmptyState';
 import { SearchInput } from '../components/SearchInput';
 import { SortButton } from '../components/SortButton';
@@ -37,6 +38,8 @@ export default function ArticleListPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const {
     selectedIds: selectedHashes,
     toggle: handleSelectOne,
@@ -54,19 +57,26 @@ export default function ArticleListPage() {
     try {
       setLoading(true);
       const status = filter === 'all' ? undefined : filter;
-      const response = await getArticles({ status, perPage: 100 });
+      const response = await getArticles({ status, page, perPage: 20 });
       setArticles(response.articles);
+      setTotalPages(Math.ceil(response.total / 20));
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load articles');
     } finally {
       setLoading(false);
     }
-  }, [filter]);
+  }, [filter, page]);
 
   useEffect(() => {
     loadArticles();
   }, [loadArticles]);
+
+  // Reset page when filter changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: filter is intentionally watched to reset page
+  useEffect(() => {
+    setPage(1);
+  }, [filter]);
 
   const handleTogglePublish = useCallback(
     async (article: Article) => {
@@ -479,6 +489,15 @@ export default function ArticleListPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <AdminPagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
       )}
 
       {/* Bottom new article button */}

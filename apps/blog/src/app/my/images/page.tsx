@@ -6,6 +6,7 @@ import { Grid, List, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useI18n } from '@/i18n';
 import { deleteImage, getImages } from '@/lib/api/client';
+import { AdminPagination } from '../components/AdminPagination';
 import { ListEmptyState } from '../components/ListEmptyState';
 import { SearchInput } from '../components/SearchInput';
 import { useSelection } from '../hooks/use-selection';
@@ -22,6 +23,8 @@ export default function ImageListPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const {
     selectedIds,
     toggle: handleSelect,
@@ -43,14 +46,15 @@ export default function ImageListPage() {
     try {
       setLoading(true);
       setError(null);
-      const response = await getImages({ perPage: 1000 });
+      const response = await getImages({ page, perPage: 50 });
       setImages(response.images);
+      setTotalPages(response.pagination.totalPages);
     } catch (err) {
       setError(err instanceof Error ? err.message : t('images.loadError'));
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, [t, page]);
 
   useEffect(() => {
     loadImages();
@@ -231,6 +235,15 @@ export default function ImageListPage() {
             t={t}
           />
         ))}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <AdminPagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      )}
 
       {/* Image detail modal */}
       {selectedImage && (

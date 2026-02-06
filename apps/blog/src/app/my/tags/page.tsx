@@ -7,10 +7,11 @@ import { Edit, Plus, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useI18n } from '@/i18n';
 import { deleteTag, getTags } from '@/lib/api/client';
+import { AdminPagination } from '../components/AdminPagination';
 import { ListEmptyState } from '../components/ListEmptyState';
 import { SearchInput } from '../components/SearchInput';
 import { SortButton } from '../components/SortButton';
-import { useListPage } from '../hooks/use-list-page';
+import { usePaginatedListPage } from '../hooks/use-list-page';
 import { useSorting } from '../hooks/use-sorting';
 import { TagEditor } from './components/TagEditor';
 
@@ -23,7 +24,10 @@ export default function TagListPage() {
     loading,
     error,
     reload: loadTags,
-  } = useListPage(getTags, 'tags');
+    page,
+    pagination,
+    onPageChange,
+  } = usePaginatedListPage(getTags, 'tags', 50);
   const { sortKey, sortDirection, handleSort } = useSorting<TagSortKey>(
     'createdAt',
     'desc'
@@ -216,6 +220,15 @@ export default function TagListPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {/* Pagination */}
+      {pagination && pagination.totalPages > 1 && (
+        <AdminPagination
+          currentPage={page}
+          totalPages={pagination.totalPages}
+          onPageChange={onPageChange}
+        />
       )}
     </div>
   );

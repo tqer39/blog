@@ -52,6 +52,10 @@ export interface CrudFactoryConfig<
   };
   /** ユニーク制約違反時のエラーメッセージ */
   uniqueConflictMessage: string;
+  /** ページネーション対応のための総件数取得SQLクエリ (省略時は listQuery を COUNT に変換) */
+  countQuery?: string;
+  /** ページネーションのデフォルト件数 */
+  defaultPerPage?: number;
 }
 
 /**
@@ -117,13 +121,42 @@ export function createCrudHandlers<
     buildInsert,
     buildUpdate,
     uniqueConflictMessage,
+    countQuery,
+    defaultPerPage = 50,
   } = config;
 
   return {
     async list(c) {
-      const { results } = await c.env.DB.prepare(listQuery).all();
+      const page = Math.max(1, parseInt(c.req.query('page') || '1', 10));
+      const perPage = Math.max(
+        1,
+        Math.min(
+          200,
+          parseInt(c.req.query('perPage') || String(defaultPerPage), 10)
+        )
+      );
+      const offset = (page - 1) * perPage;
+
+      // 総件数取得
+      const finalCountQuery =
+        countQuery || `SELECT COUNT(*) as total FROM ${tableName}`;
+      const countResult = await c.env.DB.prepare(finalCountQuery).first<{
+        total: number;
+      }>();
+      const total = countResult?.total || 0;
+      const totalPages = Math.ceil(total / perPage);
+
+      // データ取得（LIMIT/OFFSET追加）
+      const paginatedQuery = `${listQuery} LIMIT ? OFFSET ?`;
+      const { results } = await c.env.DB.prepare(paginatedQuery)
+        .bind(perPage, offset)
+        .all();
       const items = (results || []).map((row) => mapListRow(row as TListRow));
-      return c.json({ [listKey]: items });
+
+      return c.json({
+        [listKey]: items,
+        pagination: { page, perPage, total, totalPages },
+      });
     },
 
     async getById(c) {
