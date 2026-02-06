@@ -22,6 +22,7 @@ import {
   publishArticle,
   unpublishArticle,
 } from '@/lib/api/client';
+import { AdminPagination } from '../components/AdminPagination';
 import { ListEmptyState } from '../components/ListEmptyState';
 import { SearchInput } from '../components/SearchInput';
 import { SortButton } from '../components/SortButton';
@@ -37,6 +38,8 @@ export default function ArticleListPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const {
     selectedIds: selectedHashes,
     toggle: handleSelectOne,
@@ -54,49 +57,58 @@ export default function ArticleListPage() {
     try {
       setLoading(true);
       const status = filter === 'all' ? undefined : filter;
-      const response = await getArticles({ status, perPage: 100 });
+      const response = await getArticles({ status, page, perPage: 20 });
       setArticles(response.articles);
+      setTotalPages(Math.ceil(response.total / 20));
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load articles');
     } finally {
       setLoading(false);
     }
-  }, [filter]);
+  }, [filter, page]);
 
   useEffect(() => {
     loadArticles();
   }, [loadArticles]);
 
-  async function handleTogglePublish(article: Article) {
-    try {
-      if (article.status === 'published') {
-        await unpublishArticle(article.hash);
-      } else {
-        await publishArticle(article.hash);
+  // Reset page when filter changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: filter is intentionally watched to reset page
+  useEffect(() => {
+    setPage(1);
+  }, [filter]);
+
+  const handleTogglePublish = useCallback(
+    async (article: Article) => {
+      try {
+        if (article.status === 'published') {
+          await unpublishArticle(article.hash);
+        } else {
+          await publishArticle(article.hash);
+        }
+        await loadArticles();
+      } catch (err) {
+        alert(err instanceof Error ? err.message : 'Failed to update article');
       }
-      await loadArticles();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to update article');
-    }
-  }
+    },
+    [loadArticles]
+  );
 
-  async function handleDelete(article: Article) {
-    if (!confirm(`Delete "${article.title}"?`)) return;
+  const handleDelete = useCallback(
+    async (article: Article) => {
+      if (!confirm(`Delete "${article.title}"?`)) return;
 
-    try {
-      await deleteArticle(article.hash);
-      await loadArticles();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to delete article');
-    }
-  }
+      try {
+        await deleteArticle(article.hash);
+        await loadArticles();
+      } catch (err) {
+        alert(err instanceof Error ? err.message : 'Failed to delete article');
+      }
+    },
+    [loadArticles]
+  );
 
-  function handleSelectAll() {
-    toggleAll(sortedArticles.map((a) => a.hash));
-  }
-
-  async function handleBatchDelete() {
+  const handleBatchDelete = useCallback(async () => {
     const count = selectedCount;
     if (count === 0) return;
     if (
@@ -118,9 +130,9 @@ export default function ArticleListPage() {
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to delete articles');
     }
-  }
+  }, [selectedCount, selectedHashes, clearSelection, loadArticles, t]);
 
-  async function handleBatchPublish() {
+  const handleBatchPublish = useCallback(async () => {
     if (selectedCount === 0) return;
 
     try {
@@ -132,9 +144,9 @@ export default function ArticleListPage() {
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to publish articles');
     }
-  }
+  }, [selectedCount, selectedHashes, clearSelection, loadArticles]);
 
-  async function handleBatchUnpublish() {
+  const handleBatchUnpublish = useCallback(async () => {
     if (selectedCount === 0) return;
 
     try {
@@ -148,7 +160,7 @@ export default function ArticleListPage() {
         err instanceof Error ? err.message : 'Failed to unpublish articles'
       );
     }
-  }
+  }, [selectedCount, selectedHashes, clearSelection, loadArticles]);
 
   const sortedArticles = useMemo(() => {
     const filtered = searchQuery.trim()
@@ -180,6 +192,10 @@ export default function ArticleListPage() {
       }
     });
   }, [articles, searchQuery, sortKey, sortDirection]);
+
+  const handleSelectAll = useCallback(() => {
+    toggleAll(sortedArticles.map((article) => article.hash));
+  }, [toggleAll, sortedArticles]);
 
   return (
     <div>
@@ -359,7 +375,7 @@ export default function ArticleListPage() {
                         alt=""
                         width={48}
                         height={32}
-                        className="rounded object-cover"
+                        className="h-8 w-12 rounded object-cover"
                         unoptimized
                       />
                     ) : (
@@ -472,6 +488,27 @@ export default function ArticleListPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <AdminPagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
+      )}
+
+      {/* Bottom new article button */}
+      {!loading && articles.length > 0 && (
+        <div className="mt-8 flex justify-end">
+          <Button
+            asChild
+            className="shadow-md hover:shadow-lg transition-shadow"
+          >
+            <Link href="/my/articles/new">{t('articles.newArticle')}</Link>
+          </Button>
         </div>
       )}
     </div>

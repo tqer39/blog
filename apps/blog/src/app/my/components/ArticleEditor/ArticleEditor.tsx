@@ -5,6 +5,7 @@ import type {
   Article,
   ArticleInput,
   ImageModel,
+  Image as ImageType,
   OpenAIModel,
 } from '@blog/cms-types';
 import {
@@ -19,6 +20,7 @@ import {
   Check,
   Eye,
   ImageIcon,
+  Images,
   ListTree,
   MessageSquare,
   Sparkles,
@@ -34,6 +36,7 @@ import {
   useState,
 } from 'react';
 import { useAIModelSettings } from '@/hooks/useAIModelSettings';
+import { useAIToolsStatus } from '@/hooks/useAIToolsStatus';
 import { useArticleDraft } from '@/hooks/useArticleDraft';
 import { useI18n } from '@/i18n';
 import {
@@ -47,6 +50,7 @@ import {
 import { AISettingsPopover } from '../AISettingsPopover';
 import { ArticlePreview } from '../ArticlePreview';
 import { CategorySelector } from '../CategorySelector';
+import { ImagePickerModal } from '../ImagePickerModal';
 import { MarkdownEditor } from '../MarkdownEditor';
 import { ReviewPanel } from '../ReviewPanel';
 import { SplitButton } from '../SplitButton';
@@ -85,9 +89,11 @@ export function ArticleEditor({
     updateSettings: updateAISettings,
     resetSettings: resetAISettings,
   } = useAIModelSettings();
+  const { status: aiToolsStatus } = useAIToolsStatus();
   const { saveDraft, loadDraft, clearDraft } = useArticleDraft(initialData?.id);
   const headerImageInputRef = useRef<HTMLInputElement>(null);
   const [showDraftDialog, setShowDraftDialog] = useState(false);
+  const [showImagePicker, setShowImagePicker] = useState(false);
   const [pendingDraft, setPendingDraft] = useState<ReturnType<
     typeof loadDraft
   > | null>(null);
@@ -111,12 +117,10 @@ export function ArticleEditor({
     }
   }, []);
 
-  // Auto-save draft when article changes (debounced in hook)
-  useEffect(() => {
-    // Only save if the article has actually changed from its initial state
-    // This prevents saving on initial mount or StrictMode double-invocation
+  // Check if article has changed from its initial state
+  const hasArticleChanges = useCallback(() => {
     const pristine = pristineArticleRef.current;
-    const hasChanges =
+    return (
       article.title !== pristine.title ||
       article.description !== pristine.description ||
       article.content !== pristine.content ||
@@ -125,9 +129,15 @@ export function ArticleEditor({
       article.headerImageId !== pristine.headerImageId ||
       article.slideMode !== pristine.slideMode ||
       article.slideDuration !== pristine.slideDuration ||
-      JSON.stringify(article.tags) !== JSON.stringify(pristine.tags);
+      JSON.stringify(article.tags) !== JSON.stringify(pristine.tags)
+    );
+  }, [article]);
 
-    if (!hasChanges) {
+  // Auto-save draft when article changes (debounced in hook)
+  useEffect(() => {
+    // Only save if the article has actually changed from its initial state
+    // This prevents saving on initial mount or StrictMode double-invocation
+    if (!hasArticleChanges()) {
       return;
     }
 
@@ -143,7 +153,7 @@ export function ArticleEditor({
       slideMode: article.slideMode,
       slideDuration: article.slideDuration,
     });
-  }, [article, saveDraft]);
+  }, [article, saveDraft, hasArticleChanges]);
 
   // Handle draft restoration
   const handleRestoreDraft = useCallback(() => {
@@ -230,6 +240,13 @@ export function ArticleEditor({
 
   const handleRemoveHeaderImage = () => {
     dispatch({ type: 'SET_HEADER_IMAGE', payload: { id: null, url: null } });
+  };
+
+  const handleSelectFromLibrary = (image: ImageType) => {
+    dispatch({
+      type: 'SET_HEADER_IMAGE',
+      payload: { id: image.id, url: image.url },
+    });
   };
 
   const handleGenerateMetadata = async () => {
@@ -522,6 +539,7 @@ export function ArticleEditor({
             settings={aiSettings}
             onSettingsChange={updateAISettings}
             onReset={resetAISettings}
+            aiToolsStatus={aiToolsStatus}
           />
 
           {/* AI Review button */}
@@ -531,7 +549,8 @@ export function ArticleEditor({
               disabled={
                 loading.isReviewing ||
                 !article.title.trim() ||
-                !article.content.trim()
+                !article.content.trim() ||
+                !aiToolsStatus?.hasAnthropic
               }
               modelType="anthropic"
               modelValue={aiSettings.review}
@@ -572,7 +591,18 @@ export function ArticleEditor({
           </Button>
 
           {onCancel && (
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                // Only clear draft if changes were made during this session
+                // This preserves existing drafts when user cancels without making changes
+                if (hasArticleChanges()) {
+                  clearDraft();
+                }
+                onCancel();
+              }}
+            >
               {t.cancel}
             </Button>
           )}
@@ -633,7 +663,8 @@ export function ArticleEditor({
               disabled={
                 loading.isGeneratingMetadata ||
                 !article.title.trim() ||
-                !article.content.trim()
+                !article.content.trim() ||
+                !aiToolsStatus?.hasOpenAI
               }
               modelType="openai"
               modelValue={aiSettings.metadata}
@@ -746,7 +777,7 @@ export function ArticleEditor({
                   alt="Header preview"
                   width={400}
                   height={200}
-                  className="max-h-48 rounded-lg border object-cover"
+                  className="max-h-48 w-auto rounded-lg border object-cover"
                   unoptimized
                 />
                 <button
@@ -784,12 +815,23 @@ export function ArticleEditor({
               type="button"
               variant="outline"
               size="sm"
+              onClick={() => setShowImagePicker(true)}
+            >
+              <Images className="mr-1.5 h-4 w-4" />
+              {t.selectFromLibrary}
+            </Button>
+            <SplitButton
               onClick={() => dispatch({ type: 'TOGGLE_IMAGE_PROMPT' })}
-              className="gap-1.5"
+              disabled={!aiToolsStatus?.hasAnyKey}
+              modelType="image"
+              modelValue={aiSettings.image}
+              onModelChange={(v) =>
+                updateAISettings({ image: v as ImageModel })
+              }
             >
               <Sparkles className="h-4 w-4" />
               {t.aiGenerate}
-            </Button>
+            </SplitButton>
           </div>
 
           {/* AI Generate Options (collapsible) */}
@@ -890,7 +932,8 @@ export function ArticleEditor({
                       !article.title.trim() &&
                       !article.description.trim() &&
                       !article.content.trim() &&
-                      !imageGen.imagePrompt.trim())
+                      !imageGen.imagePrompt.trim()) ||
+                    !aiToolsStatus?.hasAnyKey
                   }
                   modelType="image"
                   modelValue={aiSettings.image}
@@ -923,7 +966,11 @@ export function ArticleEditor({
             <Label>{t.content}</Label>
             <SplitButton
               onClick={() => handleGenerateOutline()}
-              disabled={loading.isGeneratingOutline || !article.title.trim()}
+              disabled={
+                loading.isGeneratingOutline ||
+                !article.title.trim() ||
+                !aiToolsStatus?.hasAnthropic
+              }
               modelType="anthropic"
               modelValue={aiSettings.outline}
               onModelChange={(v) =>
@@ -942,7 +989,61 @@ export function ArticleEditor({
             onImageUpload={handleImageUpload}
             title={article.title}
             aiSettings={aiSettings}
+            aiToolsStatus={aiToolsStatus}
           />
+        </div>
+
+        {/* Bottom action buttons */}
+        <div className="flex items-center justify-end gap-4 border-t border-border pt-4">
+          {/* Preview button */}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              dispatch({ type: 'SET_PREVIEW_OPEN', payload: true })
+            }
+            className="gap-1.5"
+          >
+            <Eye className="h-4 w-4" />
+            {t.preview}
+          </Button>
+
+          {onCancel && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                if (hasArticleChanges()) {
+                  clearDraft();
+                }
+                onCancel();
+              }}
+            >
+              {t.cancel}
+            </Button>
+          )}
+          <Button
+            type="button"
+            onClick={handleSave}
+            disabled={loading.isSaving}
+            className={
+              ui.saveSuccess
+                ? 'bg-green-600 hover:bg-green-600 transition-colors shadow-md'
+                : 'shadow-md hover:shadow-lg transition-shadow'
+            }
+          >
+            {loading.isSaving ? (
+              t.saving
+            ) : ui.saveSuccess ? (
+              <span className="flex items-center gap-1">
+                <Check className="h-4 w-4" />
+                {t.saved}
+              </span>
+            ) : (
+              t.save
+            )}
+          </Button>
         </div>
       </div>
 
@@ -964,6 +1065,12 @@ export function ArticleEditor({
         publishedAt={initialData?.publishedAt}
         slideMode={article.slideMode}
         slideDuration={article.slideDuration}
+      />
+      <ImagePickerModal
+        isOpen={showImagePicker}
+        onClose={() => setShowImagePicker(false)}
+        onSelect={handleSelectFromLibrary}
+        currentImageId={article.headerImageId}
       />
     </div>
   );

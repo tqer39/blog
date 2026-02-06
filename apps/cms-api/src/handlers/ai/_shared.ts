@@ -5,7 +5,9 @@ import type {
   AnthropicModel,
   ArticleCategory,
   ContinuationLength,
+  GeminiTextModel,
   OpenAIModel,
+  TextProvider,
   TransformAction,
 } from '@blog/cms-types';
 
@@ -28,6 +30,31 @@ export const VALID_ANTHROPIC_MODELS: AnthropicModel[] = [
 export const DEFAULT_OPENAI_MODEL: OpenAIModel = 'gpt-4o-mini';
 export const DEFAULT_ANTHROPIC_MODEL: AnthropicModel =
   'claude-sonnet-4-5-20250929';
+
+// Gemini text models for text generation
+export const GEMINI_TEXT_MODELS = {
+  'gemini-2.5-flash': 'gemini-2.5-flash-preview-05-20',
+  'gemini-2.5-pro': 'gemini-2.5-pro-preview-05-06',
+  'gemini-3-flash-preview': 'gemini-2.5-flash-preview-05-20', // Using latest available
+} as const;
+
+export const VALID_GEMINI_TEXT_MODELS: GeminiTextModel[] = [
+  'gemini-2.5-flash',
+  'gemini-2.5-pro',
+  'gemini-3-flash-preview',
+];
+
+export const DEFAULT_GEMINI_TEXT_MODEL: GeminiTextModel = 'gemini-2.5-flash';
+
+// Helper to detect text provider from model name
+export function getTextProvider(model: string): TextProvider | null {
+  if (VALID_OPENAI_MODELS.includes(model as OpenAIModel)) return 'openai';
+  if (VALID_ANTHROPIC_MODELS.includes(model as AnthropicModel))
+    return 'anthropic';
+  if (VALID_GEMINI_TEXT_MODELS.includes(model as GeminiTextModel))
+    return 'gemini';
+  return null;
+}
 
 // Gemini Image models
 export const GEMINI_IMAGE_MODELS = {

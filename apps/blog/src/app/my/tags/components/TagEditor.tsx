@@ -3,6 +3,7 @@
 import type { TagInput, TagWithCount } from '@blog/cms-types';
 import { Alert, AlertDescription, Input, Label } from '@blog/ui';
 import { useState } from 'react';
+import { useI18n } from '@/i18n';
 import { createTag, updateTag } from '@/lib/api/client';
 import { EditorModal } from '../../components/EditorModal';
 
@@ -12,6 +13,7 @@ interface TagEditorProps {
 }
 
 export function TagEditor({ tag, onClose }: TagEditorProps) {
+  const { t } = useI18n();
   const [name, setName] = useState(tag?.name ?? '');
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export function TagEditor({ tag, onClose }: TagEditorProps) {
 
   async function handleSave() {
     if (!name.trim()) {
-      setError('Name is required');
+      setError(t('tags.editor.nameRequired'));
       return;
     }
 
@@ -40,7 +42,7 @@ export function TagEditor({ tag, onClose }: TagEditorProps) {
 
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save tag');
+      setError(err instanceof Error ? err.message : t('tags.editor.saveError'));
     } finally {
       setIsSaving(false);
     }
@@ -48,7 +50,9 @@ export function TagEditor({ tag, onClose }: TagEditorProps) {
 
   return (
     <EditorModal
-      title={isEditing ? 'Edit Tag' : 'Create Tag'}
+      title={
+        isEditing ? t('tags.editor.editTitle') : t('tags.editor.createTitle')
+      }
       onClose={onClose}
       onSave={handleSave}
       isSaving={isSaving}
@@ -56,7 +60,7 @@ export function TagEditor({ tag, onClose }: TagEditorProps) {
       error={error}
     >
       <div className="space-y-2">
-        <Label htmlFor="tag-name">Name</Label>
+        <Label htmlFor="tag-name">{t('tags.editor.name')}</Label>
         <Input
           id="tag-name"
           type="text"
@@ -64,7 +68,7 @@ export function TagEditor({ tag, onClose }: TagEditorProps) {
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setName(e.target.value)
           }
-          placeholder="Tag name"
+          placeholder={t('tags.editor.namePlaceholder')}
           autoFocus
         />
       </div>
@@ -72,8 +76,10 @@ export function TagEditor({ tag, onClose }: TagEditorProps) {
       {isEditing && tag.articleCount > 0 && (
         <Alert>
           <AlertDescription>
-            This tag is used in {tag.articleCount} article(s). Changes will be
-            reflected across all associated articles.
+            {t('tags.editor.usedInArticles').replace(
+              '{count}',
+              String(tag.articleCount)
+            )}
           </AlertDescription>
         </Alert>
       )}

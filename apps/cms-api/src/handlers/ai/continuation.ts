@@ -1,5 +1,5 @@
 /**
- * Suggest continuation using Claude
+ * Suggest continuation using multiple providers
  */
 import type {
   SuggestContinuationRequest,
@@ -7,23 +7,25 @@ import type {
 } from '@blog/cms-types';
 import { Hono } from 'hono';
 import type { Env } from '../../index';
-import { getAnthropicApiKey } from '../../lib/api-keys';
-import { internalError, validationError } from '../../lib/errors';
 import {
-  ANTHROPIC_API_URL,
+  getAnthropicApiKey,
+  getGeminiApiKey,
+  getOpenAIApiKey,
+} from '../../lib/api-keys';
+import { internalError, validationError } from '../../lib/errors';
+import { callTextProvider } from './_providers';
+import {
   buildContinuationSystemPrompt,
   DEFAULT_ANTHROPIC_MODEL,
+  getTextProvider,
   VALID_ANTHROPIC_MODELS,
+  VALID_GEMINI_TEXT_MODELS,
+  VALID_OPENAI_MODELS,
 } from './_shared';
 
 export const continuationHandler = new Hono<{ Bindings: Env }>();
 
 continuationHandler.post('/', async (c) => {
-  const apiKey = await getAnthropicApiKey(c.env);
-  if (!apiKey) {
-    internalError('Anthropic API key not configured');
-  }
-
   const body = await c.req.json<SuggestContinuationRequest>();
   const {
     title,
@@ -41,11 +43,32 @@ continuationHandler.post('/', async (c) => {
     });
   }
 
-  // Validate model
-  if (!VALID_ANTHROPIC_MODELS.includes(model)) {
+  // Detect provider from model
+  const provider = getTextProvider(model);
+  if (!provider) {
     validationError('Invalid model', {
-      model: `Must be one of: ${VALID_ANTHROPIC_MODELS.join(', ')}`,
+      model: `Must be one of: ${[...VALID_OPENAI_MODELS, ...VALID_ANTHROPIC_MODELS, ...VALID_GEMINI_TEXT_MODELS].join(', ')}`,
     });
+  }
+
+  // Get API key based on provider
+  let apiKey: string | null = null;
+  switch (provider) {
+    case 'openai':
+      apiKey = await getOpenAIApiKey(c.env);
+      break;
+    case 'anthropic':
+      apiKey = await getAnthropicApiKey(c.env);
+      break;
+    case 'gemini':
+      apiKey = await getGeminiApiKey(c.env);
+      break;
+  }
+
+  if (!apiKey) {
+    internalError(
+      `${provider.charAt(0).toUpperCase() + provider.slice(1)} API key not configured`
+    );
   }
 
   // Extract context around cursor position
@@ -68,42 +91,18 @@ ${contextBefore}
 ${contextAfter || '（なし）'}`;
 
   try {
-    console.log('Calling Anthropic API with model:', model);
-    const response = await fetch(ANTHROPIC_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey as string,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: 2048,
-        system: buildContinuationSystemPrompt(length),
-        messages: [{ role: 'user', content: userPrompt }],
-      }),
+    console.log('Calling provider with model:', model, 'provider:', provider);
+    const response = await callTextProvider(provider, apiKey, {
+      model,
+      systemPrompt: buildContinuationSystemPrompt(length),
+      userPrompt,
+      maxTokens: 2048,
     });
 
-    console.log('Anthropic API response status:', response.status);
-    if (!response.ok) {
-      const error = await response.text();
-      console.error('Anthropic API error:', error);
-      internalError(`Anthropic API error (${response.status}): ${error}`);
-    }
-
-    const data = await response.json<{
-      content: Array<{ type: string; text: string }>;
-    }>();
-
-    const textContent = data.content.find((c) => c.type === 'text');
-    if (!textContent) {
-      internalError('No text response from Claude');
-    }
-
     // Parse JSON from response
-    const jsonMatch = textContent.text.match(/\{[\s\S]*\}/);
+    const jsonMatch = response.text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.error('Failed to parse JSON from response:', textContent.text);
+      console.error('Failed to parse JSON from response:', response.text);
       internalError('Failed to parse continuation response');
     }
 

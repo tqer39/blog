@@ -1,4 +1,6 @@
 import type {
+  AIProvider,
+  AIToolsStatus,
   ApiKeyStatus,
   Article,
   ArticleCategory,
@@ -27,6 +29,7 @@ import type {
   Tag,
   TagInput,
   TagListResponse,
+  TestAIKeyResponse,
   TransformAction,
   TransformTextRequest,
   TransformTextResponse,
@@ -164,8 +167,16 @@ export async function unpublishArticle(hash: string): Promise<Article> {
 }
 
 // Tags
-export async function getTags(): Promise<TagListResponse> {
-  return fetchApi('/tags');
+export async function getTags(params?: {
+  page?: number;
+  perPage?: number;
+}): Promise<TagListResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.page) searchParams.set('page', String(params.page));
+  if (params?.perPage) searchParams.set('perPage', String(params.perPage));
+
+  const query = searchParams.toString();
+  return fetchApi(`/tags${query ? `?${query}` : ''}`);
 }
 
 export async function getTag(id: string): Promise<Tag> {
@@ -185,8 +196,16 @@ export async function deleteTag(id: string): Promise<void> {
 }
 
 // Categories
-export async function getCategories(): Promise<CategoryListResponse> {
-  return fetchApi('/categories');
+export async function getCategories(params?: {
+  page?: number;
+  perPage?: number;
+}): Promise<CategoryListResponse> {
+  const searchParams = new URLSearchParams();
+  if (params?.page) searchParams.set('page', String(params.page));
+  if (params?.perPage) searchParams.set('perPage', String(params.perPage));
+
+  const query = searchParams.toString();
+  return fetchApi(`/categories${query ? `?${query}` : ''}`);
 }
 
 export async function getCategory(id: string): Promise<Category> {
@@ -282,6 +301,17 @@ export async function transformText(
   request: TransformTextRequest
 ): Promise<TransformTextResponse> {
   return postJson('/ai/transform-text', request);
+}
+
+export async function getAIToolsStatus(): Promise<AIToolsStatus> {
+  return fetchApi('/ai/status');
+}
+
+export async function testAIKey(
+  provider: AIProvider,
+  apiKey?: string
+): Promise<TestAIKeyResponse> {
+  return postJson('/ai/test-key', { provider, apiKey });
 }
 
 // Settings

@@ -11,6 +11,7 @@ export { ImageCompare } from './components/ImageCompare';
 export { Mermaid } from './components/Mermaid';
 export { MermaidClient } from './components/MermaidClient';
 export { ModelViewer } from './components/ModelViewer';
+export * from './components/SocialIcons';
 export { Terminal } from './components/Terminal';
 export * from './components/ui/alert';
 export * from './components/ui/badge';

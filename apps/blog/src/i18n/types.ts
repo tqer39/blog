@@ -86,7 +86,36 @@ export interface Messages {
       apiKeySet: string;
       showApiKey: string;
       hideApiKey: string;
+      testButton: string;
+      testConfirm: string;
+      testSuccess: string;
+      testError: string;
+      clearButton: string;
+      clearConfirm: string;
     };
+    apiKey: {
+      title: string;
+      description: string;
+      noKey: string;
+      hasKey: string;
+      createdAt: string;
+      enabled: string;
+      disabled: string;
+      generate: string;
+      regenerate: string;
+      disable: string;
+      enable: string;
+      copyKey: string;
+      copied: string;
+      warning: string;
+      generatedKey: string;
+      confirmRegenerate: string;
+      generateError: string;
+      statusError: string;
+      enableError: string;
+      disableError: string;
+    };
+    unsavedChanges: string;
   };
   admin: {
     sidebar: {
@@ -179,6 +208,15 @@ export interface Messages {
       edit: string;
       delete: string;
     };
+    editor: {
+      editTitle: string;
+      createTitle: string;
+      name: string;
+      namePlaceholder: string;
+      usedInArticles: string;
+      saveError: string;
+      nameRequired: string;
+    };
   };
   categories: {
     title: string;
@@ -207,6 +245,21 @@ export interface Messages {
     actions: {
       edit: string;
       delete: string;
+    };
+    editor: {
+      editTitle: string;
+      createTitle: string;
+      name: string;
+      namePlaceholder: string;
+      slug: string;
+      slugPlaceholder: string;
+      slugDescription: string;
+      color: string;
+      usedInArticles: string;
+      saveError: string;
+      nameRequired: string;
+      slugRequired: string;
+      slugInvalid: string;
     };
   };
   images: {
@@ -280,6 +333,7 @@ export interface Messages {
     backToTop: string;
     prevArticle: string;
     nextArticle: string;
+    updated: string;
   };
   breadcrumb: {
     home: string;
@@ -342,6 +396,15 @@ export interface Messages {
       discard: string;
       restore: string;
     };
+    selectFromLibrary: string;
+    imagePicker: {
+      title: string;
+      searchPlaceholder: string;
+      loading: string;
+      noImages: string;
+      imageCount: string;
+      cancel: string;
+    };
     imageGeneration: {
       useArticleContent: string;
       customPrompt: string;
@@ -361,6 +424,7 @@ export interface Messages {
       list: string;
       codeBlock: string;
       link: string;
+      emoji: string;
       fullscreen: string;
       aiContinuation: string;
       continuationTitle: string;
@@ -370,6 +434,17 @@ export interface Messages {
       long: string;
       confidence: string;
       generateSuggestion: string;
+    };
+    emojiPicker: {
+      searchPlaceholder: string;
+      noResults: string;
+      smileys: string;
+      gestures: string;
+      symbols: string;
+      food: string;
+      activities: string;
+      tech: string;
+      nature: string;
     };
     previousResult: string;
   };

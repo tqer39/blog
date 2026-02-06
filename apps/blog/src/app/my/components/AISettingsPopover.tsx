@@ -2,11 +2,14 @@
 
 import type {
   AIModelSettings,
+  AIToolsStatus,
   AnthropicModel,
   GeminiImageModel,
+  GeminiTextModel,
   ImageModel,
   OpenAIImageModel,
   OpenAIModel,
+  TextModel,
 } from '@blog/cms-types';
 import {
   Button,
@@ -27,6 +30,7 @@ interface AISettingsPopoverProps {
   settings: AIModelSettings;
   onSettingsChange: (settings: Partial<AIModelSettings>) => void;
   onReset: () => void;
+  aiToolsStatus?: AIToolsStatus | null;
 }
 
 // Model options with display labels (exported for reuse)
@@ -42,6 +46,12 @@ export const ANTHROPIC_MODELS: ModelOption<AnthropicModel>[] = [
   { value: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4' },
   { value: 'claude-sonnet-4-5-20250929', label: 'Claude Sonnet 4.5 (Best)' },
   { value: 'claude-opus-4-5-20251101', label: 'Claude Opus 4.5 (Premium)' },
+];
+
+export const GEMINI_TEXT_MODELS: ModelOption<GeminiTextModel>[] = [
+  { value: 'gemini-2.5-flash', label: 'Gemini 2.5 Flash (Fast)' },
+  { value: 'gemini-2.5-pro', label: 'Gemini 2.5 Pro (Best)' },
+  { value: 'gemini-3-flash-preview', label: 'Gemini 3 Flash (Preview)' },
 ];
 
 export const GEMINI_IMAGE_MODELS: ModelOption<GeminiImageModel>[] = [
@@ -64,9 +74,44 @@ export function AISettingsPopover({
   settings,
   onSettingsChange,
   onReset,
+  aiToolsStatus,
 }: AISettingsPopoverProps) {
   const { messages } = useI18n();
   const t = messages.aiModelSettings;
+
+  // Filter text models based on available API keys
+  const availableTextModels: ModelOptionWithProvider<TextModel>[] = [
+    ...(aiToolsStatus?.hasOpenAI
+      ? OPENAI_MODELS.map((m) => ({ ...m, provider: 'OpenAI' }))
+      : []),
+    ...(aiToolsStatus?.hasAnthropic
+      ? ANTHROPIC_MODELS.map((m) => ({ ...m, provider: 'Anthropic' }))
+      : []),
+    ...(aiToolsStatus?.hasGemini
+      ? GEMINI_TEXT_MODELS.map((m) => ({ ...m, provider: 'Gemini' }))
+      : []),
+  ];
+
+  // Filter image models based on available API keys
+  const availableImageModels: ModelOptionWithProvider<ImageModel>[] = [
+    ...(aiToolsStatus?.hasGemini
+      ? GEMINI_IMAGE_MODELS.map((m) => ({ ...m, provider: 'Gemini' }))
+      : []),
+    ...(aiToolsStatus?.hasOpenAI
+      ? OPENAI_IMAGE_MODELS.map((m) => ({ ...m, provider: 'OpenAI' }))
+      : []),
+  ];
+
+  // Render function for showing provider in dropdown
+  const renderModelWithProvider = (opt: ModelOption<string>) => (
+    <span className="flex items-center gap-2">
+      <span className="text-xs text-muted-foreground">
+        [{(opt as ModelOptionWithProvider).provider}]
+      </span>
+      {opt.label}
+    </span>
+  );
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -96,40 +141,36 @@ export function AISettingsPopover({
 
           <Separator />
 
-          {/* Metadata Generation (OpenAI) */}
+          {/* Metadata Generation */}
           <ModelSelectField
             label={t.metadata}
             value={settings.metadata}
             onChange={(v) => onSettingsChange({ metadata: v })}
-            options={OPENAI_MODELS}
+            options={availableTextModels}
+            renderItem={renderModelWithProvider}
+            disabled={availableTextModels.length === 0}
           />
 
-          {/* Image Generation (Gemini / OpenAI) */}
+          {/* Image Generation */}
           <ModelSelectField
             label={t.image}
             value={settings.image}
             onChange={(v) => onSettingsChange({ image: v })}
-            options={ALL_IMAGE_MODELS}
-            renderItem={(opt) => (
-              <span className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">
-                  [{(opt as ModelOptionWithProvider).provider}]
-                </span>
-                {opt.label}
-              </span>
-            )}
+            options={availableImageModels}
+            renderItem={renderModelWithProvider}
+            disabled={availableImageModels.length === 0}
           />
 
           <Separator />
-
-          <p className="text-xs text-muted-foreground">{t.claudeAnthropic}</p>
 
           {/* Article Review */}
           <ModelSelectField
             label={t.review}
             value={settings.review}
             onChange={(v) => onSettingsChange({ review: v })}
-            options={ANTHROPIC_MODELS}
+            options={availableTextModels}
+            renderItem={renderModelWithProvider}
+            disabled={availableTextModels.length === 0}
           />
 
           {/* Outline Generation */}
@@ -137,7 +178,9 @@ export function AISettingsPopover({
             label={t.outline}
             value={settings.outline}
             onChange={(v) => onSettingsChange({ outline: v })}
-            options={ANTHROPIC_MODELS}
+            options={availableTextModels}
+            renderItem={renderModelWithProvider}
+            disabled={availableTextModels.length === 0}
           />
 
           {/* Text Transform */}
@@ -145,7 +188,9 @@ export function AISettingsPopover({
             label={t.transform}
             value={settings.transform}
             onChange={(v) => onSettingsChange({ transform: v })}
-            options={ANTHROPIC_MODELS}
+            options={availableTextModels}
+            renderItem={renderModelWithProvider}
+            disabled={availableTextModels.length === 0}
           />
 
           {/* Continuation Suggestion */}
@@ -153,7 +198,9 @@ export function AISettingsPopover({
             label={t.continuation}
             value={settings.continuation}
             onChange={(v) => onSettingsChange({ continuation: v })}
-            options={ANTHROPIC_MODELS}
+            options={availableTextModels}
+            renderItem={renderModelWithProvider}
+            disabled={availableTextModels.length === 0}
           />
         </div>
       </PopoverContent>

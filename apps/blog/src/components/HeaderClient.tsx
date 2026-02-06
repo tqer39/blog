@@ -1,6 +1,7 @@
 'use client';
 
 import { useEscapeKey } from '@blog/ui';
+import { devError } from '@blog/utils';
 import {
   BookOpen,
   LayoutDashboard,
@@ -59,7 +60,7 @@ export function HeaderClient({
       await fetch('/api/auth/logout', { method: 'POST' });
       router.refresh();
     } catch (error) {
-      console.error('Logout failed:', error);
+      devError('Logout failed:', error);
     }
   };
 

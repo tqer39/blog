@@ -59,9 +59,17 @@ describe('tagsHandler', () => {
         },
       ];
 
-      mockDB.prepare.mockReturnValue({
-        all: vi.fn().mockResolvedValue({ results: mockTags }),
-      });
+      // First call: count query
+      mockDB.prepare
+        .mockReturnValueOnce({
+          first: vi.fn().mockResolvedValue({ total: 2 }),
+        })
+        // Second call: paginated data query
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi.fn().mockResolvedValue({ results: mockTags }),
+          }),
+        });
 
       const app = createTestApp(mockDB);
       const res = await app.request('/tags');
@@ -73,12 +81,26 @@ describe('tagsHandler', () => {
       expect(data.tags[0].articleCount).toBe(5);
       expect(data.tags[1].name).toBe('TypeScript');
       expect(data.tags[1].articleCount).toBe(3);
+      expect(data.pagination).toEqual({
+        page: 1,
+        perPage: 50,
+        total: 2,
+        totalPages: 1,
+      });
     });
 
     it('should return empty array when no tags exist', async () => {
-      mockDB.prepare.mockReturnValue({
-        all: vi.fn().mockResolvedValue({ results: [] }),
-      });
+      // First call: count query
+      mockDB.prepare
+        .mockReturnValueOnce({
+          first: vi.fn().mockResolvedValue({ total: 0 }),
+        })
+        // Second call: paginated data query
+        .mockReturnValueOnce({
+          bind: vi.fn().mockReturnValue({
+            all: vi.fn().mockResolvedValue({ results: [] }),
+          }),
+        });
 
       const app = createTestApp(mockDB);
       const res = await app.request('/tags');
@@ -86,6 +108,7 @@ describe('tagsHandler', () => {
       expect(res.status).toBe(200);
       const data = await res.json();
       expect(data.tags).toEqual([]);
+      expect(data.pagination.total).toBe(0);
     });
   });
 

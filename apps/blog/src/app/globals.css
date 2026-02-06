@@ -955,7 +955,7 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(
 
 .nord-light input::placeholder,
 .nord-light textarea::placeholder {
-  color: #4c566a !important; /* nord3 */
+  color: #9aa5b8 !important; /* lighter gray for better contrast */
 }
 
 /* Nord Light: Labels and form text */
@@ -1158,7 +1158,7 @@ button:not(.bg-primary):not(.bg-destructive):not(.bg-secondary):not(
 
 .autumn input::placeholder,
 .autumn textarea::placeholder {
-  color: #795548 !important; /* brown */
+  color: #bcaaa4 !important; /* brown-200 for better contrast */
 }
 
 /* Autumn: Labels and form text */

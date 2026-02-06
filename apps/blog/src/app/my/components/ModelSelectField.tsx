@@ -43,6 +43,8 @@ interface ModelSelectFieldProps<T extends string> {
   options: ModelOption<T>[];
   /** カスタムアイテムレンダラー (省略時はlabelを表示) */
   renderItem?: (option: ModelOption<T>) => ReactNode;
+  /** 無効状態 */
+  disabled?: boolean;
 }
 
 /**
@@ -78,11 +80,16 @@ export function ModelSelectField<T extends string>({
   onChange,
   options,
   renderItem,
+  disabled,
 }: ModelSelectFieldProps<T>) {
   return (
     <div className="space-y-2">
       <Label className="text-xs text-muted-foreground">{label}</Label>
-      <Select value={value} onValueChange={(v: string) => onChange(v as T)}>
+      <Select
+        value={value}
+        onValueChange={(v: string) => onChange(v as T)}
+        disabled={disabled}
+      >
         <SelectTrigger className="h-8 text-sm">
           <SelectValue />
         </SelectTrigger>

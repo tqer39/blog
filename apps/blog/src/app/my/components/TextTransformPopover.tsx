@@ -1,7 +1,7 @@
 'use client';
 
 import type {
-  AnthropicModel,
+  TextModel,
   TransformAction,
   TransformLanguage,
 } from '@blog/cms-types';
@@ -25,7 +25,8 @@ interface TextTransformPopoverProps {
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   value: string;
   onChange: (value: string) => void;
-  model?: AnthropicModel;
+  model?: TextModel;
+  disabled?: boolean;
 }
 
 interface TransformOption {
@@ -79,6 +80,7 @@ export function TextTransformPopover({
   value,
   onChange,
   model,
+  disabled,
 }: TextTransformPopoverProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedText, setSelectedText] = useState('');
@@ -243,7 +245,7 @@ export function TextTransformPopover({
     textareaRef,
   ]);
 
-  if (!isOpen || !selectedText) return null;
+  if (!isOpen || !selectedText || disabled) return null;
 
   return (
     <div

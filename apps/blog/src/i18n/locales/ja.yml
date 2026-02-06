@@ -6,6 +6,7 @@ common:
   delete: 削除
   edit: 編集
   create: 作成
+  update: 更新
   search: 検索
   noResults: 結果がありません
   confirm: 確認
@@ -23,6 +24,7 @@ settings:
   saveSuccess: 設定を保存しました
   saveError: 設定の保存に失敗しました
   loadError: 設定の読み込みに失敗しました
+  unsavedChanges: 未保存の変更があります
   basic:
     title: 基本設定
     siteName: サイト名
@@ -73,6 +75,12 @@ settings:
     apiKeySet: APIキーが設定されています。新しい値を入力して置き換えできます。
     showApiKey: APIキーを表示
     hideApiKey: APIキーを非表示
+    testButton: テスト
+    testConfirm: APIキーの動作確認を行います。よろしいですか？
+    testSuccess: APIキーは正常に動作しています
+    testError: APIキーのテストに失敗しました
+    clearButton: クリア
+    clearConfirm: APIキーを削除しますか？保存ボタンを押すまで変更は反映されません。
   apiKey:
     title: CMS API キー
     description: CMS APIへの外部アクセス用のAPIキーを管理します。環境変数 API_KEY が設定されている場合、そちらも引き続き使用可能です。
@@ -135,12 +143,12 @@ articles:
     image: 画像
     title: タイトル
     status: ステータス
-    date: 日付
+    date: 公開日
     tags: タグ
     actions: 操作
     sortByTitle: タイトルで並び替え
     sortByStatus: ステータスで並び替え
-    sortByDate: 日付で並び替え
+    sortByDate: 公開日で並び替え
   status:
     published: 公開済み
     draft: 下書き
@@ -178,6 +186,14 @@ tags:
   actions:
     edit: 編集
     delete: 削除
+  editor:
+    editTitle: タグを編集
+    createTitle: タグを作成
+    name: 名前
+    namePlaceholder: タグ名
+    usedInArticles: このタグは{count}件の記事で使用されています。変更は関連するすべての記事に反映されます。
+    saveError: タグの保存に失敗しました
+    nameRequired: 名前は必須です
 
 categories:
   title: カテゴリ
@@ -205,6 +221,20 @@ categories:
   actions:
     edit: 編集
     delete: 削除
+  editor:
+    editTitle: カテゴリを編集
+    createTitle: カテゴリを作成
+    name: 名前
+    namePlaceholder: カテゴリ名
+    slug: スラッグ
+    slugPlaceholder: category-slug
+    slugDescription: URL用の識別子。編集しない場合は名前から自動生成されます。
+    color: 色
+    usedInArticles: このカテゴリは{count}件の記事で使用されています。変更は関連するすべての記事に反映されます。
+    saveError: カテゴリの保存に失敗しました
+    nameRequired: 名前は必須です
+    slugRequired: スラッグは必須です
+    slugInvalid: スラッグには小文字、数字、ハイフンのみ使用できます
 
 images:
   title: 画像
@@ -334,6 +364,7 @@ editor:
     savedAt: '{date}に保存'
     discard: 破棄
     restore: 復元
+  selectFromLibrary: ライブラリから選択
   imageGeneration:
     useArticleContent: 記事の内容をプロンプトとして使用
     customPrompt: カスタムプロンプト
@@ -345,6 +376,13 @@ editor:
     append: 追加
     override: 上書き
     generate: 生成
+  imagePicker:
+    title: 画像を選択
+    searchPlaceholder: ファイル名で検索...
+    loading: 読み込み中...
+    noImages: 画像がありません
+    imageCount: '{count}件の画像'
+    cancel: キャンセル
   toolbar:
     bold: 太字
     italic: 斜体
@@ -352,6 +390,7 @@ editor:
     list: リスト
     codeBlock: コードブロック
     link: リンク
+    emoji: 絵文字
     fullscreen: 全画面
     aiContinuation: AI続き提案
     continuationTitle: 続きの提案
@@ -361,6 +400,16 @@ editor:
     long: 長い
     confidence: 確信度
     generateSuggestion: ボタンをクリックして提案を生成
+  emojiPicker:
+    searchPlaceholder: 検索...
+    noResults: 結果がありません
+    smileys: 顔・感情
+    gestures: ジェスチャー
+    symbols: シンボル
+    food: 食べ物
+    activities: アクティビティ
+    tech: テック
+    nature: 自然
   previousResult: 前回の結果
 
 aiModelSettings:

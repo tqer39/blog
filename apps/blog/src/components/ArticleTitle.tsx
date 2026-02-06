@@ -1,5 +1,6 @@
 'use client';
 
+import { devError } from '@blog/utils';
 import { Copy, Pencil } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -28,7 +29,7 @@ export function ArticleTitle({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      devError('Failed to copy:', err);
     }
   };
 

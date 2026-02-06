@@ -1,5 +1,5 @@
 /**
- * Generate article metadata (description + tags) using OpenAI
+ * Generate article metadata (description + tags) using multiple providers
  */
 import type {
   GenerateMetadataRequest,
@@ -7,39 +7,24 @@ import type {
 } from '@blog/cms-types';
 import { Hono } from 'hono';
 import type { Env } from '../../index';
-import { getOpenAIApiKey } from '../../lib/api-keys';
+import {
+  getAnthropicApiKey,
+  getGeminiApiKey,
+  getOpenAIApiKey,
+} from '../../lib/api-keys';
 import { internalError, validationError } from '../../lib/errors';
-import { DEFAULT_OPENAI_MODEL, VALID_OPENAI_MODELS } from './_shared';
+import { callTextProvider } from './_providers';
+import {
+  DEFAULT_OPENAI_MODEL,
+  getTextProvider,
+  VALID_ANTHROPIC_MODELS,
+  VALID_GEMINI_TEXT_MODELS,
+  VALID_OPENAI_MODELS,
+} from './_shared';
 
 export const metadataHandler = new Hono<{ Bindings: Env }>();
 
-metadataHandler.post('/', async (c) => {
-  const apiKey = await getOpenAIApiKey(c.env);
-  if (!apiKey) {
-    internalError('OpenAI API key not configured');
-  }
-
-  const body = await c.req.json<GenerateMetadataRequest>();
-  const { title, content, existingTags, model = DEFAULT_OPENAI_MODEL } = body;
-
-  if (!title || !content) {
-    validationError('Invalid input', {
-      ...(title ? {} : { title: 'Required' }),
-      ...(content ? {} : { content: 'Required' }),
-    });
-  }
-
-  // Validate model
-  if (!VALID_OPENAI_MODELS.includes(model)) {
-    validationError('Invalid model', {
-      model: `Must be one of: ${VALID_OPENAI_MODELS.join(', ')}`,
-    });
-  }
-
-  // Truncate content if too long (keep first 3000 chars)
-  const truncatedContent = content.slice(0, 3000);
-
-  const systemPrompt = `You are a helpful assistant that generates SEO-friendly metadata for blog articles.
+const SYSTEM_PROMPT = `You are a helpful assistant that generates SEO-friendly metadata for blog articles.
 Given an article title and content, generate:
 1. A concise description (100-160 characters) that summarizes the article for SEO
 2. 3-5 relevant tags for the article
@@ -56,6 +41,48 @@ Guidelines:
 - Tags should be specific and relevant to the content
 - Prefer commonly used tags over obscure ones`;
 
+metadataHandler.post('/', async (c) => {
+  const body = await c.req.json<GenerateMetadataRequest>();
+  const { title, content, existingTags, model = DEFAULT_OPENAI_MODEL } = body;
+
+  if (!title || !content) {
+    validationError('Invalid input', {
+      ...(title ? {} : { title: 'Required' }),
+      ...(content ? {} : { content: 'Required' }),
+    });
+  }
+
+  // Detect provider from model
+  const provider = getTextProvider(model);
+  if (!provider) {
+    validationError('Invalid model', {
+      model: `Must be one of: ${[...VALID_OPENAI_MODELS, ...VALID_ANTHROPIC_MODELS, ...VALID_GEMINI_TEXT_MODELS].join(', ')}`,
+    });
+  }
+
+  // Get API key based on provider
+  let apiKey: string | null = null;
+  switch (provider) {
+    case 'openai':
+      apiKey = await getOpenAIApiKey(c.env);
+      break;
+    case 'anthropic':
+      apiKey = await getAnthropicApiKey(c.env);
+      break;
+    case 'gemini':
+      apiKey = await getGeminiApiKey(c.env);
+      break;
+  }
+
+  if (!apiKey) {
+    internalError(
+      `${provider.charAt(0).toUpperCase() + provider.slice(1)} API key not configured`
+    );
+  }
+
+  // Truncate content if too long (keep first 3000 chars)
+  const truncatedContent = content.slice(0, 3000);
+
   const userPrompt = `Title: ${title}
 
 Content:
@@ -64,36 +91,15 @@ ${truncatedContent}
 ${existingTags?.length ? `Existing tags in the system: ${existingTags.join(', ')}. Prefer using these if relevant.` : ''}`;
 
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
-        ],
-        temperature: 0.7,
-        response_format: { type: 'json_object' },
-      }),
+    const response = await callTextProvider(provider, apiKey, {
+      model,
+      systemPrompt: SYSTEM_PROMPT,
+      userPrompt,
+      temperature: 0.7,
+      jsonMode: true,
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      console.error('OpenAI API error:', error);
-      internalError('Failed to generate metadata');
-    }
-
-    const data = await response.json<{
-      choices: Array<{ message: { content: string } }>;
-    }>();
-    const result = JSON.parse(
-      data.choices[0].message.content
-    ) as GenerateMetadataResponse;
-
+    const result = JSON.parse(response.text) as GenerateMetadataResponse;
     return c.json(result);
   } catch (error) {
     console.error('Error generating metadata:', error);

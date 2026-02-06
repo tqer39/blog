@@ -6,6 +6,7 @@ common:
   delete: Delete
   edit: Edit
   create: Create
+  update: Update
   search: Search
   noResults: No results found
   confirm: Confirm
@@ -23,6 +24,7 @@ settings:
   saveSuccess: Settings saved successfully
   saveError: Failed to save settings
   loadError: Failed to load settings
+  unsavedChanges: You have unsaved changes
   basic:
     title: Basic Settings
     siteName: Site Name
@@ -73,6 +75,12 @@ settings:
     apiKeySet: API key is set. Enter a new value to replace it.
     showApiKey: Show API key
     hideApiKey: Hide API key
+    testButton: Test
+    testConfirm: This will test if the API key is working correctly. Continue?
+    testSuccess: API key is working correctly
+    testError: API key test failed
+    clearButton: Clear
+    clearConfirm: Delete this API key? Changes won't be saved until you click Save.
   apiKey:
     title: CMS API Key
     description: Manage API keys for external access to the CMS API. If API_KEY environment variable is set, it will continue to work as well.
@@ -135,12 +143,12 @@ articles:
     image: Image
     title: Title
     status: Status
-    date: Date
+    date: Published
     tags: Tags
     actions: Actions
     sortByTitle: Sort by title
     sortByStatus: Sort by status
-    sortByDate: Sort by date
+    sortByDate: Sort by published date
   status:
     published: Published
     draft: Draft
@@ -178,6 +186,14 @@ tags:
   actions:
     edit: Edit
     delete: Delete
+  editor:
+    editTitle: Edit Tag
+    createTitle: Create Tag
+    name: Name
+    namePlaceholder: Tag name
+    usedInArticles: This tag is used in {count} article(s). Changes will be reflected across all associated articles.
+    saveError: Failed to save tag
+    nameRequired: Name is required
 
 categories:
   title: Categories
@@ -205,6 +221,20 @@ categories:
   actions:
     edit: Edit
     delete: Delete
+  editor:
+    editTitle: Edit Category
+    createTitle: Create Category
+    name: Name
+    namePlaceholder: Category name
+    slug: Slug
+    slugPlaceholder: category-slug
+    slugDescription: URL-safe identifier. Auto-generated from name if not edited.
+    color: Color
+    usedInArticles: This category is used in {count} article(s). Changes will be reflected across all associated articles.
+    saveError: Failed to save category
+    nameRequired: Name is required
+    slugRequired: Slug is required
+    slugInvalid: Slug can only contain lowercase letters, numbers, and hyphens
 
 images:
   title: Images
@@ -334,6 +364,7 @@ editor:
     savedAt: Saved at {date}
     discard: Discard
     restore: Restore
+  selectFromLibrary: Select from Library
   imageGeneration:
     useArticleContent: Use article content as prompt
     customPrompt: Custom prompt
@@ -345,6 +376,13 @@ editor:
     append: Append
     override: Override
     generate: Generate
+  imagePicker:
+    title: Select Image
+    searchPlaceholder: Search by filename...
+    loading: Loading...
+    noImages: No images found
+    imageCount: '{count} images'
+    cancel: Cancel
   toolbar:
     bold: Bold
     italic: Italic
@@ -352,6 +390,7 @@ editor:
     list: List
     codeBlock: Code Block
     link: Link
+    emoji: Emoji
     fullscreen: Fullscreen
     aiContinuation: AI Continuation
     continuationTitle: Continuation Suggestions
@@ -361,6 +400,16 @@ editor:
     long: Long
     confidence: Confidence
     generateSuggestion: Click button to generate suggestions
+  emojiPicker:
+    searchPlaceholder: Search...
+    noResults: No results found
+    smileys: Smileys
+    gestures: Gestures
+    symbols: Symbols
+    food: Food
+    activities: Activities
+    tech: Tech
+    nature: Nature
   previousResult: Previous result
 
 aiModelSettings:

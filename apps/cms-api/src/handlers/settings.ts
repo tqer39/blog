@@ -19,6 +19,15 @@ const ALLOWED_KEYS = [
   'social_linkedin',
   'social_wantedly',
   'social_lapras',
+  'social_devto',
+  'social_hackernews',
+  'social_hatena',
+  'social_medium',
+  'social_note',
+  'social_qiita',
+  'social_reddit',
+  'social_techfeed',
+  'social_zenn',
   'show_rss_link',
   'show_github_link',
   'show_twitter_link',
@@ -28,6 +37,15 @@ const ALLOWED_KEYS = [
   'show_linkedin_link',
   'show_wantedly_link',
   'show_lapras_link',
+  'show_devto_link',
+  'show_hackernews_link',
+  'show_hatena_link',
+  'show_medium_link',
+  'show_note_link',
+  'show_qiita_link',
+  'show_reddit_link',
+  'show_techfeed_link',
+  'show_zenn_link',
   'ai_openai_api_key',
   'ai_anthropic_api_key',
   'ai_gemini_api_key',
@@ -58,18 +76,27 @@ const URL_KEYS = [
   'social_linkedin',
   'social_wantedly',
   'social_lapras',
+  'social_devto',
+  'social_hackernews',
+  'social_hatena',
+  'social_medium',
+  'social_note',
+  'social_qiita',
+  'social_reddit',
+  'social_techfeed',
+  'social_zenn',
 ] as const;
 const ALLOWED_SCHEMES = ['https:', 'http:'];
 
 /**
  * Mask an API key value for safe display
- * Shows first 10 characters followed by ****
+ * Shows first 4 characters followed by ****
  */
 function maskApiKeyValue(value: string): string {
-  if (!value || value.length < 10) {
+  if (!value || value.length < 4) {
     return '****';
   }
-  return `${value.slice(0, 10)}****`;
+  return `${value.slice(0, 4)}****`;
 }
 
 /**
@@ -159,7 +186,10 @@ settingsHandler.put('/', async (c) => {
   }
 
   // Validate required fields are not empty strings
-  if (filteredInput.site_name !== undefined && filteredInput.site_name.trim() === '') {
+  if (
+    filteredInput.site_name !== undefined &&
+    filteredInput.site_name.trim() === ''
+  ) {
     validationError('site_name cannot be empty');
   }
 
@@ -171,14 +201,19 @@ settingsHandler.put('/', async (c) => {
   }
 
   // Batch update using upsert
-  // For API keys: skip if value is empty or masked (ends with ****)
-  const statements = Object.entries(filteredInput)
+  // For API keys: skip masked values, but allow empty strings (for deletion)
+  const upsertStatements = Object.entries(filteredInput)
     .filter(([key, value]) => {
       if (value === undefined) return false;
 
-      // For API key fields, skip empty strings and masked values
+      // For API key fields, skip masked values but allow empty strings
       if (API_KEY_FIELDS.includes(key as (typeof API_KEY_FIELDS)[number])) {
-        if (value === '' || isMaskedValue(value as string)) {
+        // Skip masked values (user didn't change the key)
+        if (isMaskedValue(value as string)) {
+          return false;
+        }
+        // Empty strings will be handled separately as DELETE
+        if (value === '') {
           return false;
         }
       }
@@ -191,8 +226,22 @@ settingsHandler.put('/', async (c) => {
       ).bind(key, value, value)
     );
 
-  if (statements.length > 0) {
-    await c.env.DB.batch(statements);
+  // Delete API keys that are set to empty string
+  const deleteStatements = Object.entries(filteredInput)
+    .filter(([key, value]) => {
+      if (value === undefined) return false;
+      if (!API_KEY_FIELDS.includes(key as (typeof API_KEY_FIELDS)[number])) {
+        return false;
+      }
+      return value === '';
+    })
+    .map(([key]) =>
+      c.env.DB.prepare('DELETE FROM site_settings WHERE key = ?').bind(key)
+    );
+
+  const allStatements = [...upsertStatements, ...deleteStatements];
+  if (allStatements.length > 0) {
+    await c.env.DB.batch(allStatements);
   }
 
   // Return updated settings
