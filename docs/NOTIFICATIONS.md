@@ -12,21 +12,6 @@ This blog provides an RSS feed at:
 https://blog.tqer39.dev/feed.xml
 ```
 
-## Slack
-
-### Subscribe via /feed command
-
-```text
-/feed subscribe https://blog.tqer39.dev/feed.xml
-```
-
-### Management commands
-
-```text
-/feed list          # List subscribed feeds
-/feed remove <url>  # Remove a feed
-```
-
 ## Discord
 
 ### Using MonitoRSS Bot (Recommended)
