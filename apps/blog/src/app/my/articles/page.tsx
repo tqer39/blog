@@ -215,19 +215,19 @@ export default function ArticleListPage() {
         <TabsList className="bg-muted/50 p-1">
           <TabsTrigger
             value="all"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+            className="data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:shadow-sm"
           >
             {t('articles.filters.all')}
           </TabsTrigger>
           <TabsTrigger
             value="published"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+            className="data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:shadow-sm"
           >
             {t('articles.filters.published')}
           </TabsTrigger>
           <TabsTrigger
             value="draft"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm"
+            className="data-[state=active]:!bg-primary data-[state=active]:!text-primary-foreground data-[state=active]:shadow-sm"
           >
             {t('articles.filters.draft')}
           </TabsTrigger>
