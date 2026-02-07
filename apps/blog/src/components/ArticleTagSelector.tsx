@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
+import { useI18n } from '@/i18n';
+
 interface ArticleTagSelectorProps {
   allTags: string[];
 }
@@ -12,6 +14,7 @@ interface ArticleTagSelectorProps {
 const INITIAL_TAGS_COUNT = 10;
 
 export function ArticleTagSelector({ allTags }: ArticleTagSelectorProps) {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const selectedTags = searchParams.getAll('tags');
   const [isExpanded, setIsExpanded] = useState(false);
@@ -53,7 +56,7 @@ export function ArticleTagSelector({ allTags }: ArticleTagSelectorProps) {
     <div className="mb-6">
       <div className="mb-3 flex items-center justify-between">
         <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
-          Tags
+          {t('filter.tags')}
         </span>
         {selectedTags.length > 0 && (
           <Link
@@ -61,7 +64,7 @@ export function ArticleTagSelector({ allTags }: ArticleTagSelectorProps) {
             className="flex items-center gap-1 text-xs text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200"
           >
             <X className="h-3 w-3" />
-            Clear filters
+            {t('filter.clearFilters')}
           </Link>
         )}
       </div>
@@ -94,12 +97,12 @@ export function ArticleTagSelector({ allTags }: ArticleTagSelectorProps) {
           {isExpanded ? (
             <>
               <ChevronUp className="h-4 w-4" />
-              Show less
+              {t('filter.showLess')}
             </>
           ) : (
             <>
               <ChevronDown className="h-4 w-4" />
-              Show all ({allTags.length} tags)
+              {t('filter.showAll', { count: allTags.length })}
             </>
           )}
         </button>

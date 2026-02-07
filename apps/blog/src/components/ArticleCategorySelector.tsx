@@ -4,6 +4,8 @@ import type { Category } from '@blog/cms-types';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
+import { useI18n } from '@/i18n';
+
 interface ArticleCategorySelectorProps {
   allCategories: Category[];
   selectedCategory?: string;
@@ -13,6 +15,7 @@ export function ArticleCategorySelector({
   allCategories,
   selectedCategory,
 }: ArticleCategorySelectorProps) {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
 
   const buildCategoryUrl = (categorySlug: string) => {
@@ -48,7 +51,7 @@ export function ArticleCategorySelector({
     <div className="mb-4">
       <div className="mb-2">
         <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
-          Category
+          {t('filter.category')}
         </span>
       </div>
       <div className="flex flex-wrap gap-2">

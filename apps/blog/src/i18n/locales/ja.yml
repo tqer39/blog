@@ -291,6 +291,25 @@ footer:
   copyright: "All rights reserved."
   rss: RSSフィード
 
+publicArticles:
+  allArticles: 記事一覧
+  latestArticles: 最新の記事
+  viewAll: すべての記事を見る
+  noArticles: 記事がまだありません
+  noMatchingTags: 選択したタグに一致する記事がありません
+  noArticlesOnPage: このページに記事はありません
+  noSearchResults: 検索結果が見つかりませんでした
+  searchResults: 「{query}」の検索結果
+  resultCount: "{count}件"
+  clear: クリア
+
+filter:
+  category: カテゴリ
+  tags: タグ
+  clearFilters: フィルターをクリア
+  showLess: 折りたたむ
+  showAll: "すべて表示（{count}件）"
+
 language:
   toggle: 言語切り替え
   ja: 日本語

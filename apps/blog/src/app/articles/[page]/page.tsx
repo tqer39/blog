@@ -1,10 +1,13 @@
-import { X } from 'lucide-react';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { ArticleCard } from '@/components/ArticleCard';
+import {
+  ArticlesPageTitle,
+  EmptyStateMessage,
+  SearchResultsBanner,
+} from '@/components/ArticlesPageHeader';
 import { ArticleTagSelector } from '@/components/ArticleTagSelector';
 import { JsonLd } from '@/components/JsonLd';
 import { Pagination } from '@/components/Pagination';
@@ -141,28 +144,14 @@ export default async function ArticlesPage({
     <>
       <JsonLd data={breadcrumbJsonLd} />
       <div className="mx-auto max-w-4xl px-4 py-8">
-        <h1 className="mb-8 text-3xl font-bold">All Articles</h1>
+        <ArticlesPageTitle />
 
         {searchQuery && (
-          <div className="mb-6 flex items-center gap-2 rounded-lg bg-stone-100 px-4 py-3 dark:bg-stone-800">
-            <span className="text-stone-600 dark:text-stone-400">
-              「
-              <span className="font-medium text-stone-900 dark:text-stone-100">
-                {searchQuery}
-              </span>
-              」の検索結果
-              <span className="ml-2 text-sm">
-                ({filteredArticles.length}件)
-              </span>
-            </span>
-            <Link
-              href={clearSearchUrl}
-              className="ml-auto flex items-center gap-1 rounded-md px-2 py-1 text-sm text-stone-500 transition-colors hover:bg-stone-200 hover:text-stone-700 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-200"
-            >
-              <X className="h-4 w-4" />
-              クリア
-            </Link>
-          </div>
+          <SearchResultsBanner
+            searchQuery={searchQuery}
+            resultCount={filteredArticles.length}
+            clearUrl={clearSearchUrl}
+          />
         )}
 
         <Suspense fallback={null}>
@@ -170,13 +159,11 @@ export default async function ArticlesPage({
         </Suspense>
 
         {articles.length === 0 ? (
-          <p className="text-stone-600 dark:text-stone-400">
-            {searchQuery
-              ? '検索結果が見つかりませんでした。'
-              : selectedTags.length > 0
-                ? 'No articles match the selected tags.'
-                : 'No articles on this page.'}
-          </p>
+          <EmptyStateMessage
+            hasSearchQuery={!!searchQuery}
+            hasSelectedTags={selectedTags.length > 0}
+            isPaginated
+          />
         ) : (
           <>
             <div className="space-y-8">
