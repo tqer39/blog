@@ -15,6 +15,7 @@ import type {
   Locale,
   Messages,
   SiteDefaultLocale,
+  TranslationParams,
 } from './types';
 
 const LOCALE_STORAGE_KEY = 'blog-locale';
@@ -27,7 +28,7 @@ const messages: Record<Locale, Messages> = {
 const defaultContext: I18nContextValue = {
   locale: 'ja',
   setLocale: () => {},
-  t: (key: string) => key,
+  t: (key: string, _params?: TranslationParams) => key,
   messages: ja as Messages,
 };
 
@@ -93,7 +94,7 @@ export function I18nProvider({
   }, []);
 
   const t = useCallback(
-    (key: string): string => {
+    (key: string, params?: TranslationParams): string => {
       const keys = key.split('.');
       // biome-ignore lint/suspicious/noExplicitAny: accessing nested message object dynamically
       let value: any = messages[locale];
@@ -106,7 +107,19 @@ export function I18nProvider({
         }
       }
 
-      return typeof value === 'string' ? value : key;
+      if (typeof value !== 'string') {
+        return key;
+      }
+
+      // Replace placeholders like {key} with corresponding values
+      if (params) {
+        return value.replace(/\{(\w+)\}/g, (_, paramKey) => {
+          const paramValue = params[paramKey];
+          return paramValue !== undefined ? String(paramValue) : `{${paramKey}}`;
+        });
+      }
+
+      return value;
     },
     [locale]
   );

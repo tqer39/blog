@@ -4,4 +4,5 @@ export type {
   Locale,
   Messages,
   SiteDefaultLocale,
+  TranslationParams,
 } from './types';

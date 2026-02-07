@@ -291,6 +291,25 @@ footer:
   copyright: "All rights reserved."
   rss: RSS Feed
 
+publicArticles:
+  allArticles: All Articles
+  latestArticles: Latest Articles
+  viewAll: View all articles
+  noArticles: No articles yet. Stay tuned!
+  noMatchingTags: No articles match the selected tags.
+  noArticlesOnPage: No articles on this page.
+  noSearchResults: No articles found for your search.
+  searchResults: 'Search results for "{query}"'
+  resultCount: "{count} results"
+  clear: Clear
+
+filter:
+  category: Category
+  tags: Tags
+  clearFilters: Clear filters
+  showLess: Show less
+  showAll: "Show all ({count} tags)"
+
 language:
   toggle: Language
   ja: 日本語

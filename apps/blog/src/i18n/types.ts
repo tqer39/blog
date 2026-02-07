@@ -322,6 +322,25 @@ export interface Messages {
     copyright: string;
     rss: string;
   };
+  publicArticles: {
+    allArticles: string;
+    latestArticles: string;
+    viewAll: string;
+    noArticles: string;
+    noMatchingTags: string;
+    noArticlesOnPage: string;
+    noSearchResults: string;
+    searchResults: string;
+    resultCount: string;
+    clear: string;
+  };
+  filter: {
+    category: string;
+    tags: string;
+    clearFilters: string;
+    showLess: string;
+    showAll: string;
+  };
   language: {
     toggle: string;
     ja: string;
@@ -461,9 +480,11 @@ export interface Messages {
   };
 }
 
+export type TranslationParams = Record<string, string | number>;
+
 export interface I18nContextValue {
   locale: Locale;
   setLocale: (locale: Locale) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: TranslationParams) => string;
   messages: Messages;
 }
