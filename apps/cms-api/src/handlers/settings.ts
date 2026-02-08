@@ -10,6 +10,7 @@ const ALLOWED_KEYS = [
   'site_name',
   'site_description',
   'author_name',
+  'author_avatar_id',
   'footer_text',
   'social_github',
   'social_twitter',

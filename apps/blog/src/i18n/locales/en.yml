@@ -35,6 +35,15 @@ settings:
     authorNamePlaceholder: Your Name
     footerText: Footer Text (optional)
     footerTextPlaceholder: Additional footer text
+  avatar:
+    title: Avatar
+    description: Profile image displayed in the footer
+    upload: Upload
+    selectFromLibrary: Select from Library
+    remove: Remove
+    noAvatar: No avatar set
+    uploadSuccess: Avatar uploaded successfully
+    uploadError: Failed to upload avatar
   social:
     title: Social Links
     hide: Hide

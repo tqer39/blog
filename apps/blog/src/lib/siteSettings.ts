@@ -8,6 +8,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   site_name: "tqer39's blog",
   site_description: '未来の自分に向けた技術ログ',
   author_name: 'tqer39',
+  author_avatar_id: '',
   footer_text: '',
   social_github: 'https://github.com/tqer39',
   social_twitter: 'https://x.com/tqer39',

@@ -38,6 +38,16 @@ export interface Messages {
       footerText: string;
       footerTextPlaceholder: string;
     };
+    avatar: {
+      title: string;
+      description: string;
+      upload: string;
+      selectFromLibrary: string;
+      remove: string;
+      noAvatar: string;
+      uploadSuccess: string;
+      uploadError: string;
+    };
     social: {
       title: string;
       hide: string;
