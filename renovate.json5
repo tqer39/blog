@@ -14,6 +14,12 @@
       "matchPackageNames": ["@cloudflare/workers-types"],
       "matchUpdateTypes": ["minor", "patch"],
       "enabled": false
+    },
+    {
+      "description": "@biomejs/biome は major 更新のみ",
+      "matchPackageNames": ["@biomejs/biome"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "enabled": false
     }
   ]
 }
