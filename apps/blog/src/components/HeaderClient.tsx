@@ -155,22 +155,24 @@ export function HeaderClient({
               <LogIn className="h-5 w-5" />
             </Link>
           )}
-          {/* Avatar */}
-          <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-border bg-muted">
-            {avatarUrl ? (
-              <Image
-                src={avatarUrl}
-                alt="Avatar"
-                fill
-                className="object-cover"
-                unoptimized
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                <User className="h-4 w-4" />
-              </div>
-            )}
-          </div>
+          {/* Avatar (only shown when logged in) */}
+          {isLoggedIn && (
+            <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+              {avatarUrl ? (
+                <Image
+                  src={avatarUrl}
+                  alt="Avatar"
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                  <User className="h-4 w-4" />
+                </div>
+              )}
+            </div>
+          )}
           {/* Mobile menu */}
           <MobileMenu
             isOpen={isMobileMenuOpen}
