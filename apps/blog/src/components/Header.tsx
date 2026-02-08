@@ -6,5 +6,11 @@ export async function Header() {
   const settings = await getSiteSettings();
   const loggedIn = await isAuthenticated();
 
-  return <HeaderClient siteName={settings.site_name} isLoggedIn={loggedIn} />;
+  return (
+    <HeaderClient
+      siteName={settings.site_name}
+      isLoggedIn={loggedIn}
+      authorAvatarId={settings.author_avatar_id}
+    />
+  );
 }

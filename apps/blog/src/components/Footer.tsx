@@ -14,47 +14,16 @@ import {
   XIcon,
   ZennIcon,
 } from '@blog/ui';
-import { DEFAULT_API_URL } from '@blog/config';
-import { Github, LayoutGrid, Linkedin, Rss, User } from 'lucide-react';
-import Image from 'next/image';
+import { Github, LayoutGrid, Linkedin, Rss } from 'lucide-react';
 import { getSiteSettings } from '@/lib/siteSettings';
-
-const API_URL = process.env.CMS_API_URL || DEFAULT_API_URL;
 
 export async function Footer() {
   const settings = await getSiteSettings();
-  const avatarUrl = settings.author_avatar_id
-    ? `${API_URL}/images/${settings.author_avatar_id}/file`
-    : null;
 
   return (
     <footer className="border-t border-stone-200 dark:border-stone-700">
       <div className="mx-auto max-w-4xl px-4 py-8">
         <div className="flex flex-col items-center gap-4">
-          {/* Author Avatar and Name */}
-          <div className="flex items-center gap-3">
-            <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border border-stone-200 bg-stone-100 dark:border-stone-700 dark:bg-stone-800">
-              {avatarUrl ? (
-                <Image
-                  src={avatarUrl}
-                  alt={settings.author_name || 'Author'}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-stone-400 dark:text-stone-500">
-                  <User className="h-6 w-6" />
-                </div>
-              )}
-            </div>
-            {settings.author_name && (
-              <span className="font-medium text-stone-700 dark:text-stone-300">
-                {settings.author_name}
-              </span>
-            )}
-          </div>
-
           <div className="flex gap-4">
             {settings.social_bento && settings.show_bento_link !== 'false' && (
               <a

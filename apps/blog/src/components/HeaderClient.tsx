@@ -8,8 +8,10 @@ import {
   LogIn,
   LogOut,
   Search,
+  User,
   X,
 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -21,13 +23,16 @@ import { ThemeSwitcher } from './ThemeSwitcher';
 interface HeaderClientProps {
   siteName: string;
   isLoggedIn?: boolean;
+  authorAvatarId?: string;
 }
 
 export function HeaderClient({
   siteName,
   isLoggedIn = false,
+  authorAvatarId,
 }: HeaderClientProps) {
   const { t } = useI18n();
+  const avatarUrl = authorAvatarId ? `/api/images/${authorAvatarId}/file` : null;
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -150,6 +155,22 @@ export function HeaderClient({
               <LogIn className="h-5 w-5" />
             </Link>
           )}
+          {/* Avatar */}
+          <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+            {avatarUrl ? (
+              <Image
+                src={avatarUrl}
+                alt="Avatar"
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                <User className="h-4 w-4" />
+              </div>
+            )}
+          </div>
           {/* Mobile menu */}
           <MobileMenu
             isOpen={isMobileMenuOpen}
