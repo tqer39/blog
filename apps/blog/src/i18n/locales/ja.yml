@@ -60,6 +60,12 @@ settings:
       tokyonight: Tokyo Night
       nordLight: Nord Light
       autumn: Autumn
+  analytics:
+    title: アナリティクス
+    description: Google Analytics 4 の設定を行います。空欄にするとトラッキングを無効化できます。
+    measurementId: 測定 ID
+    measurementIdHelp: GA4 の測定 ID は「G-」で始まる10文字の英数字です（例：G-XXXXXXXXXX）
+    invalidFormat: 測定 ID の形式が正しくありません。G-XXXXXXXXXX の形式で入力してください。
   aiTools:
     title: AI Tools
     description: AI機能のAPIキーを設定します。環境変数が優先されます。

@@ -68,6 +68,13 @@ export interface Messages {
         autumn: string;
       };
     };
+    analytics: {
+      title: string;
+      description: string;
+      measurementId: string;
+      measurementIdHelp: string;
+      invalidFormat: string;
+    };
     aiTools: {
       title: string;
       description: string;

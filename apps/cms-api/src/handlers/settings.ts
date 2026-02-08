@@ -49,6 +49,7 @@ const ALLOWED_KEYS = [
   'ai_openai_api_key',
   'ai_anthropic_api_key',
   'ai_gemini_api_key',
+  'ga_measurement_id',
 ] as const;
 
 // API key management fields (managed by /api/api-key/* endpoints)

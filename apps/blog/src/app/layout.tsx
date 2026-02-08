@@ -18,7 +18,6 @@ const bizUDGothic = BIZ_UDGothic({
 });
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
@@ -62,13 +61,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const settings = await getSiteSettings();
+  const gaId = settings.ga_measurement_id;
 
   return (
     <html lang="ja" suppressHydrationWarning>
-      {GA_ID && (
+      {gaId && (
         <>
           <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
             strategy="afterInteractive"
           />
           <Script id="ga-init" strategy="afterInteractive">
@@ -76,7 +76,7 @@ export default async function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${GA_ID}');
+              gtag('config', '${gaId}');
             `}
           </Script>
         </>

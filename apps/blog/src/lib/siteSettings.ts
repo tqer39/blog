@@ -50,6 +50,8 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   ai_openai_api_key: '',
   ai_anthropic_api_key: '',
   ai_gemini_api_key: '',
+  // Analytics (empty by default, set via admin settings)
+  ga_measurement_id: '',
 };
 
 /**
