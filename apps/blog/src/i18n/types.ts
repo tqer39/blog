@@ -332,6 +332,16 @@ export interface Messages {
     copyright: string;
     rss: string;
   };
+  mobileMenu: {
+    openMenu: string;
+    closeMenu: string;
+    articles: string;
+    theme: string;
+    language: string;
+    myPage: string;
+    login: string;
+    logout: string;
+  };
   publicArticles: {
     allArticles: string;
     latestArticles: string;

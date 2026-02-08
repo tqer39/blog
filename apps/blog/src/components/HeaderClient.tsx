@@ -32,7 +32,9 @@ export function HeaderClient({
   authorAvatarId,
 }: HeaderClientProps) {
   const { t } = useI18n();
-  const avatarUrl = authorAvatarId ? `/api/images/${authorAvatarId}/file` : null;
+  const avatarUrl = authorAvatarId
+    ? `/api/images/${authorAvatarId}/file`
+    : null;
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -177,6 +179,8 @@ export function HeaderClient({
           <MobileMenu
             isOpen={isMobileMenuOpen}
             onToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            isLoggedIn={isLoggedIn}
+            onLogout={handleLogout}
           />
         </nav>
       </div>

@@ -8,12 +8,16 @@ interface LatestArticlesHeaderProps {
   hasArticles: boolean;
 }
 
-export function LatestArticlesHeader({ hasArticles }: LatestArticlesHeaderProps) {
+export function LatestArticlesHeader({
+  hasArticles,
+}: LatestArticlesHeaderProps) {
   const { t } = useI18n();
 
   return (
     <>
-      <h1 className="mb-8 text-3xl font-bold">{t('publicArticles.latestArticles')}</h1>
+      <h1 className="mb-8 text-3xl font-bold">
+        {t('publicArticles.latestArticles')}
+      </h1>
       {!hasArticles && (
         <p className="text-stone-600 dark:text-stone-400">
           {t('publicArticles.noArticles')}
