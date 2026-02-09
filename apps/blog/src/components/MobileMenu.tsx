@@ -153,18 +153,6 @@ export function MobileMenu({
       >
         <nav className="mx-auto max-w-4xl px-4 py-4">
           <ul className="flex flex-col gap-2">
-            {/* Articles */}
-            <li>
-              <Link
-                href="/articles"
-                onClick={onToggle}
-                className="flex items-center gap-2 rounded-md px-2 py-2 text-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
-              >
-                <BookOpen className="h-5 w-5" />
-                {t('mobileMenu.articles')}
-              </Link>
-            </li>
-
             {/* Theme accordion */}
             <li>
               <button
@@ -262,6 +250,18 @@ export function MobileMenu({
                   </li>
                 </ul>
               </div>
+            </li>
+
+            {/* Articles */}
+            <li>
+              <Link
+                href="/articles"
+                onClick={onToggle}
+                className="flex items-center gap-2 rounded-md px-2 py-2 text-lg text-muted-foreground hover:bg-secondary hover:text-foreground"
+              >
+                <BookOpen className="h-5 w-5" />
+                {t('mobileMenu.articles')}
+              </Link>
             </li>
 
             {/* Divider */}

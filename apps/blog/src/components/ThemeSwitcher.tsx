@@ -64,20 +64,26 @@ const themeConfig: Record<
   },
 };
 
-export function ThemeSwitcher() {
+interface ThemeSwitcherProps {
+  className?: string;
+}
+
+export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const mounted = useMounted();
   const [open, setOpen] = useState(false);
 
   if (!mounted) {
     return (
-      <button
-        type="button"
-        aria-label="Toggle theme"
-        className="cursor-pointer rounded-lg p-2 hover:bg-secondary"
-      >
-        <div className="h-5 w-5" />
-      </button>
+      <div className={className}>
+        <button
+          type="button"
+          aria-label="Toggle theme"
+          className="cursor-pointer rounded-lg p-2 hover:bg-secondary"
+        >
+          <div className="h-5 w-5" />
+        </button>
+      </div>
     );
   }
 
@@ -91,50 +97,52 @@ export function ThemeSwitcher() {
   );
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          aria-label="Toggle theme"
-          className="cursor-pointer rounded-lg p-2 hover:bg-secondary"
-        >
-          <CurrentIcon className={cn('h-5 w-5', currentColor)} />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="w-48 p-1">
-        <div className="flex flex-col gap-1">
-          {themes.map((t) => {
-            const config = themeConfig[t];
-            const Icon = config.icon;
-            const isActive = t === theme;
+    <div className={className}>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            aria-label="Toggle theme"
+            className="cursor-pointer rounded-lg p-2 hover:bg-secondary"
+          >
+            <CurrentIcon className={cn('h-5 w-5', currentColor)} />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-48 p-1">
+          <div className="flex flex-col gap-1">
+            {themes.map((t) => {
+              const config = themeConfig[t];
+              const Icon = config.icon;
+              const isActive = t === theme;
 
-            return (
-              <button
-                key={t}
-                type="button"
-                onClick={() => {
-                  setTheme(t);
-                  setOpen(false);
-                }}
-                className={cn(
-                  'flex w-full cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm transition-colors',
-                  isActive
-                    ? '!bg-accent !text-accent-foreground'
-                    : isCustomTheme
-                      ? 'hover:!bg-accent/20 hover:text-foreground'
-                      : 'hover:bg-accent hover:text-accent-foreground'
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <Icon className={cn('h-4 w-4', config.color)} />
-                  <span>{config.label}</span>
-                </div>
-                {isActive && <Check className="h-4 w-4" />}
-              </button>
-            );
-          })}
-        </div>
-      </PopoverContent>
-    </Popover>
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => {
+                    setTheme(t);
+                    setOpen(false);
+                  }}
+                  className={cn(
+                    'flex w-full cursor-pointer items-center justify-between rounded-md px-3 py-2 text-sm transition-colors',
+                    isActive
+                      ? '!bg-accent !text-accent-foreground'
+                      : isCustomTheme
+                        ? 'hover:!bg-accent/20 hover:text-foreground'
+                        : 'hover:bg-accent hover:text-accent-foreground'
+                  )}
+                >
+                  <div className="flex items-center gap-2">
+                    <Icon className={cn('h-4 w-4', config.color)} />
+                    <span>{config.label}</span>
+                  </div>
+                  {isActive && <Check className="h-4 w-4" />}
+                </button>
+              );
+            })}
+          </div>
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }
