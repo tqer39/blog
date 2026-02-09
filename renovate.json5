@@ -1,4 +1,25 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>tqer39/renovate-config"]
+  "extends": ["github>tqer39/renovate-config"],
+  "packageRules": [
+    {
+      "description": "renovatebot/pre-commit-hooks は major 更新のみ",
+      "matchManagers": ["pre-commit"],
+      "matchPackageNames": ["renovatebot/pre-commit-hooks"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "enabled": false
+    },
+    {
+      "description": "@cloudflare/workers-types は major 更新のみ",
+      "matchPackageNames": ["@cloudflare/workers-types"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "enabled": false
+    },
+    {
+      "description": "@biomejs/biome は major 更新のみ",
+      "matchPackageNames": ["@biomejs/biome"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "enabled": false
+    }
+  ]
 }
