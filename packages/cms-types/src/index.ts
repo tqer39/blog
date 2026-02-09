@@ -354,6 +354,8 @@ export interface SiteSettings {
   ai_openai_api_key: string; // OpenAI API key for metadata generation, DALL-E images
   ai_anthropic_api_key: string; // Anthropic API key for review, outline, transform, continuation
   ai_gemini_api_key: string; // Gemini API key for image generation
+  // Analytics
+  ga_measurement_id: string; // Google Analytics 4 Measurement ID (format: G-XXXXXXXXXX)
 }
 
 export interface SiteSettingsResponse {

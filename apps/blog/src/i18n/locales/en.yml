@@ -60,6 +60,12 @@ settings:
       tokyonight: Tokyo Night
       nordLight: Nord Light
       autumn: Autumn
+  analytics:
+    title: Analytics
+    description: Configure Google Analytics 4. Leave empty to disable tracking.
+    measurementId: Measurement ID
+    measurementIdHelp: GA4 Measurement ID starts with "G-" followed by 10 alphanumeric characters (e.g., G-XXXXXXXXXX)
+    invalidFormat: Invalid measurement ID format. Please use G-XXXXXXXXXX format.
   aiTools:
     title: AI Tools
     description: Configure API keys for AI-powered features. Environment variables take priority if set.

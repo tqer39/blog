@@ -16,6 +16,7 @@ import {
 } from '@/lib/api/client';
 import {
   AIToolsSettings,
+  AnalyticsSettings,
   AppearanceSettings,
   BasicSettings,
   CMSApiKeySettings,
@@ -348,6 +349,12 @@ export default function SettingsPage() {
         />
 
         <AppearanceSettings
+          settings={settings}
+          onFieldChange={handleChange}
+          ModifiedIndicator={ModifiedIndicator}
+        />
+
+        <AnalyticsSettings
           settings={settings}
           onFieldChange={handleChange}
           ModifiedIndicator={ModifiedIndicator}

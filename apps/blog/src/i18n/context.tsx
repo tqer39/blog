@@ -115,7 +115,9 @@ export function I18nProvider({
       if (params) {
         return value.replace(/\{(\w+)\}/g, (_, paramKey) => {
           const paramValue = params[paramKey];
-          return paramValue !== undefined ? String(paramValue) : `{${paramKey}}`;
+          return paramValue !== undefined
+            ? String(paramValue)
+            : `{${paramKey}}`;
         });
       }
 
