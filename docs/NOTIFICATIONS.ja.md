@@ -12,21 +12,6 @@
 https://blog.tqer39.dev/feed.xml
 ```
 
-## Slack
-
-### /feed コマンドで購読
-
-```text
-/feed subscribe https://blog.tqer39.dev/feed.xml
-```
-
-### 管理コマンド
-
-```text
-/feed list          # 購読中のフィード一覧
-/feed remove <url>  # フィードを削除
-```
-
 ## Discord
 
 ### MonitoRSS Bot を使用（推奨）

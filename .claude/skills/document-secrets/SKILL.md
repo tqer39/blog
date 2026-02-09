@@ -24,7 +24,7 @@ GitHub Secrets が追加された際に、関連ドキュメントを更新す�
 | -------- | ---- |
 | Infrastructure Secrets | Vercel, CloudFlare 等のインフラ |
 | Authentication Secrets | OAuth, Auth ライブラリ関連 |
-| Third-party Service Secrets | Slack, OpenAI 等 |
+| Third-party Service Secrets | Discord, OpenAI 等 |
 | GitHub App Secrets | GitHub App ID, Private Key |
 
 ## テーブル形式
@@ -66,8 +66,8 @@ GitHub Secrets が追加された際に、関連ドキュメントを更新す�
 | Secret | Description |
 | ------ | ----------- |
 | OPENAI_API_KEY | OpenAI API key for PR desc |
-| SLACK_WEBHOOK_DEV | Slack webhook (dev) |
-| SLACK_WEBHOOK_PROD | Slack webhook (prod) |
+| DISCORD_WEBHOOK_DEV | Discord webhook (dev) |
+| DISCORD_WEBHOOK_PROD | Discord webhook (prod) |
 ```
 
 ### 追加後（GEMINI_API_KEY を追加）
@@ -79,8 +79,8 @@ GitHub Secrets が追加された際に、関連ドキュメントを更新す�
 | ------ | ----------- |
 | GEMINI_API_KEY | Google Gemini API key for image generation |
 | OPENAI_API_KEY | OpenAI API key for PR desc |
-| SLACK_WEBHOOK_DEV | Slack webhook (dev) |
-| SLACK_WEBHOOK_PROD | Slack webhook (prod) |
+| DISCORD_WEBHOOK_DEV | Discord webhook (dev) |
+| DISCORD_WEBHOOK_PROD | Discord webhook (prod) |
 ```
 
 ## 注意事項
