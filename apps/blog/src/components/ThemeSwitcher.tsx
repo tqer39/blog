@@ -110,7 +110,7 @@ export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
             <CurrentIcon className={cn('h-5 w-5', currentColor)} />
           </button>
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-48 p-1">
+        <PopoverContent align="end" className="w-56 p-1">
           <div className="flex flex-col gap-1">
             {themes.map((themeKey) => {
               const config = themeConfig[themeKey];
