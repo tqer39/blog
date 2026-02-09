@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState } from 'react';
+import { useI18n } from '@/i18n';
 
 const themes = [
   'light',
@@ -27,38 +28,38 @@ type Theme = (typeof themes)[number];
 const themeConfig: Record<
   Theme,
   {
-    label: string;
+    labelKey: string;
     icon: React.ComponentType<{ className?: string }>;
     color: string;
   }
 > = {
   light: {
-    label: 'ライトモード',
+    labelKey: 'settings.appearance.themes.light',
     icon: Sun,
     color: 'text-yellow-500',
   },
   dark: {
-    label: 'ダークモード',
+    labelKey: 'settings.appearance.themes.dark',
     icon: Moon,
     color: 'text-blue-400',
   },
   tokyonight: {
-    label: 'Tokyo Night',
+    labelKey: 'settings.appearance.themes.tokyonight',
     icon: MoonStar,
     color: 'text-indigo-400',
   },
   'nord-light': {
-    label: 'Nord Light',
+    labelKey: 'settings.appearance.themes.nordLight',
     icon: Snowflake,
     color: 'text-cyan-500',
   },
   autumn: {
-    label: 'Autumn',
+    labelKey: 'settings.appearance.themes.autumn',
     icon: Leaf,
     color: 'text-orange-500',
   },
   system: {
-    label: 'システム設定',
+    labelKey: 'settings.appearance.themes.system',
     icon: Monitor,
     color: 'text-stone-500 dark:text-stone-400',
   },
@@ -69,6 +70,7 @@ interface ThemeSwitcherProps {
 }
 
 export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
+  const { t } = useI18n();
   const { theme, setTheme, resolvedTheme } = useTheme();
   const mounted = useMounted();
   const [open, setOpen] = useState(false);
@@ -110,17 +112,17 @@ export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
         </PopoverTrigger>
         <PopoverContent align="end" className="w-48 p-1">
           <div className="flex flex-col gap-1">
-            {themes.map((t) => {
-              const config = themeConfig[t];
+            {themes.map((themeKey) => {
+              const config = themeConfig[themeKey];
               const Icon = config.icon;
-              const isActive = t === theme;
+              const isActive = themeKey === theme;
 
               return (
                 <button
-                  key={t}
+                  key={themeKey}
                   type="button"
                   onClick={() => {
-                    setTheme(t);
+                    setTheme(themeKey);
                     setOpen(false);
                   }}
                   className={cn(
@@ -134,7 +136,7 @@ export function ThemeSwitcher({ className }: ThemeSwitcherProps) {
                 >
                   <div className="flex items-center gap-2">
                     <Icon className={cn('h-4 w-4', config.color)} />
-                    <span>{config.label}</span>
+                    <span>{t(config.labelKey)}</span>
                   </div>
                   {isActive && <Check className="h-4 w-4" />}
                 </button>
