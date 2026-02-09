@@ -35,6 +35,15 @@ settings:
     authorNamePlaceholder: Your Name
     footerText: フッターテキスト（任意）
     footerTextPlaceholder: 追加のフッターテキスト
+  avatar:
+    title: アバター
+    description: フッターに表示するプロフィール画像
+    upload: アップロード
+    selectFromLibrary: ライブラリから選択
+    remove: 削除
+    noAvatar: アバター未設定
+    uploadSuccess: アバターをアップロードしました
+    uploadError: アバターのアップロードに失敗しました
   social:
     title: ソーシャルリンク
     hide: 非表示にする
@@ -296,6 +305,16 @@ header:
 footer:
   copyright: "All rights reserved."
   rss: RSSフィード
+
+mobileMenu:
+  openMenu: メニューを開く
+  closeMenu: メニューを閉じる
+  articles: 記事一覧
+  theme: テーマ
+  language: 言語
+  myPage: マイページ
+  login: ログイン
+  logout: ログアウト
 
 publicArticles:
   allArticles: 記事一覧

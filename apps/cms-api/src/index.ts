@@ -128,6 +128,40 @@ app.get('/v1/images/file/*', async (c) => {
   return new Response(object.body, { headers });
 });
 
+// Public image serving by ID (no auth required)
+app.get('/v1/images/:id/file', async (c) => {
+  const id = c.req.param('id');
+
+  const row = await c.env.DB.prepare('SELECT r2_key FROM images WHERE id = ?')
+    .bind(id)
+    .first<{ r2_key: string }>();
+
+  if (!row) {
+    return c.json(
+      { error: { code: 'NOT_FOUND', message: 'Image not found' } },
+      404
+    );
+  }
+
+  const object = await c.env.R2_BUCKET.get(row.r2_key);
+
+  if (!object) {
+    return c.json(
+      { error: { code: 'NOT_FOUND', message: 'Image file not found' } },
+      404
+    );
+  }
+
+  const headers = new Headers();
+  headers.set(
+    'Content-Type',
+    object.httpMetadata?.contentType || 'application/octet-stream'
+  );
+  headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+
+  return new Response(object.body, { headers });
+});
+
 // API v1 routes (auth required)
 const v1 = new Hono<{ Bindings: Env }>();
 v1.use('*', authMiddleware);

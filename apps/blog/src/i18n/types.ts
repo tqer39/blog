@@ -38,6 +38,16 @@ export interface Messages {
       footerText: string;
       footerTextPlaceholder: string;
     };
+    avatar: {
+      title: string;
+      description: string;
+      upload: string;
+      selectFromLibrary: string;
+      remove: string;
+      noAvatar: string;
+      uploadSuccess: string;
+      uploadError: string;
+    };
     social: {
       title: string;
       hide: string;
@@ -328,6 +338,16 @@ export interface Messages {
   footer: {
     copyright: string;
     rss: string;
+  };
+  mobileMenu: {
+    openMenu: string;
+    closeMenu: string;
+    articles: string;
+    theme: string;
+    language: string;
+    myPage: string;
+    login: string;
+    logout: string;
   };
   publicArticles: {
     allArticles: string;

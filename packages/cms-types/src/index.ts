@@ -312,6 +312,7 @@ export interface SiteSettings {
   site_name: string;
   site_description: string;
   author_name: string;
+  author_avatar_id: string; // images テーブルの id を参照、空文字でアバター未設定
   footer_text: string;
   social_github: string;
   social_twitter: string;

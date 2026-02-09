@@ -18,6 +18,7 @@ import {
   AIToolsSettings,
   AnalyticsSettings,
   AppearanceSettings,
+  AvatarSettings,
   BasicSettings,
   CMSApiKeySettings,
   DisplaySettings,
@@ -330,6 +331,12 @@ export default function SettingsPage() {
 
       <div className="space-y-8">
         <BasicSettings
+          settings={settings}
+          onFieldChange={handleChange}
+          ModifiedIndicator={ModifiedIndicator}
+        />
+
+        <AvatarSettings
           settings={settings}
           onFieldChange={handleChange}
           ModifiedIndicator={ModifiedIndicator}

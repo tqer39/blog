@@ -159,6 +159,34 @@ imagesHandler.get('/:id', async (c) => {
   return c.json(image);
 });
 
+// Serve image file by ID
+imagesHandler.get('/:id/file', async (c) => {
+  const id = c.req.param('id');
+
+  const row = await c.env.DB.prepare('SELECT r2_key FROM images WHERE id = ?')
+    .bind(id)
+    .first<{ r2_key: string }>();
+
+  if (!row) {
+    notFound('Image not found');
+  }
+
+  const object = await c.env.R2_BUCKET.get(row.r2_key);
+
+  if (!object) {
+    notFound('Image file not found');
+  }
+
+  const headers = new Headers();
+  headers.set(
+    'Content-Type',
+    object.httpMetadata?.contentType || 'application/octet-stream'
+  );
+  headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+
+  return new Response(object.body, { headers });
+});
+
 // Delete image
 imagesHandler.delete('/:id', async (c) => {
   const id = c.req.param('id');
