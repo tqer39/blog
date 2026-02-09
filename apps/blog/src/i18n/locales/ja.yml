@@ -300,6 +300,16 @@ footer:
   copyright: "All rights reserved."
   rss: RSSフィード
 
+mobileMenu:
+  openMenu: メニューを開く
+  closeMenu: メニューを閉じる
+  articles: 記事一覧
+  theme: テーマ
+  language: 言語
+  myPage: マイページ
+  login: ログイン
+  logout: ログアウト
+
 publicArticles:
   allArticles: 記事一覧
   latestArticles: 最新の記事

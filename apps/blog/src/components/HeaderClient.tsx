@@ -32,7 +32,9 @@ export function HeaderClient({
   authorAvatarId,
 }: HeaderClientProps) {
   const { t } = useI18n();
-  const avatarUrl = authorAvatarId ? `/api/images/${authorAvatarId}/file` : null;
+  const avatarUrl = authorAvatarId
+    ? `/api/images/${authorAvatarId}/file`
+    : null;
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -115,7 +117,7 @@ export function HeaderClient({
               </button>
             )}
           </div>
-          <ThemeSwitcher />
+          <ThemeSwitcher className="hidden md:block" />
           <LanguageSwitcher compact className="hidden md:flex" />
           <Link
             href="/articles"
@@ -155,9 +157,9 @@ export function HeaderClient({
               <LogIn className="h-5 w-5" />
             </Link>
           )}
-          {/* Avatar (only shown when logged in) */}
+          {/* Avatar (only shown when logged in, hidden on mobile) */}
           {isLoggedIn && (
-            <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+            <div className="relative hidden h-8 w-8 flex-shrink-0 overflow-hidden rounded-full border border-border bg-muted md:block">
               {avatarUrl ? (
                 <Image
                   src={avatarUrl}
@@ -177,6 +179,8 @@ export function HeaderClient({
           <MobileMenu
             isOpen={isMobileMenuOpen}
             onToggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            isLoggedIn={isLoggedIn}
+            onLogout={handleLogout}
           />
         </nav>
       </div>

@@ -300,6 +300,16 @@ footer:
   copyright: "All rights reserved."
   rss: RSS Feed
 
+mobileMenu:
+  openMenu: Open menu
+  closeMenu: Close menu
+  articles: Articles
+  theme: Theme
+  language: Language
+  myPage: My Page
+  login: Login
+  logout: Logout
+
 publicArticles:
   allArticles: All Articles
   latestArticles: Latest Articles
