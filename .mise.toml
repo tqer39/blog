@@ -1,5 +1,5 @@
 [tools]
-node = "25.6.0"
+node = "25.6.1"
 pnpm = "10.29.3"
 terraform = "1.14.4"
 
