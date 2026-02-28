@@ -149,7 +149,7 @@ jobs:
           CMS_API_URL: http://localhost:3101/v1
 
       - name: Upload Playwright Report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: blog-e2e-report
