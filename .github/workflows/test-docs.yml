@@ -56,7 +56,7 @@ jobs:
         run: pnpm --filter @blog/docs test:e2e
 
       - name: Upload Playwright Report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: docs-e2e-report
