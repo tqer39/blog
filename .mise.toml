@@ -1,7 +1,7 @@
 [tools]
 node = "25.8.0"
 pnpm = "10.30.3"
-terraform = "1.14.6"
+terraform = "1.14.7"
 
 [settings]
 experimental = true
