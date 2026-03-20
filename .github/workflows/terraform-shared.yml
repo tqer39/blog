@@ -133,7 +133,7 @@ jobs:
           (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true') ||
           (steps.plan-status.outputs.status == 'has-diff' && github.event_name == 'push')
         id: app_token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.GHA_APP_ID }}
           private-key: ${{ secrets.GHA_APP_PRIVATE_KEY }}
