@@ -27,7 +27,7 @@ runs:
         echo "version=$TF_VERSION" >> $GITHUB_OUTPUT
 
     - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v6
+      uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
       with:
         role-to-assume: arn:aws:iam::${{ inputs.aws-account-id }}:role/${{ inputs.oidc-iam-role }}
         aws-region: ${{ inputs.aws-region }}
@@ -37,12 +37,12 @@ runs:
       run: aws sts get-caller-identity
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v4
+      uses: hashicorp/setup-terraform@5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85 # v4
       with:
         terraform_version: ${{ steps.tf-version.outputs.version }}
 
     - name: Cache Terraform Providers
-      uses: actions/cache@v5
+      uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
       with:
         path: ~/.terraform.d/plugin-cache
         key: terraform-providers-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}
@@ -72,7 +72,7 @@ runs:
 
     - name: Cache tfcmt
       id: cache-tfcmt
-      uses: actions/cache@v5
+      uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
       with:
         path: ~/bin/tfcmt
         key: tfcmt-${{ runner.os }}-v4.14.12

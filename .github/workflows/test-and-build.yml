@@ -30,7 +30,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
@@ -42,7 +42,7 @@ jobs:
     name: Unit Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
@@ -51,7 +51,7 @@ jobs:
         run: pnpm test -- --coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe # v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage/coverage-final.json
@@ -61,13 +61,13 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
 
       - name: Cache Next.js
-        uses: actions/cache@v5
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
         with:
           path: apps/blog/.next/cache
           key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/blog/**/*.ts', 'apps/blog/**/*.tsx') }}
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
@@ -93,7 +93,7 @@ jobs:
         run: echo "version=$(pnpm --filter @blog/web exec playwright --version | head -1)" >> $GITHUB_OUTPUT
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v5
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
@@ -117,7 +117,7 @@ jobs:
           done
 
       - name: Load secrets from 1Password
-        uses: 1password/load-secrets-action@v3
+        uses: 1password/load-secrets-action@dafbe7cb03502b260e2b2893c753c352eee545bf # v3
         with:
           export-env: true
         env:
@@ -149,7 +149,7 @@ jobs:
           CMS_API_URL: http://localhost:3101/v1
 
       - name: Upload Playwright Report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         if: always()
         with:
           name: blog-e2e-report
@@ -162,7 +162,7 @@ jobs:
     needs: [lint, unit-test, build, e2e-test]
     if: failure()
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Discord Notification
         uses: ./.github/actions/discord-notify
