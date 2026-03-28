@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Node.js
         uses: ./.github/actions/setup-node
@@ -36,7 +36,7 @@ jobs:
         run: echo "version=$(pnpm --filter @blog/docs exec playwright --version | head -1)" >> $GITHUB_OUTPUT
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v5
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
@@ -56,7 +56,7 @@ jobs:
         run: pnpm --filter @blog/docs test:e2e
 
       - name: Upload Playwright Report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         if: always()
         with:
           name: docs-e2e-report
@@ -69,7 +69,7 @@ jobs:
     needs: [e2e-docs]
     if: failure()
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Discord Notification
         uses: ./.github/actions/discord-notify

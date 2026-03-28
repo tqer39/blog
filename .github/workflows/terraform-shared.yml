@@ -57,7 +57,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Setup Terraform Environment
         uses: ./.github/actions/setup-terraform-env
@@ -111,7 +111,7 @@ jobs:
 
       - name: Start Deployment
         if: steps.plan-status.outputs.status == 'has-diff' && github.ref == 'refs/heads/main'
-        uses: bobheadxi/deployments@v1
+        uses: bobheadxi/deployments@648679e8e4915b27893bd7dbc35cb504dc915bc8 # v1
         id: deployment
         with:
           step: start
@@ -133,7 +133,7 @@ jobs:
           (github.event_name == 'workflow_dispatch' && env.RUN_APPLY == 'true') ||
           (steps.plan-status.outputs.status == 'has-diff' && github.event_name == 'push')
         id: app_token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3
         with:
           app-id: ${{ secrets.GHA_APP_ID }}
           private-key: ${{ secrets.GHA_APP_PRIVATE_KEY }}
@@ -158,7 +158,7 @@ jobs:
 
       - name: Finish Deployment
         if: steps.plan-status.outputs.status == 'has-diff' && always() && github.ref == 'refs/heads/main'
-        uses: bobheadxi/deployments@v1
+        uses: bobheadxi/deployments@648679e8e4915b27893bd7dbc35cb504dc915bc8 # v1
         with:
           step: finish
           token: ${{ secrets.GITHUB_TOKEN }}
