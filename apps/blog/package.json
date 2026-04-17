@@ -67,7 +67,7 @@
     "@vitest/coverage-v8": "4.1.4",
     "autoprefixer": "10.4.27",
     "js-yaml": "4.1.1",
-    "postcss": "8.5.9",
+    "postcss": "8.5.10",
     "tailwindcss": "4.2.2",
     "tsx": "4.21.0",
     "typescript": "6.0.2",
