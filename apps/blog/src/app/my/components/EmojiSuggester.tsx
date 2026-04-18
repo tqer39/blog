@@ -413,16 +413,19 @@ export function EmojiSuggester({
       requestAnimationFrame(handleInput);
     };
 
-    textarea.addEventListener('input', handleInputWithDelay);
-    textarea.addEventListener('keydown', handleKeyDown);
-    textarea.addEventListener('blur', () => {
+    const handleBlur = () => {
       // Delay closing to allow click events on suggestions
       setTimeout(() => setIsOpen(false), 150);
-    });
+    };
+
+    textarea.addEventListener('input', handleInputWithDelay);
+    textarea.addEventListener('keydown', handleKeyDown);
+    textarea.addEventListener('blur', handleBlur);
 
     return () => {
       textarea.removeEventListener('input', handleInputWithDelay);
       textarea.removeEventListener('keydown', handleKeyDown);
+      textarea.removeEventListener('blur', handleBlur);
     };
   }, [textareaRef, value, isOpen, suggestions, selectedIndex, insertEmoji]);
 
